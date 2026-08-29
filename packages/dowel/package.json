@@ -1,0 +1,35 @@
+{
+  "name": "dowel",
+  "version": "0.0.0",
+  "description": "The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry.",
+  "license": "MIT",
+  "type": "module",
+  "author": "Kirill Lakhtachev <lahtachev@gmail.com>",
+  "homepage": "https://lacodda.github.io/dowel",
+  "repository": { "type": "git", "url": "git+https://github.com/lacodda/dowel.git" },
+  "bugs": { "url": "https://github.com/lacodda/dowel/issues" },
+  "keywords": ["design-system", "design-tokens", "react", "tailwindcss", "shadcn", "registry"],
+  "sideEffects": ["*.css"],
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./theme.css": "./dist/theme.css"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepack": "node ../../tools/copy-readme.mjs"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsup": "^8.5.0"
+  },
+  "publishConfig": { "access": "public", "provenance": true }
+}

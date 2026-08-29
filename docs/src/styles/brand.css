@@ -1,0 +1,25 @@
+/* Brand accent: placeholder graphite until the dowel mark is approved on the
+   brand-line board; replaced by the product colour in the same commit as the
+   assets. */
+:root {
+	--sl-color-accent: #8e9aa3;
+	--sl-color-accent-high: #c5ccd1;
+	--sl-color-accent-low: #3a4248;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent: #5d6a73;
+	--sl-color-accent-high: #2f383e;
+	--sl-color-accent-low: #dde2e6;
+}
+
+/* The mark is a square hex tile: let it fill the bar height rather than the
+   2rem it was pinned to, and sit close to the wordmark it belongs with. */
+.site-title {
+	gap: 0.4rem;
+}
+
+.site-title img {
+	width: auto;
+	height: 2.5rem;
+}

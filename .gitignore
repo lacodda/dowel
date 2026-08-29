@@ -1,0 +1,22 @@
+# Node
+node_modules/
+dist/
+.vite/
+
+# Docs site output is built in CI only
+docs/dist/
+docs/.astro/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editors
+.idea/
+.vscode/
+!.vscode/extensions.json
