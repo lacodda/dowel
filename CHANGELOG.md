@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.1] - 2026-08-29
+
+### Bug Fixes
+- Give the entry point's imports a file extension
+
 ## [0.3.0] - 2026-08-29
 
 ### Features
