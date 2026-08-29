@@ -34,10 +34,11 @@
       "import": "./dist/index.js"
     },
     "./theme.css": "./dist/theme.css",
-    "./tokens.json": "./dist/tokens.json"
+    "./tokens.json": "./dist/tokens.json",
+    "./accents/*.css": "./dist/accents/*.css"
   },
   "scripts": {
-    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs",
+    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs && node ../../tools/build-accents.mjs",
     "typecheck": "tsc --noEmit",
     "prepack": "node ../../tools/copy-readme.mjs"
   },

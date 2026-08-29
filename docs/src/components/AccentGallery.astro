@@ -1,0 +1,155 @@
+---
+/*
+ * The same screen, once per product of the line.
+ *
+ * This is the claim the whole theme rests on: a product states one colour and
+ * everything else follows. Fourteen copies of one small screen is how that
+ * claim gets checked - not by reasoning about `color-mix`, but by looking at
+ * whether gold and magenta and lime all produce something a person would ship.
+ *
+ * The accents come from the package's own registry, so the gallery cannot fall
+ * behind the line: a product added there appears here.
+ */
+import { lineProducts } from '../../../packages/dowel/src/line'
+import { scopedTheme } from '../lib/theme-scope'
+
+interface Props {
+  /** Which theme the tiles are drawn in. */
+  mode: 'dark' | 'light'
+}
+
+const { mode } = Astro.props
+---
+
+<style is:global set:html={scopedTheme}></style>
+
+<div class="gallery">
+  {
+    lineProducts.map(({ name, code, accent, colorName }) => (
+      <div class:list={['dowel-theme', mode, 'tile']} style={`--accent-base: ${accent}`}>
+        <div class="tile-head">
+          <span class="mark">{code}</span>
+          <span class="tile-name">{name}</span>
+          <span class="tile-color">{colorName}</span>
+        </div>
+
+        <div class="tile-body">
+          <button class="primary" type="button">Save</button>
+          <button class="ghost" type="button">Cancel</button>
+          <span class="chip">3 new</span>
+        </div>
+
+        <p class="tile-text">
+          Body text on the product's own ground, <a href="#accents">a link</a>, and
+          <span class="dim">something quieter beside it</span>.
+        </p>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Every colour below is a token. That is the point of the gallery: nothing
+   * here knows which product it is drawing, and the tiles differ only by the
+   * one custom property set on the element. */
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  .tile-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .tile-name {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .tile-color {
+    margin-left: auto;
+    color: var(--faint);
+    font-size: var(--text-2xs);
+  }
+
+  .tile-body {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  button {
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.35rem 0.7rem;
+    font: inherit;
+    font-size: var(--text-xs);
+    cursor: pointer;
+  }
+
+  .primary {
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .ghost {
+    background: transparent;
+    color: var(--dim);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+
+  .chip {
+    margin-left: auto;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: var(--text-2xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .tile-text {
+    margin: 0;
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+  }
+
+  .tile-text a {
+    color: var(--accent);
+  }
+
+  .dim {
+    color: var(--dim);
+  }
+</style>

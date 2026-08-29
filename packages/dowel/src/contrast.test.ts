@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import { lineProducts } from './line'
 
 /*
  * Contrast, computed rather than asserted by eye.
@@ -18,25 +19,13 @@ import { describe, expect, it } from 'vitest'
 
 const themeCss = readFileSync(fileURLToPath(new URL('./theme.css', import.meta.url)), 'utf8')
 
-/** Every accent in the brand-line registry. A product's colour is fixed for
- * the life of the product, so this list is the real input space of the theme,
- * not a sample. */
-const lineAccents: Record<string, string> = {
-  kasl: '#A9C23F',
-  turnout: '#E85B72',
-  atlas: '#8A7DF5',
-  sefy: '#35A8A0',
-  nitid: '#3FA9D9',
-  midda: '#A46BE8',
-  nooma: '#3FA873',
-  kilna: '#D9569E',
-  'kasl-server': '#D9A82E',
-  lyrid: '#4A8FE8',
-  efema: '#5470E8',
-  dowel: '#E8862D',
-  austeris: '#C25BD9',
-  lyrn: '#6D7BF2',
-}
+/** Every accent of the line, from its registry of marks. A product's colour is
+ * fixed for the life of the product, so this is the real input space of the
+ * theme rather than a sample - and a product added there is contrast-checked
+ * without anyone remembering to add it here. */
+const lineAccents: Record<string, string> = Object.fromEntries(
+  lineProducts.map(({ name, accent }) => [name, accent]),
+)
 
 type Rgb = [number, number, number]
 type Oklab = [number, number, number]

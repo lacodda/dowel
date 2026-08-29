@@ -1,8 +1,9 @@
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
+  lineProducts,
   elevationTokens,
   layerTokens,
   motionTokens,
@@ -89,6 +90,28 @@ describe('what the package ships', () => {
     for (const target of targets) {
       const top = target.replace(/^\.\//, '').split('/')[0]!
       expect(shipped, `\`${target}\` is exported but \`${top}\` is not in \`files\``).toContain(top)
+    }
+  })
+
+  it('ships no test code', () => {
+    // `tsc` compiles whatever it is not told to exclude, and a new test file
+    // in an extension the exclude list missed lands in `dist` and then on npm.
+    const dist = resolve(root, 'packages/dowel/dist')
+    if (!existsSync(dist)) return
+
+    const stray = readdirSync(dist).filter((file) => /\.test\./.test(file))
+    expect(stray, 'test files are being built into the package').toEqual([])
+  })
+
+  it('ships an accent for every product of the line', () => {
+    // A product in the registry with no accent file is a product whose
+    // documented one-line import does not resolve.
+    const dir = resolve(root, 'packages/dowel/dist/accents')
+    if (!existsSync(dir)) return
+
+    const shipped = new Set(readdirSync(dir))
+    for (const { name } of lineProducts) {
+      expect(shipped, `\`${name}\` has no accent file`).toContain(`${name}.css`)
     }
   })
 

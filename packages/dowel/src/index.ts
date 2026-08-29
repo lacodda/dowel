@@ -15,6 +15,17 @@
  * is copied into the product and becomes the product's own code.
  */
 
+export { lineProducts, lineProduct, type LineProduct } from './line'
+export {
+  defaultStorageKey,
+  initTheme,
+  nextTheme,
+  resolvedTheme,
+  useTheme,
+  useThemeSwitch,
+  type Theme,
+} from './theme'
+
 /** Tokens that carry a colour. Ordered as they read on a screen: grounds,
  * then hairlines, then ink, then the accent, then status. */
 export const colorTokens = [
