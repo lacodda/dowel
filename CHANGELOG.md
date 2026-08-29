@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.0] - 2026-08-29
+
+### Features
+- Give every product of the line its colour in one line
+- Serve the theme and the accents to `shadcn add`
+
 ## [0.2.0] - 2026-08-29
 
 ### Bug Fixes

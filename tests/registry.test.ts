@@ -44,6 +44,13 @@ interface RegistryItem {
 let items: RegistryItem[]
 let catalogue: { name: string; homepage: string; items: RegistryItem[] }
 
+/** The registry as committed, before anything regenerates it. It is checked
+ * in rather than built in CI - the docs workflow runs only `astro build` - so
+ * what is committed is what gets deployed. */
+const committed = new Map(
+  readdirSync(registryDir).map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]),
+)
+
 beforeAll(() => {
   execFileSync('node', ['tools/build-registry.mjs'], { cwd: root })
   const read = (file: string) => JSON.parse(readFileSync(resolve(registryDir, file), 'utf8'))
@@ -51,6 +58,25 @@ beforeAll(() => {
   items = readdirSync(registryDir)
     .filter((file) => file !== 'registry.json')
     .map(read)
+})
+
+describe('what is deployed', () => {
+  it('is what the generator produces now', () => {
+    // The registry is served from `docs/public`, which the docs workflow
+    // publishes as-is: it never runs this generator. So a theme edited without
+    // rebuilding the registry would ship a stale theme to every consumer,
+    // while every other check passed.
+    const current = new Map(
+      readdirSync(registryDir).map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]),
+    )
+
+    expect([...current.keys()].sort(), 'the registry gained or lost an item').toEqual(
+      [...committed.keys()].sort(),
+    )
+    for (const [file, content] of current) {
+      expect(committed.get(file), `\`${file}\` is stale; run \`pnpm build\``).toBe(content)
+    }
+  })
 })
 
 describe('the catalogue', () => {

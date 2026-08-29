@@ -8,7 +8,7 @@ The lacodda line design system: theme tokens and React primitives, distributed a
 
 A dowel is the hidden peg that joins two boards so the seam does not show. That is what this does for the products of the line: they look made by one hand, and nobody sees the joint.
 
-**Status:** v0.2.0 - the theme and the scales. Primitives and the registry follow; see the [roadmap](#roadmap).
+**Status:** v0.3.0 - the theme, the scales and an accent per product. Primitives follow; see the [roadmap](#roadmap).
 
 ## The theme
 
@@ -58,7 +58,20 @@ The stock palette is dropped deliberately, so a stray `bg-zinc-800` does not com
 
 The same vocabulary also ships as [DTCG](https://www.designtokens.org/tr/2025.10/format/) JSON at `dowel-ui/tokens.json`, generated from the stylesheet so the two cannot drift.
 
-Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, and **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order.
+A product of the line states one thing about its appearance - which product it is:
+
+```css
+@import 'dowel-ui/theme.css';
+@import 'dowel-ui/accents/kilna.css';
+```
+
+Or copy the files in instead of depending on the package:
+
+```bash
+npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
+```
+
+Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
 
 ## Roadmap
 
