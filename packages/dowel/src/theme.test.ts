@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { colorTokens, otherTokens, themeParameters, token } from './index'
+import { allTokens, colorTokens, token } from './index'
 
 const css = readFileSync(fileURLToPath(new URL('./theme.css', import.meta.url)), 'utf8')
 
@@ -35,18 +35,19 @@ function blockBody(selector: string): string {
 
 describe('token vocabulary', () => {
   it('declares every token the package names', () => {
-    for (const name of [...colorTokens, ...themeParameters, ...otherTokens]) {
+    for (const name of allTokens) {
       expect(declarationsOf(token(name)).length, `\`${token(name)}\` is never declared`).toBeGreaterThan(0)
     }
   })
 
   it('names every token the theme declares', () => {
-    const known = new Set<string>([...colorTokens, ...themeParameters, ...otherTokens].map(token))
-    // `--color-*` entries belong to Tailwind's `@theme` block: they map the
-    // vocabulary onto utilities rather than adding to it.
+    const known = new Set<string>(allTokens.map(token))
     const declared = [...css.matchAll(/^\s*(--[\w-]+)\s*:/gm)]
       .map((m) => m[1]!)
-      .filter((name) => !name.startsWith('--color-') && !name.startsWith('--font-'))
+      // `--color-*` entries map the vocabulary onto Tailwind utilities rather
+      // than adding to it, and `--text-…--line-height` is Tailwind's way of
+      // attaching a line height to a size - part of that token, not another.
+      .filter((name) => !name.startsWith('--color-') && !name.endsWith('--line-height'))
 
     for (const name of declared) {
       expect(known, `\`${name}\` is declared but not exported by the package`).toContain(name)
@@ -138,6 +139,48 @@ describe('accent', () => {
       for (const value of declarationsOf(`--${name}`)) {
         expect(value, `\`--${name}\` must not follow the accent`).not.toContain('accent')
       }
+    }
+  })
+})
+
+describe('scales', () => {
+  // Durations and stacking order are custom properties rather than Tailwind
+  // namespaces - `duration-*` takes a literal number and there is no z-index
+  // namespace at all - so the compiler cannot vouch for them. They are checked
+  // here; everything that does become a utility is checked by compiling it.
+
+  it('orders the stacking scale strictly upwards', () => {
+    // The names are a promise about what covers what. A step out of order
+    // would put a menu over a modal, which is exactly the bug the products hit
+    // when the command palette had to invent z-70 to clear z-50.
+    const layers = ['popup', 'sticky', 'menu', 'floating', 'overlay', 'modal', 'palette', 'toast']
+    const values = layers.map((name) => {
+      const declared = declarationsOf(`--z-${name}`)
+      expect(declared.length, `\`--z-${name}\` is missing`).toBe(1)
+      return Number(declared[0])
+    })
+
+    for (let i = 1; i < values.length; i++) {
+      expect(values[i], `\`${layers[i]}\` does not sit above \`${layers[i - 1]}\``).toBeGreaterThan(values[i - 1]!)
+    }
+  })
+
+  it('orders the durations from quick to slow', () => {
+    const ms = (name: string) => {
+      const declared = declarationsOf(`--duration-${name}`)
+      expect(declared.length, `\`--duration-${name}\` is missing`).toBe(1)
+      return Number(declared[0]!.replace('ms', ''))
+    }
+    expect(ms('quick')).toBeLessThan(ms('base'))
+    expect(ms('base')).toBeLessThan(ms('slow'))
+  })
+
+  it('keeps every elevation step in every theme', () => {
+    // A shadow that exists only in the dark theme leaves a light screen with
+    // no elevation at all, and nothing on the page says so.
+    for (const step of ['lift', 'raise', 'float']) {
+      expect(blockBody(':root {'), `dark theme has no \`--shadow-${step}\``).toContain(`--shadow-${step}:`)
+      expect(blockBody(':root.light'), `light theme has no \`--shadow-${step}\``).toContain(`--shadow-${step}:`)
     }
   })
 })

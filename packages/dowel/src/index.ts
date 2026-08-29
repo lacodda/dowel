@@ -52,13 +52,95 @@ export const themeParameters = [
   'ink',
 ] as const
 
-/** Everything else the theme defines. */
-export const otherTokens = ['shadow-raise'] as const
+/** Elevation. Three steps, and they change with the theme: a shadow that
+ * works on a dark ground is invisible on a light one. */
+export const elevationTokens = ['shadow-lift', 'shadow-raise', 'shadow-float'] as const
+
+/** Corner radius. `md` is the control radius - inputs, buttons, list rows;
+ * `inner` is what a shape nested inside another one takes. */
+export const radiusTokens = [
+  'radius-xs',
+  'radius-sm',
+  'radius-md',
+  'radius-lg',
+  'radius-xl',
+  'radius-2xl',
+  'radius-inner',
+] as const
+
+/** Type: sizes with their line heights, weights, and the two tracking steps
+ * the products actually need. */
+export const typeTokens = [
+  'font-sans',
+  'font-mono',
+  'text-2xs',
+  'text-xs',
+  'text-sm',
+  'text-base',
+  'text-lg',
+  'text-xl',
+  'text-2xl',
+  'font-weight-normal',
+  'font-weight-medium',
+  'font-weight-semibold',
+  'tracking-caption',
+  'tracking-tight',
+] as const
+
+/** Motion. The durations are read directly rather than through a utility -
+ * Tailwind's `duration-*` takes a literal number - while the easings are a
+ * namespace, so `ease-out` is a class. */
+export const motionTokens = [
+  'duration-quick',
+  'duration-base',
+  'duration-slow',
+  'ease-out',
+  'ease-in-out',
+] as const
+
+/** Stacking order. Not a Tailwind namespace either: a component reads these
+ * as `z-index: var(--z-modal)`. The names are a promise about what covers
+ * what, and the values only mean anything relative to each other. */
+export const layerTokens = [
+  'z-popup',
+  'z-sticky',
+  'z-menu',
+  'z-floating',
+  'z-overlay',
+  'z-modal',
+  'z-palette',
+  'z-toast',
+] as const
+
+/** Every token the theme defines, in one list. Anything that iterates the
+ * vocabulary - a docs page, an inspector, the JSON export, the test that keeps
+ * this file honest against the stylesheet - reads this, so a new category
+ * cannot be added and quietly missed by half of them. */
+export const allTokens = [
+  ...colorTokens,
+  ...themeParameters,
+  ...elevationTokens,
+  ...radiusTokens,
+  ...typeTokens,
+  ...motionTokens,
+  ...layerTokens,
+] as const
 
 export type ColorToken = (typeof colorTokens)[number]
 export type ThemeParameter = (typeof themeParameters)[number]
-export type OtherToken = (typeof otherTokens)[number]
-export type Token = ColorToken | ThemeParameter | OtherToken
+export type ElevationToken = (typeof elevationTokens)[number]
+export type RadiusToken = (typeof radiusTokens)[number]
+export type TypeToken = (typeof typeTokens)[number]
+export type MotionToken = (typeof motionTokens)[number]
+export type LayerToken = (typeof layerTokens)[number]
+export type Token =
+  | ColorToken
+  | ThemeParameter
+  | ElevationToken
+  | RadiusToken
+  | TypeToken
+  | MotionToken
+  | LayerToken
 
 /** The custom property a token is read from: `token('accent')` is
  * `'--accent'`. Spelled out here so that no caller builds the string itself
