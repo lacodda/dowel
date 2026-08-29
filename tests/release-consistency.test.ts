@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
@@ -83,6 +83,26 @@ describe('what the package ships', () => {
       const top = target.replace(/^\.\//, '').split('/')[0]!
       expect(shipped, `\`${target}\` is exported but \`${top}\` is not in \`files\``).toContain(top)
     }
+  })
+
+  it('ships a theme and a token file that agree with the source', () => {
+    // `dist` is what npm uploads, and it is built rather than committed - so
+    // it can be older than the theme it was generated from. A release that
+    // shipped last week's tokens would look right in every other check.
+    const dist = resolve(root, 'packages/dowel/dist')
+    if (!existsSync(dist)) {
+      // Nothing built yet: `pnpm build` runs before publishing, and the tests
+      // that follow the build are where this bites.
+      return
+    }
+
+    expect(readFileSync(resolve(dist, 'theme.css'), 'utf8'), 'the built theme is not the source theme').toBe(
+      read('packages/dowel/src/theme.css'),
+    )
+
+    const shipped = readFileSync(resolve(dist, 'tokens.json'), 'utf8')
+    execFileSync('node', ['tools/build-tokens-json.mjs'], { cwd: root })
+    expect(readFileSync(resolve(dist, 'tokens.json'), 'utf8'), 'the built tokens are stale').toBe(shipped)
   })
 })
 

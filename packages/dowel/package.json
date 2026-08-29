@@ -33,10 +33,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./theme.css": "./dist/theme.css"
+    "./theme.css": "./dist/theme.css",
+    "./tokens.json": "./dist/tokens.json"
   },
   "scripts": {
-    "build": "tsc && node ../../tools/copy-theme.mjs",
+    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs",
     "typecheck": "tsc --noEmit",
     "prepack": "node ../../tools/copy-readme.mjs"
   },
