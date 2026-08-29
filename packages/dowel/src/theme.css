@@ -1,0 +1,300 @@
+/*
+ * dowel theme - the token vocabulary every product of the lacodda line shares.
+ *
+ * The vocabulary comes from the products themselves: kilna and kasl-server
+ * already ship the same token names (bg / raise / soft / line / text / dim /
+ * accent / good / warn / bad / info) and differ only in values. That is the
+ * contract this file freezes. Names are the mockup's own words rather than
+ * stock component-library names, so a screen can be checked against a mockup
+ * in the mockup's words.
+ *
+ * Two things are parametric, and everything else is derived from them:
+ *
+ *   --accent-base   the product's hue from the brand-line registry
+ *   --neutral-base  the hue the greys are tinted with (the accent, by default)
+ *
+ * Tinting the neutrals is not decoration - it is what the two live products do
+ * by hand: kilna's greys lean magenta, kasl-server's lean gold. Here that lean
+ * is one declaration instead of thirty hand-picked hex values.
+ *
+ * Soft variants are mixed from their own base with `color-mix`, so a product
+ * that overrides `--accent-base` gets a matching `--accent-soft` for free and
+ * cannot pick one that disagrees with it.
+ *
+ * Theme selection: no class on the root element follows the operating system,
+ * an explicit `light` or `dark` class pins the theme. Components never use
+ * `dark:` utilities - every colour goes through a token, and the theme swaps
+ * the token underneath.
+ */
+
+:root {
+  /* The two parameters. `--accent-base` is overridden per product by an accent
+   * file; `--neutral-base` follows it unless a product says otherwise. */
+  --accent-base: #e8862d;
+  --neutral-base: var(--accent-base);
+
+  /* Ink and ground of the dark theme, before the neutral tint is mixed in.
+   * Kept as their own tokens so the tint amount is the only thing that
+   * changes when a product wants greyer or warmer chrome. */
+  --ground: #131316;
+  --ink: #ece9ef;
+
+  /* How much of `--neutral-base` bleeds into the greys. The live products sit
+   * at roughly this much: enough that the chrome belongs to the product,
+   * little enough that it still reads as grey. */
+  --neutral-tint: 6%;
+  --neutral-tint-strong: 9%;
+
+  color-scheme: dark;
+
+  --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));
+  --raise: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), #1c1c21);
+
+  /* Surfaces that lift by translucency rather than by their own colour: they
+   * must work over `--bg` and over `--raise` alike. */
+  --soft: rgb(255 255 255 / 0.045);
+  --softer: rgb(255 255 255 / 0.025);
+  --line: rgb(255 255 255 / 0.08);
+  --line-2: rgb(255 255 255 / 0.15);
+
+  --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
+  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #a7a2ad);
+  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #6e6a76);
+
+  --accent: var(--accent-base);
+  /* The hover/active partner: lighter on dark, where the ground is what the
+   * accent has to separate from. */
+  --accent-2: color-mix(in oklab, white 22%, var(--accent-base));
+  --accent-soft: color-mix(in oklab, var(--accent-base) 16%, transparent);
+
+  /* Status hues are the line's own and do not follow the product accent: a
+   * green that shifted per product would stop meaning "good". Meaning never
+   * rests on colour alone - a badge carries an icon and a word - so these
+   * exist for emphasis, not as the message. */
+  --good: #45d18f;
+  --warn: #e8b13f;
+  --bad: #ef6a6a;
+  --info: #4cc4e0;
+  --good-soft: color-mix(in oklab, var(--good) 14%, transparent);
+  --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
+  --bad-soft: color-mix(in oklab, var(--bad) 14%, transparent);
+  --info-soft: color-mix(in oklab, var(--info) 15%, transparent);
+
+  --shadow-raise: 0 10px 34px rgb(0 0 0 / 0.45);
+}
+
+/*
+ * Light theme, twice: once for the operating system's preference, once for the
+ * explicit `light` class. The declarations are identical - only the selector
+ * differs - so that a product can pin a theme against the system setting.
+ */
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    color-scheme: light;
+
+    --ground: #f6f5f7;
+    --ink: #232027;
+
+    --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));
+    --raise: #ffffff;
+
+    --soft: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.05));
+    --softer: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.03));
+    --line: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.11));
+    --line-2: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.2));
+
+    --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
+    --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
+    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #94909c);
+
+    /* On a light ground the accent has to darken to stay legible as text and
+     * as a fill under white glyphs; the mix is what the live products found by
+     * hand for magenta and for gold. */
+    --accent: color-mix(in oklab, black 22%, var(--accent-base));
+    --accent-2: color-mix(in oklab, black 36%, var(--accent-base));
+    --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
+
+    --good: #178a58;
+    --warn: #9a6b0c;
+    --bad: #c93b3b;
+    --info: #0d7f9c;
+    --good-soft: color-mix(in oklab, var(--good) 12%, transparent);
+    --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
+    --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
+    --info-soft: color-mix(in oklab, var(--info) 11%, transparent);
+
+    --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
+  }
+}
+
+:root.light {
+  color-scheme: light;
+
+  --ground: #f6f5f7;
+  --ink: #232027;
+
+  --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));
+  --raise: #ffffff;
+
+  --soft: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.05));
+  --softer: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.03));
+  --line: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.11));
+  --line-2: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.2));
+
+  --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
+  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
+  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #94909c);
+
+  --accent: color-mix(in oklab, black 22%, var(--accent-base));
+  --accent-2: color-mix(in oklab, black 36%, var(--accent-base));
+  --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
+
+  --good: #178a58;
+  --warn: #9a6b0c;
+  --bad: #c93b3b;
+  --info: #0d7f9c;
+  --good-soft: color-mix(in oklab, var(--good) 12%, transparent);
+  --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
+  --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
+  --info-soft: color-mix(in oklab, var(--info) 11%, transparent);
+
+  --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
+}
+
+/*
+ * `--on-accent` - what sits on top of an accent fill.
+ *
+ * A light accent (gold, lime, amber) needs dark glyphs; a dark one needs
+ * white. The live products picked this by hand and wrote the answer into the
+ * theme; here the theme works it out, by the same rule the brand-line S tile
+ * uses.
+ *
+ * `contrast-color()` is the direct way to say it and is used where supported.
+ * The fallback covers browsers that lack it. Relative colour syntax exposes
+ * the accent's own lightness as `l`; `clamp()` turns that into a hard switch,
+ * because the multiplication drives the middle term far past either bound
+ * everywhere except within a hair of the threshold. Below it the accent is
+ * dark and the result is 1 (white); above it, 0 (black). Chroma is dropped to
+ * zero, so what comes out is neutral rather than a tinted grey.
+ */
+:root {
+  --on-accent: oklch(from var(--accent) clamp(0, (0.72 - l) * 1000, 1) 0 0);
+}
+
+@supports (color: contrast-color(red)) {
+  :root {
+    --on-accent: contrast-color(var(--accent));
+  }
+}
+
+/*
+ * The Tailwind 4 surface. `--color-*: initial` drops the stock palette on
+ * purpose: a raw `bg-zinc-800` in a product should not compile, because the
+ * only colours that exist here are the line's own.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-raise: var(--raise);
+  --color-soft: var(--soft);
+  --color-softer: var(--softer);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-text: var(--text);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  /* Kept because they are not palette choices: a hairline is `transparent`,
+   * an SVG follows `currentColor`, and pure black and white are what an
+   * overlay scrim and a print sheet are made of. */
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #fff;
+  --color-black: #000;
+
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+
+  --shadow-raise: var(--shadow-raise);
+}
+
+/*
+ * Base layer: what every product would otherwise write again. Scoped to
+ * elements and to `:focus-visible`, never to a class, so nothing here can
+ * collide with a component.
+ */
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Scrollbars. A browser's default bar is a piece of someone else's chrome
+ * sitting in the middle of the product - full width, with step arrows. These
+ * are the line's own: thin, in the palette, drawn only where something
+ * actually scrolls.
+ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--line-2);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--dim);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+}
