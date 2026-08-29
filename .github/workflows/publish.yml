@@ -36,5 +36,18 @@ jobs:
       - run: pnpm build
       # The root README reaches the npm page through the package's `prepack`
       # script, so a manual `npm publish` ships the same file as CI.
-      - run: npm publish
+      #
+      # Skipped when the version is already in the registry. The first release
+      # of a package is always published by hand - a trusted publisher cannot
+      # be attached to a package that does not exist yet - and re-running a tag
+      # should not fail either.
+      - name: Publish
         working-directory: packages/dowel
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already published; nothing to do."
+          else
+            npm publish
+          fi
