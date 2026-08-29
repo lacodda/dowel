@@ -3,7 +3,9 @@ name: Docs
 on:
   push:
     branches: [main]
-    paths: ['docs/**']
+    # The stand reads the theme straight from the package, so a token that
+    # changes there changes the token page too.
+    paths: ['docs/**', 'packages/dowel/src/theme.css']
   workflow_dispatch:
 
 permissions:
