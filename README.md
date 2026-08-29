@@ -15,11 +15,13 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 One import, and a product has the vocabulary of the line:
 
 ```bash
-npm install dowel
+npm install dowel-ui
 ```
 
+> The package is `dowel-ui`: npm declines the bare name as too close to `del` and `bower`. The system is dowel everywhere else.
+
 ```css
-@import 'dowel/theme.css';
+@import 'dowel-ui/theme.css';
 
 :root {
   /* The product's own colour. Everything else follows from it. */

@@ -63,7 +63,7 @@ describe('version', () => {
 describe('what the package ships', () => {
   it('exports the theme at the path the docs tell people to import', () => {
     expect(pkg.exports['./theme.css']).toBeDefined()
-    expect(read('docs/src/content/docs/reference/tokens.mdx')).toContain("import 'dowel/theme.css'")
+    expect(read('docs/src/content/docs/reference/tokens.mdx')).toContain("import 'dowel-ui/theme.css'")
   })
 
   it('ships the files those exports point at', () => {

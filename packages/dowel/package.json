@@ -1,5 +1,5 @@
 {
-  "name": "dowel",
+  "name": "dowel-ui",
   "version": "0.1.0",
   "description": "The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry.",
   "license": "MIT",

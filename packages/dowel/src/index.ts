@@ -1,7 +1,11 @@
 /*
- * Public surface of the `dowel` package.
+ * Public surface of the package.
  *
- * The theme is the product here, and it is CSS: `import 'dowel/theme.css'`.
+ * The product is dowel; the package is `dowel-ui`, because npm declined the
+ * bare name as too close to `del` and `bower`. Everything else - repository,
+ * docs, mark - keeps the product's own name.
+ *
+ * The theme is the product here, and it is CSS: `import 'dowel-ui/theme.css'`.
  * This entry point carries only what JavaScript can usefully say about the
  * theme - the token names, so that a product can iterate them (a token
  * inspector, a docs page, a test) without re-typing the list and drifting from

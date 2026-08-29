@@ -9,13 +9,19 @@ a shadcn-compatible registry. The theme is here now; the registry follows.
 ## Install the theme
 
 ```console
-$ pnpm add dowel
+$ pnpm add dowel-ui
 ```
+
+:::note
+The package is `dowel-ui`, not `dowel`: npm declines the bare name as too
+close to `del` and `bower`. The design system is dowel everywhere else — the
+repository, these docs, the mark.
+:::
 
 ```css
 /* src/styles.css */
 @import 'tailwindcss';
-@import 'dowel/theme.css';
+@import 'dowel-ui/theme.css';
 ```
 
 That is a working theme: the vocabulary of the line, in dark and light, with
@@ -27,7 +33,7 @@ A product states one colour — its own, from the line's registry of marks — a
 the theme derives the rest:
 
 ```css
-@import 'dowel/theme.css';
+@import 'dowel-ui/theme.css';
 
 :root {
   --accent-base: #d9569e;
