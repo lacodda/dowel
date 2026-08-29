@@ -8,7 +8,7 @@ The lacodda line design system: theme tokens and React primitives, distributed a
 
 A dowel is the hidden peg that joins two boards so the seam does not show. That is what this does for the products of the line: they look made by one hand, and nobody sees the joint.
 
-**Status:** v0.1.0 - the theme. Primitives and the registry follow; see the [roadmap](#roadmap).
+**Status:** v0.2.0 - the theme and the scales. Primitives and the registry follow; see the [roadmap](#roadmap).
 
 ## The theme
 
@@ -54,8 +54,11 @@ The stock palette is dropped deliberately, so a stray `bg-zinc-800` does not com
 - **The accent is derived, not configured.** A product states one hue and the theme works out the rest, including what colour text has to be to sit on top of it. A light accent takes dark glyphs, a dark one white - checked against every colour in the line rather than left to each product to get right.
 - **The greys belong to the product.** They carry a trace of its hue, so the chrome of one product is not the chrome of another with a different button colour.
 - **Contrast is a test, not an intention.** Every accent of the line is measured against WCAG AA in CI, in both themes, as a fill and as text.
+- **The scales were read, not invented.** Radius, type, elevation and stacking order come from what the line's products already draw, so existing code fits them - and the places where those products disagreed with themselves are settled rather than preserved.
 
-Full vocabulary, with every token shown in both themes: **[the token reference](https://lacodda.github.io/dowel/reference/tokens/)**.
+The same vocabulary also ships as [DTCG](https://www.designtokens.org/tr/2025.10/format/) JSON at `dowel-ui/tokens.json`, generated from the stylesheet so the two cannot drift.
+
+Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, and **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order.
 
 ## Roadmap
 

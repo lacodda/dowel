@@ -2,12 +2,36 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.2.0] - 2026-08-29
+
+### Bug Fixes
+- Let the README gate ignore the prepack artifact
+
+### Documentation
+- Show the scales on the stand
+
+### Features
+- Add the radius, type, motion, elevation and layer scales
+- Publish the scales as DTCG JSON
+
+### Testing
+- Compile the theme with Tailwind instead of only reading it
+
 ## [0.1.0] - 2026-08-29
 
 ### Bug Fixes
 - Make the accent legible for every colour in the line
+- Publish as `dowel-ui`
+
+### CI
+- Skip publishing a version already in the registry
+
+### Documentation
+- Add the changelog for v0.1.0
+- Record why the accent is derived and contrast is a test
 
 ### Features
 - Add the brand assets
 - Add the token vocabulary in dark and light themes
 - Add the storefront gate and prepare v0.1.0
+
