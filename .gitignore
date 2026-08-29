@@ -3,6 +3,11 @@ node_modules/
 dist/
 .vite/
 
+# `prepack` copies the root README in beside the manifest at publish time.
+# There is one README, and it lives at the root: this keeps the copy from
+# being committed as a second one that then goes stale.
+packages/*/README.md
+
 # Docs site output is built in CI only
 docs/dist/
 docs/.astro/
