@@ -60,6 +60,12 @@ beforeAll(() => {
     .map(read)
 })
 
+/** Line endings are not content. A checkout on Windows can hand back CRLF for
+ * a file the generator wrote with LF, and comparing those byte for byte fails
+ * on one operating system and passes on the other - which says nothing about
+ * whether the registry is current. */
+const sameText = (text: string) => text.replace(/\r\n/g, '\n')
+
 describe('what is deployed', () => {
   it('is what the generator produces now', () => {
     // The registry is served from `docs/public`, which the docs workflow
@@ -74,7 +80,9 @@ describe('what is deployed', () => {
       [...committed.keys()].sort(),
     )
     for (const [file, content] of current) {
-      expect(committed.get(file), `\`${file}\` is stale; run \`pnpm build\``).toBe(content)
+      expect(sameText(committed.get(file) ?? ''), `\`${file}\` is stale; run \`pnpm build\``).toBe(
+        sameText(content),
+      )
     }
   })
 })

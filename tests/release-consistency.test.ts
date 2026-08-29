@@ -146,13 +146,21 @@ describe('what the package ships', () => {
       return
     }
 
-    expect(readFileSync(resolve(dist, 'theme.css'), 'utf8'), 'the built theme is not the source theme').toBe(
-      read('packages/dowel/src/theme.css'),
-    )
+    // Line endings are not content: a Windows checkout can hand back CRLF for
+    // a file written with LF, and a byte comparison then fails on one
+    // operating system while passing on the other.
+    const text = (value: string) => value.replace(/\r\n/g, '\n')
+
+    expect(
+      text(readFileSync(resolve(dist, 'theme.css'), 'utf8')),
+      'the built theme is not the source theme',
+    ).toBe(text(read('packages/dowel/src/theme.css')))
 
     const shipped = readFileSync(resolve(dist, 'tokens.json'), 'utf8')
     execFileSync('node', ['tools/build-tokens-json.mjs'], { cwd: root })
-    expect(readFileSync(resolve(dist, 'tokens.json'), 'utf8'), 'the built tokens are stale').toBe(shipped)
+    expect(text(readFileSync(resolve(dist, 'tokens.json'), 'utf8')), 'the built tokens are stale').toBe(
+      text(shipped),
+    )
   })
 })
 
