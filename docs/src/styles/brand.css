@@ -1,16 +1,15 @@
-/* Brand accent: placeholder graphite until the dowel mark is approved on the
-   brand-line board; replaced by the product colour in the same commit as the
-   assets. */
+/* Brand accent: dowel signal amber. Approved 2026-08-28; the light theme takes
+   a darker step of the same hue to keep contrast on white. */
 :root {
-	--sl-color-accent: #8e9aa3;
-	--sl-color-accent-high: #c5ccd1;
-	--sl-color-accent-low: #3a4248;
+	--sl-color-accent: #e8862d;
+	--sl-color-accent-high: #f4b57c;
+	--sl-color-accent-low: #5a3210;
 }
 
 :root[data-theme='light'] {
-	--sl-color-accent: #5d6a73;
-	--sl-color-accent-high: #2f383e;
-	--sl-color-accent-low: #dde2e6;
+	--sl-color-accent: #b85f14;
+	--sl-color-accent-high: #6b3707;
+	--sl-color-accent-low: #fbe4cc;
 }
 
 /* The mark is a square hex tile: let it fill the bar height rather than the

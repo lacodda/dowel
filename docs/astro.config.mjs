@@ -16,6 +16,11 @@ export default defineConfig({
 			},
 			favicon: '/favicon.svg',
 			customCss: ['./src/styles/brand.css'],
+			head: [
+				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/dowel/apple-touch-icon.png' } },
+				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://raw.githubusercontent.com/lacodda/dowel/main/assets/social-preview.png' } },
+				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
+			],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/lacodda/dowel' }],
 			editLink: {
 				baseUrl: 'https://github.com/lacodda/dowel/edit/main/docs/',
