@@ -27,7 +27,15 @@ const root = resolve(here, '..')
 const outDir = resolve(root, 'docs/public/r')
 const homepage = 'https://lacodda.github.io/dowel'
 
-const theme = readFileSync(resolve(root, 'packages/dowel/src/theme.css'), 'utf8')
+/*
+ * Line endings are normalised on the way in. The registry embeds the theme as
+ * a JSON string, and a checkout on Windows hands back CRLF for a file written
+ * with LF - which lands in the JSON as `\r\n` and makes the generated registry
+ * differ by platform. Committed on one machine, regenerated on another, it
+ * would read as stale when nothing had changed; and a consumer would receive
+ * whichever endings the publisher's checkout happened to have.
+ */
+const theme = readFileSync(resolve(root, 'packages/dowel/src/theme.css'), 'utf8').replace(/\r\n/g, '\n')
 
 /** The theme, as a style that starts from nothing.
  *

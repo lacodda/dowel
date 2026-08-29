@@ -1,0 +1,18 @@
+# Line endings are not a platform preference here.
+#
+# Several files in this repository are generated and then committed - the
+# registry the docs site serves, and the token JSON - and a generator writes
+# LF. Without this, a checkout on Windows converts the committed copy to CRLF,
+# the generator writes LF, and a comparison between them fails on one operating
+# system while passing on the other. That is what turned CI red for a registry
+# that was perfectly current.
+#
+# `text=auto eol=lf` keeps working copies as LF on every platform, so what is
+# committed, what is generated and what is published are the same bytes.
+* text=auto eol=lf
+
+# Binary, and not to be touched.
+*.png binary
+*.ico binary
+*.woff binary
+*.woff2 binary
