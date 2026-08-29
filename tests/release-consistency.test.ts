@@ -1,4 +1,5 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
@@ -33,11 +34,16 @@ describe('one description', () => {
 })
 
 describe('one README', () => {
-  it('has no second copy in the package', () => {
-    // `prepack` copies the root README in at publish time. A checked-in copy
-    // would be the one that goes stale.
-    const files = readdirSync(resolve(root, 'packages/dowel'))
-    expect(files).not.toContain('README.md')
+  it('has no second copy committed in the package', () => {
+    // `prepack` copies the root README in at publish time, so a copy in the
+    // working tree is expected right after a publish and means nothing. What
+    // must never exist is a *tracked* one: that is the copy that goes stale
+    // while the root file moves on.
+    const tracked = execFileSync('git', ['ls-files', 'packages/*/README.md'], {
+      cwd: root,
+      encoding: 'utf8',
+    }).trim()
+    expect(tracked, 'a README is committed inside a package; there is one README, at the root').toBe('')
   })
 
   it('links absolutely, because npm renders it off-site', () => {
