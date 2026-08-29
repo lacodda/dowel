@@ -1,0 +1,112 @@
+---
+/*
+ * Swatches for the token vocabulary, rendered in both themes side by side.
+ *
+ * The colours are not restated here: each swatch is painted by the token
+ * itself, inside a container that pins the theme. So the page cannot claim a
+ * colour the theme does not actually produce - if a token is renamed or
+ * dropped, its swatch goes blank on the stand rather than quietly showing a
+ * stale value from a copy.
+ */
+import { scopedTheme } from '../lib/theme-scope'
+
+interface Props {
+  /** Tokens to show, in the order they should read. */
+  tokens: string[]
+  /** What this group is for, shown above the swatches. */
+  caption?: string
+}
+
+const { tokens, caption } = Astro.props
+---
+
+<style is:global set:html={scopedTheme}></style>
+
+
+{caption && <p class="token-caption">{caption}</p>}
+
+<div class="token-grid">
+  {
+    tokens.map((name) => (
+      <div class="token-row">
+        <code class="token-name">--{name}</code>
+        <div class="token-swatches">
+          <div class="dowel-theme dark">
+            <span class="swatch">
+              <span class="fill" style={`background: var(--${name})`} />
+            </span>
+          </div>
+          <div class="dowel-theme light">
+            <span class="swatch">
+              <span class="fill" style={`background: var(--${name})`} />
+            </span>
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .token-caption {
+    margin-bottom: 0.5rem;
+    color: var(--sl-color-gray-3);
+  }
+
+  .token-grid {
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .token-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .token-name {
+    font-size: 0.85rem;
+  }
+
+  .token-swatches {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* Each half pins its own theme, so one page shows both at once. The class
+   * is what the theme itself keys on: `.light` pins light, `.dark` pins dark
+   * against the operating system's preference. */
+  .dowel-theme {
+    display: grid;
+    place-items: center;
+    padding: 0.35rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.4rem;
+    background: var(--bg);
+  }
+
+  /* The swatch is two layers. Underneath, the theme's own `--raise` and a
+   * hairline grid; on top, the token. The translucent tokens (`soft`, `line`,
+   * every `-soft` variant) only mean anything over a surface, so painting them
+   * on a flat block would misrepresent what they are. */
+  .swatch {
+    display: block;
+    width: 4.5rem;
+    height: 1.6rem;
+    border-radius: 0.25rem;
+    background-color: var(--raise);
+    background-image:
+      linear-gradient(45deg, var(--line) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--line) 25%, transparent 25%);
+    background-size: 10px 10px;
+  }
+
+  .fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+</style>

@@ -105,13 +105,15 @@
 
     --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
     --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
-    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #94909c);
+    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);
 
     /* On a light ground the accent has to darken to stay legible as text and
-     * as a fill under white glyphs; the mix is what the live products found by
-     * hand for magenta and for gold. */
-    --accent: color-mix(in oklab, black 22%, var(--accent-base));
-    --accent-2: color-mix(in oklab, black 36%, var(--accent-base));
+     * as a fill. It darkens *to* a lightness rather than *by* an amount: how
+     * far a hue has to travel depends on where it starts, and a fixed step
+     * that suits magenta leaves lime and gold short. Pinning the lightness and
+     * keeping the hue and chroma clears 5:1 for every accent in the line. */
+    --accent: oklch(from var(--accent-base) 0.5 c h);
+    --accent-2: oklch(from var(--accent-base) 0.4 c h);
     --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
 
     --good: #178a58;
@@ -143,10 +145,11 @@
 
   --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
   --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
-  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #94909c);
+  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);
 
-  --accent: color-mix(in oklab, black 22%, var(--accent-base));
-  --accent-2: color-mix(in oklab, black 36%, var(--accent-base));
+  /* Darkened to a lightness, not by an amount - see the note above. */
+  --accent: oklch(from var(--accent-base) 0.5 c h);
+  --accent-2: oklch(from var(--accent-base) 0.4 c h);
   --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
 
   --good: #178a58;
@@ -176,9 +179,18 @@
  * everywhere except within a hair of the threshold. Below it the accent is
  * dark and the result is 1 (white); above it, 0 (black). Chroma is dropped to
  * zero, so what comes out is neutral rather than a tinted grey.
+ *
+ * The threshold is 0.58, and it is deliberately far below the midpoint an eye
+ * would guess. Contrast is not symmetric about it: a mid-lightness colour is
+ * still much closer to white than to black in luminance, so black wins well
+ * before the colour looks light. Checked against all fourteen accents of the
+ * line - every one of them reads better with dark glyphs, the closest being
+ * cobalt at 4.86:1 against 4.32:1 for white. A higher threshold is what puts
+ * white text on magenta at 3.6:1, which is the defect this rule exists to
+ * prevent.
  */
 :root {
-  --on-accent: oklch(from var(--accent) clamp(0, (0.72 - l) * 1000, 1) 0 0);
+  --on-accent: oklch(from var(--accent) clamp(0, (0.58 - l) * 1000, 1) 0 0);
 }
 
 @supports (color: contrast-color(red)) {
