@@ -89,11 +89,44 @@ const dark = declarations(darkBody)
 const light = [inherited, declarations(lightBody)].filter(Boolean).join('\n')
 const onAccent = declarations(onAccentBody())
 
+/*
+ * The scales - radius, type, motion, elevation, stacking order - are not part
+ * of a theme block. Most of them live in `@theme`, which Starlight has no
+ * Tailwind pipeline to compile, and the rest in a `:root` of their own. Either
+ * way the stand needs them as plain declarations on the container, or a demo
+ * that reads `var(--radius-md)` resolves to nothing.
+ *
+ * Elevation is the exception: it *is* theme-dependent and already arrives with
+ * the blocks above, so it is skipped here rather than pinned to one theme.
+ */
+/** The `:root` block that holds the durations and the stacking order, found by
+ * something it declares rather than by its position: `:root` appears several
+ * times and the whitespace around it is not a contract. */
+function motionAndLayerBody(): string {
+  const at = themeCss.search(/--z-popup\s*:/)
+  if (at === -1) throw new Error('the theme no longer declares the stacking order')
+  const rule = ruleAt(themeCss, themeCss.lastIndexOf('{', at) - 1)
+  if (!rule) throw new Error('the stacking-order rule is not closed')
+  return rule.body
+}
+
+const scaleBlocks = [bodyOf('@theme inline'), motionAndLayerBody()]
+const scaleDeclarations = scaleBlocks
+  .flatMap((body) => [...body.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)])
+  .filter((m) => !m[1]!.startsWith('--color-'))
+  .filter((m) => !m[2]!.includes('var(--shadow-'))
+  .map((m) => `  ${m[1]}: ${m[2]!.trim()};`)
+  .join('\n')
+
 /**
  * The stand's stylesheet: the same token values the package ships, addressed
  * by a class so that both themes can sit side by side on one page.
  */
 export const scopedTheme = `
+.dowel-theme {
+${scaleDeclarations}
+}
+
 .dowel-theme.dark {
   color-scheme: dark;
 ${dark}
@@ -106,3 +139,14 @@ ${light}
 ${onAccent}
 }
 `
+
+/**
+ * The value the theme declares for a token, for printing beside a swatch. A
+ * page that typed the number itself would eventually print one the theme no
+ * longer holds.
+ */
+export function valueOf(name: string): string {
+  const match = themeCss.match(new RegExp(`(?<![\\w-])--${name}\\s*:\\s*([^;]+);`))
+  if (!match) throw new Error(`the theme no longer declares \`--${name}\``)
+  return match[1]!.trim()
+}

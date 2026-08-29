@@ -2,6 +2,13 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import {
+  elevationTokens,
+  layerTokens,
+  motionTokens,
+  radiusTokens,
+  typeTokens,
+} from '../packages/dowel/src/index'
 
 /*
  * The storefront gate.
@@ -116,6 +123,22 @@ describe('the docs show what the theme has', () => {
     const mapped = [...theme.matchAll(/--color-([\w-]+): var\(--[\w-]+\);/g)].map((m) => m[1]!)
     for (const name of mapped) {
       expect(page, `\`${name}\` is in the theme but not on the token page`).toContain(`'${name}'`)
+    }
+  })
+
+  it('documents every scale step the theme declares', () => {
+    // A step added to the theme and not to the page is a value nobody knows
+    // exists, which is the same as not having it.
+    const page = read('docs/src/content/docs/reference/scales.mdx')
+    const steps = [
+      ...radiusTokens.filter((name) => name !== 'radius-inner'),
+      ...typeTokens.filter((name) => !name.startsWith('font-sans') && !name.startsWith('font-mono')),
+      ...motionTokens,
+      ...layerTokens,
+      ...elevationTokens,
+    ]
+    for (const name of steps) {
+      expect(page, `\`${name}\` is in the theme but not on the scales page`).toContain(`'${name}'`)
     }
   })
 })

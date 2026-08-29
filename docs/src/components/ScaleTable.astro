@@ -1,0 +1,162 @@
+---
+/*
+ * A scale, drawn rather than tabulated.
+ *
+ * A radius is a corner and a shadow is a shadow: printing `9px` next to a name
+ * tells you less than the shape does. Each row shows the step applied to
+ * something, in both themes where the theme changes it, with the value beside
+ * it - read from the stylesheet at build time, so the page cannot claim a
+ * number the theme does not declare.
+ */
+import { scopedTheme, valueOf } from '../lib/theme-scope'
+
+interface Props {
+  /** Custom-property names without the `--`, in the order they should read. */
+  tokens: string[]
+  /** What the swatch demonstrates. */
+  kind: 'radius' | 'shadow' | 'text' | 'tracking' | 'weight' | 'layer' | 'duration' | 'easing'
+  /** Shown above the rows. */
+  caption?: string
+}
+
+const { tokens, kind, caption } = Astro.props
+const rows = tokens.map((name) => ({ name, value: valueOf(name) }))
+
+/** Only elevation changes with the theme; everything else is one value, and
+ * showing it twice would imply otherwise. */
+const themed = kind === 'shadow'
+---
+
+<style is:global set:html={scopedTheme}></style>
+
+{caption && <p class="scale-caption">{caption}</p>}
+
+<div class="scale">
+  {
+    rows.map(({ name, value }) => (
+      <div class="scale-row">
+        <div class="scale-label">
+          <code>--{name}</code>
+          <span class="scale-value">{value}</span>
+        </div>
+        <div class="scale-demo">
+          {(themed ? ['dark', 'light'] : ['dark']).map((mode) => (
+            <div class:list={['dowel-theme', mode]}>
+              {kind === 'radius' && <span class="box" style={`border-radius: var(--${name})`} />}
+              {kind === 'shadow' && <span class="box solid" style={`box-shadow: var(--${name})`} />}
+              {kind === 'text' && (
+                <span style={`font-size: var(--${name}); line-height: var(--${name}--line-height)`}>
+                  The quick brown fox
+                </span>
+              )}
+              {kind === 'tracking' && (
+                <span style={`letter-spacing: var(--${name}); text-transform: uppercase; font-size: 11px`}>
+                  Section label
+                </span>
+              )}
+              {kind === 'weight' && <span style={`font-weight: var(--${name}); font-size: 14px`}>The quick brown fox</span>}
+              {kind === 'duration' && <span class="bar" style={`transition-duration: var(--${name})`} />}
+              {kind === 'easing' && <span class="bar" style={`transition-timing-function: var(--${name})`} />}
+              {kind === 'layer' && <span class="layer-bar" style={`width: calc(${value} * 1.1%)`} />}
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .scale-caption {
+    margin-bottom: 0.5rem;
+    color: var(--sl-color-gray-3);
+  }
+
+  .scale {
+    display: grid;
+    gap: 0.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .scale-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .scale-label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .scale-label code {
+    font-size: 0.85rem;
+  }
+
+  .scale-value {
+    color: var(--sl-color-gray-3);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+
+  .scale-demo {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .dowel-theme {
+    display: grid;
+    place-items: center;
+    min-width: 9rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.4rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+  }
+
+  /* The radius demo is an outline, so the corner is the only thing to look
+   * at; the shadow demo is filled, because a shadow needs something to fall
+   * from. */
+  .box {
+    display: block;
+    width: 4rem;
+    height: 2.2rem;
+    border: 2px solid var(--accent);
+  }
+
+  .box.solid {
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--raise);
+  }
+
+  .bar {
+    display: block;
+    width: 4rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    transition-property: transform;
+  }
+
+  .layer-bar {
+    display: block;
+    height: 0.5rem;
+    min-width: 0.75rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+  }
+
+  @media (max-width: 40rem) {
+    .scale-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
