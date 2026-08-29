@@ -38,7 +38,7 @@
     "./accents/*.css": "./dist/accents/*.css"
   },
   "scripts": {
-    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs && node ../../tools/build-accents.mjs",
+    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs && node ../../tools/build-accents.mjs && node ../../tools/build-registry.mjs",
     "typecheck": "tsc --noEmit",
     "prepack": "node ../../tools/copy-readme.mjs"
   },

@@ -63,6 +63,29 @@ lands on when it crosses a button, and stating it by hand is how a product ends
 up with white text at 3.6:1 on its own primary action — which is exactly what
 the line's products did before this theme existed.
 
+## Installing from the registry
+
+The theme and the accents are also shadcn-compatible registry items, for a
+project that would rather copy them in than depend on the package:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/accent-kilna.json
+```
+
+The theme lands in `dowel/theme.css` and is yours: edit it, and nothing
+upstream will argue. It is served whole rather than as a list of variables,
+because it is `color-mix()` over your accent, relative colour, a Tailwind
+`@theme` block and two media queries - taken apart into key-value pairs it
+would stop being the file that was tested.
+
+Registering the namespace once makes the names shorter:
+
+```console
+$ npx shadcn@latest registry add @dowel=https://lacodda.github.io/dowel/r/{name}.json
+$ npx shadcn@latest add @dowel/accent-kilna
+```
+
 ## Adding a product
 
 Accents are generated from the registry the package carries, so a new product

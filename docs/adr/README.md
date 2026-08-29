@@ -7,3 +7,4 @@ Technical decisions that shape dowel, in the order they were made. Format: Conte
 | [0001](0001-react-first-line-design-system.md) | A React-first design system for the line, not a cross-framework core | accepted |
 | [0002](0002-registry-distribution.md) | Primitives ship through a shadcn-compatible registry; the theme through npm | accepted |
 | [0003](0003-derived-accent-and-contrast.md) | The accent family is derived from one hue, and contrast is a test | accepted |
+| [0004](0004-theme-ships-as-a-file.md) | The theme ships through the registry as a file, not as `cssVars` | accepted |
