@@ -1,6 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    // The package is consumed by Node's ESM resolver, which needs a file
+    // extension on every relative import. `bundler` lets extensionless
+    // specifiers typecheck and `tsc` emits them unchanged, so the published
+    // entry point fails to resolve - which is exactly what shipped in v0.3.0.
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
     "types": ["node"],
     "outDir": "dist",
     "rootDir": "src",

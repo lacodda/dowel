@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   lineProducts,
@@ -91,6 +92,25 @@ describe('what the package ships', () => {
       const top = target.replace(/^\.\//, '').split('/')[0]!
       expect(shipped, `\`${target}\` is exported but \`${top}\` is not in \`files\``).toContain(top)
     }
+  })
+
+  it('ships an entry point Node can actually import', () => {
+    // Node, in its own process, on purpose. Importing from inside vitest
+    // proves nothing: Vite resolves the specifier, and an extensionless
+    // relative import - which typechecks under `moduleResolution: bundler`
+    // and which `tsc` emits unchanged - works there and fails in the one
+    // place it matters, someone else's `import`. v0.3.0 shipped exactly that.
+    const entry = resolve(root, 'packages/dowel/dist/index.js')
+    if (!existsSync(entry)) return
+
+    const probe = [
+      `const m = await import(${JSON.stringify(pathToFileURL(entry).href)});`,
+      'if (!m.lineProducts?.length) throw new Error("lineProducts is empty");',
+      'if (typeof m.useTheme !== "function") throw new Error("useTheme is missing");',
+      'if (typeof m.token !== "function") throw new Error("token is missing");',
+    ].join('\n')
+
+    expect(() => execFileSync('node', ['--input-type=module', '-e', probe], { stdio: 'pipe' })).not.toThrow()
   })
 
   it('ships no test code', () => {

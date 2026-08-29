@@ -15,7 +15,7 @@
  * is copied into the product and becomes the product's own code.
  */
 
-export { lineProducts, lineProduct, type LineProduct } from './line'
+export { lineProducts, lineProduct, type LineProduct } from './line.js'
 export {
   defaultStorageKey,
   initTheme,
@@ -24,7 +24,7 @@ export {
   useTheme,
   useThemeSwitch,
   type Theme,
-} from './theme'
+} from './theme.js'
 
 /** Tokens that carry a colour. Ordered as they read on a screen: grounds,
  * then hairlines, then ink, then the accent, then status. */
