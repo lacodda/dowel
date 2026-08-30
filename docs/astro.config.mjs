@@ -36,6 +36,10 @@ export default defineConfig({
 			},
 			sidebar: [
 				{ label: 'Getting Started', slug: 'getting-started' },
+				// The stand is the other half of this site: the documentation
+				// explains a component, the stand shows it. Every page should
+				// have the door to it, not only the ones that remember.
+				{ label: 'The stand ↗', link: '/stand/', attrs: { class: 'stand-nav-link' } },
 				{
 					label: 'Components',
 					items: [{ autogenerate: { directory: 'components' } }],

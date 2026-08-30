@@ -22,3 +22,10 @@
 	width: auto;
 	height: 2.5rem;
 }
+
+/* The stand is a separate application, not another documentation page: the
+   sidebar link says so. */
+.stand-nav-link {
+	color: var(--sl-color-text-accent);
+	font-weight: 600;
+}

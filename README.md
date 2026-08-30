@@ -8,6 +8,9 @@ The lacodda line design system: theme tokens and React primitives, distributed a
 
 A dowel is the hidden peg that joins two boards so the seam does not show. That is what this does for the products of the line: they look made by one hand, and nobody sees the joint.
 
+**[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
+**[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
+
 **Status:** v0.4.0 - the theme, the scales, an accent per product, and the first primitive. See the [roadmap](#roadmap).
 
 ## The theme
@@ -82,7 +85,7 @@ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 
 Each is written in the vocabulary - no raw colours, no `dark:` utilities - so
 the same component is correct in both themes and in every product's accent.
-Every one of them is shown live on [the stand](https://lacodda.github.io/dowel/components/button/), in both themes at once.
+Every one of them is on [the stand](https://lacodda.github.io/dowel/stand/), live - change the theme and the accent and watch what follows.
 
 Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
 
@@ -102,9 +105,10 @@ Development goes in versions; each one is a single coherent theme, and ends in a
 
 ## Documentation
 
+- [The stand](https://lacodda.github.io/dowel/stand/) - every component, live
 - [Getting started](https://lacodda.github.io/dowel/getting-started/)
 - [Components](https://lacodda.github.io/dowel/components/button/)
-- [Token reference](https://lacodda.github.io/dowel/reference/tokens/)
+- [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
 
 ## License
 

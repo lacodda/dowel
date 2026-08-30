@@ -18,7 +18,7 @@ import { Button } from '../../registry/ui/button'
 /** The sections of the stand: one per component, in the order a screen is
  * built. Each new component adds an entry here. */
 const sections = [
-  { id: 'button', title: 'Button', render: () => <ButtonSection /> },
+  { id: 'button', title: 'Button', docs: '/dowel/components/button/', render: () => <ButtonSection /> },
 ]
 
 export function App() {
@@ -50,6 +50,13 @@ export function App() {
             dowel
           </a>
           <span className="text-2xs uppercase tracking-caption text-faint">components</span>
+          <a
+            href="/dowel/"
+            className="text-xs text-dim no-underline hover:text-text"
+            title="What everything is and why it is that way"
+          >
+            documentation ↗
+          </a>
 
           <div className="ml-auto flex items-center gap-2">
             <label className="flex items-center gap-1.5 text-xs text-dim">
@@ -92,7 +99,14 @@ export function App() {
 
         {sections.map((section) => (
           <section key={section.id} id={section.id} className="mb-12">
-            <h2 className="mb-4 text-xl font-semibold">{section.title}</h2>
+            <div className="mb-4 flex items-baseline gap-3">
+              <h2 className="text-xl font-semibold">{section.title}</h2>
+              {/* The other half of the pair: this shows what the component
+                  does, its page says why it does it that way. */}
+              <a href={section.docs} className="text-xs text-dim no-underline hover:text-accent">
+                docs ↗
+              </a>
+            </div>
             {section.render()}
           </section>
         ))}

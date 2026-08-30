@@ -174,6 +174,15 @@ describe('every component is four files', () => {
     expect(app, `the stand has no \`${name}\` section`).toContain(`id: '${name}'`)
   })
 
+  it.each(components)('%s links back from the stand to its page', (name) => {
+    // Both directions, or the pair only works from one side: someone looking
+    // at a component on the stand should be one click from why it is that way.
+    const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
+    expect(app, `the stand does not link \`${name}\` to its documentation`).toContain(
+      `docs: '/dowel/components/${name}/'`,
+    )
+  })
+
   it.each(components)('%s is in the registry', (name) => {
     expect(items.map((item) => item.name)).toContain(name)
   })
@@ -232,5 +241,29 @@ describe('the accents', () => {
       const declarations = [...(item.files?.[0]?.content ?? '').matchAll(/^\s*(--[\w-]+)\s*:/gm)].map((m) => m[1])
       expect(declarations, `\`${name}\` declares more than its colour`).toEqual(['--accent-base'])
     }
+  })
+})
+
+describe('the two sites point at each other', () => {
+  it('the documentation offers the stand on every page', () => {
+    // In the sidebar rather than in prose: a link that has to be remembered
+    // per page is a link that will be missing from most of them.
+    const config = readFileSync(resolve(root, 'docs/astro.config.mjs'), 'utf8')
+    expect(config, 'no link to the stand in the site navigation').toContain("link: '/stand/'")
+  })
+
+  it('the stand offers the documentation', () => {
+    const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
+    expect(app, 'the stand has no way back to the documentation').toContain('documentation')
+  })
+
+  it('the readme names both', () => {
+    const readme = readFileSync(resolve(root, 'README.md'), 'utf8')
+    expect(readme, 'the readme does not link the documentation').toContain(
+      'https://lacodda.github.io/dowel/)',
+    )
+    expect(readme, 'the readme does not link the stand').toContain(
+      'https://lacodda.github.io/dowel/stand/',
+    )
   })
 })
