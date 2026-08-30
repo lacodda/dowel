@@ -4,7 +4,6 @@ description: The five buttons the products of the line actually reach for, on th
 ---
 
 import Stand from '../../../components/Stand.astro'
-import { ButtonVariants, ButtonSizes, ButtonStates } from '../../../components/demo/ButtonDemo'
 
 ```console
 $ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
@@ -12,11 +11,9 @@ $ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 
 The component lands in `components/ui/button.tsx` and is yours to edit.
 
-## Variants
+<Stand component="button" caption="Every variant, size and state - in either theme, and in the accent of any product of the line." />
 
-<Stand caption="Five, because that is what a screen needs: one primary action, a quiet default, a soft accent for something selected, a destructive one, and an icon-only.">
-  <ButtonVariants client:load />
-</Stand>
+## Variants
 
 `primary` is the one action a screen is about — one per screen, or it is not
 primary. `ghost` is the default and the quiet one. `soft` is for something
@@ -25,15 +22,13 @@ a red button is not a warning if everything is red.
 
 ## Sizes
 
-<Stand caption="Two text sizes and two icon sizes. An icon button is square by construction rather than by a padding that happens to match.">
-  <ButtonSizes client:load />
-</Stand>
+Two text sizes and two icon sizes. An icon button is square by construction
+rather than by a padding that happens to match.
 
 ## States
 
-<Stand caption="Disabled keeps the button's own colour and loses contact instead, so it reads the same whatever the product's accent is.">
-  <ButtonStates client:load />
-</Stand>
+Disabled keeps the button's own colour and loses contact instead, so it reads
+the same whatever the product's accent is.
 
 A link rendered with `asChild` is still a link: it navigates, it opens in a new
 tab, and a screen reader announces it as one. A `<button>` painted to look like

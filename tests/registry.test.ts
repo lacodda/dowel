@@ -160,11 +160,18 @@ describe('every component is four files', () => {
     expect(existsSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`))).toBe(true)
   })
 
-  it.each(components)('%s shows itself in both themes', (name) => {
-    // The page has to actually render the component, not just describe it.
+  it.each(components)('%s points at the live stand', (name) => {
+    // The page explains; the stand shows. A page with no way through to the
+    // live component is a page describing something the reader cannot see.
     const page = readFileSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`), 'utf8')
-    expect(page, `\`${name}\` has no stand`).toContain('<Stand')
-    expect(page, `\`${name}\` is never hydrated - the stand would be dead markup`).toContain('client:load')
+    expect(page, `\`${name}\` does not link to the stand`).toContain(`<Stand component="${name}"`)
+  })
+
+  it.each(components)('%s has a section on the stand', (name) => {
+    // The link goes to an anchor, and an anchor that does not exist is a link
+    // to the top of the page pretending to be a link to the component.
+    const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
+    expect(app, `the stand has no \`${name}\` section`).toContain(`id: '${name}'`)
   })
 
   it.each(components)('%s is in the registry', (name) => {

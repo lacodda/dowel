@@ -1,0 +1,24 @@
+/*
+ * The stand's stylesheet.
+ *
+ * Unlike the documentation site, this page belongs to dowel alone - so it
+ * loads Tailwind whole, preflight included, and the theme as a product would.
+ * That is the point of the stand existing separately: a component is shown in
+ * the conditions it will actually live in, not next to somebody else's CSS.
+ *
+ * Preflight matters more than it looks. Without it a `<button>` keeps the
+ * browser's own bevelled border, its own font and its own padding - so a
+ * button drawn entirely in our tokens still arrives looking like a 1998
+ * form control. That is exactly what the first stand shipped.
+ */
+@import 'tailwindcss';
+@import '../../packages/dowel/src/theme.css';
+
+/*
+ * Where the utility classes are written. Tailwind scans the project it is
+ * started from, and the components live outside it - at the repository root,
+ * because they are copied into a product rather than imported from one.
+ * Without this the stand renders buttons whose class names are correct and
+ * whose CSS does not exist.
+ */
+@source '../../registry/ui';

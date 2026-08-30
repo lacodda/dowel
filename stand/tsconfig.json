@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    // Vite's declarations, for `import './styles.css'` and `import.meta.env`.
+    "types": ["vite/client"],
+    "module": "ESNext",
+    "paths": { "dowel-ui": ["../packages/dowel/src/index.ts"] }
+  },
+  "include": ["src", "../registry/**/*.tsx", "vite.config.ts"],
+  "exclude": ["../registry/**/*.test.tsx"]
+}

@@ -1,2 +1,7 @@
 packages:
   - packages/*
+  # The stand renders the registry components, which live at the repository
+  # root. Making it a workspace member is what lets their imports resolve -
+  # the docs site is outside the workspace and had to install twice in CI to
+  # get the same thing.
+  - stand

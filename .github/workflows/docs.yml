@@ -5,7 +5,7 @@ on:
     branches: [main]
     # The stand reads the theme straight from the package, so a token that
     # changes there changes the token page too.
-    paths: ['docs/**', 'packages/dowel/src/theme.css', 'registry/**']
+    paths: ['docs/**', 'stand/**', 'packages/dowel/src/theme.css', 'registry/**']
   workflow_dispatch:
 
 permissions:
@@ -28,19 +28,24 @@ jobs:
           node-version: 22
           cache: pnpm
           cache-dependency-path: docs/pnpm-lock.yaml
-      # Two installs, because the stand renders files from outside its own
-      # package: the registry components live at the repository root, and
-      # pnpm resolves their imports from there. Installing only `docs` builds
-      # fine on a machine that has both and fails here with "failed to resolve
-      # import @radix-ui/react-slot".
+      # The workspace, for the stand: it renders the registry components, which
+      # live at the repository root. The docs site installs separately - it is
+      # outside the workspace on purpose.
       - name: Install the workspace
         run: pnpm install --frozen-lockfile
       - name: Install the docs site
         run: pnpm install --frozen-lockfile
         working-directory: docs
-      - name: Build
+      - name: Build the docs
         run: pnpm build
         working-directory: docs
+      # The stand is a separate application published under the same project
+      # page: the documentation explains a component, the stand shows it in a
+      # page of its own - real theme, real reset, no other site's CSS.
+      - name: Build the stand
+        run: pnpm --filter dowel-stand build
+      - name: Put the stand under the docs
+        run: cp -r stand/dist docs/dist/stand
       - uses: actions/upload-pages-artifact@v5
         with:
           path: docs/dist

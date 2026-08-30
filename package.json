@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r --filter ./packages/* build",
-    "lint": "eslint . && pnpm -r --filter ./packages/* typecheck && tsc --project tsconfig.registry.json",
-    "typecheck": "pnpm -r --filter ./packages/* typecheck && tsc --project tsconfig.registry.json",
+    "lint": "eslint . && pnpm -r --filter ./packages/* typecheck && tsc --project tsconfig.registry.json && tsc --project stand/tsconfig.json",
+    "typecheck": "pnpm -r --filter ./packages/* typecheck && tsc --project tsconfig.registry.json && tsc --project stand/tsconfig.json",
     "test": "vitest run",
-    "new-component": "node tools/new-component.mjs"
+    "new-component": "node tools/new-component.mjs",
+    "stand": "pnpm --filter dowel-stand dev",
+    "stand:build": "pnpm --filter dowel-stand build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
