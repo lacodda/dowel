@@ -129,12 +129,32 @@ describe('every item', () => {
   })
 
   it('names no dependency that has to be fetched', () => {
-    // A `registryDependencies` entry pointing at an absolute URL cannot
-    // resolve while the site is being built, or served anywhere but
-    // production - which is how the first version of the accents failed a
-    // live install with "the item ... was not found".
+    // A local name is fine and often necessary - the textarea reuses the
+    // input's field styling, and `shadcn add` follows that. An absolute URL is
+    // the hazard: it cannot resolve while the site is being built, or served
+    // anywhere but production, which is how the first version of the accents
+    // failed a live install with "the item ... was not found".
     for (const item of items) {
-      expect(item.registryDependencies ?? [], `\`${item.name}\` depends on a remote item`).toEqual([])
+      for (const dependency of item.registryDependencies ?? []) {
+        expect(
+          /^https?:|^@|\//.test(dependency),
+          `\`${item.name}\` depends on \`${dependency}\`, which has to be fetched`,
+        ).toBe(false)
+      }
+    }
+  })
+
+  it('names only siblings that exist', () => {
+    // A dependency on a component that is not in the registry is an install
+    // that fails halfway, leaving the consumer with part of what they asked
+    // for.
+    const names = new Set(items.map((item) => item.name))
+    for (const item of items) {
+      for (const dependency of item.registryDependencies ?? []) {
+        expect(names, `\`${item.name}\` depends on \`${dependency}\`, which is not in the registry`).toContain(
+          dependency,
+        )
+      }
     }
   })
 })
@@ -158,6 +178,24 @@ describe('every component is four files', () => {
 
   it.each(components)('%s has a page on the stand', (name) => {
     expect(existsSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`))).toBe(true)
+  })
+
+  it.each(components)('%s has frontmatter a build can parse', (name) => {
+    // A colon in a description is a key separator to YAML, and the page fails
+    // to build - after the tests have all passed, because nothing here reads
+    // the frontmatter.
+    const page = readFileSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`), 'utf8')
+    const frontmatter = page.match(/^---\n([\s\S]*?)\n---/)
+    expect(frontmatter, `\`${name}\` has no frontmatter`).not.toBeNull()
+
+    for (const line of frontmatter![1]!.split('\n')) {
+      const value = line.slice(line.indexOf(':') + 1).trim()
+      const quoted = /^['"].*['"]$/.test(value)
+      expect(
+        quoted || !value.includes(': '),
+        `\`${name}\`: \`${line}\` needs quoting - YAML reads the second colon as a key`,
+      ).toBe(true)
+    }
   })
 
   it.each(components)('%s points at the live stand', (name) => {

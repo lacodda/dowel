@@ -1,0 +1,34 @@
+---
+title: Panel
+description: The raised surface everything else sits on.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/panel.json
+```
+
+<Stand component="panel" caption="The three surfaces, and the caption that usually sits above one." />
+
+## Notes
+
+**Three variants, for three distances from the page.** `raised` sits on it,
+`floating` has left it — a menu, a popover — and says so with a shadow, and
+`inset` is for something inside another panel, where a second border would be
+a box drawn in a box.
+
+**The corner is `lg`.** The two products this came from disagreed about it —
+16px in one, 12px in the other — for a component with the same name and the
+same job in both.
+
+**`SectionLabel`** is included because a panel almost always has one and every
+product wrote its own. Its letter-spacing is the one they argued about: 0.08em
+in six files and 0.09em in three, for the same visual element. It is a token
+now, so the argument cannot recur.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `raised \| floating \| inset` | `raised` | How far from the page |

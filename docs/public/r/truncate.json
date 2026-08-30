@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "truncate",
+  "type": "registry:ui",
+  "title": "Truncate",
+  "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
+  "dependencies": [
+    "dowel-ui@^0.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/truncate.tsx",
+      "target": "@ui/truncate.tsx",
+      "type": "registry:ui",
+      "content": "import type { HTMLAttributes } from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * Truncate.\n *\n * Text that does not fit, cut with an ellipsis - and, importantly, still\n * readable in full: the element carries its own text as a `title`, so hovering\n * shows what was cut. Every product wrote the one-line version of this and\n * none of them remembered the title.\n *\n * `lines` truncates after that many instead of one, which needs a different\n * mechanism (`line-clamp`) rather than a different value.\n */\nexport interface TruncateProps extends HTMLAttributes<HTMLSpanElement> {\n  /** The text. A string, because the component has to be able to put it in a\n   * `title` - arbitrary children could not be. */\n  children: string\n  /** Cut after this many lines. One by default. */\n  lines?: number\n  /** Say what the full text is on hover. On by default; turn it off where the\n   * text is already visible elsewhere, or the tooltip is noise. */\n  title?: string | undefined\n}\n\nexport function Truncate({ children, lines = 1, className, title, ...props }: TruncateProps) {\n  return (\n    <span\n      // The browser shows this only when the text is actually cut, so it costs\n      // nothing when everything fits.\n      title={title ?? children}\n      className={cn(\n        lines === 1 ? 'block truncate' : 'block overflow-hidden',\n        className,\n      )}\n      style={\n        lines > 1\n          ? { display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical' }\n          : undefined\n      }\n      {...props}\n    >\n      {children}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

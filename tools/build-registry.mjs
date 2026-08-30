@@ -152,6 +152,20 @@ function npmDependencies(source) {
     .map((name) => (name === 'dowel-ui' ? `dowel-ui@^${packageVersion}` : name))
 }
 
+/*
+ * Components this one imports from. A primitive that reuses a sibling - the
+ * textarea shares the input's field styling - needs it installed too, or the
+ * copied file arrives with an import that does not resolve. `shadcn add`
+ * follows these, so declaring them is the whole fix.
+ */
+function siblingDependencies(source) {
+  return [
+    ...new Set(
+      [...source.matchAll(/from\s+'\.\/([\w-]+)'/g)].map((match) => match[1]),
+    ),
+  ].sort()
+}
+
 const componentItems = readdirSync(componentDir)
   .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
   .map((file) => {
@@ -171,6 +185,7 @@ const componentItems = readdirSync(componentDir)
       title,
       description,
       dependencies: npmDependencies(content),
+      registryDependencies: siblingDependencies(content),
       files: [
         {
           path: `ui/${file}`,

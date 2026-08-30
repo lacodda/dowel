@@ -1,0 +1,43 @@
+---
+title: Copyable
+description: Any text worth showing is worth being able to take away.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/copyable.json
+```
+
+<Stand component="copyable" caption="An id, a hash, a path - copied with one click." />
+
+## Notes
+
+**The rule comes from nitid:** if a value is worth showing, it is worth being
+able to copy. Selecting a monospaced id by hand is a small daily tax.
+
+**It is a `<button>`,** so the keyboard reaches it and a screen reader says
+what it does.
+
+**The confirmation is announced, not only drawn.** A tick that appears silently
+tells a sighted user it worked and tells nobody else.
+
+**A refusal is reported.** The clipboard needs a secure context and sometimes a
+permission; a button that looks like it worked and did not is worse than one
+that admits it failed.
+
+```tsx
+<Copyable value={commit.sha} onCopy={(ok) => ok || toast(t('copy.failed'))}>
+  {commit.short}
+</Copyable>
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `string` | | The visible text |
+| `value` | `string` | the text | What lands on the clipboard, if different |
+| `label` | `string` | `'Copy'` | What the button is called |
+| `copiedLabel` | `string` | `'Copied'` | What is announced after a copy |
+| `onCopy` | `(ok: boolean) => void` | | Told what happened |

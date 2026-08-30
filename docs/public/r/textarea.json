@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea",
+  "type": "registry:ui",
+  "title": "Textarea",
+  "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
+  "dependencies": [
+    "dowel-ui@^0.4.0"
+  ],
+  "registryDependencies": [
+    "input"
+  ],
+  "files": [
+    {
+      "path": "ui/textarea.tsx",
+      "target": "@ui/textarea.tsx",
+      "type": "registry:ui",
+      "content": "import { useCallback, useLayoutEffect, useRef, type Ref, type TextareaHTMLAttributes } from 'react'\nimport { cn } from 'dowel-ui'\nimport { fieldClasses } from './input'\n\n/*\n * Textarea.\n *\n * A multi-line field that can grow with what is typed into it, which is the\n * only interesting part: a fixed box makes someone scroll inside a scroll,\n * and a box that grows without limit pushes the button they are trying to\n * reach off the screen. `autoResize` grows it; `maxRows` says when to stop\n * and let it scroll after all.\n *\n * The measurement is the usual trick and worth stating: height is reset to\n * `auto` before reading `scrollHeight`, because a box already tall enough\n * reports its own height and never shrinks back.\n */\nexport interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {\n  ref?: Ref<HTMLTextAreaElement>\n  /** Grow to fit the content instead of scrolling. */\n  autoResize?: boolean\n  /** Stop growing here, in lines, and scroll instead. */\n  maxRows?: number\n}\n\nexport function Textarea({\n  className,\n  ref,\n  autoResize = false,\n  maxRows,\n  onChange,\n  ...props\n}: TextareaProps) {\n  const own = useRef<HTMLTextAreaElement>(null)\n\n  const resize = useCallback(() => {\n    const element = own.current\n    if (!element || !autoResize) return\n\n    // Reset first: a box that is already tall enough reports its own height as\n    // `scrollHeight` and would never shrink again.\n    element.style.height = 'auto'\n\n    const styles = getComputedStyle(element)\n    const lineHeight = Number.parseFloat(styles.lineHeight) || 0\n    const vertical =\n      Number.parseFloat(styles.paddingTop) +\n      Number.parseFloat(styles.paddingBottom) +\n      Number.parseFloat(styles.borderTopWidth) +\n      Number.parseFloat(styles.borderBottomWidth)\n\n    const wanted = element.scrollHeight\n    const ceiling = maxRows && lineHeight ? maxRows * lineHeight + vertical : Infinity\n\n    element.style.height = `${Math.min(wanted, ceiling)}px`\n    element.style.overflowY = wanted > ceiling ? 'auto' : 'hidden'\n  }, [autoResize, maxRows])\n\n  // Before paint, so the field never appears at the wrong height and then\n  // jumps - including on the first render, when it may already have a value.\n  useLayoutEffect(resize, [resize, props.value, props.defaultValue])\n\n  return (\n    <textarea\n      ref={(element) => {\n        own.current = element\n        if (typeof ref === 'function') ref(element)\n        else if (ref) ref.current = element\n      }}\n      onChange={(event) => {\n        resize()\n        onChange?.(event)\n      }}\n      className={cn(fieldClasses, autoResize ? 'resize-none' : 'resize-y', className)}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

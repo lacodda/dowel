@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input",
+  "type": "registry:ui",
+  "title": "Input",
+  "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
+  "dependencies": [
+    "dowel-ui@^0.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/input.tsx",
+      "target": "@ui/input.tsx",
+      "type": "registry:ui",
+      "content": "import type { InputHTMLAttributes, Ref } from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * Input.\n *\n * A single-line field. It is a plain `<input>` with the line's clothes on, so\n * everything a browser gives an input for free - autofill, spellcheck, the\n * right keyboard on a phone, `type=\"email\"` validation - still works.\n *\n * The focus ring is the accent, drawn outside the border rather than replacing\n * it: a field that only changes colour on focus is invisible to anyone who\n * cannot distinguish those two colours.\n */\nexport const fieldClasses = cn(\n  'w-full rounded-md border border-line bg-transparent px-2.5 py-1.5',\n  'text-sm text-text placeholder:text-faint',\n  'transition-colors hover:border-line-2',\n  'focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-accent',\n  // A field nobody can type in should look like one.\n  'disabled:cursor-not-allowed disabled:opacity-50',\n  // `aria-invalid` rather than a prop: the attribute is what a screen reader\n  // reads, so making it the source of the colour keeps the two in step.\n  'aria-invalid:border-bad aria-invalid:focus-visible:outline-bad',\n)\n\nexport interface InputProps extends InputHTMLAttributes<HTMLInputElement> {\n  /** React 19 passes `ref` as a plain prop; it is declared so callers can\n   * reach the element to focus it or read its selection. */\n  ref?: Ref<HTMLInputElement>\n}\n\nexport function Input({ className, ref, ...props }: InputProps) {\n  return <input ref={ref} className={cn(fieldClasses, 'h-9', className)} {...props} />\n}\n"
+    }
+  ]
+}

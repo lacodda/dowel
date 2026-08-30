@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge",
+  "type": "registry:ui",
+  "title": "Badge",
+  "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
+  "dependencies": [
+    "class-variance-authority",
+    "dowel-ui@^0.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/badge.tsx",
+      "target": "@ui/badge.tsx",
+      "type": "registry:ui",
+      "content": "import type { HTMLAttributes } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * Badge.\n *\n * A small piece of state attached to something else: a count, a status, a\n * label. It is not a button and never was - if it can be clicked it is a Chip.\n *\n * Status colour is emphasis, never the message. A badge that means \"failed\"\n * says so in words as well, because colour alone is invisible to a reader who\n * does not separate red from green, and to anyone printing the screen.\n */\nexport const badgeVariants = cva(\n  'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs whitespace-nowrap',\n  {\n    variants: {\n      variant: {\n        outline: 'border border-line text-dim',\n        soft: 'bg-soft font-medium text-dim',\n        accent: 'bg-accent-soft font-medium text-accent',\n        good: 'bg-good-soft font-medium text-good',\n        warn: 'bg-warn-soft font-medium text-warn',\n        bad: 'bg-bad-soft font-medium text-bad',\n        info: 'bg-info-soft font-medium text-info',\n      },\n    },\n    defaultVariants: { variant: 'outline' },\n  },\n)\n\nexport interface BadgeProps\n  extends HTMLAttributes<HTMLSpanElement>,\n    VariantProps<typeof badgeVariants> {}\n\nexport function Badge({ variant, className, ...props }: BadgeProps) {\n  return <span className={cn(badgeVariants({ variant }), className)} {...props} />\n}\n"
+    }
+  ]
+}

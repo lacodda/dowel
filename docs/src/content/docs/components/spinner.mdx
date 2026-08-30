@@ -1,0 +1,35 @@
+---
+title: Spinner
+description: Something is happening and the answer has not arrived.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/spinner.json
+```
+
+<Stand component="spinner" caption="Three sizes and three tones." />
+
+## Notes
+
+**It says something to a screen reader.** A page that is busy is otherwise
+silently identical to a page that is empty. The word for what is loading comes
+from the product:
+
+```tsx
+<Spinner label={t('loading.versions')} />
+```
+
+**Under `prefers-reduced-motion` it stops turning.** That is not a detail: for
+some readers a spinning thing is not decoration but a symptom. A stopped
+spinner still says "busy" through its role, which is the part carrying the
+meaning anyway.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | |
+| `tone` | `current \| dim \| accent` | `current` | Follows the surrounding text by default |
+| `label` | `string` | | What is being waited for, for a screen reader |

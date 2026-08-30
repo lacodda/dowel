@@ -1,0 +1,35 @@
+---
+title: Kbd
+description: A key, as printed in a menu or a hint.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/kbd.json
+```
+
+<Stand component="kbd" caption="Single keys and whole shortcuts, written the way this platform writes them." />
+
+## Notes
+
+**It is a `<kbd>` element**, so a screen reader announces it as keyboard input
+rather than reading a stray capital letter.
+
+**The platform substitution is the useful part.** A shortcut written `Ctrl+K`
+is simply wrong on a Mac, where it is `⌘K` — and every product either
+hard-codes one of them or writes the branch again.
+
+```tsx
+<Kbd keys={['Mod', 'K']} />
+```
+
+`Mod` is command on Apple platforms and control everywhere else. `Alt` and
+`Shift` substitute the same way; `Enter`, `Escape` and the arrows are written
+as symbols on every platform.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `keys` | `string[]` | | A shortcut, in order. Without it, the children are the key |

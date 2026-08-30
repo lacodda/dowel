@@ -9,6 +9,7 @@
     "class-variance-authority",
     "dowel-ui@^0.4.0"
   ],
+  "registryDependencies": [],
   "files": [
     {
       "path": "ui/button.tsx",

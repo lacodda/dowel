@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd",
+  "type": "registry:ui",
+  "title": "Kbd",
+  "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
+  "dependencies": [
+    "dowel-ui@^0.4.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/kbd.tsx",
+      "target": "@ui/kbd.tsx",
+      "type": "registry:ui",
+      "content": "import type { HTMLAttributes } from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * Kbd.\n *\n * A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element\n * because that is what the element is for - a screen reader announces it as\n * keyboard input rather than reading a stray capital letter.\n *\n * The platform substitution is the useful part. A shortcut written `Ctrl+K` is\n * wrong on a Mac, where the same shortcut is `⌘K`, and every product either\n * hard-codes one of them or writes the branch again.\n */\n\n/** Whether this machine writes shortcuts the Apple way. */\nfunction isApplePlatform(): boolean {\n  if (typeof navigator === 'undefined') return false\n  return /mac|iphone|ipad|ipod/i.test(navigator.platform || navigator.userAgent)\n}\n\n/** What a key is called here. `Mod` is the one that differs: command on Apple\n * platforms, control everywhere else. */\nexport function keyLabel(key: string, apple: boolean = isApplePlatform()): string {\n  const shared: Record<string, string> = {\n    Enter: '↵',\n    Escape: 'Esc',\n    ArrowUp: '↑',\n    ArrowDown: '↓',\n    ArrowLeft: '←',\n    ArrowRight: '→',\n    Backspace: '⌫',\n    Tab: '⇥',\n    Space: '␣',\n  }\n  const perPlatform: Record<string, [apple: string, other: string]> = {\n    Mod: ['⌘', 'Ctrl'],\n    Alt: ['⌥', 'Alt'],\n    Shift: ['⇧', 'Shift'],\n  }\n\n  const platform = perPlatform[key]\n  if (platform) return apple ? platform[0] : platform[1]\n  return shared[key] ?? key\n}\n\nexport interface KbdProps extends HTMLAttributes<HTMLElement> {\n  /** Keys of a shortcut, in order: `['Mod', 'K']`. Given this, the component\n   * writes the separators and the platform's own names. */\n  keys?: string[]\n}\n\nexport function Kbd({ keys, className, children, ...props }: KbdProps) {\n  const cap = cn(\n    'inline-flex min-w-5 items-center justify-center rounded-sm border border-line bg-soft',\n    'px-1 py-0.5 font-mono text-2xs leading-none text-dim',\n  )\n\n  if (!keys) {\n    return (\n      <kbd className={cn(cap, className)} {...props}>\n        {children}\n      </kbd>\n    )\n  }\n\n  return (\n    <span className={cn('inline-flex items-center gap-0.5', className)} {...props}>\n      {keys.map((key) => (\n        <kbd key={key} className={cap}>\n          {keyLabel(key)}\n        </kbd>\n      ))}\n    </span>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 /*
- * `pnpm new-component <name>` - the four files a primitive is made of.
+ * `pnpm new-component <name>` - what a primitive is made of.
  *
- * A component here is not one file. It is the component, a test, a page on the
- * stand, and a demo island for that page; the registry entry is derived from
- * the source, so it is the one part nobody has to write. Miss any of the four
- * and the component half-exists: untested, or undocumented, or documented with
- * a screenshot that will drift.
+ * A component here is not one file. It is the component, a test, and a page
+ * explaining it; the registry entry is derived from the source, so it is the
+ * one part nobody writes, and the section on the stand is added by hand
+ * because it is the only part that needs judgement about what to show.
  *
- * The generator exists because "four files" is exactly the kind of rule that
- * decays. Not because typing them is slow.
+ * Miss any of them and the component half-exists: untested, or undocumented,
+ * or impossible to look at. The generator exists because that is exactly the
+ * kind of rule that decays - not because typing the files is slow.
  *
  * What it writes is a skeleton that already passes the gates: tokens rather
  * than raw values, no strings of its own, a real element underneath. What it
@@ -106,18 +106,6 @@ describe('${Pascal}', () => {
 `,
   },
   {
-    path: `docs/src/components/demo/${Pascal}Demo.tsx`,
-    content: `import { ${Pascal} } from '../../../../registry/ui/${name}'
-
-/* The stand renders the real component, hydrated in the browser - the same
- * file a consumer installs. */
-
-export function ${Pascal}Variants() {
-  return <${Pascal}>content</${Pascal}>
-}
-`,
-  },
-  {
     path: `docs/src/content/docs/components/${name}.mdx`,
     content: `---
 title: ${Pascal}
@@ -125,17 +113,16 @@ description: Say in one line what this is for.
 ---
 
 import Stand from '../../../components/Stand.astro'
-import { ${Pascal}Variants } from '../../../components/demo/${Pascal}Demo'
 
 \`\`\`console
 $ npx shadcn@latest add https://lacodda.github.io/dowel/r/${name}.json
 \`\`\`
 
-## Variants
+<Stand component="${name}" caption="Say what the reader will see there." />
 
-<Stand caption="Say what the reader is looking at.">
-  <${Pascal}Variants client:load />
-</Stand>
+## Notes
+
+Say why it is the way it is - the page explains, the stand shows.
 
 ## Props
 
@@ -162,8 +149,8 @@ for (const file of files) {
 }
 
 console.log(`
-${Pascal} is four files. Next:
+${Pascal} is three files, plus a section on the stand. Next:
   1. Write the component, and the block comment saying what it is for.
   2. Make the test say what would be wrong if it broke.
-  3. Show every variant on the stand, in both themes.
+  3. Add a section to stand/src/App.tsx - that is where it is seen.
   4. \`pnpm build\` to put it in the registry, then install it somewhere real.`)
