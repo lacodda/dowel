@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.4.0 - the theme, the scales, an accent per product, and the first primitive. See the [roadmap](#roadmap).
+**Status:** v0.5.0 - the theme, the scales, an accent per product, and ten primitives: enough for a screen without overlays. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -82,6 +82,9 @@ your code:
 ```bash
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 ```
+
+Ten of them so far: Button, Input, Textarea, Panel, Badge, Chip, Kbd, Spinner,
+Truncate and Copyable.
 
 Each is written in the vocabulary - no raw colours, no `dark:` utilities - so
 the same component is correct in both themes and in every product's accent.

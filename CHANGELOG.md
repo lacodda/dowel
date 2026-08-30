@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.0] - 2026-08-30
+
+### Bug Fixes
+- Install the workspace before building the docs
+- Set the accent where the theme can see it
+
+### Documentation
+- Point the two sites at each other
+
+### Features
+- Give the components a site of their own
+- Add the nine base primitives
+
 ## [0.4.0] - 2026-08-30
 
 ### Features
