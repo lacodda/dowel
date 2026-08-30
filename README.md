@@ -8,7 +8,7 @@ The lacodda line design system: theme tokens and React primitives, distributed a
 
 A dowel is the hidden peg that joins two boards so the seam does not show. That is what this does for the products of the line: they look made by one hand, and nobody sees the joint.
 
-**Status:** v0.3.0 - the theme, the scales and an accent per product. Primitives follow; see the [roadmap](#roadmap).
+**Status:** v0.4.0 - the theme, the scales, an accent per product, and the first primitive. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -71,6 +71,19 @@ Or copy the files in instead of depending on the package:
 npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
 ```
 
+## Primitives
+
+Components are copied into your project rather than imported, so they become
+your code:
+
+```bash
+npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
+```
+
+Each is written in the vocabulary - no raw colours, no `dark:` utilities - so
+the same component is correct in both themes and in every product's accent.
+Every one of them is shown live on [the stand](https://lacodda.github.io/dowel/components/button/), in both themes at once.
+
 Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
 
 ## Roadmap
@@ -90,6 +103,7 @@ Development goes in versions; each one is a single coherent theme, and ends in a
 ## Documentation
 
 - [Getting started](https://lacodda.github.io/dowel/getting-started/)
+- [Components](https://lacodda.github.io/dowel/components/button/)
 - [Token reference](https://lacodda.github.io/dowel/reference/tokens/)
 
 ## License

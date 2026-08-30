@@ -2,10 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0] - 2026-08-30
+
+### Features
+- Add the component pipeline and Button
+
 ## [0.3.1] - 2026-08-29
 
 ### Bug Fixes
 - Give the entry point's imports a file extension
+- Compare generated files by content, not by line ending
+- Make the generated registry the same on every platform
 
 ## [0.3.0] - 2026-08-29
 
