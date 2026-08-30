@@ -13,6 +13,7 @@ export default defineConfig({
       // Registry components live outside the package: they are copied into a
       // product rather than imported from one, but they are tested here.
       'registry/**/*.test.{ts,tsx}',
+      'stand/src/**/*.test.{ts,tsx}',
       'tests/**/*.test.ts',
     ],
     // `dowel-ui` is what a copied component imports; here it is the source.

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { lineProducts, useThemeSwitch } from 'dowel-ui'
 import { Button } from '../../registry/ui/button'
 
@@ -24,14 +24,26 @@ const sections = [
 export function App() {
   const { theme, setTheme } = useThemeSwitch('dowel.stand.theme')
   const [accent, setAccent] = useState('dowel')
-  const product = lineProducts.find((entry) => entry.name === accent)
+
+  /*
+   * The accent goes on the root element, which is where a product sets it too.
+   *
+   * Setting it on a container looks equivalent and is not: the theme declares
+   * `--accent: var(--accent-base)` inside `:root`, and that resolves against
+   * the root's own value. A `--accent-base` further down the tree changes
+   * nothing above it, so every derived token - the hover shade, the soft fill,
+   * the colour of text on an accent fill - keeps the value the root produced.
+   * The switch appeared to do nothing at all.
+   */
+  useEffect(() => {
+    const product = lineProducts.find((entry) => entry.name === accent)
+    const root = document.documentElement
+    if (product) root.style.setProperty('--accent-base', product.accent)
+    else root.style.removeProperty('--accent-base')
+  }, [accent])
 
   return (
-    <div
-      className="min-h-screen bg-bg text-text"
-      // The accent a product would set in one line, chosen here from a menu.
-      style={product ? { ['--accent-base' as string]: product.accent } : undefined}
-    >
+    <div className="min-h-screen bg-bg text-text">
       <header className="sticky top-0 border-b border-line bg-bg/90 backdrop-blur" style={{ zIndex: 'var(--z-sticky)' }}>
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-3 px-6 py-3">
           <a href="/dowel/" className="text-sm font-semibold text-text no-underline">
