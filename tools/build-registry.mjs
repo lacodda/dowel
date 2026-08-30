@@ -153,17 +153,27 @@ function npmDependencies(source) {
 }
 
 /*
- * Components this one imports from. A primitive that reuses a sibling - the
- * textarea shares the input's field styling - needs it installed too, or the
- * copied file arrives with an import that does not resolve. `shadcn add`
- * follows these, so declaring them is the whole fix.
+ * Components this one imports from.
+ *
+ * A primitive that reuses a sibling - the textarea shares the input's field
+ * styling - needs it installed too, or the copied file arrives with an import
+ * that does not resolve.
+ *
+ * The name has to be a full URL, and that is not a preference. A bare `input`
+ * in `registryDependencies` means *shadcn's* input: the CLI resolves plain
+ * names against shadcn/ui, and it duly installed a stranger's component next
+ * to ours, whose `fieldClasses` the textarea then could not find. The URL says
+ * which registry, and it is built from the homepage rather than written out,
+ * because a hardcoded absolute URL is what broke the accents.
  */
 function siblingDependencies(source) {
   return [
     ...new Set(
       [...source.matchAll(/from\s+'\.\/([\w-]+)'/g)].map((match) => match[1]),
     ),
-  ].sort()
+  ]
+    .sort()
+    .map((name) => `${homepage}/r/${name}.json`)
 }
 
 const componentItems = readdirSync(componentDir)

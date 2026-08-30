@@ -128,18 +128,16 @@ describe('every item', () => {
     }
   })
 
-  it('names no dependency that has to be fetched', () => {
-    // A local name is fine and often necessary - the textarea reuses the
-    // input's field styling, and `shadcn add` follows that. An absolute URL is
-    // the hazard: it cannot resolve while the site is being built, or served
-    // anywhere but production, which is how the first version of the accents
-    // failed a live install with "the item ... was not found".
+  it('names a sibling by its full URL, never by a bare name', () => {
+    // A bare name means *shadcn's* component: the CLI resolves plain names
+    // against shadcn/ui. Declaring `input` installed a stranger's Input beside
+    // ours, and the textarea could not find the `fieldClasses` it imports.
     for (const item of items) {
       for (const dependency of item.registryDependencies ?? []) {
         expect(
-          /^https?:|^@|\//.test(dependency),
-          `\`${item.name}\` depends on \`${dependency}\`, which has to be fetched`,
-        ).toBe(false)
+          dependency.startsWith('https://lacodda.github.io/dowel/r/'),
+          `\`${item.name}\` depends on \`${dependency}\` - a bare name resolves to shadcn's registry`,
+        ).toBe(true)
       }
     }
   })
@@ -151,9 +149,8 @@ describe('every item', () => {
     const names = new Set(items.map((item) => item.name))
     for (const item of items) {
       for (const dependency of item.registryDependencies ?? []) {
-        expect(names, `\`${item.name}\` depends on \`${dependency}\`, which is not in the registry`).toContain(
-          dependency,
-        )
+        const name = dependency.split('/').pop()!.replace(/\.json$/, '')
+        expect(names, `\`${item.name}\` depends on \`${name}\`, which is not in the registry`).toContain(name)
       }
     }
   })
