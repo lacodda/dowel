@@ -5,7 +5,7 @@ on:
     branches: [main]
     # The stand reads the theme straight from the package, so a token that
     # changes there changes the token page too.
-    paths: ['docs/**', 'packages/dowel/src/theme.css']
+    paths: ['docs/**', 'packages/dowel/src/theme.css', 'registry/**']
   workflow_dispatch:
 
 permissions:
@@ -28,7 +28,14 @@ jobs:
           node-version: 22
           cache: pnpm
           cache-dependency-path: docs/pnpm-lock.yaml
-      - name: Install
+      # Two installs, because the stand renders files from outside its own
+      # package: the registry components live at the repository root, and
+      # pnpm resolves their imports from there. Installing only `docs` builds
+      # fine on a machine that has both and fails here with "failed to resolve
+      # import @radix-ui/react-slot".
+      - name: Install the workspace
+        run: pnpm install --frozen-lockfile
+      - name: Install the docs site
         run: pnpm install --frozen-lockfile
         working-directory: docs
       - name: Build
