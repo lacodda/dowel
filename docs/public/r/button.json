@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "title": "Button",
+  "description": "Five variants, because that is what the line's products actually reach for: one primary action per screen, a quiet default, a soft accent for something selected, a destructive one, and an icon-only.",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "class-variance-authority",
+    "dowel-ui@^0.4.0"
+  ],
+  "files": [
+    {
+      "path": "ui/button.tsx",
+      "target": "@ui/button.tsx",
+      "type": "registry:ui",
+      "content": "import type { ButtonHTMLAttributes } from 'react'\nimport { Slot } from '@radix-ui/react-slot'\nimport { cva, type VariantProps } from 'class-variance-authority'\n// `cn` comes from the package rather than being copied in beside the\n// component (ADR 0002): a helper every primitive shares should update\n// centrally, and a project installing a component already has the package for\n// the theme. shadcn's own components import it from `@/lib/utils`; that is a\n// per-project alias, and a copied file cannot know what it points at.\nimport { cn } from 'dowel-ui'\n\n/*\n * Button.\n *\n * Five variants, because that is what the line's products actually reach for:\n * one primary action per screen, a quiet default, a soft accent for something\n * selected, a destructive one, and an icon-only.\n *\n * Every colour and every size is a token. There are no `dark:` utilities and\n * no raw values - the theme swaps underneath, so the same class list is\n * correct in both themes and in every product's accent.\n */\nexport const buttonVariants = cva(\n  [\n    'inline-flex cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap',\n    'font-medium transition-colors',\n    // Disabled is a state, not a colour: the button keeps its own hue and\n    // loses contact instead, which reads the same whatever the accent is.\n    'disabled:pointer-events-none disabled:opacity-50',\n    '[&_svg]:shrink-0',\n  ],\n  {\n    variants: {\n      variant: {\n        primary: 'rounded-md bg-accent font-semibold text-on-accent hover:bg-accent-2',\n        ghost: 'rounded-md border border-line text-dim hover:border-line-2 hover:text-text',\n        soft: 'rounded-md bg-accent-soft text-accent hover:bg-accent-soft/60',\n        danger: 'rounded-md text-bad hover:bg-bad-soft',\n        icon: 'rounded-md text-dim hover:bg-soft hover:text-text',\n      },\n      size: {\n        sm: 'h-7 px-2.5 text-xs',\n        md: 'h-9 px-3.5 text-sm',\n        'icon-sm': 'size-7 [&_svg]:size-3.5',\n        'icon-md': 'size-8 [&_svg]:size-4',\n      },\n    },\n    defaultVariants: { variant: 'ghost', size: 'md' },\n  },\n)\n\nexport interface ButtonProps\n  extends ButtonHTMLAttributes<HTMLButtonElement>,\n    VariantProps<typeof buttonVariants> {\n  /** Render as the child element instead of a `<button>`, keeping the styling.\n   * For a link that should look like a button. */\n  asChild?: boolean\n}\n\nexport function Button({ variant, size, asChild = false, className, type, ...props }: ButtonProps) {\n  const Component = asChild ? Slot : 'button'\n  return (\n    <Component\n      // A `<button>` inside a form submits it unless told otherwise, which\n      // surprises everyone once. When rendering as something else, the type\n      // belongs to the caller.\n      type={asChild ? type : (type ?? 'button')}\n      className={cn(buttonVariants({ variant, size }), className)}\n      {...props}\n    />\n  )\n}\n"
+    }
+  ]
+}

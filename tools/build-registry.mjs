@@ -17,8 +17,8 @@
  * Output goes to the docs site, so the registry is served from the same place
  * as the documentation that explains it.
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { basename, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { lineProducts } from '../packages/dowel/src/line.ts'
 
@@ -108,7 +108,81 @@ const accentItems = lineProducts.map(({ name, code, accent, colorName }) => ({
   ],
 }))
 
-const items = [themeItem, ...accentItems]
+/*
+ * Components, read from `registry/ui`.
+ *
+ * The entry is derived from the file rather than written beside it: the npm
+ * dependencies are the ones it actually imports, so a component that grows a
+ * dependency and does not declare it - the failure that only shows up in
+ * someone else's install - cannot happen.
+ */
+const componentDir = resolve(root, 'registry/ui')
+
+/*
+ * The version of the package a component needs.
+ *
+ * A component imports `cn` from `dowel-ui`, and a bare `dowel-ui` in the
+ * dependency list installs whatever is latest - which, at the moment a
+ * component gains an API, is the version that does not have it yet. Installing
+ * Button on the day it was written failed exactly that way: `Module
+ * '"dowel-ui"' has no exported member 'cn'`.
+ *
+ * So the registry pins the version being released alongside it. `^` because a
+ * later minor still has the API; the floor is what matters.
+ */
+const packageVersion = JSON.parse(
+  readFileSync(resolve(root, 'packages/dowel/package.json'), 'utf8'),
+).version
+
+/** npm packages a source file imports, ignoring its own siblings. */
+function npmDependencies(source) {
+  const specifiers = [...source.matchAll(/from\s+'([^']+)'/g)].map((match) => match[1])
+  return [
+    ...new Set(
+      specifiers
+        .filter((name) => !name.startsWith('.'))
+        // React is a peer of any React component and is always already there;
+        // declaring it would reinstall it in every consumer.
+        .filter((name) => name !== 'react' && name !== 'react-dom')
+        // Scoped packages keep both segments: `@radix-ui/react-slot`.
+        .map((name) => (name.startsWith('@') ? name.split('/').slice(0, 2).join('/') : name.split('/')[0])),
+    ),
+  ]
+    .sort()
+    .map((name) => (name === 'dowel-ui' ? `dowel-ui@^${packageVersion}` : name))
+}
+
+const componentItems = readdirSync(componentDir)
+  .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
+  .map((file) => {
+    const name = basename(file, '.tsx')
+    const content = readFileSync(resolve(componentDir, file), 'utf8').replace(/\r\n/g, '\n')
+    const title = name.charAt(0).toUpperCase() + name.slice(1)
+
+    // The first paragraph of the file's own block comment, so the description
+    // and the code cannot disagree about what the component is for.
+    const doc = content.match(/\/\*\n \* [A-Z][^\n]*\n \*\n \* ([\s\S]*?)\.\n/)
+    const description = doc ? `${doc[1].replace(/\n \* /g, ' ').trim()}.` : `The ${name} primitive.`
+
+    return {
+      $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+      name,
+      type: 'registry:ui',
+      title,
+      description,
+      dependencies: npmDependencies(content),
+      files: [
+        {
+          path: `ui/${file}`,
+          target: `@ui/${file}`,
+          type: 'registry:ui',
+          content,
+        },
+      ],
+    }
+  })
+
+const items = [themeItem, ...accentItems, ...componentItems]
 
 mkdirSync(outDir, { recursive: true })
 

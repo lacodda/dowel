@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { lineProducts } from '../packages/dowel/src/line'
@@ -113,13 +113,17 @@ describe('every item', () => {
   })
 
   it('writes only inside the consumer project', () => {
-    // `~/` is the project root. A target that climbed out of it would write
-    // into someone's home directory.
+    // Two safe forms. `~/` is the project root, for files that have no
+    // conventional home - the theme, the accents. `@ui/` and its siblings are
+    // shadcn's aliases, resolved from the consumer's own `components.json`,
+    // which is where a component belongs: whatever directory that project
+    // already keeps its components in.
+    const safe = /^(~|@components|@ui|@lib|@hooks)\//
     for (const item of items) {
       for (const file of item.files ?? []) {
         expect(file.target, `\`${item.name}\` has a file with no target`).toBeDefined()
-        expect(file.target!.startsWith('~/'), `\`${item.name}\` writes outside the project`).toBe(true)
-        expect(file.target).not.toContain('..')
+        expect(safe.test(file.target!), `\`${item.name}\` writes to \`${file.target}\``).toBe(true)
+        expect(file.target, `\`${item.name}\` climbs out of the project`).not.toContain('..')
       }
     }
   })
@@ -132,6 +136,39 @@ describe('every item', () => {
     for (const item of items) {
       expect(item.registryDependencies ?? [], `\`${item.name}\` depends on a remote item`).toEqual([])
     }
+  })
+})
+
+describe('every component is four files', () => {
+  // A component here is the component, a test, a page on the stand and the
+  // demo island that page renders. Miss one and it half-exists: untested, or
+  // undocumented, or documented by a screenshot that will drift. This is the
+  // rule `pnpm new-component` exists to keep, and rules like that decay.
+  const components = readdirSync(resolve(root, 'registry/ui'))
+    .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
+    .map((file) => file.replace(/\.tsx$/, ''))
+
+  it('has at least one', () => {
+    expect(components.length).toBeGreaterThan(0)
+  })
+
+  it.each(components)('%s has a test', (name) => {
+    expect(existsSync(resolve(root, `registry/ui/${name}.test.tsx`))).toBe(true)
+  })
+
+  it.each(components)('%s has a page on the stand', (name) => {
+    expect(existsSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`))).toBe(true)
+  })
+
+  it.each(components)('%s shows itself in both themes', (name) => {
+    // The page has to actually render the component, not just describe it.
+    const page = readFileSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`), 'utf8')
+    expect(page, `\`${name}\` has no stand`).toContain('<Stand')
+    expect(page, `\`${name}\` is never hydrated - the stand would be dead markup`).toContain('client:load')
+  })
+
+  it.each(components)('%s is in the registry', (name) => {
+    expect(items.map((item) => item.name)).toContain(name)
   })
 })
 

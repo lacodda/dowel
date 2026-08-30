@@ -1,0 +1,88 @@
+---
+/*
+ * A stand: one live example, drawn in both themes side by side.
+ *
+ * The components are real - the same files a consumer installs, imported from
+ * the registry source next door and hydrated in the browser. A screenshot
+ * would be easier and would drift the first time a token changed.
+ *
+ * Each half pins a theme on the container, so both are on one page. That is
+ * the point: a variant that works in the dark and disappears in the light is
+ * the mistake this catches, and it only shows when they are next to each other.
+ */
+import { scopedTheme } from '../lib/theme-scope'
+
+interface Props {
+  /** What this example shows. */
+  caption?: string
+  /** The product accent to draw in, as a hex value. Defaults to dowel's. */
+  accent?: string
+}
+
+const { caption, accent } = Astro.props
+const accentStyle = accent ? `--accent-base: ${accent}` : undefined
+---
+
+<style is:global set:html={scopedTheme}></style>
+
+{caption && <p class="stand-caption">{caption}</p>}
+
+<div class="stand">
+  {
+    (['dark', 'light'] as const).map((mode) => (
+      <div class:list={['dowel-theme', mode, 'stand-half']} style={accentStyle}>
+        <span class="stand-mode">{mode}</span>
+        <div class="stand-body">
+          <slot />
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .stand-caption {
+    margin-bottom: 0.5rem;
+    color: var(--sl-color-gray-3);
+  }
+
+  .stand {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stand-half {
+    position: relative;
+    padding: 1.1rem 1rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.4rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+  }
+
+  .stand-mode {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.5rem;
+    color: var(--faint);
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caption);
+  }
+
+  .stand-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 40rem) {
+    .stand {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

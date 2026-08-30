@@ -2,9 +2,20 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+	vite: {
+		plugins: [tailwindcss()],
+		resolve: {
+			alias: {
+				// What a copied component imports; here it is the source next door.
+				'dowel-ui': new URL('../packages/dowel/src/index.ts', import.meta.url).pathname,
+			},
+		},
+	},
 	site: 'https://lacodda.github.io',
 	base: '/dowel',
 	integrations: [
@@ -16,7 +27,7 @@ export default defineConfig({
 				alt: 'dowel',
 			},
 			favicon: '/favicon.svg',
-			customCss: ['./src/styles/brand.css'],
+			customCss: ['./src/styles/stand.css', './src/styles/brand.css'],
 			head: [
 				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/dowel/apple-touch-icon.png' } },
 				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://raw.githubusercontent.com/lacodda/dowel/main/assets/social-preview.png' } },
@@ -28,6 +39,10 @@ export default defineConfig({
 			},
 			sidebar: [
 				{ label: 'Getting Started', slug: 'getting-started' },
+				{
+					label: 'Components',
+					items: [{ autogenerate: { directory: 'components' } }],
+				},
 				{
 					label: 'Guides',
 					items: [{ autogenerate: { directory: 'guides' } }],
@@ -43,5 +58,6 @@ export default defineConfig({
 			],
 		}),
 		mdx(),
+		react(),
 	],
 });

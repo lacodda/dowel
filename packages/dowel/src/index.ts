@@ -15,6 +15,7 @@
  * is copied into the product and becomes the product's own code.
  */
 
+export { cn } from './cn.js'
 export { lineProducts, lineProduct, type LineProduct } from './line.js'
 export {
   defaultStorageKey,

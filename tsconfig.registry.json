@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "paths": { "dowel-ui": ["./packages/dowel/src/index.ts"] }
+  },
+  "include": ["registry/**/*.tsx", "registry/**/*.ts"]
+}

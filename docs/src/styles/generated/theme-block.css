@@ -1,0 +1,118 @@
+/* Generated from packages/dowel/src/theme.css - do not edit. */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-raise: var(--raise);
+  --color-soft: var(--soft);
+  --color-softer: var(--softer);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-text: var(--text);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  /* Kept because they are not palette choices: a hairline is `transparent`,
+   * an SVG follows `currentColor`, and pure black and white are what an
+   * overlay scrim and a print sheet are made of. */
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #fff;
+  --color-black: #000;
+
+  /*
+   * Type. System stacks on purpose: a downloaded face costs a network round
+   * trip before the first word appears, and the line's products are desktop
+   * tools where the operating system's own face is the one the user already
+   * reads everything else in.
+   */
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+
+  /*
+   * Radius. Taken from what the products actually draw, not from a ratio:
+   * `rounded-[9px]` appears twenty times and `rounded-[10px]` twelve, because
+   * a control and the primary button were tuned by eye and then copied. The
+   * scale keeps the cluster they landed in and gives it names.
+   *
+   * `md` is the control radius - inputs, buttons, list rows. That the primary
+   * button was one pixel rounder than every other variant is not preserved:
+   * the products differ from themselves there, and buttons of the same size
+   * sitting side by side should not have mismatched corners.
+   */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /*
+   * A radius nested inside another has to be smaller by the gap between them,
+   * or the inner corner looks wrong against the outer one. The products did
+   * this by hand once - 18px outside, 17px inside - and nowhere else.
+   */
+  --radius-inner: calc(var(--radius-lg) - 1px);
+
+  /*
+   * Type scale. The products live between 10px and 14px: `text-sm` and
+   * `text-xs` together account for nine tenths of every size in both, and the
+   * rest scattered across 9, 9.5, 10, 10.5, 11, 11.5, 12.5 and 13 - nine steps
+   * inside four pixels, which no eye distinguishes and no reason justifies.
+   * This is the same range with the noise removed.
+   */
+  --text-2xs: 10px;
+  --text-2xs--line-height: 14px;
+  --text-xs: 11px;
+  --text-xs--line-height: 15px;
+  --text-sm: 12px;
+  --text-sm--line-height: 16px;
+  --text-base: 14px;
+  --text-base--line-height: 20px;
+  --text-lg: 16px;
+  --text-lg--line-height: 22px;
+  --text-xl: 18px;
+  --text-xl--line-height: 24px;
+  --text-2xl: 21px;
+  --text-2xl--line-height: 28px;
+
+  /* Weights. `semibold` is what both products use for anything emphasised;
+   * `bold` appears in neither, and the one `font-[650]` in a page title is the
+   * kind of value a scale exists to absorb. */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Tracking. The uppercase caption is the only place the products track at
+   * all - and they do it at 0.08em in six files and 0.09em in three, a
+   * difference nobody can see. One name settles it. */
+  --tracking-caption: 0.085em;
+  --tracking-tight: -0.01em;
+
+  /* Easing. `out` for anything the user asked for - it arrives fast and
+   * settles, which reads as responsive. `in-out` for something moving on its
+   * own. `in` is deliberately absent: it starts slowly, which on a control
+   * reads as lag. */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /*
+   * Elevation. Three steps, because the products had one and used it for a
+   * toast, a dropdown and a modal alike - so a modal never sat further from
+   * the page than the menu it covered.
+   */
+  --shadow-lift: var(--shadow-lift);
+  --shadow-raise: var(--shadow-raise);
+  --shadow-float: var(--shadow-float);
+}
