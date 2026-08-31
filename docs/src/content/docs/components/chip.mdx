@@ -25,7 +25,9 @@ announce.
 </Chip>
 ```
 
-**`removeLabel` is yours.** A primitive with a string of its own cannot be
+**`removeLabel` is yours, and required.** The two props travel together in the
+type: a remove button exists only where there is a word for it, so a chip that
+can be removed but not named will not compile. A primitive with a string of its own cannot be
 translated, so the word for "remove" comes from the product.
 
 **The remove click does not reach what the chip sits in.** Chips usually live
@@ -38,5 +40,5 @@ also open the row it was on.
 | --- | --- | --- | --- |
 | `variant` | `outline \| accent \| soft` | `outline` | |
 | `count` | `number` | | Shown after the label |
-| `onRemove` | `() => void` | | Makes the chip removable |
-| `removeLabel` | `string` | `'Remove'` | What the remove button is called |
+| `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
+| `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |

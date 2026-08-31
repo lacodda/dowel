@@ -38,23 +38,30 @@ export interface ChipProps
     Omit<VariantProps<typeof chipVariants>, 'removable'> {
   /** Shown after the label, for a count. */
   count?: number
-  /** Makes the chip removable. The button is labelled from `removeLabel`. */
-  onRemove?: () => void
-  /** What the remove button is called, for the keyboard and the screen reader.
-   * A component cannot invent this: it would be a string of its own, and a
-   * string of its own cannot be translated. */
-  removeLabel?: string
 }
+
+/*
+ * Removable, or not - and if removable, named.
+ *
+ * The two props travel together as a union rather than as two optionals, so
+ * the type says what the component means: a remove button exists only when
+ * there is a word for it. There is no default word on purpose. A string the
+ * component invents is a string the product cannot translate, and it would
+ * ship in English to every reader who does not read English.
+ */
+type Removable =
+  | { onRemove: () => void; removeLabel: string }
+  | { onRemove?: never; removeLabel?: never }
 
 export function Chip({
   variant,
   count,
   onRemove,
-  removeLabel = 'Remove',
+  removeLabel,
   className,
   children,
   ...props
-}: ChipProps) {
+}: ChipProps & Removable) {
   return (
     <span className={cn(chipVariants({ variant, removable: Boolean(onRemove) }), className)} {...props}>
       {children}

@@ -289,8 +289,10 @@ function ChipSection() {
 
       <Row label="with a count, and removable">
         <Chip count={12}>tags</Chip>
-        <Chip onRemove={() => {}}>removable</Chip>
-        <Chip variant="accent" count={3} onRemove={() => {}}>
+        <Chip onRemove={() => {}} removeLabel="Remove tag">
+          removable
+        </Chip>
+        <Chip variant="accent" count={3} onRemove={() => {}} removeLabel="Remove tag">
           both
         </Chip>
       </Row>
@@ -365,14 +367,14 @@ function CopyableSection() {
   return (
     <>
       <Row label="click to copy">
-        <Copyable>7f3c9a2</Copyable>
-        <Copyable value="/very/long/path/to/the/actual/file.txt">/very/long/…/file.txt</Copyable>
+        <Copyable label="Copy" copiedLabel="Copied">7f3c9a2</Copyable>
+        <Copyable value="/very/long/path/to/the/actual/file.txt" label="Copy" copiedLabel="Copied">/very/long/…/file.txt</Copyable>
       </Row>
 
       <Row label="in a row of its own, as an id usually is">
         <Panel className="w-full p-3">
           <SectionLabel className="mb-2">Session</SectionLabel>
-          <Copyable>0177BynFdagmBzF7jKoH3wxx</Copyable>
+          <Copyable label="Copy" copiedLabel="Copied">0177BynFdagmBzF7jKoH3wxx</Copyable>
         </Panel>
       </Row>
     </>

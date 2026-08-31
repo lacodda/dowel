@@ -23,11 +23,14 @@ export interface CopyableProps extends Omit<HTMLAttributes<HTMLButtonElement>, '
   value?: string
   /** The visible text. */
   children: string
-  /** What the button is called, for a screen reader. The product's word: a
-   * primitive with a string of its own cannot be translated. */
-  label?: string
-  /** What is announced after a successful copy. */
-  copiedLabel?: string
+  /** What the button is called, for a screen reader. Required, and
+   * deliberately without a default: a string the component invents is a
+   * string the product cannot translate, and it would ship in English to
+   * every reader who does not read English. */
+  label: string
+  /** What is announced after a successful copy. Required for the same
+   * reason. */
+  copiedLabel: string
   /** Told what happened, for a product that wants its own toast. */
   onCopy?: (ok: boolean) => void
 }
@@ -35,8 +38,8 @@ export interface CopyableProps extends Omit<HTMLAttributes<HTMLButtonElement>, '
 export function Copyable({
   value,
   children,
-  label = 'Copy',
-  copiedLabel = 'Copied',
+  label,
+  copiedLabel,
   onCopy,
   className,
   ...props

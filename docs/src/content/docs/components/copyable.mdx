@@ -27,10 +27,21 @@ permission; a button that looks like it worked and did not is worse than one
 that admits it failed.
 
 ```tsx
-<Copyable value={commit.sha} onCopy={(ok) => ok || toast(t('copy.failed'))}>
+<Copyable
+  value={commit.sha}
+  label={t('copy')}
+  copiedLabel={t('copied')}
+  onCopy={(ok) => ok || toast(t('copy.failed'))}
+>
   {commit.short}
 </Copyable>
 ```
+
+**Both labels are required, on purpose.** They are what a screen reader
+announces, and a default would be an English word this component invented —
+one the product's translations never reach. Requiring them means a product
+that forgets fails to compile rather than shipping English to a reader who
+does not read it.
 
 ## Props
 
@@ -38,6 +49,6 @@ that admits it failed.
 | --- | --- | --- | --- |
 | `children` | `string` | | The visible text |
 | `value` | `string` | the text | What lands on the clipboard, if different |
-| `label` | `string` | `'Copy'` | What the button is called |
-| `copiedLabel` | `string` | `'Copied'` | What is announced after a copy |
+| `label` | `string` | **required** | What the button is called |
+| `copiedLabel` | `string` | **required** | What is announced after a copy |
 | `onCopy` | `(ok: boolean) => void` | | Told what happened |
