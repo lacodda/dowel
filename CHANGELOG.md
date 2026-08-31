@@ -2,11 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.6.1] - 2026-08-31
+
+### Bug Fixes
+- Give every status fill a legible partner
+
 ## [0.6.0] - 2026-08-31
 
 ### Bug Fixes
 - Name a sibling component by its URL
 - Let black and white through when they carry an opacity
+- Build the plugin before linting with it
 
 ### Features
 - Ship the rule that keeps colour out of components
