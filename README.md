@@ -90,6 +90,18 @@ Each is written in the vocabulary - no raw colours, no `dark:` utilities - so
 the same component is correct in both themes and in every product's accent.
 Every one of them is on [the stand](https://lacodda.github.io/dowel/stand/), live - change the theme and the accent and watch what follows.
 
+That convention is a lint rule, and it ships with the package:
+
+```js
+// eslint.config.js
+import dowel from 'dowel-ui/eslint'
+
+export default [...dowel.configs.recommended]
+```
+
+It reports a hex, an `rgb()`, a stock Tailwind colour, `bg-white`, and any
+`dark:` utility, in the file that wrote one - see [the guide](https://lacodda.github.io/dowel/guides/linting/).
+
 Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
 
 ## Roadmap
@@ -109,7 +121,7 @@ Development goes in versions; each one is a single coherent theme, and ends in a
 ## Documentation
 
 - [The stand](https://lacodda.github.io/dowel/stand/) - every component, live
-- [Getting started](https://lacodda.github.io/dowel/getting-started/)
+- [Getting started](https://lacodda.github.io/dowel/getting-started/) and [the lint rule](https://lacodda.github.io/dowel/guides/linting/)
 - [Components](https://lacodda.github.io/dowel/components/button/)
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
 

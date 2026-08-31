@@ -19,7 +19,8 @@
     "react",
     "tailwindcss",
     "shadcn",
-    "registry"
+    "registry",
+    "eslint-plugin"
   ],
   "sideEffects": [
     "*.css"
@@ -33,6 +34,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./eslint": {
+      "types": "./dist/eslint/index.d.ts",
+      "import": "./dist/eslint/index.js"
+    },
     "./theme.css": "./dist/theme.css",
     "./tokens.json": "./dist/tokens.json",
     "./accents/*.css": "./dist/accents/*.css"
@@ -44,7 +49,8 @@
   },
   "peerDependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "eslint": "^9.0.0 || ^10.0.0"
   },
   "devDependencies": {
     "@radix-ui/react-slot": "^1.3.3",
@@ -52,6 +58,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "class-variance-authority": "^0.7.1",
+    "eslint": "^10.9.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
@@ -62,5 +69,10 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.6.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    }
   }
 }
