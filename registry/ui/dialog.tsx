@@ -80,6 +80,12 @@ export interface DialogPopupProps
    * element to put it somewhere else - inside a dialog that is already open,
    * or into a container being screenshotted. */
   container?: Base.Portal.Props['container']
+  /** Whether to draw the scrim. On by default, and it should stay on for
+   * anything a person actually uses: the dim is what says the page behind is
+   * out of reach. Turn it off where the popup is shown alongside other things
+   * on purpose - a component gallery, a screenshot - because a scrim is
+   * `position: fixed` and covers everything, not only its own container. */
+  backdrop?: boolean
 }
 
 /** The dialog itself. Portalled, so it is not clipped by whatever it was
@@ -87,13 +93,14 @@ export interface DialogPopupProps
 export function DialogPopup({
   size,
   container,
+  backdrop = true,
   className,
   children,
   ...props
 }: DialogPopupProps) {
   return (
     <Base.Portal container={container}>
-      <DialogBackdrop />
+      {backdrop && <DialogBackdrop />}
       <Base.Popup
         className={cn(dialogPopupVariants({ size }), '[z-index:var(--z-modal)]', className)}
         {...props}

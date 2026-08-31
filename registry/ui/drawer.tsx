@@ -119,14 +119,27 @@ export interface DrawerPopupProps
    * somewhere else - inside an overlay that is already open, or into a
    * container being screenshotted. */
   container?: Base.Portal.Props['container']
+  /** Whether to draw the scrim. On by default, and it should stay on for
+   * anything a person actually uses: the dim is what says the page behind is
+   * out of reach. Turn it off where the popup is shown alongside other things
+   * on purpose - a component gallery, a screenshot - because a scrim is
+   * `position: fixed` and covers everything, not only its own container. */
+  backdrop?: boolean
 }
 
 /** The panel. Portalled, and wrapped in its own viewport so the edge it is
  * pinned to holds still while the contents scroll. */
-export function DrawerPopup({ container, side, className, children, ...props }: DrawerPopupProps) {
+export function DrawerPopup({
+  container,
+  backdrop = true,
+  side,
+  className,
+  children,
+  ...props
+}: DrawerPopupProps) {
   return (
     <Base.Portal container={container}>
-      <DrawerBackdrop />
+      {backdrop && <DrawerBackdrop />}
       <div className={cn(drawerViewportVariants({ side }), '[z-index:var(--z-modal)]')}>
         <Base.Viewport className="flex w-full">
           <Base.Popup

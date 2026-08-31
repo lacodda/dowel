@@ -6,24 +6,30 @@ import { Chip } from '../../registry/ui/chip'
 import {
   ConfirmDialog,
   ConfirmDialogActions,
+  ConfirmDialogClose,
   ConfirmDialogDescription,
   ConfirmDialogPopup,
   ConfirmDialogTitle,
+  ConfirmDialogTrigger,
 } from '../../registry/ui/confirm-dialog'
 import { Copyable } from '../../registry/ui/copyable'
 import {
   Dialog,
   DialogActions,
+  DialogClose,
   DialogDescription,
   DialogPopup,
   DialogTitle,
+  DialogTrigger,
 } from '../../registry/ui/dialog'
 import {
   Drawer,
   DrawerActions,
+  DrawerClose,
   DrawerDescription,
   DrawerPopup,
   DrawerTitle,
+  DrawerTrigger,
 } from '../../registry/ui/drawer'
 import { Input } from '../../registry/ui/input'
 import { Kbd } from '../../registry/ui/kbd'
@@ -457,169 +463,132 @@ function Dots() {
 /*
  * The overlays.
  *
- * An overlay that is closed is nothing to look at, and the stand exists to be
- * looked at - so these are held open, and portalled into their own section
- * rather than into the body. Both are what `container` is for: without it the
- * popup would land at the end of the document, outside the section, and the
- * screenshot of the section would be of an empty box.
+ * These are shown the way they are used - closed, behind a trigger - and not
+ * held open. Holding one open was the first attempt and it was wrong twice
+ * over: a scrim is `position: fixed`, so one open dialog dims every section of
+ * the stand below it, and a popup positioned against the viewport does not
+ * stay inside a container just because it was portalled into one.
  *
- * The scrim is left off in this state on purpose. It covers the page, and a
- * page-covering scrim in a stand of ten sections is a stand with one visible
- * section.
+ * What a picture of an overlay would prove is small anyway - a box with a
+ * border and a shadow. What actually matters about them is behaviour, and
+ * behaviour is what the tests hold: the focus trap, the return of focus,
+ * Escape, the name a screen reader reads. Clicking a trigger here shows the
+ * real thing, in the real place, with the real scrim.
  */
-
-/** A section that holds its overlay open, inside itself. */
-function OverlayStage({ children }: { children: (host: HTMLElement | null) => React.ReactNode }) {
-  const [host, setHost] = useState<HTMLElement | null>(null)
-  return (
-    <div ref={setHost} className="relative min-h-56 overflow-hidden rounded-lg border border-line bg-bg p-4">
-      {host !== null && children(host)}
-    </div>
-  )
-}
 
 function DialogSection() {
   return (
-    <>
-      <Row label="open, in place">
-        <OverlayStage>
-          {(host) => (
-            <Dialog open>
-              <DialogPopup container={host} className="absolute">
-                <DialogTitle>Delete the draft?</DialogTitle>
-                <DialogDescription>
-                  The version stays in the history. Only this draft goes.
-                </DialogDescription>
-                <DialogActions>
-                  <Button>Cancel</Button>
-                  <Button variant="danger">Delete</Button>
-                </DialogActions>
-              </DialogPopup>
-            </Dialog>
-          )}
-        </OverlayStage>
-      </Row>
-    </>
+    <Row label="click to open">
+      <Dialog>
+        <DialogTrigger render={<Button variant="primary" />}>Delete the draft</DialogTrigger>
+        <DialogPopup>
+          <DialogTitle>Delete the draft?</DialogTitle>
+          <DialogDescription>
+            The version stays in the history. Only this draft goes.
+          </DialogDescription>
+          <DialogActions>
+            <Button render={<DialogClose />}>Cancel</Button>
+            <Button variant="danger" render={<DialogClose />}>
+              Delete
+            </Button>
+          </DialogActions>
+        </DialogPopup>
+      </Dialog>
+    </Row>
   )
 }
 
 function ConfirmDialogSection() {
   return (
-    <>
-      <Row label="open, in place - clicking away does not dismiss it">
-        <OverlayStage>
-          {(host) => (
-            <ConfirmDialog open>
-              <ConfirmDialogPopup container={host} className="absolute">
-                <ConfirmDialogTitle>Revoke the key?</ConfirmDialogTitle>
-                <ConfirmDialogDescription>
-                  Every machine using it loses access at once. This cannot be undone.
-                </ConfirmDialogDescription>
-                <ConfirmDialogActions>
-                  <Button>Keep it</Button>
-                  <Button variant="danger">Revoke</Button>
-                </ConfirmDialogActions>
-              </ConfirmDialogPopup>
-            </ConfirmDialog>
-          )}
-        </OverlayStage>
-      </Row>
-    </>
+    <Row label="click to open - clicking away will not dismiss it">
+      <ConfirmDialog>
+        <ConfirmDialogTrigger render={<Button variant="danger" />}>Revoke the key</ConfirmDialogTrigger>
+        <ConfirmDialogPopup>
+          <ConfirmDialogTitle>Revoke the key?</ConfirmDialogTitle>
+          <ConfirmDialogDescription>
+            Every machine using it loses access at once. This cannot be undone.
+          </ConfirmDialogDescription>
+          <ConfirmDialogActions>
+            <Button render={<ConfirmDialogClose />}>Keep it</Button>
+            <Button variant="danger" render={<ConfirmDialogClose />}>
+              Revoke
+            </Button>
+          </ConfirmDialogActions>
+        </ConfirmDialogPopup>
+      </ConfirmDialog>
+    </Row>
   )
 }
 
 function DrawerSection() {
   return (
-    <>
-      <Row label="from the right">
-        <OverlayStage>
-          {(host) => (
-            <Drawer open>
-              <DrawerPopup container={host} side="right" className="absolute">
-                <DrawerTitle>Settings</DrawerTitle>
-                <DrawerDescription>What this profile calls things.</DrawerDescription>
-                <DrawerActions>
-                  <Button>Close</Button>
-                  <Button variant="primary">Save</Button>
-                </DrawerActions>
-              </DrawerPopup>
-            </Drawer>
-          )}
-        </OverlayStage>
-      </Row>
+    <Row label="from an edge">
+      <Drawer>
+        <DrawerTrigger render={<Button variant="ghost" />}>From the right</DrawerTrigger>
+        <DrawerPopup side="right">
+          <DrawerTitle>Settings</DrawerTitle>
+          <DrawerDescription>What this profile calls things.</DrawerDescription>
+          <DrawerActions>
+            <Button render={<DrawerClose />}>Close</Button>
+            <Button variant="primary" render={<DrawerClose />}>
+              Save
+            </Button>
+          </DrawerActions>
+        </DrawerPopup>
+      </Drawer>
 
-      <Row label="from the bottom">
-        <OverlayStage>
-          {(host) => (
-            <Drawer open>
-              <DrawerPopup container={host} side="bottom" className="absolute">
-                <DrawerTitle>Add a version</DrawerTitle>
-                <DrawerDescription>Paste the text, or drop a file.</DrawerDescription>
-              </DrawerPopup>
-            </Drawer>
-          )}
-        </OverlayStage>
-      </Row>
-    </>
+      <Drawer>
+        <DrawerTrigger render={<Button variant="ghost" />}>From the bottom</DrawerTrigger>
+        <DrawerPopup side="bottom">
+          <DrawerTitle>Add a version</DrawerTitle>
+          <DrawerDescription>Paste the text, or drop a file.</DrawerDescription>
+          <DrawerActions>
+            <Button render={<DrawerClose />}>Close</Button>
+          </DrawerActions>
+        </DrawerPopup>
+      </Drawer>
+    </Row>
   )
 }
 
 function PopoverSection() {
   return (
-    <>
-      <Row label="click the trigger">
-        <Popover>
-          <PopoverTrigger render={<Button variant="ghost" />}>Filters</PopoverTrigger>
-          <PopoverPopup>
-            <PopoverTitle>Filters</PopoverTitle>
-            <PopoverDescription>Narrow the list without leaving it.</PopoverDescription>
-            <div className="mt-3 flex gap-2">
-              <Chip variant="accent">drafts</Chip>
-              <Chip>scored</Chip>
-            </div>
-          </PopoverPopup>
-        </Popover>
-      </Row>
-
-      <Row label="open, in place">
-        <OverlayStage>
-          {(host) => (
-            <Popover open>
-              <PopoverTrigger render={<Button variant="ghost" />}>Filters</PopoverTrigger>
-              <PopoverPopup container={host}>
-                <PopoverTitle>Filters</PopoverTitle>
-                <PopoverDescription>Narrow the list without leaving it.</PopoverDescription>
-              </PopoverPopup>
-            </Popover>
-          )}
-        </OverlayStage>
-      </Row>
-    </>
+    <Row label="click to open - the page stays usable behind it">
+      <Popover>
+        <PopoverTrigger render={<Button variant="ghost" />}>Filters</PopoverTrigger>
+        <PopoverPopup>
+          <PopoverTitle>Filters</PopoverTitle>
+          <PopoverDescription>Narrow the list without leaving it.</PopoverDescription>
+          <div className="mt-3 flex gap-2">
+            <Chip variant="accent">drafts</Chip>
+            <Chip>scored</Chip>
+          </div>
+        </PopoverPopup>
+      </Popover>
+    </Row>
   )
 }
 
 function PreviewCardSection() {
   return (
-    <>
-      <Row label="hover the link">
-        <p className="text-sm text-dim">
-          The score came from{' '}
-          <PreviewCard>
-            <PreviewCardTrigger render={<a href="#preview-card" className="text-accent" />}>
-              the seven axes
-            </PreviewCardTrigger>
-            <PreviewCardPopup>
-              <div className="text-sm font-semibold text-text">The seven axes</div>
-              <p className="mt-1 text-xs text-dim">
-                Hook, lyric, arrangement, mix, voice, novelty, fit. Each is scored on its
-                own, and the tier follows from all seven.
-              </p>
-            </PreviewCardPopup>
-          </PreviewCard>
-          , not from a single number.
-        </p>
-      </Row>
-    </>
+    <Row label="hover the link">
+      <p className="text-sm text-dim">
+        The score came from{' '}
+        <PreviewCard>
+          <PreviewCardTrigger render={<a href="#preview-card" className="text-accent" />}>
+            the seven axes
+          </PreviewCardTrigger>
+          <PreviewCardPopup>
+            <div className="text-sm font-semibold text-text">The seven axes</div>
+            <p className="mt-1 text-xs text-dim">
+              Hook, lyric, arrangement, mix, voice, novelty, fit. Each is scored on its own,
+              and the tier follows from all seven.
+            </p>
+          </PreviewCardPopup>
+        </PreviewCard>
+        , not from a single number.
+      </p>
+    </Row>
   )
 }
 
@@ -640,19 +609,6 @@ function TooltipSection() {
           </TooltipTrigger>
           <TooltipPopup>Add a version</TooltipPopup>
         </Tooltip>
-      </Row>
-
-      <Row label="open, in place">
-        <OverlayStage>
-          {(host) => (
-            <Tooltip open>
-              <TooltipTrigger render={<Button variant="icon" size="icon-md" aria-label="Delete" />}>
-                <Dots />
-              </TooltipTrigger>
-              <TooltipPopup container={host}>Delete</TooltipPopup>
-            </Tooltip>
-          )}
-        </OverlayStage>
       </Row>
     </TooltipProvider>
   )

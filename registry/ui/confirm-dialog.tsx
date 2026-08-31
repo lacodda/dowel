@@ -83,6 +83,12 @@ export interface ConfirmDialogPopupProps
    * somewhere else - inside an overlay that is already open, or into a
    * container being screenshotted. */
   container?: Base.Portal.Props['container']
+  /** Whether to draw the scrim. On by default, and it should stay on for
+   * anything a person actually uses: the dim is what says the page behind is
+   * out of reach. Turn it off where the popup is shown alongside other things
+   * on purpose - a component gallery, a screenshot - because a scrim is
+   * `position: fixed` and covers everything, not only its own container. */
+  backdrop?: boolean
 }
 
 /** The dialog itself, announced as `alertdialog`. Portalled, so it is not
@@ -90,13 +96,14 @@ export interface ConfirmDialogPopupProps
 export function ConfirmDialogPopup({
   size,
   container,
+  backdrop = true,
   className,
   children,
   ...props
 }: ConfirmDialogPopupProps) {
   return (
     <Base.Portal container={container}>
-      <ConfirmDialogBackdrop />
+      {backdrop && <ConfirmDialogBackdrop />}
       <Base.Popup
         className={cn(
           confirmDialogPopupVariants({ size }),
