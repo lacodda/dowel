@@ -28,8 +28,9 @@ describe('findRawColor', () => {
     ['hover:text-red-500/50', 'a stock colour behind a variant and an opacity'],
     ['dark:bg-neutral-900', 'a dark: utility'],
     ['flex items-center dark:text-text', 'a dark: utility mid-string'],
-    ['bg-white', 'absolute white'],
-    ['text-black/60', 'absolute black with opacity'],
+    ['bg-white', 'opaque white'],
+    ['text-black', 'opaque black'],
+    ['hover:text-white', 'opaque white behind a variant'],
   ]
 
   for (const [text, what] of rejected) {
@@ -46,6 +47,13 @@ describe('findRawColor', () => {
     // The theme's own derivation, which is how a token is allowed to be built.
     'color-mix(in oklab, var(--accent-base) 16%, transparent)',
     'oklch(from var(--accent-base) 0.5 c h)',
+    // Translucent black and white, which are not theme colours that failed to
+    // be named: a scrim is made of black, and a label over a picture is made
+    // of white, whatever the theme does. kilna had eleven of these and every
+    // one was correct - which is how this exemption was found.
+    'fixed inset-0 bg-black/50 backdrop-blur-[2px]',
+    'shrink-0 text-white/50 hover:text-white/80',
+    'rounded-[4px] bg-black/35 px-0.5 py-px',
     // Words that merely look like the patterns.
     '#section-title',
     'grid-cols-3',
@@ -59,6 +67,15 @@ describe('findRawColor', () => {
       expect(findRawColor(text), `\`${text}\` was reported`).toBeUndefined()
     })
   }
+
+  it('separates an opaque absolute from a translucent one', () => {
+    // The distinction is the whole exemption, and a regex that dropped the
+    // lookahead would still pass every other case in this file.
+    expect(findRawColor('bg-black')).toBeDefined()
+    expect(findRawColor('bg-black/50')).toBeUndefined()
+    expect(findRawColor('text-white')).toBeDefined()
+    expect(findRawColor('text-white/70')).toBeUndefined()
+  })
 
   it('names the theme in the dark: message, not just the colour', () => {
     // The two messages exist because the fixes differ: a stock colour is

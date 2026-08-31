@@ -42,10 +42,20 @@ const STOCK_PALETTE =
 /** A `dark:` variant, anywhere in a class string. */
 const DARK_VARIANT = /(?:^|[\s"'`])dark:/
 
-/** `white` and `black` as Tailwind utilities: `bg-white`, `text-black/60`.
- * They are colours with no name in the vocabulary and no way to follow a
- * theme - white chrome stays white when the ground turns white. */
-const ABSOLUTE = /\b(?:bg|text|border|fill|stroke|ring|outline|divide|shadow|from|via|to)-(?:white|black)\b/
+/*
+ * `white` and `black` as Tailwind utilities, at full opacity: `bg-white`,
+ * `text-black`. They are colours with no name in the vocabulary and no way to
+ * follow a theme - white chrome stays white when the ground turns white.
+ *
+ * With an opacity they are something else, and allowed: `bg-black/50` is a
+ * modal scrim, `text-white/70` is a label over a picture. Neither is a theme
+ * colour that failed to be named - they are what a translucent veil and ink
+ * on an arbitrary image are made of, which is why the theme keeps
+ * `--color-white` and `--color-black` deliberately. The line's first consumer
+ * had eleven of them and every one was right.
+ */
+const ABSOLUTE =
+  /\b(?:bg|text|border|fill|stroke|ring|outline|divide|shadow|from|via|to)-(?:white|black)\b(?!\/)/
 
 interface Finding {
   message: string

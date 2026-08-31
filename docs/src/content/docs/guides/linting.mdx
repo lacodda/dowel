@@ -56,6 +56,19 @@ that silently did not arrive.
 `bg-white` and `text-black` are the same mistake in shorter clothes: white
 chrome stays white when the ground turns white.
 
+With an opacity, though, they are allowed:
+
+```tsx
+// ✓ A scrim is made of black. A caption over a photograph is made of white.
+<div className="fixed inset-0 bg-black/50" />
+<span className="text-white/70">{caption}</span>
+```
+
+Neither is a theme colour that failed to get a name — that is what a
+translucent veil and ink on an arbitrary image are actually made of, which is
+why the theme keeps `--color-white` and `--color-black` on purpose. kilna, the
+first product to run this rule, had eleven of them and every one was right.
+
 ## What it leaves alone
 
 The rule reads string literals in TypeScript and TSX — where a class list is
