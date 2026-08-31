@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.8.0] - 2026-08-31
+
+### Breaking Changes
+
+- **Compose with `render`, and drop Radix**
+`asChild` is replaced by `render`, which takes the
+element instead of a boolean.
+
+  - <Button asChild><a href="/x">Go</a></Button>
+  + <Button render={<a href="/x" />}>Go</Button>
+
+`@radix-ui/react-slot` is no longer a dependency of anything here.
+
+### Features
+- Compose with `render`, and drop Radix
+- Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip
+
+### Testing
+- Pin what this environment can say about the scroll lock
+
 ## [0.7.0] - 2026-08-31
 
 ### Breaking Changes
