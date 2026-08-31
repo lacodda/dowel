@@ -28,6 +28,12 @@ const SECTIONS = [
   'spinner',
   'truncate',
   'copyable',
+  'dialog',
+  'confirm-dialog',
+  'drawer',
+  'popover',
+  'preview-card',
+  'tooltip',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {
