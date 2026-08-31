@@ -2,6 +2,44 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.7.0] - 2026-08-31
+
+### Breaking Changes
+
+- **Require the words Chip and Copyable announce**
+`Copyable` requires `label` and `copiedLabel`, and `Chip`
+requires `removeLabel` alongside `onRemove` - the two now travel together
+in the type, so a chip that can be removed but not named does not compile.
+A primitive with a string of its own cannot be translated: it ships in
+English to every reader who does not read English, and the product's i18n
+never reaches it.
+
+  - <Copyable value={sha}>{short}</Copyable>
+  + <Copyable value={sha} label={t('copy')} copiedLabel={t('copied')}>{short}</Copyable>
+
+  - <Chip onRemove={() => drop(tag)}>{tag}</Chip>
+  + <Chip onRemove={() => drop(tag)} removeLabel={t('remove')}>{tag}</Chip>
+
+Neither component was installed in any product of the line yet, so nothing
+downstream had to change.
+
+### Bug Fixes
+- A missing baseline fails instead of writing itself
+
+### Documentation
+- Record why the lint rule ships with the package
+
+### Features
+- Budget what a primitive costs and forbid words of its own
+- Photograph the stand, and typecheck the gates themselves
+
+### Refactoring
+- Require the words Chip and Copyable announce
+
+### Testing
+- Run axe and the keyboard over every primitive
+- Record the stand baselines
+
 ## [0.6.1] - 2026-08-31
 
 ### Bug Fixes
