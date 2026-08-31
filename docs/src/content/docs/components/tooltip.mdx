@@ -1,0 +1,124 @@
+---
+title: Tooltip
+description: A short visual label for a control with no room for one - on hover and on focus, and never the only place the words appear.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/tooltip.json
+```
+
+The component lands in `components/ui/tooltip.tsx` and is yours to edit.
+
+<Stand component="tooltip" caption="Both widths and the four sides - in either theme, and in the accent of any product of the line." />
+
+## When this and not a Popover
+
+Not size. The line is whether anything inside can be reached.
+
+A **tooltip** holds a phrase: no links, no buttons, no fields. There is no way
+to get into it — it is tied to a trigger that is hovered or focused, and it
+disappears the moment attention moves.
+
+A **Popover** holds things you interact with, whatever its length. If the
+content has a button in it, it is a popover even if it is four words long.
+
+And there is a second question, which matters more:
+
+## It is a visual aid, and only that
+
+Base UI puts no `role="tooltip"` on the popup and no `aria-describedby` on the
+trigger, deliberately. A tooltip cannot be reached on a touch screen and is not
+reliably announced by a screen reader, so the library does not pretend
+otherwise.
+
+**So the trigger must carry its own `aria-label`**, saying roughly what the
+tooltip says. The tooltip serves a sighted mouse or keyboard user; the
+`aria-label` is what everyone else gets.
+
+```tsx
+<TooltipTrigger render={<Button variant="icon" aria-label="Archive" />}>
+  <ArchiveIcon />
+</TooltipTrigger>
+```
+
+If the words are load-bearing — if not reading them means not understanding the
+control — this is the wrong component. Put them inline, or use a Popover with
+`openOnHover` on the trigger, which touch and screen reader users can reach.
+
+## Usage
+
+```tsx
+<TooltipProvider delay={600}>
+  <Tooltip>
+    <TooltipTrigger render={<Button variant="icon" aria-label="Archive" />}>
+      <ArchiveIcon />
+    </TooltipTrigger>
+    <TooltipPopup>Move to the archive</TooltipPopup>
+  </Tooltip>
+</TooltipProvider>
+```
+
+`TooltipPopup` renders its own portal, positioner and arrow.
+
+`TooltipProvider` is optional and shared: once one tooltip in a group has
+opened, the next opens instantly instead of waiting out its delay again. A
+toolbar of icon buttons without it feels broken in a way nobody can name.
+
+## Props
+
+### `Tooltip` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `disabled` | `boolean` | `false` | Turns it off without unmounting it |
+| `open` / `defaultOpen` / `onOpenChange` | | | Controlled, if it has to be |
+
+`delay` is **not** a root prop — it belongs to the trigger, the same as on
+PreviewCard. Passing it here is silently ignored at runtime.
+
+### `TooltipTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
+| `render` | `ReactElement` | | Give it an `aria-label` — the tooltip does not name it |
+
+### `TooltipPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| wide` | `sm` | `sm` caps at 16rem, `wide` at 24rem |
+| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `top` | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | `center` | |
+| `sideOffset` | `number` | `6` | Distance from the trigger, in pixels |
+| `arrow` | `boolean` | `true` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+| Part | | |
+| --- | --- | --- |
+| `TooltipProvider` | | A shared delay for a group. `delay`, `closeDelay`, `timeout` |
+| `TooltipArrow` | | Exported for a popup assembled by hand |
+
+## Notes
+
+**It opens on focus, not only on hover.** This is the half that gets forgotten,
+and forgetting it is invisible: someone tabbing through a row of unlabelled
+icon buttons never hovers anything.
+
+**`Escape` closes it** while the trigger still has focus — the way out for
+someone who can see it covering what they were reading.
+
+**Small text, on purpose.** `text-xs`. It sits over the thing it explains and
+has to be readable without taking the page over.
+
+**`--z-popup`, above everything else.** A tooltip labels whatever is on top of
+it, including the contents of a popover or a dialog, so it has to be able to
+sit above them.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.

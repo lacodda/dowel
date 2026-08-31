@@ -73,12 +73,18 @@ describe('what a primitive drags in', () => {
     badge: ['class-variance-authority'],
     button: ['@base-ui/react', 'class-variance-authority'],
     chip: ['class-variance-authority'],
+    'confirm-dialog': ['@base-ui/react', 'class-variance-authority'],
     copyable: [],
+    dialog: ['@base-ui/react', 'class-variance-authority'],
+    drawer: ['@base-ui/react', 'class-variance-authority'],
     input: [],
     kbd: [],
     panel: ['class-variance-authority'],
+    popover: ['@base-ui/react', 'class-variance-authority'],
+    'preview-card': ['@base-ui/react', 'class-variance-authority'],
     spinner: ['class-variance-authority'],
     textarea: [],
+    tooltip: ['@base-ui/react', 'class-variance-authority'],
     truncate: [],
   }
 

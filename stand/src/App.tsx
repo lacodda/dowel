@@ -3,12 +3,51 @@ import { lineProducts, useThemeSwitch } from 'dowel-ui'
 import { Badge } from '../../registry/ui/badge'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
+import {
+  ConfirmDialog,
+  ConfirmDialogActions,
+  ConfirmDialogDescription,
+  ConfirmDialogPopup,
+  ConfirmDialogTitle,
+} from '../../registry/ui/confirm-dialog'
 import { Copyable } from '../../registry/ui/copyable'
+import {
+  Dialog,
+  DialogActions,
+  DialogDescription,
+  DialogPopup,
+  DialogTitle,
+} from '../../registry/ui/dialog'
+import {
+  Drawer,
+  DrawerActions,
+  DrawerDescription,
+  DrawerPopup,
+  DrawerTitle,
+} from '../../registry/ui/drawer'
 import { Input } from '../../registry/ui/input'
 import { Kbd } from '../../registry/ui/kbd'
+import {
+  Popover,
+  PopoverDescription,
+  PopoverPopup,
+  PopoverTitle,
+  PopoverTrigger,
+} from '../../registry/ui/popover'
+import {
+  PreviewCard,
+  PreviewCardPopup,
+  PreviewCardTrigger,
+} from '../../registry/ui/preview-card'
 import { Panel, SectionLabel } from '../../registry/ui/panel'
 import { Spinner } from '../../registry/ui/spinner'
 import { Textarea } from '../../registry/ui/textarea'
+import {
+  Tooltip,
+  TooltipPopup,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../registry/ui/tooltip'
 import { Truncate } from '../../registry/ui/truncate'
 
 /*
@@ -37,6 +76,22 @@ const sections = [
   { id: 'spinner', title: 'Spinner', docs: '/dowel/components/spinner/', render: () => <SpinnerSection /> },
   { id: 'truncate', title: 'Truncate', docs: '/dowel/components/truncate/', render: () => <TruncateSection /> },
   { id: 'copyable', title: 'Copyable', docs: '/dowel/components/copyable/', render: () => <CopyableSection /> },
+  { id: 'dialog', title: 'Dialog', docs: '/dowel/components/dialog/', render: () => <DialogSection /> },
+  {
+    id: 'confirm-dialog',
+    title: 'ConfirmDialog',
+    docs: '/dowel/components/confirm-dialog/',
+    render: () => <ConfirmDialogSection />,
+  },
+  { id: 'drawer', title: 'Drawer', docs: '/dowel/components/drawer/', render: () => <DrawerSection /> },
+  { id: 'popover', title: 'Popover', docs: '/dowel/components/popover/', render: () => <PopoverSection /> },
+  {
+    id: 'preview-card',
+    title: 'PreviewCard',
+    docs: '/dowel/components/preview-card/',
+    render: () => <PreviewCardSection />,
+  },
+  { id: 'tooltip', title: 'Tooltip', docs: '/dowel/components/tooltip/', render: () => <TooltipSection /> },
 ]
 
 export function App() {
@@ -396,5 +451,209 @@ function Dots() {
       <circle cx="8" cy="8" r="1.4" />
       <circle cx="13" cy="8" r="1.4" />
     </svg>
+  )
+}
+
+/*
+ * The overlays.
+ *
+ * An overlay that is closed is nothing to look at, and the stand exists to be
+ * looked at - so these are held open, and portalled into their own section
+ * rather than into the body. Both are what `container` is for: without it the
+ * popup would land at the end of the document, outside the section, and the
+ * screenshot of the section would be of an empty box.
+ *
+ * The scrim is left off in this state on purpose. It covers the page, and a
+ * page-covering scrim in a stand of ten sections is a stand with one visible
+ * section.
+ */
+
+/** A section that holds its overlay open, inside itself. */
+function OverlayStage({ children }: { children: (host: HTMLElement | null) => React.ReactNode }) {
+  const [host, setHost] = useState<HTMLElement | null>(null)
+  return (
+    <div ref={setHost} className="relative min-h-56 overflow-hidden rounded-lg border border-line bg-bg p-4">
+      {host !== null && children(host)}
+    </div>
+  )
+}
+
+function DialogSection() {
+  return (
+    <>
+      <Row label="open, in place">
+        <OverlayStage>
+          {(host) => (
+            <Dialog open>
+              <DialogPopup container={host} className="absolute">
+                <DialogTitle>Delete the draft?</DialogTitle>
+                <DialogDescription>
+                  The version stays in the history. Only this draft goes.
+                </DialogDescription>
+                <DialogActions>
+                  <Button>Cancel</Button>
+                  <Button variant="danger">Delete</Button>
+                </DialogActions>
+              </DialogPopup>
+            </Dialog>
+          )}
+        </OverlayStage>
+      </Row>
+    </>
+  )
+}
+
+function ConfirmDialogSection() {
+  return (
+    <>
+      <Row label="open, in place - clicking away does not dismiss it">
+        <OverlayStage>
+          {(host) => (
+            <ConfirmDialog open>
+              <ConfirmDialogPopup container={host} className="absolute">
+                <ConfirmDialogTitle>Revoke the key?</ConfirmDialogTitle>
+                <ConfirmDialogDescription>
+                  Every machine using it loses access at once. This cannot be undone.
+                </ConfirmDialogDescription>
+                <ConfirmDialogActions>
+                  <Button>Keep it</Button>
+                  <Button variant="danger">Revoke</Button>
+                </ConfirmDialogActions>
+              </ConfirmDialogPopup>
+            </ConfirmDialog>
+          )}
+        </OverlayStage>
+      </Row>
+    </>
+  )
+}
+
+function DrawerSection() {
+  return (
+    <>
+      <Row label="from the right">
+        <OverlayStage>
+          {(host) => (
+            <Drawer open>
+              <DrawerPopup container={host} side="right" className="absolute">
+                <DrawerTitle>Settings</DrawerTitle>
+                <DrawerDescription>What this profile calls things.</DrawerDescription>
+                <DrawerActions>
+                  <Button>Close</Button>
+                  <Button variant="primary">Save</Button>
+                </DrawerActions>
+              </DrawerPopup>
+            </Drawer>
+          )}
+        </OverlayStage>
+      </Row>
+
+      <Row label="from the bottom">
+        <OverlayStage>
+          {(host) => (
+            <Drawer open>
+              <DrawerPopup container={host} side="bottom" className="absolute">
+                <DrawerTitle>Add a version</DrawerTitle>
+                <DrawerDescription>Paste the text, or drop a file.</DrawerDescription>
+              </DrawerPopup>
+            </Drawer>
+          )}
+        </OverlayStage>
+      </Row>
+    </>
+  )
+}
+
+function PopoverSection() {
+  return (
+    <>
+      <Row label="click the trigger">
+        <Popover>
+          <PopoverTrigger render={<Button variant="ghost" />}>Filters</PopoverTrigger>
+          <PopoverPopup>
+            <PopoverTitle>Filters</PopoverTitle>
+            <PopoverDescription>Narrow the list without leaving it.</PopoverDescription>
+            <div className="mt-3 flex gap-2">
+              <Chip variant="accent">drafts</Chip>
+              <Chip>scored</Chip>
+            </div>
+          </PopoverPopup>
+        </Popover>
+      </Row>
+
+      <Row label="open, in place">
+        <OverlayStage>
+          {(host) => (
+            <Popover open>
+              <PopoverTrigger render={<Button variant="ghost" />}>Filters</PopoverTrigger>
+              <PopoverPopup container={host}>
+                <PopoverTitle>Filters</PopoverTitle>
+                <PopoverDescription>Narrow the list without leaving it.</PopoverDescription>
+              </PopoverPopup>
+            </Popover>
+          )}
+        </OverlayStage>
+      </Row>
+    </>
+  )
+}
+
+function PreviewCardSection() {
+  return (
+    <>
+      <Row label="hover the link">
+        <p className="text-sm text-dim">
+          The score came from{' '}
+          <PreviewCard>
+            <PreviewCardTrigger render={<a href="#preview-card" className="text-accent" />}>
+              the seven axes
+            </PreviewCardTrigger>
+            <PreviewCardPopup>
+              <div className="text-sm font-semibold text-text">The seven axes</div>
+              <p className="mt-1 text-xs text-dim">
+                Hook, lyric, arrangement, mix, voice, novelty, fit. Each is scored on its
+                own, and the tier follows from all seven.
+              </p>
+            </PreviewCardPopup>
+          </PreviewCard>
+          , not from a single number.
+        </p>
+      </Row>
+    </>
+  )
+}
+
+function TooltipSection() {
+  return (
+    <TooltipProvider>
+      <Row label="hover or focus - the trigger carries its own label">
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="icon" size="icon-md" aria-label="Delete" />}>
+            <Dots />
+          </TooltipTrigger>
+          <TooltipPopup>Delete</TooltipPopup>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="icon" size="icon-md" aria-label="Add" />}>
+            <Plus />
+          </TooltipTrigger>
+          <TooltipPopup>Add a version</TooltipPopup>
+        </Tooltip>
+      </Row>
+
+      <Row label="open, in place">
+        <OverlayStage>
+          {(host) => (
+            <Tooltip open>
+              <TooltipTrigger render={<Button variant="icon" size="icon-md" aria-label="Delete" />}>
+                <Dots />
+              </TooltipTrigger>
+              <TooltipPopup container={host}>Delete</TooltipPopup>
+            </Tooltip>
+          )}
+        </OverlayStage>
+      </Row>
+    </TooltipProvider>
   )
 }
