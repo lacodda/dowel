@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button, buttonVariants } from './button'
 
 /*
@@ -161,5 +162,66 @@ describe('styling', () => {
     // A primitive with a string in it cannot be translated.
     const { container } = render(<Button>Save</Button>)
     expect(container.textContent).toBe('Save')
+  })
+})
+
+describe('Button, for a reader and a keyboard', () => {
+  it('passes axe in every variant', async () => {
+    for (const variant of ['primary', 'ghost', 'soft', 'danger'] as const) {
+      const { unmount } = await expectNoA11yViolations(<Button variant={variant}>Save</Button>)
+      unmount()
+    }
+  })
+
+  it('passes axe as an icon button, given a name', async () => {
+    // An icon button without one is the single most common failure in a
+    // component library, and axe reports it - which is checked by the helper's
+    // own test rather than by weakening this one.
+    await expectNoA11yViolations(
+      <Button size="icon-sm" aria-label="Close">
+        <svg aria-hidden />
+      </Button>,
+    )
+  })
+
+  it('takes focus by Tab and fires on Enter and Space', async () => {
+    // The three things a button must do that a styled `<div>` does not.
+    const user = userEvent.setup()
+    const pressed: string[] = []
+    render(<Button onClick={() => pressed.push('click')}>Save</Button>)
+
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button'))
+
+    await user.keyboard('{Enter}')
+    await user.keyboard(' ')
+    expect(pressed).toEqual(['click', 'click'])
+  })
+
+  it('is skipped by Tab when disabled, and cannot be pressed', async () => {
+    const user = userEvent.setup()
+    const pressed: string[] = []
+    render(
+      <Button disabled onClick={() => pressed.push('click')}>
+        Save
+      </Button>,
+    )
+
+    await user.tab()
+    expect(document.activeElement).not.toBe(screen.getByRole('button'))
+    await user.click(screen.getByRole('button'))
+    expect(pressed).toEqual([])
+  })
+
+  it('is still a link when rendered as one', async () => {
+    // `asChild` exists so a link can look like a button. If it stopped being a
+    // link, it would lose the middle click, the context menu and the
+    // announcement - which is the whole reason not to paint a button instead.
+    await expectNoA11yViolations(
+      <Button asChild variant="primary">
+        <a href="/somewhere">Go</a>
+      </Button>,
+    )
+    expect(screen.getByRole('link')).toBeDefined()
   })
 })

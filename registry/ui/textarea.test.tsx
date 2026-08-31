@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Textarea } from './textarea'
 
 /*
@@ -90,5 +91,28 @@ describe('Textarea', () => {
     render(<Textarea autoResize onChange={onChange} placeholder="x" />)
     await userEvent.type(screen.getByPlaceholderText('x'), 'a')
     expect(onChange).toHaveBeenCalled()
+  })
+})
+
+describe('Textarea, for a reader and a keyboard', () => {
+  it('passes axe when it has an associated label', async () => {
+    await expectNoA11yViolations(
+      <div>
+        <label htmlFor="notes">Notes</label>
+        <Textarea id="notes" />
+      </div>,
+    )
+  })
+
+  it('takes focus by Tab', async () => {
+    render(<Textarea placeholder="Notes" />)
+    await userEvent.tab()
+    expect(document.activeElement).toBe(screen.getByPlaceholderText('Notes'))
+  })
+
+  it('is skipped by Tab while disabled', async () => {
+    render(<Textarea placeholder="Notes" disabled />)
+    await userEvent.tab()
+    expect(document.activeElement).not.toBe(screen.getByPlaceholderText('Notes'))
   })
 })

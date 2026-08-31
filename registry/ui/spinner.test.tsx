@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Spinner, spinnerVariants } from './spinner'
 
 describe('Spinner', () => {
@@ -38,5 +39,17 @@ describe('Spinner', () => {
       .join(' ')
     expect(all).not.toMatch(/\bdark:/)
     expect(all).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+})
+
+describe('Spinner, for a reader', () => {
+  it('passes axe without a label', async () => {
+    // Not focusable - nothing to press - only whether the busy state alone,
+    // with no word for what is loading, still reads cleanly.
+    await expectNoA11yViolations(<Spinner />)
+  })
+
+  it('passes axe with a label', async () => {
+    await expectNoA11yViolations(<Spinner label="Loading versions" />)
   })
 })

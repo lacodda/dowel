@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Truncate } from './truncate'
 
 describe('Truncate', () => {
@@ -31,5 +32,15 @@ describe('Truncate', () => {
     const element = screen.getByText('text')
     expect(element.className).not.toContain('truncate')
     expect(element.style.webkitLineClamp).toBe('3')
+  })
+})
+
+describe('Truncate, for a reader', () => {
+  it('passes axe at one line', async () => {
+    await expectNoA11yViolations(<Truncate>a very long path that will not fit</Truncate>)
+  })
+
+  it('passes axe at several lines', async () => {
+    await expectNoA11yViolations(<Truncate lines={3}>a very long path that will not fit</Truncate>)
   })
 })

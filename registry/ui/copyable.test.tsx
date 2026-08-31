@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Copyable } from './copyable'
 
 /** jsdom has no clipboard; this is one that can be told to work or refuse. */
@@ -19,13 +20,13 @@ afterEach(() => vi.useRealTimers())
 describe('Copyable', () => {
   it('is a button, so the keyboard can reach it', () => {
     stubClipboard('works')
-    render(<Copyable>abc123</Copyable>)
+    render(<Copyable label="Copy" copiedLabel="Copied">abc123</Copyable>)
     expect(screen.getByRole('button')).toBeDefined()
   })
 
   it('copies the text it shows', async () => {
     const writeText = stubClipboard('works')
-    render(<Copyable>abc123</Copyable>)
+    render(<Copyable label="Copy" copiedLabel="Copied">abc123</Copyable>)
 
     await userEvent.click(screen.getByRole('button'))
     expect(writeText).toHaveBeenCalledWith('abc123')
@@ -34,7 +35,7 @@ describe('Copyable', () => {
   it('copies a different value when given one', async () => {
     // The shown text is often shortened; what lands on the clipboard is not.
     const writeText = stubClipboard('works')
-    render(<Copyable value="the-whole-hash">the-whole…</Copyable>)
+    render(<Copyable value="the-whole-hash" label="Copy" copiedLabel="Copied">the-whole…</Copyable>)
 
     await userEvent.click(screen.getByRole('button'))
     expect(writeText).toHaveBeenCalledWith('the-whole-hash')
@@ -44,7 +45,7 @@ describe('Copyable', () => {
     // A tick that appears silently tells a sighted user it worked and tells
     // nobody else.
     stubClipboard('works')
-    render(<Copyable copiedLabel="Copied">abc</Copyable>)
+    render(<Copyable copiedLabel="Copied" label="Copy">abc</Copyable>)
 
     await userEvent.click(screen.getByRole('button'))
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('Copied'))
@@ -55,7 +56,7 @@ describe('Copyable', () => {
     // worked and did not is worse than one that admits it failed.
     stubClipboard('refuses')
     const onCopy = vi.fn()
-    render(<Copyable onCopy={onCopy}>abc</Copyable>)
+    render(<Copyable onCopy={onCopy} label="Copy" copiedLabel="Copied">abc</Copyable>)
 
     await userEvent.click(screen.getByRole('button'))
     await waitFor(() => expect(onCopy).toHaveBeenCalledWith(false))
@@ -64,12 +65,30 @@ describe('Copyable', () => {
 
   it('goes back to itself after a moment', async () => {
     stubClipboard('works')
-    render(<Copyable>abc</Copyable>)
+    render(<Copyable label="Copy" copiedLabel="Copied">abc</Copyable>)
 
     await userEvent.click(screen.getByRole('button'))
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('Copied'))
 
     vi.advanceTimersByTime(2000)
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe(''))
+  })
+})
+
+describe('Copyable, for a reader and a keyboard', () => {
+  it('passes axe', async () => {
+    stubClipboard('works')
+    await expectNoA11yViolations(<Copyable label="Copy" copiedLabel="Copied">abc123</Copyable>)
+  })
+
+  it('is reachable by Tab and copies on Enter', async () => {
+    const writeText = stubClipboard('works')
+    render(<Copyable label="Copy" copiedLabel="Copied">abc123</Copyable>)
+
+    await userEvent.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button'))
+
+    await userEvent.keyboard('{Enter}')
+    expect(writeText).toHaveBeenCalledWith('abc123')
   })
 })

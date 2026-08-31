@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Kbd, keyLabel } from './kbd'
 
 describe('Kbd', () => {
@@ -38,5 +39,17 @@ describe('keyLabel', () => {
   it('leaves an ordinary key alone', () => {
     expect(keyLabel('K', true)).toBe('K')
     expect(keyLabel('F5', false)).toBe('F5')
+  })
+})
+
+describe('Kbd, for a reader', () => {
+  it('passes axe as a single key', async () => {
+    await expectNoA11yViolations(<Kbd>K</Kbd>)
+  })
+
+  it('passes axe as a shortcut of several keys', async () => {
+    // Not interactive - nothing to press, only whether a row of `<kbd>`
+    // elements reads cleanly.
+    await expectNoA11yViolations(<Kbd keys={['Mod', 'K']} />)
   })
 })

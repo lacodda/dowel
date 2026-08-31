@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Panel, SectionLabel, panelVariants } from './panel'
 
 describe('Panel', () => {
@@ -37,5 +38,23 @@ describe('SectionLabel', () => {
     // 0.08em in six files and 0.09em in three, for the same visual element.
     render(<SectionLabel>Details</SectionLabel>)
     expect(screen.getByText('Details').className).toContain('tracking-caption')
+  })
+})
+
+describe('Panel, for a reader', () => {
+  it('passes axe in every variant', async () => {
+    for (const variant of ['raised', 'floating', 'inset'] as const) {
+      const { unmount } = await expectNoA11yViolations(<Panel variant={variant}>content</Panel>)
+      unmount()
+    }
+  })
+
+  it('passes axe with a section label and content inside', async () => {
+    await expectNoA11yViolations(
+      <Panel>
+        <SectionLabel>Details</SectionLabel>
+        <p>Body text.</p>
+      </Panel>,
+    )
   })
 })

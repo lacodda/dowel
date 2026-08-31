@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Chip } from './chip'
 
 describe('Chip', () => {
@@ -22,7 +23,7 @@ describe('Chip', () => {
 
   it('removes on click', async () => {
     const onRemove = vi.fn()
-    render(<Chip onRemove={onRemove}>draft</Chip>)
+    render(<Chip onRemove={onRemove} removeLabel="Remove">draft</Chip>)
 
     await userEvent.click(screen.getByRole('button', { name: 'Remove' }))
     expect(onRemove).toHaveBeenCalledOnce()
@@ -32,7 +33,7 @@ describe('Chip', () => {
     // The bug this guards: every product wrote the cross as a `<span>`, which
     // the keyboard cannot reach and a screen reader does not announce.
     const onRemove = vi.fn()
-    render(<Chip onRemove={onRemove}>draft</Chip>)
+    render(<Chip onRemove={onRemove} removeLabel="Remove">draft</Chip>)
 
     await userEvent.tab()
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Remove' }))
@@ -56,12 +57,46 @@ describe('Chip', () => {
     const onParent = vi.fn()
     render(
       <div onClick={onParent}>
-        <Chip onRemove={onRemove}>draft</Chip>
+        <Chip onRemove={onRemove} removeLabel="Remove">draft</Chip>
       </div>,
     )
 
     await userEvent.click(screen.getByRole('button', { name: 'Remove' }))
     expect(onRemove).toHaveBeenCalledOnce()
     expect(onParent, 'the click reached the row behind the chip').not.toHaveBeenCalled()
+  })
+})
+
+describe('Chip, for a reader and a keyboard', () => {
+  it('passes axe plain', async () => {
+    await expectNoA11yViolations(<Chip>draft</Chip>)
+  })
+
+  it('passes axe when removable', async () => {
+    await expectNoA11yViolations(<Chip onRemove={() => {}} removeLabel="Remove">draft</Chip>)
+  })
+
+  it('reaches the remove button by Tab and fires it on Enter and Space', async () => {
+    const onRemove = vi.fn()
+    render(<Chip onRemove={onRemove} removeLabel="Remove">draft</Chip>)
+
+    await userEvent.tab()
+    const button = screen.getByRole('button', { name: 'Remove' })
+    expect(document.activeElement).toBe(button)
+
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
+    expect(onRemove).toHaveBeenCalledTimes(2)
+  })
+
+  it('announces the remove button by its label', () => {
+    // The product's word, not a string baked into the component - checked the
+    // same way a screen reader would find it: by its accessible name.
+    render(
+      <Chip onRemove={() => {}} removeLabel="Remove tag">
+        draft
+      </Chip>,
+    )
+    expect(screen.getByRole('button', { name: 'Remove tag' })).toBeDefined()
   })
 })

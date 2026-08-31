@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createRef } from 'react'
 import { describe, expect, it } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Input } from './input'
 
 describe('Input', () => {
@@ -45,5 +46,41 @@ describe('Input', () => {
     const className = screen.getByPlaceholderText('x').className
     expect(className).not.toMatch(/\bdark:/)
     expect(className).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+})
+
+describe('Input, for a reader and a keyboard', () => {
+  it('passes axe when it has an associated label', async () => {
+    // An input on its own is a violation waiting to happen - the label has to
+    // come from the caller, so the test provides one the way a product would.
+    await expectNoA11yViolations(
+      <div>
+        <label htmlFor="name">Name</label>
+        <Input id="name" />
+      </div>,
+    )
+  })
+
+  it('still passes axe when marked invalid', async () => {
+    // `aria-invalid` changes the colour, not the accessible name - it should
+    // not by itself upset axe on a labelled field.
+    await expectNoA11yViolations(
+      <div>
+        <label htmlFor="broken">Broken</label>
+        <Input id="broken" aria-invalid />
+      </div>,
+    )
+  })
+
+  it('takes focus by Tab', async () => {
+    render(<Input placeholder="Name" />)
+    await userEvent.tab()
+    expect(document.activeElement).toBe(screen.getByPlaceholderText('Name'))
+  })
+
+  it('is skipped by Tab while disabled', async () => {
+    render(<Input placeholder="Name" disabled />)
+    await userEvent.tab()
+    expect(document.activeElement).not.toBe(screen.getByPlaceholderText('Name'))
   })
 })

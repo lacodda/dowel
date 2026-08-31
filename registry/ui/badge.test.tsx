@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { Badge, badgeVariants } from './badge'
 
 describe('Badge', () => {
@@ -33,5 +34,16 @@ describe('Badge', () => {
       .join(' ')
     expect(all).not.toMatch(/\bdark:/)
     expect(all).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+})
+
+describe('Badge, for a reader', () => {
+  it('passes axe in every variant', async () => {
+    // Not interactive, so nothing to press - only whether the state it
+    // carries reaches a screen reader cleanly in each colour.
+    for (const variant of ['outline', 'soft', 'accent', 'good', 'warn', 'bad', 'info'] as const) {
+      const { unmount } = await expectNoA11yViolations(<Badge variant={variant}>3 new</Badge>)
+      unmount()
+    }
   })
 })
