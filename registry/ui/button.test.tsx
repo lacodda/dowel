@@ -64,12 +64,12 @@ describe('as a button', () => {
 })
 
 describe('as something else', () => {
-  it('renders as its child, keeping the styling', () => {
+  it('renders the element it is given, keeping the styling', () => {
     // A link that should look like a button is still a link: it navigates, it
     // can be opened in a new tab, and a screen reader announces it correctly.
     render(
-      <Button asChild variant="primary">
-        <a href="/somewhere">Go</a>
+      <Button render={<a href="/somewhere" />} variant="primary">
+        Go
       </Button>,
     )
 
@@ -80,12 +80,22 @@ describe('as something else', () => {
   })
 
   it('does not force a button type onto something that is not a button', () => {
-    render(
-      <Button asChild>
-        <a href="/somewhere">Go</a>
-      </Button>,
-    )
+    // `type` belongs to `<button>`. On an anchor it is a content-type hint
+    // about the link target, so putting `button` there is not merely useless -
+    // it is a small lie about what is on the other end.
+    render(<Button render={<a href="/somewhere" />}>Go</Button>)
     expect(screen.getByRole('link').getAttribute('type')).toBeNull()
+  })
+
+  it('takes a function when the caller needs the props first', () => {
+    // The other shape `render` accepts. Rare, but it is what makes the prop
+    // able to compose with something that wraps its own element.
+    render(
+      <Button render={(props) => <a {...props} href="/somewhere" data-probe="yes" />}>Go</Button>,
+    )
+    const link = screen.getByRole('link', { name: 'Go' })
+    expect(link.getAttribute('data-probe')).toBe('yes')
+    expect(link.className).toContain('rounded-md')
   })
 })
 
@@ -214,12 +224,12 @@ describe('Button, for a reader and a keyboard', () => {
   })
 
   it('is still a link when rendered as one', async () => {
-    // `asChild` exists so a link can look like a button. If it stopped being a
+    // `render` exists so a link can look like a button. If it stopped being a
     // link, it would lose the middle click, the context menu and the
     // announcement - which is the whole reason not to paint a button instead.
     await expectNoA11yViolations(
-      <Button asChild variant="primary">
-        <a href="/somewhere">Go</a>
+      <Button render={<a href="/somewhere" />} variant="primary">
+        Go
       </Button>,
     )
     expect(screen.getByRole('link')).toBeDefined()

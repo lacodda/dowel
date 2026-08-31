@@ -180,8 +180,8 @@ function ButtonSection() {
         <Button variant="ghost" disabled>
           Disabled
         </Button>
-        <Button asChild variant="primary">
-          <a href="#button">As a link</a>
+        <Button render={<a href="#button" />} variant="primary">
+          As a link
         </Button>
       </Row>
 

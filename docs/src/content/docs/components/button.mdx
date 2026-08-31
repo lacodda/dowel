@@ -30,13 +30,13 @@ rather than by a padding that happens to match.
 Disabled keeps the button's own colour and loses contact instead, so it reads
 the same whatever the product's accent is.
 
-A link rendered with `asChild` is still a link: it navigates, it opens in a new
+A link rendered with `render` is still a link: it navigates, it opens in a new
 tab, and a screen reader announces it as one. A `<button>` painted to look like
 a link does none of that.
 
 ```tsx
-<Button asChild variant="primary">
-  <a href="/somewhere">Go</a>
+<Button render={<a href="/somewhere" />} variant="primary">
+  Go
 </Button>
 ```
 
@@ -46,7 +46,7 @@ a link does none of that.
 | --- | --- | --- | --- |
 | `variant` | `primary \| ghost \| soft \| danger \| icon` | `ghost` | What the button is for |
 | `size` | `sm \| md \| icon-sm \| icon-md` | `md` | |
-| `asChild` | `boolean` | `false` | Render as the child element, keeping the styling |
+| `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 Everything else goes to the `<button>`: `onClick`, `disabled`, `type`,

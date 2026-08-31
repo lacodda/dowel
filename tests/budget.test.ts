@@ -71,7 +71,7 @@ describe('what a primitive drags in', () => {
    */
   const ALLOWED: Record<string, string[]> = {
     badge: ['class-variance-authority'],
-    button: ['@radix-ui/react-slot', 'class-variance-authority'],
+    button: ['@base-ui/react', 'class-variance-authority'],
     chip: ['class-variance-authority'],
     copyable: [],
     input: [],
