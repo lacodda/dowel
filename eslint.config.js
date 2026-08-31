@@ -5,8 +5,8 @@ import reactHooks from 'eslint-plugin-react-hooks'
 // dowel lints itself with its own rule: a primitive that wrote a colour down
 // would be shipped to every product of the line. It is imported from the
 // build, not from `src`, so what checks this repository is the same file a
-// consumer installs - and `pnpm lint` after a change to the rule needs a
-// `pnpm build` first, exactly as a consumer would need a release.
+// consumer installs. `pnpm lint` builds the package first for that reason:
+// the config depends on a build artefact, and CI lints before it builds.
 import dowel from './packages/dowel/dist/eslint/index.js'
 
 export default tseslint.config(
