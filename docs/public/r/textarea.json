@@ -5,7 +5,7 @@
   "title": "Textarea",
   "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
   "dependencies": [
-    "dowel-ui@^0.7.0"
+    "dowel-ui@^0.8.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/input.json"

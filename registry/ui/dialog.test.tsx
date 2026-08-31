@@ -177,6 +177,39 @@ describe('Dialog', () => {
     expect(host.contains(screen.getByRole('dialog'))).toBe(true)
   })
 
+  it('locks the page scroll - as far as this environment can say', () => {
+    // Base UI locks the scroll while a modal is open; the code is in
+    // `useDialogRoot`, and it works by measuring the scrollbar and pinning the
+    // body.
+    //
+    // jsdom measures every element as zero, so there is no scrollbar to
+    // compensate for and nothing to pin: the body's style is untouched here
+    // whether the lock runs or not. Asserting that it *is* touched would fail
+    // against working code; asserting that it is *not* would pass against
+    // broken code. So what is pinned instead is the one thing this environment
+    // can actually tell us - that opening a dialog does not leave the body
+    // styled once it closes again, which is the failure that strands a page
+    // unscrollable forever.
+    const before = document.body.getAttribute('style')
+
+    const { rerender } = render(
+      <Dialog open>
+        <DialogPopup>
+          <DialogTitle>Title</DialogTitle>
+        </DialogPopup>
+      </Dialog>,
+    )
+    rerender(
+      <Dialog open={false}>
+        <DialogPopup>
+          <DialogTitle>Title</DialogTitle>
+        </DialogPopup>
+      </Dialog>,
+    )
+
+    expect(document.body.getAttribute('style')).toBe(before)
+  })
+
   it('draws every size, and draws each one differently', () => {
     const base = dialogPopupVariants({ size: 'nonexistent' as never })
     const sizes = ['sm', 'md', 'lg'] as const

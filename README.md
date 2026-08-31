@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.7.0 - the theme, the scales, an accent per product, ten primitives, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
+**Status:** v0.8.0 - the theme, the scales, an accent per product, sixteen components including the overlays, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -83,8 +83,15 @@ your code:
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 ```
 
-Ten of them so far: Button, Input, Textarea, Panel, Badge, Chip, Kbd, Spinner,
-Truncate and Copyable.
+Sixteen of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Badge, Chip, Kbd, Spinner, Truncate and Copyable - and the six that float above
+the page: Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip.
+
+The overlays are built on [Base UI](https://base-ui.com), which supplies the
+part that is genuinely hard and invisible when it works: the focus trap, the
+return of focus to whatever opened the thing, `Escape`, the scroll lock, and
+the `aria-labelledby` that names a popup by its own title. Choosing between
+them is the harder question, and [a guide](https://lacodda.github.io/dowel/guides/overlays/) covers it.
 
 Each is written in the vocabulary - no raw colours, no `dark:` utilities - so
 the same component is correct in both themes and in every product's accent.
