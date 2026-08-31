@@ -123,7 +123,7 @@
     --accent-2: oklch(from var(--accent-base) 0.4 c h);
     --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
 
-    --good: #178a58;
+    --good: #0c8554;
     --warn: #9a6b0c;
     --bad: #c93b3b;
     --info: #0d7f9c;
@@ -161,7 +161,7 @@
   --accent-2: oklch(from var(--accent-base) 0.4 c h);
   --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
 
-  --good: #178a58;
+  --good: #0c8554;
   --warn: #9a6b0c;
   --bad: #c93b3b;
   --info: #0d7f9c;
@@ -202,11 +202,31 @@
  */
 :root {
   --on-accent: oklch(from var(--accent) clamp(0, (0.58 - l) * 1000, 1) 0 0);
+
+  /*
+   * The same question for the status fills, and it has to be asked separately:
+   * `--on-accent` is derived from the accent, so using it on a `--warn` fill
+   * is only ever right by coincidence. The line's first consumer did exactly
+   * that - a count on a yellow badge, drawn in white at 1.95:1 - and it read
+   * as correct for as long as the product happened to pin white.
+   *
+   * The status hues do not follow the product accent, so these four are the
+   * same for every product; they are still derived rather than written down,
+   * because the status colours themselves change between the themes.
+   */
+  --on-good: oklch(from var(--good) clamp(0, (0.58 - l) * 1000, 1) 0 0);
+  --on-warn: oklch(from var(--warn) clamp(0, (0.58 - l) * 1000, 1) 0 0);
+  --on-bad: oklch(from var(--bad) clamp(0, (0.58 - l) * 1000, 1) 0 0);
+  --on-info: oklch(from var(--info) clamp(0, (0.58 - l) * 1000, 1) 0 0);
 }
 
 @supports (color: contrast-color(red)) {
   :root {
     --on-accent: contrast-color(var(--accent));
+    --on-good: contrast-color(var(--good));
+    --on-warn: contrast-color(var(--warn));
+    --on-bad: contrast-color(var(--bad));
+    --on-info: contrast-color(var(--info));
   }
 }
 
@@ -230,6 +250,10 @@
   --color-accent-2: var(--accent-2);
   --color-accent-soft: var(--accent-soft);
   --color-on-accent: var(--on-accent);
+  --color-on-good: var(--on-good);
+  --color-on-warn: var(--on-warn);
+  --color-on-bad: var(--on-bad);
+  --color-on-info: var(--on-info);
   --color-good: var(--good);
   --color-good-soft: var(--good-soft);
   --color-warn: var(--warn);

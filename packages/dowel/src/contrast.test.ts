@@ -101,6 +101,10 @@ const lightAccentL = statedNumber(
   /--accent:\s*oklch\(from var\(--accent-base\) ([\d.]+) c h\)/,
   'the light-theme accent lightness',
 )
+const onStatusThreshold = statedNumber(
+  /--on-warn:\s*oklch\(from var\(--warn\) clamp\(0,\s*\(([\d.]+) - l\)/,
+  'the on-status lightness threshold',
+)
 
 describe('on-accent, dark theme', () => {
   it.each(Object.entries(lineAccents))('%s is legible under its own glyphs', (_product, accent) => {
@@ -145,6 +149,50 @@ function statedColor(block: string, token: string): string {
   expect(found, `the theme no longer states a colour for \`--${token}\``).toBeDefined()
   return found!
 }
+
+describe('on-status, both themes', () => {
+  /* The same question as `on-accent`, asked of the status fills, and it has to
+   * be asked separately: `--on-accent` follows the *accent*, so wearing it on a
+   * `warn` fill is right only by accident. kilna did exactly that - a count on
+   * the yellow badge, white at 1.95:1 - and it looked correct for as long as
+   * that product happened to pin white. These four exist so no product can
+   * repeat it, and are checked in both themes because the status hues change
+   * with the theme even though they do not follow the accent. */
+  const statuses = ['good', 'warn', 'bad', 'info'] as const
+  const themes = [
+    ['dark', darkBlock],
+    ['light', lightBlock],
+  ] as const
+
+  const cases = themes.flatMap(([theme, block]) =>
+    statuses.map((status) => [theme, status, statedColor(block, status)] as const),
+  )
+
+  it.each(cases)('%s %s is legible under its own glyphs', (_theme, _status, fill) => {
+    const chosen = lightness(fill) > onStatusThreshold ? BLACK : WHITE
+    expect(contrast(chosen, hexToLinear(fill))).toBeGreaterThanOrEqual(AA)
+  })
+
+  it.each(cases)('%s %s gets the better of black and white', (_theme, _status, fill) => {
+    const rgb = hexToLinear(fill)
+    const chosen = lightness(fill) > onStatusThreshold ? BLACK : WHITE
+    const best = contrast(BLACK, rgb) > contrast(WHITE, rgb) ? BLACK : WHITE
+    expect(chosen).toEqual(best)
+  })
+
+  it('uses the same threshold as the accent, so one rule governs both', () => {
+    expect(onStatusThreshold).toBe(onAccentThreshold)
+  })
+
+  it('derives one partner per status fill, and no fill is left without one', () => {
+    for (const status of statuses) {
+      expect(
+        themeCss,
+        `\`--on-${status}\` is missing; a fill without a partner is what put white on yellow`,
+      ).toContain(`--on-${status}: oklch(from var(--${status})`)
+    }
+  })
+})
 
 describe('ink on grounds', () => {
   // The neutral tint is mixed from the accent, so the greys are product-

@@ -86,6 +86,21 @@ Status never rests on colour alone. A badge carries an icon and a word as well,
 so that it survives a monochrome screen and a reader who does not separate red
 from green.
 
+<TokenTable
+  caption="What stays legible on a status fill, worked out the same way `on-accent` is."
+  tokens={['on-good', 'on-warn', 'on-bad', 'on-info']}
+/>
+
+Each status fill has its own partner, and the distinction matters: `on-accent`
+is derived from the *accent*, so using it on a `warn` fill is right only by
+coincidence. The first product to move onto dowel had a count on a yellow badge
+drawn in `on-accent` — white, at 1.95:1 — and it looked correct for as long as
+that product happened to pin white.
+
+```html
+<span class="bg-warn text-on-warn">3</span>
+```
+
 ## Themes
 
 Dark is the default: the bare root element is the dark theme. Light arrives two

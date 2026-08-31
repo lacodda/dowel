@@ -7,7 +7,7 @@
   "dependencies": [
     "@radix-ui/react-slot",
     "class-variance-authority",
-    "dowel-ui@^0.6.0"
+    "dowel-ui@^0.6.1"
   ],
   "registryDependencies": [],
   "files": [
