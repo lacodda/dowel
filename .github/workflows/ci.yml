@@ -6,6 +6,16 @@ on:
     paths-ignore: ['docs/**']
   pull_request:
     paths-ignore: ['docs/**']
+  # Recording the baselines. They have to be made in the environment that will
+  # later compare against them, and that environment is this container - not a
+  # maintainer's laptop, where the fonts and the anti-aliasing differ. Run this
+  # by hand after a deliberate visual change, and commit the artifact.
+  workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: 'Record new stand baselines instead of comparing'
+        type: boolean
+        default: false
 
 jobs:
   check:
@@ -35,7 +45,7 @@ jobs:
     # Linux only, and deliberately: the theme asks for the operating system's
     # own typeface, so a screenshot taken on Windows can never equal one taken
     # on Linux. Pinning a platform is what makes the baselines mean something.
-    # The container is the same image the baselines were recorded in, so the
+    # The container is the image the baselines are recorded in, so the
     # rendering matches down to the anti-aliasing.
     runs-on: ubuntu-latest
     container:
@@ -50,12 +60,25 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build the stand
         run: pnpm stand:build
+
       - name: Compare the stand with its baselines
+        if: ${{ inputs.update_snapshots != true }}
         run: pnpm visual
       - name: Keep the diffs, so a failure can be looked at
-        if: failure()
+        if: ${{ failure() && inputs.update_snapshots != true }}
         uses: actions/upload-artifact@v7
         with:
           name: visual-diff
           path: test-results/
+          retention-days: 7
+
+      - name: Record new baselines
+        if: ${{ inputs.update_snapshots == true }}
+        run: pnpm visual:update
+      - name: Hand the baselines back to be committed
+        if: ${{ inputs.update_snapshots == true }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: stand-baselines
+          path: tests/visual/**/*.png
           retention-days: 7

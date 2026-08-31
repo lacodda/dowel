@@ -21,6 +21,11 @@ export default defineConfig({
   // A screenshot diff is a comparison against a committed baseline, so a
   // stray `.only` left in a file would silently narrow the gate.
   forbidOnly: Boolean(process.env.CI),
+  // A missing baseline is a failure, not an invitation to write one. The
+  // default only enforces that under CI, which means a first local run records
+  // twenty pictures and reports success - a gate that passes before it exists.
+  // New baselines are recorded on purpose, with `pnpm visual:update`.
+  updateSnapshots: 'none',
   retries: 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'github' : 'list',
