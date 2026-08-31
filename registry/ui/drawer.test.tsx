@@ -141,11 +141,14 @@ describe('Drawer', () => {
     const outside = screen.getByText('behind the scrim')
     expect(screen.queryByRole('button', { name: 'behind the scrim' })).toBeNull()
 
-    // The trap is set when focus lands inside, not when the popup renders.
-    // Tabbing before that races it: on a fast machine the first press happens
-    // while focus is still on the page underneath, and walks straight onto the
-    // button below - which is what CI caught on Linux while Windows passed.
-    await waitFor(() => expect(document.activeElement).not.toBe(document.body))
+    // The trap is set when focus lands inside, not when the popup renders, so
+    // tabbing before that races it: the first press happens while focus is
+    // still on the page underneath and walks straight onto the button below.
+    // Waiting for "not the body" was not enough - focus can settle on that
+    // button - so what is waited for is focus being inside the popup, which is
+    // the state the trap actually guards.
+    const popup = screen.getByRole('dialog')
+    await waitFor(() => expect(popup.contains(document.activeElement)).toBe(true))
 
     for (let i = 0; i < 8; i++) {
       await user.tab()
