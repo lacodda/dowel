@@ -5,7 +5,7 @@
   "title": "Input",
   "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
   "dependencies": [
-    "dowel-ui@^0.5.0"
+    "dowel-ui@^0.6.0"
   ],
   "registryDependencies": [],
   "files": [

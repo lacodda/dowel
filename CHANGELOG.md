@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.6.0] - 2026-08-31
+
+### Bug Fixes
+- Name a sibling component by its URL
+- Let black and white through when they carry an opacity
+
+### Features
+- Ship the rule that keeps colour out of components
+
 ## [0.5.0] - 2026-08-30
 
 ### Bug Fixes

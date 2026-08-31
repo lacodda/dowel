@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.5.0 - the theme, the scales, an accent per product, and ten primitives: enough for a screen without overlays. See the [roadmap](#roadmap).
+**Status:** v0.6.0 - the theme, the scales, an accent per product, ten primitives and the lint rule that keeps them honest. The first product of the line lives on it. See the [roadmap](#roadmap).
 
 ## The theme
 

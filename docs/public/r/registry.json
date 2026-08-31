@@ -222,7 +222,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -242,7 +242,7 @@
       "dependencies": [
         "@radix-ui/react-slot",
         "class-variance-authority",
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -261,7 +261,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -279,7 +279,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -297,7 +297,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -315,7 +315,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -334,7 +334,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -353,7 +353,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -371,7 +371,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -391,7 +391,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.5.0"
+        "dowel-ui@^0.6.0"
       ],
       "registryDependencies": [],
       "files": [
