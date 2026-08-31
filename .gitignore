@@ -25,3 +25,9 @@ Thumbs.db
 .idea/
 .vscode/
 !.vscode/extensions.json
+
+# Playwright's own output. The baselines under tests/visual are committed on
+# purpose - they are the gate - but reports and failure diffs are not.
+/test-results/
+/playwright-report/
+/blob-report/

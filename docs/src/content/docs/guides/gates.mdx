@@ -1,0 +1,83 @@
+---
+title: What a component has to pass
+description: The checks every primitive runs through, and what each one is there to catch.
+---
+
+A component library decays by accretion — one reasonable addition at a time,
+each defensible on its own. These are the checks that hold the line, and every
+one of them exists because of a specific way that decay happens.
+
+They all run in `pnpm test`, except the screenshots, which need a browser.
+
+## Accessibility
+
+[axe-core](https://github.com/dequelabs/axe-core) runs over the rendered DOM of
+every primitive, in every variant, and the interactive ones are driven by the
+keyboard as well: Tab reaches them, Enter and Space fire them, `disabled` is
+skipped.
+
+This catches the failures that are invisible in a screenshot and in a
+class-list assertion — an icon button with no name, a state announced only by
+colour, a control the keyboard cannot reach. They fail for one reader, months
+later, with nobody to tell.
+
+Five axe rules are off, and each is off because jsdom cannot evaluate it rather
+than because it was inconvenient:
+
+- `color-contrast` — jsdom resolves no colour. Contrast is computed against the
+  real tokens instead, for both themes and all fourteen accents.
+- `region`, `page-has-heading-one`, `landmark-one-main`, `html-has-lang` — a
+  primitive rendered on its own is legitimately not a page. Those are the
+  product's to satisfy.
+
+## Weight, and what a component drags in
+
+Two budgets. The first is a ceiling on code size with comments excluded —
+comments are the point of these files, and taxing them would discourage exactly
+what should be encouraged.
+
+The second matters more: **the dependency list is declared, not observed.** Only
+Button pulls in anything from Radix today. A component that starts importing
+something new fails the gate, and adding it to the list is the decision — a new
+dependency is a cost every product of the line pays.
+
+## No words of its own
+
+A string written into a component is a string the product cannot translate. It
+ships in English to every reader who does not read English, and no amount of
+i18n in the product reaches it.
+
+So visible text arrives through props, and a prop that names something for a
+screen reader has **no default** — a default is the same English string wearing
+a different hat:
+
+```tsx
+// The product's word, in the product's language.
+<Chip onRemove={() => drop(tag)} removeLabel={t('remove')}>
+  {tag}
+</Chip>
+```
+
+On `Chip` the two props travel together in the type, so a chip that can be
+removed but not named does not compile. This gate found real debt the first
+time it ran: `'Remove'`, `'Copy'` and `'Copied'` were all defaults once.
+
+## Shape
+
+The stand is photographed section by section, in both themes, and compared
+against committed baselines. This is the one thing the rest cannot check: that
+a padding change did not make every button in the line two pixels taller, or
+that a variant still looks different from its neighbour.
+
+```console
+$ pnpm visual           # compare against the baselines
+$ pnpm visual:update    # accept what changed, on purpose
+```
+
+Snapshots run on Linux only, in the same container image CI uses. That is not a
+missing configuration — the theme asks for the operating system's own typeface
+on purpose, so a screenshot taken on Windows can never equal one taken on
+Linux. Pinning one platform is what makes a baseline mean something.
+
+The accent is left at dowel's own amber. Colour is checked numerically for
+every accent of the line; what a picture catches is shape.

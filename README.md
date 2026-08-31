@@ -102,6 +102,12 @@ export default [...dowel.configs.recommended]
 It reports a hex, an `rgb()`, a stock Tailwind colour, `bg-white`, and any
 `dark:` utility, in the file that wrote one - see [the guide](https://lacodda.github.io/dowel/guides/linting/).
 
+Every primitive also runs a gate of its own before it ships: axe over the
+rendered DOM in every variant, the keyboard over every interactive one, a
+declared budget for what it may import, a picture of it in both themes compared
+against a baseline, and a check that it carries no word of its own to translate
+- [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/).
+
 Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
 
 ## Roadmap

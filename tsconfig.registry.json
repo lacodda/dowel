@@ -4,7 +4,17 @@
     "noEmit": true,
     "moduleResolution": "bundler",
     "module": "ESNext",
+    "types": ["node"],
     "paths": { "dowel-ui": ["./packages/dowel/src/index.ts"] }
   },
-  "include": ["registry/**/*.tsx", "registry/**/*.ts"]
+  "include": [
+    "registry/**/*.tsx",
+    "registry/**/*.ts",
+    // The gates are code too, and a type error in a gate is a gate that does
+    // not run. Includes the Playwright config and specs, which nothing else
+    // typechecks.
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "playwright.config.ts"
+  ]
 }
