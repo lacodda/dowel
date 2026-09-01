@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.10.0 - the theme, the scales, an accent per product, twenty-three components including the overlays, the menus and the command palette, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
+**Status:** v0.11.0 - the theme, the scales, an accent per product, twenty-six components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -83,12 +83,17 @@ your code:
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 ```
 
-Twenty-three of them so far. The everyday ones - Button, Input, Textarea,
-Panel, Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float
-above the page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and
-Tooltip; four for choosing something - Menu, ContextMenu, Select and Combobox;
-and three for finding it: SearchField, CommandPalette and the `useShortcut`
-behind them.
+Twenty-six of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float above the
+page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip; four
+for choosing something - Menu, ContextMenu, Select and Combobox; three for
+finding it - SearchField, CommandPalette and the `useShortcut` behind them; and
+three for saying that something happened: Toast, Alert and Banner.
+
+Those last three are the ones products keep confusing, so each page names all
+four options: a **toast** goes away, an **alert** is still true after a reload,
+a **banner** is true on every screen, and anything that needs an answer is a
+**dialog**.
 
 The palette is a Combobox rather than a Dialog with a field in it, which is
 Base UI's own arrangement: put the input inside the popup and the popup becomes

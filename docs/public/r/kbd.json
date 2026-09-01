@@ -5,7 +5,7 @@
   "title": "Kbd",
   "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
   "dependencies": [
-    "dowel-ui@^0.10.0"
+    "dowel-ui@^0.11.0"
   ],
   "registryDependencies": [],
   "files": [

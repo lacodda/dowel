@@ -2,10 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.11.0] - 2026-09-01
+
+### Features
+- Toast, Alert and Banner
+
 ## [0.10.0] - 2026-09-01
 
 ### Features
 - CommandPalette, SearchField and the shortcut behind them
+
+### Testing
+- Record the baselines for the palette
 
 ## [0.9.0] - 2026-09-01
 
