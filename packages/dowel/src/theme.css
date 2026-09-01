@@ -105,10 +105,21 @@
     --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));
     --raise: #ffffff;
 
-    --soft: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.05));
-    --softer: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.03));
-    --line: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.11));
-    --line-2: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.2));
+    /* Tinted, and translucent - which took two goes to get right.
+     *
+     * `color-mix` mixes the alpha along with the colour, so mixing 60% of an
+     * opaque accent into a 5%-opaque grey gives a surface 62% opaque: twelve
+     * times denser than the hairline it was meant to be. It went unnoticed for
+     * ten versions because `bg-soft` was only ever used for a hover, where a
+     * flash of colour reads as feedback rather than as a mistake. The first
+     * component to sit on it permanently - Alert - made it obvious.
+     *
+     * `oklch(from … / alpha)` keeps the alpha out of the mix: the hue comes
+     * from the tinted colour, the transparency is stated. */
+    --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);
+    --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);
+    --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);
+    --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);
 
     --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
     --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
@@ -147,10 +158,11 @@
   --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));
   --raise: #ffffff;
 
-  --soft: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.05));
-  --softer: color-mix(in oklab, var(--neutral-base) 60%, rgb(24 20 28 / 0.03));
-  --line: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.11));
-  --line-2: color-mix(in oklab, var(--neutral-base) 40%, rgb(24 20 28 / 0.2));
+  /* The same surfaces as above; see the note there. */
+  --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);
+  --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);
+  --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);
+  --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);
 
   --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
   --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
