@@ -73,27 +73,54 @@ describe('what a primitive drags in', () => {
     badge: ['class-variance-authority'],
     button: ['@base-ui/react', 'class-variance-authority'],
     chip: ['class-variance-authority'],
+    // A Select you can type in, and it says so in its imports: the field
+    // clothes from Input, the popup and row clothes from Select. Only the
+    // input, the chips and the empty state are its own.
+    combobox: ['@base-ui/react', 'class-variance-authority', 'input', 'select'],
     'confirm-dialog': ['@base-ui/react', 'class-variance-authority'],
+    // Wears Menu's clothes rather than its own: the popup below the root is
+    // literally Menu's, so two `cva` calls would only drift apart.
+    'context-menu': ['@base-ui/react', 'menu'],
     copyable: [],
     dialog: ['@base-ui/react', 'class-variance-authority'],
     drawer: ['@base-ui/react', 'class-variance-authority'],
     input: [],
     kbd: [],
+    menu: ['@base-ui/react', 'class-variance-authority'],
     panel: ['class-variance-authority'],
     popover: ['@base-ui/react', 'class-variance-authority'],
+    // The trigger is a field, so it wears Input's field clothes: a select and
+    // a text input sit next to each other in every form there is.
+    select: ['@base-ui/react', 'class-variance-authority', 'input'],
     'preview-card': ['@base-ui/react', 'class-variance-authority'],
     spinner: ['class-variance-authority'],
-    textarea: [],
+    // Shares Input's field clothes, so a field and a multi-line field cannot
+    // come out looking like two different controls.
+    textarea: ['input'],
     tooltip: ['@base-ui/react', 'class-variance-authority'],
     truncate: [],
   }
 
-  /** Bare module specifiers the file imports, minus React and the package. */
+  /** What the file imports: bare module specifiers minus React and the
+   * package, plus any sibling component in this directory.
+   *
+   * A sibling counts as a dependency even though it costs no install. One
+   * primitive importing another is what turns a set of components into a
+   * graph, and a product copying a single file out of the registry has to be
+   * told which other file comes with it. Reusing a neighbour's `cva` is
+   * usually right - the alternative is two class lists that drift - but it is
+   * a decision, so it is declared here like any other. */
   function importsOf(source: string): string[] {
     const found = new Set<string>()
     for (const match of source.matchAll(/from\s+'([^']+)'/g)) {
       const specifier = match[1]!
-      if (specifier.startsWith('.')) continue
+      if (specifier.startsWith('.')) {
+        // `./menu` is the component named `menu`. Anything reaching further
+        // out than a sibling is not a component and is not counted.
+        const sibling = specifier.match(/^\.\/([\w-]+)$/)?.[1]
+        if (sibling) found.add(sibling)
+        continue
+      }
       if (specifier === 'react' || specifier === 'react-dom') continue
       if (specifier === 'dowel-ui') continue
       // `@scope/name/deep/path` counts as `@scope/name`.

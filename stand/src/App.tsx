@@ -12,6 +12,25 @@ import {
   ConfirmDialogTitle,
   ConfirmDialogTrigger,
 } from '../../registry/ui/confirm-dialog'
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChipRemove,
+  ComboboxChips,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxPopup,
+  ComboboxValue,
+} from '../../registry/ui/combobox'
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuPopup,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../../registry/ui/context-menu'
 import { Copyable } from '../../registry/ui/copyable'
 import {
   Dialog,
@@ -45,7 +64,23 @@ import {
   PreviewCardPopup,
   PreviewCardTrigger,
 } from '../../registry/ui/preview-card'
+import {
+  Menu,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuSeparator,
+  MenuTrigger,
+} from '../../registry/ui/menu'
 import { Panel, SectionLabel } from '../../registry/ui/panel'
+import {
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from '../../registry/ui/select'
 import { Spinner } from '../../registry/ui/spinner'
 import { Textarea } from '../../registry/ui/textarea'
 import {
@@ -98,6 +133,15 @@ const sections = [
     render: () => <PreviewCardSection />,
   },
   { id: 'tooltip', title: 'Tooltip', docs: '/dowel/components/tooltip/', render: () => <TooltipSection /> },
+  { id: 'menu', title: 'Menu', docs: '/dowel/components/menu/', render: () => <MenuSection /> },
+  {
+    id: 'context-menu',
+    title: 'ContextMenu',
+    docs: '/dowel/components/context-menu/',
+    render: () => <ContextMenuSection />,
+  },
+  { id: 'select', title: 'Select', docs: '/dowel/components/select/', render: () => <SelectSection /> },
+  { id: 'combobox', title: 'Combobox', docs: '/dowel/components/combobox/', render: () => <ComboboxSection /> },
 ]
 
 export function App() {
@@ -137,34 +181,48 @@ export function App() {
             documentation ↗
           </a>
 
-          <div className="ml-auto flex items-center gap-2">
-            <label className="flex items-center gap-1.5 text-xs text-dim">
-              accent
-              <select
-                value={accent}
-                onChange={(event) => setAccent(event.target.value)}
-                className="rounded-md border border-line bg-raise px-2 py-1 text-xs text-text"
-              >
-                {lineProducts.map((entry) => (
-                  <option key={entry.name} value={entry.name}>
-                    {entry.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+          {/*
+            * The stand's own switches, drawn with the set's own Select.
+            *
+            * They were native `<select>` elements until the rule that forbids
+            * those was written - and the rule caught them on its first run,
+            * here, in the stand of the system that forbids them. Worth
+            * recording: a convention nobody checks is a convention the place
+            * demonstrating it breaks first.
+            */}
+          <div className="ml-auto flex items-center gap-3">
+            <div className="flex items-center gap-1.5 text-xs text-dim">
+              <span id="accent-label">accent</span>
+              <Select value={accent} onValueChange={(value) => setAccent(value as string)}>
+                <SelectTrigger size="sm" aria-labelledby="accent-label">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  {lineProducts.map((entry) => (
+                    <SelectItem key={entry.name} value={entry.name}>
+                      {entry.name}
+                    </SelectItem>
+                  ))}
+                </SelectPopup>
+              </Select>
+            </div>
 
-            <label className="flex items-center gap-1.5 text-xs text-dim">
-              theme
-              <select
+            <div className="flex items-center gap-1.5 text-xs text-dim">
+              <span id="theme-label">theme</span>
+              <Select
                 value={theme}
-                onChange={(event) => setTheme(event.target.value as typeof theme)}
-                className="rounded-md border border-line bg-raise px-2 py-1 text-xs text-text"
+                onValueChange={(value) => setTheme(value as typeof theme)}
               >
-                <option value="system">system</option>
-                <option value="light">light</option>
-                <option value="dark">dark</option>
-              </select>
-            </label>
+                <SelectTrigger size="sm" aria-labelledby="theme-label">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  <SelectItem value="system">system</SelectItem>
+                  <SelectItem value="light">light</SelectItem>
+                  <SelectItem value="dark">dark</SelectItem>
+                </SelectPopup>
+              </Select>
+            </div>
           </div>
         </div>
       </header>
@@ -611,5 +669,172 @@ function TooltipSection() {
         </Tooltip>
       </Row>
     </TooltipProvider>
+  )
+}
+
+/*
+ * Menus and choosing.
+ *
+ * Shown closed, behind their triggers, for the same reason the overlays are:
+ * what matters about a menu is the keyboard, and a picture cannot show that.
+ * The tests hold the behaviour; these are here to be clicked.
+ */
+
+const FRUIT = ['Apple', 'Apricot', 'Blackberry', 'Blueberry', 'Cherry', 'Peach', 'Pear', 'Plum']
+
+function MenuSection() {
+  return (
+    <>
+      <Row label="click, then drive it with the arrows">
+        <Menu>
+          <MenuTrigger render={<Button variant="ghost" />}>Actions</MenuTrigger>
+          <MenuPopup>
+            <MenuItem>Rename</MenuItem>
+            <MenuItem>Duplicate</MenuItem>
+            <MenuSeparator />
+            <MenuItem tone="danger">Delete</MenuItem>
+          </MenuPopup>
+        </Menu>
+
+        <Menu>
+          <MenuTrigger render={<Button variant="icon" size="icon-md" aria-label="More" />}>
+            <Dots />
+          </MenuTrigger>
+          <MenuPopup>
+            <MenuGroup>
+              <MenuGroupLabel>This version</MenuGroupLabel>
+              <MenuItem>Open</MenuItem>
+              <MenuItem>Copy the text</MenuItem>
+            </MenuGroup>
+            <MenuSeparator />
+            <MenuGroup>
+              <MenuGroupLabel>Danger</MenuGroupLabel>
+              <MenuItem tone="danger">Delete the draft</MenuItem>
+            </MenuGroup>
+          </MenuPopup>
+        </Menu>
+      </Row>
+    </>
+  )
+}
+
+function ContextMenuSection() {
+  return (
+    <Row label="right-click the area">
+      <ContextMenu>
+        <ContextMenuTrigger
+          render={
+            <div className="grid h-24 w-full place-items-center rounded-md border border-dashed border-line-2 text-xs text-faint" />
+          }
+        >
+          right-click anywhere here
+        </ContextMenuTrigger>
+        <ContextMenuPopup>
+          <ContextMenuItem>Open</ContextMenuItem>
+          <ContextMenuItem>Rename</ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuItem tone="danger">Delete</ContextMenuItem>
+        </ContextMenuPopup>
+      </ContextMenu>
+    </Row>
+  )
+}
+
+function SelectSection() {
+  const [one, setOne] = useState<string | null>('Pear')
+  const [many, setMany] = useState<string[]>(['Apple', 'Plum'])
+
+  return (
+    <>
+      <Row label="one of a short list">
+        <Select value={one} onValueChange={(value) => setOne(value as string)}>
+          <SelectTrigger className="w-48" aria-label="Fruit">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectPopup>
+            {FRUIT.map((fruit) => (
+              <SelectItem key={fruit} value={fruit}>
+                {fruit}
+              </SelectItem>
+            ))}
+          </SelectPopup>
+        </Select>
+      </Row>
+
+      <Row label="several - the same component, one prop">
+        <Select multiple value={many} onValueChange={(value) => setMany(value as string[])}>
+          <SelectTrigger className="w-48" aria-label="Fruits">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectPopup>
+            {FRUIT.map((fruit) => (
+              <SelectItem key={fruit} value={fruit}>
+                {fruit}
+              </SelectItem>
+            ))}
+          </SelectPopup>
+        </Select>
+      </Row>
+    </>
+  )
+}
+
+function ComboboxSection() {
+  const [one, setOne] = useState<string | null>(null)
+  const [many, setMany] = useState<string[]>(['Cherry'])
+
+  return (
+    <>
+      <Row label="type to narrow the list">
+        <Combobox items={FRUIT} value={one} onValueChange={(value) => setOne(value as string)}>
+          <ComboboxInput className="w-56" placeholder="Fruit" aria-label="Fruit" />
+          <ComboboxPopup>
+            <ComboboxEmpty>Nothing matches</ComboboxEmpty>
+            <ComboboxList>
+              {(fruit: string) => (
+                <ComboboxItem key={fruit} value={fruit}>
+                  {fruit}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxPopup>
+        </Combobox>
+      </Row>
+
+      <Row label="several, as chips">
+        <Combobox
+          multiple
+          items={FRUIT}
+          value={many}
+          onValueChange={(value) => setMany(value as string[])}
+        >
+          <ComboboxChips className="w-72">
+            {/* `Value` is what knows the chosen items, so the chips are drawn
+                from it rather than from the state next to it. */}
+            <ComboboxValue>
+              {(chosen: string[]) =>
+                chosen.map((fruit) => (
+                  <ComboboxChip key={fruit}>
+                    {fruit}
+                    <ComboboxChipRemove aria-label="Remove" />
+                  </ComboboxChip>
+                ))
+              }
+            </ComboboxValue>
+            <ComboboxInput placeholder="Fruit" aria-label="Fruits" />
+          </ComboboxChips>
+          <ComboboxPopup>
+            <ComboboxEmpty>Nothing matches</ComboboxEmpty>
+            <ComboboxList>
+              {(fruit: string) => (
+                <ComboboxItem key={fruit} value={fruit}>
+                  {fruit}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxPopup>
+        </Combobox>
+      </Row>
+    </>
   )
 }

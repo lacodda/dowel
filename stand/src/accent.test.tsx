@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
@@ -100,26 +100,38 @@ describe('the accent reaches the derived tokens', () => {
 })
 
 describe('the stand itself', () => {
+  /* The switches used to be native `<select>` elements, which is what these
+   * tests were written against. They are the set's own Select now - the stand
+   * of a system may not use the one element that system forbids - so the tests
+   * drive it the way a person does: open, then choose. */
+  async function openAccentSwitch() {
+    const user = userEvent.setup()
+    render(<App />)
+    const trigger = screen.getByRole('combobox', { name: /accent/i })
+    await user.click(trigger)
+    return { user, listbox: await screen.findByRole('listbox') }
+  }
+
   it('puts the chosen accent where the theme can see it', async () => {
     // The check above describes the mechanism; this one holds the stand to it.
-    // Rendering `App` and driving its own select is the only version that goes
-    // red if someone sets the accent on a container again.
-    const { getByLabelText } = render(<App />)
-    const select = getByLabelText(/accent/i) as HTMLSelectElement
+    // Driving the real switch is the only version that goes red if someone
+    // sets the accent on a container again.
+    const { user } = await openAccentSwitch()
 
     const kilna = lineProducts.find((entry) => entry.name === 'kilna')!
-    await userEvent.selectOptions(select, 'kilna')
+    await user.click(screen.getByRole('option', { name: 'kilna' }))
 
-    expect(
-      document.documentElement.style.getPropertyValue('--accent-base'),
-      'the accent did not reach the root, so no derived token changed',
-    ).toBe(kilna.accent)
+    await waitFor(() =>
+      expect(
+        document.documentElement.style.getPropertyValue('--accent-base'),
+        'the accent did not reach the root, so no derived token changed',
+      ).toBe(kilna.accent),
+    )
   })
 
-  it('offers every product of the line', () => {
-    const { getByLabelText } = render(<App />)
-    const select = getByLabelText(/accent/i) as HTMLSelectElement
-    const offered = [...select.options].map((option) => option.value)
+  it('offers every product of the line', async () => {
+    await openAccentSwitch()
+    const offered = screen.getAllByRole('option').map((option) => option.textContent)
     expect(offered).toEqual(lineProducts.map((product) => product.name))
   })
 })
