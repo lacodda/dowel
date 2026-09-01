@@ -222,7 +222,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -241,7 +241,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -260,7 +260,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -280,7 +280,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -299,7 +299,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -319,7 +319,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -330,7 +330,7 @@
           "path": "ui/combobox.tsx",
           "target": "@ui/combobox.tsx",
           "type": "registry:ui",
-          "content": "import { Combobox as Base } from '@base-ui/react/combobox'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\nimport { fieldClasses } from './input'\nimport { selectItemVariants, selectPopupVariants } from './select'\n\n/*\n * Combobox.\n *\n * A Select you can type in. The list narrows as the query is typed, which is\n * the only difference that matters and the reason to reach for this one: a\n * Select stops being usable somewhere around thirty options, and a country\n * picker or a tag field is well past that.\n *\n * Everything the Select comment says about the native element applies here\n * too - there is no `<select>` under it, and the input is a real `<input\n * role=\"combobox\">` so autofill, spellcheck and the phone keyboard still\n * work.\n *\n * Filtering is Base UI's: give the root an `items` array and it matches the\n * query against them with `Intl.Collator`, so accents and case behave the way\n * a reader in that language expects rather than the way `toLowerCase` does.\n * `filter` replaces the comparison; `filter={null}` turns it off for a list\n * that is filtered on a server.\n *\n * The chips are Base UI's too - Chips, Chip, ChipRemove - and that is worth\n * saying because inventing them is the obvious move and it goes wrong in one\n * specific way: hand-made chips end up as `<div>`s with an X that only a\n * pointer can reach, and the multi-select becomes keyboard-inaccessible at\n * exactly the point where it holds the most state. Base UI's are focusable,\n * walk with the arrows, and delete with Backspace.\n *\n * `Empty` renders only when nothing matched, and announces itself politely.\n * Its element stays mounted for that announcement to work, so it must not be\n * hidden with `display: none` or removed conditionally - which is why it is a\n * component here rather than a `{items.length === 0 && …}` in the product.\n */\n\nexport const comboboxInputVariants = cva([fieldClasses], {\n  variants: {\n    size: {\n      sm: 'h-8 text-xs',\n      md: 'h-9',\n      lg: 'h-10 text-base',\n    },\n  },\n  defaultVariants: { size: 'md' },\n})\n\n/** The list, and a row in it, are Select's - imported rather than copied.\n *\n * The two popups are the same object seen twice: a dropdown of options, one\n * of which can be chosen. A reader who uses both on one screen should not be\n * able to tell which is which until they type. Two `cva` calls that started\n * identical do not stay that way - one gets the padding fix - and then the\n * form has two dropdowns that are almost the same. */\nexport const comboboxPopupVariants = selectPopupVariants\nexport const comboboxItemVariants = selectItemVariants\n\n/** The root. `items` is what gets filtered; `multiple` turns the value into an\n * array and makes the chips meaningful. */\nexport const Combobox = Base.Root\n\n/** The wrapper for an input with something beside it - a clear button, an\n * icon, the chips. */\nexport const ComboboxInputGroup = Base.InputGroup\n\n/** The button that opens the list without typing, for a reader who wants to\n * see everything there is. */\nexport const ComboboxTrigger = Base.Trigger\n\n/** The chevron. Decorative. */\nexport const ComboboxIcon = Base.Icon\n\n/** A labelled group of rows. */\nexport const ComboboxGroup = Base.Group\n\n/** The tick, drawn only on a chosen row. */\nexport const ComboboxItemIndicator = Base.ItemIndicator\n\n/** A polite live region for the state of an asynchronous list. Stays mounted,\n * like `Empty`, so the announcement actually fires. */\nexport const ComboboxStatus = Base.Status\n\n/** The container the chips sit in. Its children are plain nodes, not a render\n * function - the chosen values are mapped by `ComboboxValue` inside it. */\nexport const ComboboxChips = Base.Chips\n\n/** The current value, as a render function of it. This is what turns a\n * `multiple` value into one chip per entry. */\nexport const ComboboxValue = Base.Value\n\n/** `size` is taken from the native `<input size>` - a width in characters,\n * which nothing here wants - and given to the variant instead. */\nexport interface ComboboxInputProps\n  extends Omit<Base.Input.Props, 'size'>,\n    VariantProps<typeof comboboxInputVariants> {}\n\n/** Where the query is typed. A real `<input role=\"combobox\">`. */\nexport function ComboboxInput({ size, className, ...props }: ComboboxInputProps) {\n  return <Base.Input className={cn(comboboxInputVariants({ size }), className)} {...props} />\n}\n\nconst iconButtonClasses = cn(\n  'rounded-sm p-1 text-faint transition-colors hover:text-text',\n  'focus-visible:outline-2 focus-visible:outline-accent',\n  'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',\n)\n\n/** Empties the value. Base UI hides it while there is nothing to clear. */\nexport function ComboboxClear({ className, ...props }: Base.Clear.Props) {\n  return <Base.Clear className={cn(iconButtonClasses, className)} {...props} />\n}\n\nexport interface ComboboxPopupProps\n  extends Base.Popup.Props,\n    VariantProps<typeof comboboxPopupVariants> {\n  /** Preferred side of the input. Base UI flips it when it does not fit. */\n  side?: Base.Positioner.Props['side']\n  /** Alignment along that side. */\n  align?: Base.Positioner.Props['align']\n  /** Distance from the input, in pixels. */\n  sideOffset?: Base.Positioner.Props['sideOffset']\n  /** Where to portal to. Defaults to the document body. */\n  container?: Base.Portal.Props['container']\n}\n\n/** The list. Portalled and positioned against the input. */\nexport function ComboboxPopup({\n  size,\n  side,\n  align,\n  sideOffset = 4,\n  container,\n  className,\n  children,\n  ...props\n}: ComboboxPopupProps) {\n  return (\n    <Base.Portal container={container}>\n      <Base.Positioner\n        side={side}\n        align={align}\n        sideOffset={sideOffset}\n        className=\"[z-index:var(--z-menu)]\"\n      >\n        <Base.Popup className={cn(comboboxPopupVariants({ size }), className)} {...props}>\n          {children}\n        </Base.Popup>\n      </Base.Positioner>\n    </Base.Portal>\n  )\n}\n\n/** The rows, as a list. Undressed: it is a wrapper, and the popup around it\n * already carries the border and the padding. */\nexport const ComboboxList = Base.List\n\n/** A row. */\nexport function ComboboxItem({ className, ...props }: Base.Item.Props) {\n  return <Base.Item className={cn(comboboxItemVariants(), className)} {...props} />\n}\n\n/** What is shown when nothing matched. The words are the product's. */\nexport function ComboboxEmpty({ className, ...props }: Base.Empty.Props) {\n  return <Base.Empty className={cn('px-2 py-3 text-center text-sm text-faint', className)} {...props} />\n}\n\n/** One chosen value, in a multiple combobox. Focusable, so it can be reached\n * and removed without a pointer. */\nexport function ComboboxChip({ className, ...props }: Base.Chip.Props) {\n  return (\n    <Base.Chip\n      className={cn(\n        'flex items-center gap-1 rounded-sm bg-soft px-1.5 py-0.5 text-xs text-text',\n        'outline-none data-[highlighted]:bg-accent-soft data-[highlighted]:text-accent',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\n/** The X on a chip. A real button, which is what makes Backspace and Enter\n * both work on it. */\nexport function ComboboxChipRemove({ className, ...props }: Base.ChipRemove.Props) {\n  return <Base.ChipRemove className={cn(iconButtonClasses, 'p-0', className)} {...props} />\n}\n\n/** The caption above a group. */\nexport function ComboboxGroupLabel({ className, ...props }: Base.GroupLabel.Props) {\n  return (\n    <Base.GroupLabel\n      className={cn('px-2 py-1.5 text-2xs uppercase tracking-caption text-faint', className)}\n      {...props}\n    />\n  )\n}\n"
+          "content": "import { Combobox as Base } from '@base-ui/react/combobox'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\nimport { fieldClasses } from './input'\nimport { selectItemVariants, selectPopupVariants } from './select'\n\n/*\n * Combobox.\n *\n * A Select you can type in. The list narrows as the query is typed, which is\n * the only difference that matters and the reason to reach for this one: a\n * Select stops being usable somewhere around thirty options, and a country\n * picker or a tag field is well past that.\n *\n * Everything the Select comment says about the native element applies here\n * too - there is no `<select>` under it, and the input is a real `<input\n * role=\"combobox\">` so autofill, spellcheck and the phone keyboard still\n * work.\n *\n * Filtering is Base UI's: give the root an `items` array and it matches the\n * query against them with `Intl.Collator`, so accents and case behave the way\n * a reader in that language expects rather than the way `toLowerCase` does.\n * `filter` replaces the comparison; `filter={null}` turns it off for a list\n * that is filtered on a server.\n *\n * The chips are Base UI's too - Chips, Chip, ChipRemove - and that is worth\n * saying because inventing them is the obvious move and it goes wrong in one\n * specific way: hand-made chips end up as `<div>`s with an X that only a\n * pointer can reach, and the multi-select becomes keyboard-inaccessible at\n * exactly the point where it holds the most state. Base UI's are focusable,\n * walk with the arrows, and delete with Backspace.\n *\n * `Empty` renders only when nothing matched, and announces itself politely.\n * Its element stays mounted for that announcement to work, so it must not be\n * hidden with `display: none` or removed conditionally - which is why it is a\n * component here rather than a `{items.length === 0 && …}` in the product.\n */\n\nexport const comboboxInputVariants = cva([fieldClasses], {\n  variants: {\n    size: {\n      sm: 'h-8 text-xs',\n      md: 'h-9',\n      lg: 'h-10 text-base',\n    },\n  },\n  defaultVariants: { size: 'md' },\n})\n\n/** The list, and a row in it, are Select's - imported rather than copied.\n *\n * The two popups are the same object seen twice: a dropdown of options, one\n * of which can be chosen. A reader who uses both on one screen should not be\n * able to tell which is which until they type. Two `cva` calls that started\n * identical do not stay that way - one gets the padding fix - and then the\n * form has two dropdowns that are almost the same. */\nexport const comboboxPopupVariants = selectPopupVariants\nexport const comboboxItemVariants = selectItemVariants\n\n/** The root. `items` is what gets filtered; `multiple` turns the value into an\n * array and makes the chips meaningful. */\nexport const Combobox = Base.Root\n\n/** The wrapper for an input with something beside it - a clear button, an\n * icon, the chips. */\nexport const ComboboxInputGroup = Base.InputGroup\n\n/** The button that opens the list without typing, for a reader who wants to\n * see everything there is. */\nexport const ComboboxTrigger = Base.Trigger\n\n/** The chevron. Decorative. */\nexport const ComboboxIcon = Base.Icon\n\n/** A labelled group of rows. */\nexport const ComboboxGroup = Base.Group\n\n/** The rows of one group, as a render function over that group's items.\n *\n * A `List` is the listbox and there is one per combobox, so a grouped list is\n * a `List` over the groups with a `Collection` inside each - not a `List`\n * inside a `List`. Mapping by hand instead works, but the component then has\n * to be told how to match an item to a value, which is a second place for that\n * knowledge to live. */\nexport const ComboboxCollection = Base.Collection\n\n/** The tick, drawn only on a chosen row. */\nexport const ComboboxItemIndicator = Base.ItemIndicator\n\n/** A polite live region for the state of an asynchronous list. Stays mounted,\n * like `Empty`, so the announcement actually fires. */\nexport const ComboboxStatus = Base.Status\n\n/** The container the chips sit in. Its children are plain nodes, not a render\n * function - the chosen values are mapped by `ComboboxValue` inside it. */\nexport const ComboboxChips = Base.Chips\n\n/** The current value, as a render function of it. This is what turns a\n * `multiple` value into one chip per entry. */\nexport const ComboboxValue = Base.Value\n\n/** `size` is taken from the native `<input size>` - a width in characters,\n * which nothing here wants - and given to the variant instead. */\nexport interface ComboboxInputProps\n  extends Omit<Base.Input.Props, 'size'>,\n    VariantProps<typeof comboboxInputVariants> {}\n\n/** Where the query is typed. A real `<input role=\"combobox\">`. */\nexport function ComboboxInput({ size, className, ...props }: ComboboxInputProps) {\n  return <Base.Input className={cn(comboboxInputVariants({ size }), className)} {...props} />\n}\n\nconst iconButtonClasses = cn(\n  'rounded-sm p-1 text-faint transition-colors hover:text-text',\n  'focus-visible:outline-2 focus-visible:outline-accent',\n  'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',\n)\n\n/** Empties the value. Base UI hides it while there is nothing to clear. */\nexport function ComboboxClear({ className, ...props }: Base.Clear.Props) {\n  return <Base.Clear className={cn(iconButtonClasses, className)} {...props} />\n}\n\nexport interface ComboboxPopupProps\n  extends Base.Popup.Props,\n    VariantProps<typeof comboboxPopupVariants> {\n  /** Preferred side of the input. Base UI flips it when it does not fit. */\n  side?: Base.Positioner.Props['side']\n  /** Alignment along that side. */\n  align?: Base.Positioner.Props['align']\n  /** Distance from the input, in pixels. */\n  sideOffset?: Base.Positioner.Props['sideOffset']\n  /** Where to portal to. Defaults to the document body. */\n  container?: Base.Portal.Props['container']\n}\n\n/** The list. Portalled and positioned against the input. */\nexport function ComboboxPopup({\n  size,\n  side,\n  align,\n  sideOffset = 4,\n  container,\n  className,\n  children,\n  ...props\n}: ComboboxPopupProps) {\n  return (\n    <Base.Portal container={container}>\n      <Base.Positioner\n        side={side}\n        align={align}\n        sideOffset={sideOffset}\n        className=\"[z-index:var(--z-menu)]\"\n      >\n        <Base.Popup className={cn(comboboxPopupVariants({ size }), className)} {...props}>\n          {children}\n        </Base.Popup>\n      </Base.Positioner>\n    </Base.Portal>\n  )\n}\n\n/** The rows, as a list. Undressed: it is a wrapper, and the popup around it\n * already carries the border and the padding. */\nexport const ComboboxList = Base.List\n\n/** A row. */\nexport function ComboboxItem({ className, ...props }: Base.Item.Props) {\n  return <Base.Item className={cn(comboboxItemVariants(), className)} {...props} />\n}\n\n/** What is shown when nothing matched. The words are the product's. */\nexport function ComboboxEmpty({ className, ...props }: Base.Empty.Props) {\n  return <Base.Empty className={cn('px-2 py-3 text-center text-sm text-faint', className)} {...props} />\n}\n\n/** One chosen value, in a multiple combobox. Focusable, so it can be reached\n * and removed without a pointer. */\nexport function ComboboxChip({ className, ...props }: Base.Chip.Props) {\n  return (\n    <Base.Chip\n      className={cn(\n        'flex items-center gap-1 rounded-sm bg-soft px-1.5 py-0.5 text-xs text-text',\n        'outline-none data-[highlighted]:bg-accent-soft data-[highlighted]:text-accent',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\n/** The X on a chip. A real button, which is what makes Backspace and Enter\n * both work on it. */\nexport function ComboboxChipRemove({ className, ...props }: Base.ChipRemove.Props) {\n  return <Base.ChipRemove className={cn(iconButtonClasses, 'p-0', className)} {...props} />\n}\n\n/** The caption above a group. */\nexport function ComboboxGroupLabel({ className, ...props }: Base.GroupLabel.Props) {\n  return (\n    <Base.GroupLabel\n      className={cn('px-2 py-1.5 text-2xs uppercase tracking-caption text-faint', className)}\n      {...props}\n    />\n  )\n}\n"
         }
       ]
     },
@@ -342,7 +342,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -353,7 +353,7 @@
           "path": "ui/command-palette.tsx",
           "target": "@ui/command-palette.tsx",
           "type": "registry:ui",
-          "content": "import type { ReactNode } from 'react'\nimport { Combobox as Base } from '@base-ui/react/combobox'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\nimport { comboboxItemVariants } from './combobox'\nimport { Kbd } from './kbd'\n\n/*\n * CommandPalette.\n *\n * One box that finds anything: the shortcut opens it, typing narrows a list,\n * Enter runs what is highlighted.\n *\n * It is a Combobox rather than a Dialog with a field in it, and that is Base\n * UI's own arrangement rather than a shortcut taken here: put the input\n * *inside* the popup and the popup becomes `role=\"dialog\"` on its own, with\n * the input still announced as the combobox that owns the list. The filtering,\n * the highlight, the arrow keys and the type-ahead are the ones Combobox\n * already has - there is no second implementation of any of it.\n *\n * What is left for the product is everything that makes a palette that\n * product's: what the items are, how they are grouped, what running one does.\n * `items` is deliberately `unknown[]` - a palette lists commands, works,\n * settings and recent files in the same box, and a type that admitted only\n * strings would push every product into the same stringly-typed workaround.\n */\n\nexport const commandPalettePopupVariants = cva(\n  [\n    'flex w-[min(36rem,calc(100vw-2rem))] flex-col overflow-hidden',\n    'rounded-xl border border-line bg-raise text-text shadow-float',\n    'focus-visible:outline-none',\n    '[transition:opacity_var(--duration-quick)_var(--ease-out),transform_var(--duration-quick)_var(--ease-out)]',\n    'data-[closed]:scale-[0.98] data-[closed]:opacity-0',\n    'data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0',\n  ],\n  {\n    variants: {\n      size: {\n        md: 'max-h-[24rem]',\n        lg: 'max-h-[32rem]',\n      },\n    },\n    defaultVariants: { size: 'md' },\n  },\n)\n\n/** The root. Controlled by `open`/`onOpenChange`, because what opens a palette\n * is a shortcut somewhere else in the application. */\nexport const CommandPalette = Base.Root\n\n/** A row. The same clothes as a Combobox row, on purpose: a palette is a list\n * of choices, and two lists of choices in one product should not differ. */\nexport const CommandPaletteItem = Base.Item\n\n/** The list. Takes a render function over the filtered items. */\nexport const CommandPaletteList = Base.List\n\n/** Shown when nothing matches. The words are the product's. */\nexport const CommandPaletteEmpty = Base.Empty\n\n/** A labelled group, for a palette that lists more than one kind of thing. */\nexport const CommandPaletteGroup = Base.Group\n\nexport interface CommandPalettePopupProps\n  extends Omit<Base.Popup.Props, 'aria-label'>,\n    VariantProps<typeof commandPalettePopupVariants> {\n  /**\n   * What the palette is called, for a screen reader. Required, and required\n   * for a reason particular to this component: the popup is a dialog, and a\n   * dialog is named by its own visible title - which a palette does not have,\n   * because the field is the first thing in it.\n   *\n   * So the name has to come from outside, it has to be the product's word, and\n   * nothing else can supply it. A palette without one is announced as \"dialog\"\n   * and nothing more; making the prop required is what stops that shipping.\n   */\n  'aria-label': string\n  /** Where to portal to. Defaults to the document body. */\n  container?: Base.Portal.Props['container']\n}\n\n/** The palette itself: a dim over the page, and the box in the upper third of\n * it - where the eye already is, rather than dead centre. */\nexport function CommandPalettePopup({\n  size,\n  container,\n  className,\n  children,\n  ...props\n}: CommandPalettePopupProps) {\n  return (\n    <Base.Portal container={container}>\n      <Base.Backdrop\n        className={cn(\n          'fixed inset-0 bg-black/55 backdrop-blur-[2px]',\n          '[z-index:var(--z-overlay)]',\n          '[transition:opacity_var(--duration-quick)_var(--ease-out)]',\n          'data-[closed]:opacity-0 data-[starting-style]:opacity-0',\n        )}\n      />\n      <Base.Positioner\n        className=\"[z-index:var(--z-palette)]\"\n        // Anchored to the viewport rather than to a trigger: a palette has no\n        // trigger to point at, and the one it does have is a keystroke.\n        positionMethod=\"fixed\"\n        side=\"bottom\"\n        align=\"center\"\n        sideOffset={0}\n        alignOffset={0}\n      >\n        <Base.Popup\n          className={cn(commandPalettePopupVariants({ size }), className)}\n          {...props}\n        >\n          {children}\n        </Base.Popup>\n      </Base.Positioner>\n    </Base.Portal>\n  )\n}\n\nexport interface CommandPaletteInputProps extends Base.Input.Props {\n  /** Shown at the right of the field, as `['Esc']`. Decorative. */\n  hint?: string[]\n}\n\n/** The field. Sits inside the popup, which is what makes the popup a dialog\n * and the field its combobox. */\nexport function CommandPaletteInput({ hint, className, ...props }: CommandPaletteInputProps) {\n  return (\n    <div className=\"flex items-center gap-2 border-b border-line px-3\">\n      <MagnifierIcon />\n      <Base.Input\n        className={cn(\n          'h-11 w-full bg-transparent text-sm text-text placeholder:text-faint',\n          'focus-visible:outline-none',\n          className,\n        )}\n        {...props}\n      />\n      {hint && <Kbd keys={hint} aria-hidden className=\"shrink-0\" />}\n    </div>\n  )\n}\n\n/** The row's own layout: an icon, what it is, and where it lives. */\nexport function CommandPaletteRow({\n  icon,\n  hint,\n  className,\n  children,\n  ...props\n}: {\n  icon?: ReactNode\n  hint?: ReactNode\n  className?: string\n  children: ReactNode\n} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {\n  return (\n    <div className={cn('flex w-full items-center gap-2.5', className)} {...props}>\n      {icon}\n      <span className=\"min-w-0 flex-1 truncate\">{children}</span>\n      {hint !== undefined && <span className=\"shrink-0 text-2xs text-faint\">{hint}</span>}\n    </div>\n  )\n}\n\nexport { comboboxItemVariants as commandPaletteItemVariants }\n\nfunction MagnifierIcon() {\n  return (\n    <svg\n      viewBox=\"0 0 16 16\"\n      width=\"15\"\n      height=\"15\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"1.6\"\n      aria-hidden\n      className=\"shrink-0 text-faint\"\n    >\n      <circle cx=\"7\" cy=\"7\" r=\"4.5\" />\n      <path d=\"M10.5 10.5L14 14\" strokeLinecap=\"round\" />\n    </svg>\n  )\n}\n"
+          "content": "import type { ReactNode } from 'react'\nimport { Combobox as Base } from '@base-ui/react/combobox'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\nimport { comboboxItemVariants } from './combobox'\nimport { Kbd } from './kbd'\n\n/*\n * CommandPalette.\n *\n * One box that finds anything: the shortcut opens it, typing narrows a list,\n * Enter runs what is highlighted.\n *\n * It is a Combobox rather than a Dialog with a field in it, and that is Base\n * UI's own arrangement rather than a shortcut taken here: put the input\n * *inside* the popup and the popup becomes `role=\"dialog\"` on its own, with\n * the input still announced as the combobox that owns the list. The filtering,\n * the highlight, the arrow keys and the type-ahead are the ones Combobox\n * already has - there is no second implementation of any of it.\n *\n * What is left for the product is everything that makes a palette that\n * product's: what the items are, how they are grouped, what running one does.\n * `items` is deliberately `unknown[]` - a palette lists commands, works,\n * settings and recent files in the same box, and a type that admitted only\n * strings would push every product into the same stringly-typed workaround.\n */\n\nexport const commandPalettePopupVariants = cva(\n  [\n    'flex w-[min(36rem,calc(100vw-2rem))] flex-col overflow-hidden',\n    'rounded-xl border border-line bg-raise text-text shadow-float',\n    'focus-visible:outline-none',\n    '[transition:opacity_var(--duration-quick)_var(--ease-out),transform_var(--duration-quick)_var(--ease-out)]',\n    'data-[closed]:scale-[0.98] data-[closed]:opacity-0',\n    'data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0',\n  ],\n  {\n    variants: {\n      size: {\n        md: 'max-h-[24rem]',\n        lg: 'max-h-[32rem]',\n      },\n    },\n    defaultVariants: { size: 'md' },\n  },\n)\n\n/** The root. Controlled by `open`/`onOpenChange`, because what opens a palette\n * is a shortcut somewhere else in the application. */\nexport const CommandPalette = Base.Root\n\n/** A row. The same clothes as a Combobox row, on purpose: a palette is a list\n * of choices, and two lists of choices in one product should not differ. */\nexport const CommandPaletteItem = Base.Item\n\n/** The list. Takes a render function over the filtered items. */\nexport const CommandPaletteList = Base.List\n\n/** Shown when nothing matches. The words are the product's. */\nexport const CommandPaletteEmpty = Base.Empty\n\n/** A labelled group, for a palette that lists more than one kind of thing. */\nexport const CommandPaletteGroup = Base.Group\n\n/** The caption above a group. */\nexport const CommandPaletteGroupLabel = Base.GroupLabel\n\n/** The rows of one group, as a render function over that group's items.\n *\n * A palette that lists works, versions and notes together is a `List` over the\n * groups with a `Collection` inside each. Mapping a group's rows by hand also\n * works, but then the palette has to be told how to match an item to a value -\n * and for rows fetched fresh from a server, identity comparison never does. */\nexport const CommandPaletteCollection = Base.Collection\n\nexport interface CommandPalettePopupProps\n  extends Omit<Base.Popup.Props, 'aria-label'>,\n    VariantProps<typeof commandPalettePopupVariants> {\n  /**\n   * What the palette is called, for a screen reader. Required, and required\n   * for a reason particular to this component: the popup is a dialog, and a\n   * dialog is named by its own visible title - which a palette does not have,\n   * because the field is the first thing in it.\n   *\n   * So the name has to come from outside, it has to be the product's word, and\n   * nothing else can supply it. A palette without one is announced as \"dialog\"\n   * and nothing more; making the prop required is what stops that shipping.\n   */\n  'aria-label': string\n  /** Where to portal to. Defaults to the document body. */\n  container?: Base.Portal.Props['container']\n}\n\n/** The palette itself: a dim over the page, and the box in the upper third of\n * it - where the eye already is, rather than dead centre. */\nexport function CommandPalettePopup({\n  size,\n  container,\n  className,\n  children,\n  ...props\n}: CommandPalettePopupProps) {\n  return (\n    <Base.Portal container={container}>\n      <Base.Backdrop\n        className={cn(\n          'fixed inset-0 bg-black/55 backdrop-blur-[2px]',\n          '[z-index:var(--z-overlay)]',\n          '[transition:opacity_var(--duration-quick)_var(--ease-out)]',\n          'data-[closed]:opacity-0 data-[starting-style]:opacity-0',\n        )}\n      />\n      <Base.Positioner\n        className=\"[z-index:var(--z-palette)]\"\n        // Anchored to the viewport rather than to a trigger: a palette has no\n        // trigger to point at, and the one it does have is a keystroke.\n        positionMethod=\"fixed\"\n        side=\"bottom\"\n        align=\"center\"\n        sideOffset={0}\n        alignOffset={0}\n      >\n        <Base.Popup\n          className={cn(commandPalettePopupVariants({ size }), className)}\n          {...props}\n        >\n          {children}\n        </Base.Popup>\n      </Base.Positioner>\n    </Base.Portal>\n  )\n}\n\nexport interface CommandPaletteInputProps extends Base.Input.Props {\n  /** Shown at the right of the field, as `['Esc']`. Decorative. */\n  hint?: string[]\n}\n\n/** The field. Sits inside the popup, which is what makes the popup a dialog\n * and the field its combobox. */\nexport function CommandPaletteInput({ hint, className, ...props }: CommandPaletteInputProps) {\n  return (\n    <div className=\"flex items-center gap-2 border-b border-line px-3\">\n      <MagnifierIcon />\n      <Base.Input\n        className={cn(\n          'h-11 w-full bg-transparent text-sm text-text placeholder:text-faint',\n          'focus-visible:outline-none',\n          className,\n        )}\n        {...props}\n      />\n      {hint && <Kbd keys={hint} aria-hidden className=\"shrink-0\" />}\n    </div>\n  )\n}\n\n/** The row's own layout: an icon, what it is, and where it lives. */\nexport function CommandPaletteRow({\n  icon,\n  hint,\n  className,\n  children,\n  ...props\n}: {\n  icon?: ReactNode\n  hint?: ReactNode\n  className?: string\n  children: ReactNode\n} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {\n  return (\n    <div className={cn('flex w-full items-center gap-2.5', className)} {...props}>\n      {icon}\n      <span className=\"min-w-0 flex-1 truncate\">{children}</span>\n      {hint !== undefined && <span className=\"shrink-0 text-2xs text-faint\">{hint}</span>}\n    </div>\n  )\n}\n\nexport { comboboxItemVariants as commandPaletteItemVariants }\n\nfunction MagnifierIcon() {\n  return (\n    <svg\n      viewBox=\"0 0 16 16\"\n      width=\"15\"\n      height=\"15\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth=\"1.6\"\n      aria-hidden\n      className=\"shrink-0 text-faint\"\n    >\n      <circle cx=\"7\" cy=\"7\" r=\"4.5\" />\n      <path d=\"M10.5 10.5L14 14\" strokeLinecap=\"round\" />\n    </svg>\n  )\n}\n"
         }
       ]
     },
@@ -365,7 +365,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -384,7 +384,7 @@
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -404,7 +404,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -424,7 +424,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -444,7 +444,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -462,7 +462,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -480,7 +480,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -500,7 +500,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -519,7 +519,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -539,7 +539,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -559,7 +559,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -577,7 +577,7 @@
       "title": "Search-field",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -601,7 +601,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -638,7 +638,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -656,7 +656,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -678,7 +678,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -698,7 +698,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -716,7 +716,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.11.0"
+        "dowel-ui@^0.11.1"
       ],
       "registryDependencies": [],
       "files": [

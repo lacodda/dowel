@@ -6,7 +6,7 @@
   "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.11.0"
+    "dowel-ui@^0.11.1"
   ],
   "registryDependencies": [],
   "files": [

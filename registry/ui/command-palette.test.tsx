@@ -11,6 +11,8 @@ import {
   CommandPaletteInput,
   CommandPaletteItem,
   CommandPaletteList,
+  CommandPaletteCollection,
+  CommandPaletteGroupLabel,
   CommandPalettePopup,
   CommandPaletteRow,
   commandPalettePopupVariants,
@@ -303,6 +305,58 @@ describe('CommandPalette', () => {
       </CommandPalette>,
     )
     expect((await screen.findByRole('dialog')).className).toContain('rounded-full')
+  })
+
+  it('lists groups, and walks them as one list', async () => {
+    // A palette that shows works, versions and notes together is a `List` over
+    // the groups with a `Collection` inside each - not a `List` inside a
+    // `List`, since the list *is* the listbox and there is one per palette.
+    //
+    // What this pins is that the arrow keys cross a group boundary: the walk
+    // is over the flattened rows, so reaching the end of one group steps into
+    // the next rather than stopping at the caption.
+    const groups = [
+      { kind: 'work', items: ['The long night'] },
+      { kind: 'note', items: ['A line about rain'] },
+    ]
+
+    const user = userEvent.setup()
+    render(
+      <CommandPalette items={groups} open>
+        <CommandPalettePopup aria-label="Commands">
+          <CommandPaletteInput aria-label="Command" />
+          <CommandPaletteList>
+            {(group: { kind: string; items: string[] }) => (
+              <CommandPaletteGroup key={group.kind} items={group.items}>
+                <CommandPaletteGroupLabel>{group.kind}</CommandPaletteGroupLabel>
+                <CommandPaletteCollection>
+                  {(item: string) => (
+                    <CommandPaletteItem key={item} value={item}>
+                      {item}
+                    </CommandPaletteItem>
+                  )}
+                </CommandPaletteCollection>
+              </CommandPaletteGroup>
+            )}
+          </CommandPaletteList>
+        </CommandPalettePopup>
+      </CommandPalette>,
+    )
+
+    const options = await screen.findAllByRole('option')
+    expect(options.map((option) => option.textContent)).toEqual([
+      'The long night',
+      'A line about rain',
+    ])
+
+    // One listbox, whatever the grouping.
+    expect(screen.getAllByRole('listbox')).toHaveLength(1)
+
+    await user.keyboard('{ArrowDown}{ArrowDown}')
+    expect(
+      screen.getByRole('combobox').getAttribute('aria-activedescendant'),
+      'the walk stopped at the group boundary',
+    ).toBe(options[1]?.id)
   })
 
   it('passes axe when open', async () => {

@@ -62,6 +62,17 @@ export const CommandPaletteEmpty = Base.Empty
 /** A labelled group, for a palette that lists more than one kind of thing. */
 export const CommandPaletteGroup = Base.Group
 
+/** The caption above a group. */
+export const CommandPaletteGroupLabel = Base.GroupLabel
+
+/** The rows of one group, as a render function over that group's items.
+ *
+ * A palette that lists works, versions and notes together is a `List` over the
+ * groups with a `Collection` inside each. Mapping a group's rows by hand also
+ * works, but then the palette has to be told how to match an item to a value -
+ * and for rows fetched fresh from a server, identity comparison never does. */
+export const CommandPaletteCollection = Base.Collection
+
 export interface CommandPalettePopupProps
   extends Omit<Base.Popup.Props, 'aria-label'>,
     VariantProps<typeof commandPalettePopupVariants> {

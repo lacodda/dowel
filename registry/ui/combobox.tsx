@@ -75,6 +75,15 @@ export const ComboboxIcon = Base.Icon
 /** A labelled group of rows. */
 export const ComboboxGroup = Base.Group
 
+/** The rows of one group, as a render function over that group's items.
+ *
+ * A `List` is the listbox and there is one per combobox, so a grouped list is
+ * a `List` over the groups with a `Collection` inside each - not a `List`
+ * inside a `List`. Mapping by hand instead works, but the component then has
+ * to be told how to match an item to a value, which is a second place for that
+ * knowledge to live. */
+export const ComboboxCollection = Base.Collection
+
 /** The tick, drawn only on a chosen row. */
 export const ComboboxItemIndicator = Base.ItemIndicator
 

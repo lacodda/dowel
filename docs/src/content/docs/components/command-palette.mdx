@@ -134,8 +134,43 @@ useShortcut(['Mod', 'K'], () => setOpen(true))
 `onValueChange` reports `null` as well as a value — a palette that is cleared
 says so — which is why the example checks before running anything.
 
-Wrap the rows in `CommandPaletteGroup` with a `GroupLabel` when the box lists
-more than one kind of thing, exactly as Combobox does.
+### More than one kind of thing
+
+A palette that lists works, versions and notes together is a `List` over the
+*groups*, with a `Collection` inside each — not a `List` inside a `List`, since
+the list is the listbox and there is one per palette:
+
+```tsx
+<CommandPaletteList>
+  {(group: Group) => (
+    <CommandPaletteGroup key={group.kind} items={group.items}>
+      <CommandPaletteGroupLabel>{t(`kind.${group.kind}`)}</CommandPaletteGroupLabel>
+      <CommandPaletteCollection>
+        {(hit: Hit) => (
+          <CommandPaletteItem key={hit.id} value={hit}>
+            <CommandPaletteRow hint={t(`kind.${group.kind}`)}>{hit.title}</CommandPaletteRow>
+          </CommandPaletteItem>
+        )}
+      </CommandPaletteCollection>
+    </CommandPaletteGroup>
+  )}
+</CommandPaletteList>
+```
+
+The arrow keys walk the flattened rows, so reaching the end of one group steps
+into the next rather than stopping at a caption.
+
+Mapping a group's rows by hand works too, but then the palette has to be told
+how to match an item back to a value — and for rows fetched fresh from a
+server, identity comparison never does, so it needs an `isItemEqualToValue`
+that `Collection` makes unnecessary.
+
+### Searching somewhere else
+
+The filtering is client-side over `items`. A palette whose search happens on a
+server should pass `filter={null}`: without it the already-filtered hits are
+filtered a second time against the same query, by title alone, which throws
+away every hit that matched on something the client cannot see.
 
 ### Palette or SearchField
 
