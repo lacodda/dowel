@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.9.0 - the theme, the scales, an accent per product, twenty components including the overlays and the menus, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
+**Status:** v0.10.0 - the theme, the scales, an accent per product, twenty-three components including the overlays, the menus and the command palette, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -83,10 +83,18 @@ your code:
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 ```
 
-Twenty of them so far. The everyday ones - Button, Input, Textarea, Panel,
-Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float above the
-page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip; and
-four for choosing something: Menu, ContextMenu, Select and Combobox.
+Twenty-three of them so far. The everyday ones - Button, Input, Textarea,
+Panel, Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float
+above the page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and
+Tooltip; four for choosing something - Menu, ContextMenu, Select and Combobox;
+and three for finding it: SearchField, CommandPalette and the `useShortcut`
+behind them.
+
+The palette is a Combobox rather than a Dialog with a field in it, which is
+Base UI's own arrangement: put the input inside the popup and the popup becomes
+a dialog on its own, with the input still the combobox that owns the list. So
+the filtering, the highlight and the arrow keys are the ones Combobox already
+has - there is no second implementation of any of it.
 
 `Select` is the one the line's oldest rule is about. It renders
 `<button role="combobox">` and no native `<select>` at all - the browser draws

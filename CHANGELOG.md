@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.0] - 2026-09-01
+
+### Features
+- CommandPalette, SearchField and the shortcut behind them
+
 ## [0.9.0] - 2026-09-01
 
 ### Breaking Changes
@@ -22,6 +27,9 @@ without JavaScript - turn the rule off for those files:
 - Forbid the native `<select>`
 - Menu, ContextMenu, Select and Combobox
 - The recommended config now carries two rules
+
+### Testing
+- Assert the focus trap for two presses, not eight
 
 ## [0.8.0] - 2026-08-31
 
