@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { lineProducts, useThemeSwitch } from 'dowel-ui'
+import { Alert } from '../../registry/ui/alert'
 import { Badge } from '../../registry/ui/badge'
+import { Banner } from '../../registry/ui/banner'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
 import {
@@ -93,6 +95,16 @@ import {
 import { SearchField } from '../../registry/ui/search-field'
 import { useShortcut } from '../../registry/ui/shortcut'
 import { Spinner } from '../../registry/ui/spinner'
+import {
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+  useToastManager,
+} from '../../registry/ui/toast'
 import { Textarea } from '../../registry/ui/textarea'
 import {
   Tooltip,
@@ -166,6 +178,9 @@ const sections = [
     render: () => <CommandPaletteSection />,
   },
   { id: 'shortcut', title: 'Shortcut', docs: '/dowel/components/shortcut/', render: () => <ShortcutSection /> },
+  { id: 'toast', title: 'Toast', docs: '/dowel/components/toast/', render: () => <ToastSection /> },
+  { id: 'alert', title: 'Alert', docs: '/dowel/components/alert/', render: () => <AlertSection /> },
+  { id: 'banner', title: 'Banner', docs: '/dowel/components/banner/', render: () => <BannerSection /> },
 ]
 
 export function App() {
@@ -989,6 +1004,156 @@ function ShortcutSection() {
           value={inField}
           onChange={(event) => setInField(event.target.value)}
         />
+      </Row>
+    </>
+  )
+}
+
+/*
+ * Saying that something happened.
+ *
+ * Three components that products keep confusing, so the stand puts them next
+ * to each other: a toast goes away, an alert is still true after a reload, and
+ * a banner is true on every screen. Anything that needs an answer is a Dialog.
+ */
+
+function ToastSection() {
+  return (
+    <ToastProvider>
+      <ToastRaiser />
+      <ToastViewport>
+        <ToastList />
+      </ToastViewport>
+    </ToastProvider>
+  )
+}
+
+function ToastRaiser() {
+  const manager = useToastManager()
+
+  return (
+    <>
+      <Row label="raise one - it stacks in the corner and leaves on its own">
+        <Button
+          variant="ghost"
+          onClick={() => manager.add({ title: 'Saved', description: 'The draft is stored.' })}
+        >
+          Neutral
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() =>
+            manager.add({ type: 'success', title: 'Released', description: 'Two songs went out.' })
+          }
+        >
+          Good
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() =>
+            manager.add({ type: 'error', title: 'Could not save', description: 'The disk is full.' })
+          }
+        >
+          Bad
+        </Button>
+      </Row>
+
+      <Row label="with the one thing you can do about it">
+        <Button
+          variant="ghost"
+          onClick={() =>
+            manager.add({
+              title: 'Draft deleted',
+              data: { undo: true },
+            })
+          }
+        >
+          Undoable
+        </Button>
+      </Row>
+    </>
+  )
+}
+
+/** The list. Kept beside the raiser so both live in the same provider. */
+function ToastList() {
+  const { toasts } = useToastManager()
+  return toasts.map((toast) => (
+    <Toast key={toast.id} toast={toast}>
+      <ToastTitle />
+      <ToastDescription />
+      {(toast.data as { undo?: boolean } | undefined)?.undo === true && (
+        <ToastAction>Undo</ToastAction>
+      )}
+      <ToastClose aria-label="Dismiss" />
+    </Toast>
+  ))
+}
+
+function AlertSection() {
+  return (
+    <>
+      <Row label="tones">
+        <div className="flex w-full flex-col gap-2">
+          <Alert>This profile has no axes yet, so nothing can be scored.</Alert>
+          <Alert tone="good">Every version of this work has been reviewed.</Alert>
+          <Alert tone="warn">Two releases are scheduled for the same slot.</Alert>
+          <Alert tone="bad" role="alert">
+            The last export failed and has not been retried.
+          </Alert>
+          <Alert tone="info">Scores from before August use the old six axes.</Alert>
+        </div>
+      </Row>
+
+      <Row label="with a heading and something to do about it">
+        <div className="w-full">
+          <Alert
+            tone="warn"
+            title="This calendar is out of date"
+            action={
+              <Button size="sm" variant="ghost">
+                Rebuild
+              </Button>
+            }
+          >
+            Four releases have moved since it was last built.
+          </Alert>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function BannerSection() {
+  return (
+    <>
+      <Row label="across the top, about the whole application">
+        <div className="w-full overflow-hidden rounded-md border border-line">
+          <Banner>You are offline. Changes are kept and will sync when you are back.</Banner>
+        </div>
+      </Row>
+
+      <Row label="tones, and something to do about it">
+        <div className="flex w-full flex-col gap-2">
+          <div className="overflow-hidden rounded-md border border-line">
+            <Banner
+              tone="accent"
+              action={
+                <Button size="sm" variant="soft">
+                  Install
+                </Button>
+              }
+            >
+              Version 0.42 is ready to install.
+            </Banner>
+          </div>
+          <div className="overflow-hidden rounded-md border border-line">
+            <Banner tone="warn">This is a preview build. Do not keep anything in it.</Banner>
+          </div>
+          <div className="overflow-hidden rounded-md border border-line">
+            <Banner tone="bad">The backup has not run for nine days.</Banner>
+          </div>
+        </div>
       </Row>
     </>
   )

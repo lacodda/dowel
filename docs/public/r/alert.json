@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert",
+  "type": "registry:ui",
+  "title": "Alert",
+  "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
+  "dependencies": [
+    "class-variance-authority",
+    "dowel-ui@^0.10.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/alert.tsx",
+      "target": "@ui/alert.tsx",
+      "type": "registry:ui",
+      "content": "import type { HTMLAttributes, ReactNode } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * Alert.\n *\n * A message that stays on the screen, in the flow of the page, about the thing\n * next to it: this field could not be saved, this profile has no axes yet,\n * this export is out of date.\n *\n * Not a Toast, and the difference is worth stating because products keep\n * reaching for the wrong one. A toast is for something that just happened and\n * then goes away; an alert is for a condition that is still true and will\n * still be true after a reload. If dismissing it would be a lie, it is an\n * alert.\n *\n * Not a Banner either: a banner spans the application and speaks about the\n * whole of it. This speaks about what it sits beside.\n *\n * `role` is the caller's decision, and the default is deliberately quiet. An\n * alert that appears in response to something the reader just did should be\n * `role=\"alert\"` so it is announced; one that is simply part of the page\n * should not be, or a screen reader interrupts itself reading the furniture.\n */\n\nexport const alertVariants = cva(\n  ['flex gap-2.5 rounded-md border p-3 text-sm', '[&_svg]:mt-0.5 [&_svg]:size-4 [&_svg]:shrink-0'],\n  {\n    variants: {\n      tone: {\n        neutral: 'border-line bg-soft text-dim',\n        good: 'border-good/40 bg-good-soft text-good',\n        warn: 'border-warn/40 bg-warn-soft text-warn',\n        bad: 'border-bad/40 bg-bad-soft text-bad',\n        info: 'border-info/40 bg-info-soft text-info',\n      },\n    },\n    defaultVariants: { tone: 'neutral' },\n  },\n)\n\nexport interface AlertProps\n  // `title` on a div is the browser's tooltip and is a string; here it is the\n  // heading, and can be anything a product wants to draw.\n  extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>,\n    VariantProps<typeof alertVariants> {\n  /** Drawn before the text. The product's own, because an icon that means\n   * \"warning\" here should be the one it means everywhere else in the product. */\n  icon?: ReactNode\n  /** The heading. Optional: a one-line alert does not need one. */\n  title?: ReactNode\n  /** Anything that goes at the end - a link to the thing that fixes it, a\n   * dismiss button the product owns. */\n  action?: ReactNode\n}\n\nexport function Alert({ tone, icon, title, action, className, children, ...props }: AlertProps) {\n  return (\n    <div className={cn(alertVariants({ tone }), className)} {...props}>\n      {icon}\n      <div className=\"min-w-0 flex-1\">\n        {title !== undefined && <div className=\"font-semibold\">{title}</div>}\n        {children !== undefined && (\n          <div className={cn('text-xs', title !== undefined && 'mt-0.5')}>{children}</div>\n        )}\n      </div>\n      {action !== undefined && <div className=\"shrink-0\">{action}</div>}\n    </div>\n  )\n}\n"
+    }
+  ]
+}

@@ -41,6 +41,9 @@ const SECTIONS = [
   'search-field',
   'command-palette',
   'shortcut',
+  'toast',
+  'alert',
+  'banner',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

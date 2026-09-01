@@ -1,0 +1,117 @@
+---
+title: Banner
+description: A condition about the whole application, across the top, true on every screen.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/banner.json
+```
+
+The component lands in `components/ui/banner.tsx` and is yours to edit.
+
+<Stand component="banner" caption="Every tone, with and without an icon and an action, loose and pinned - in either theme, and in the accent of any product of the line." />
+
+## When this and not an Alert, a Toast or a Dialog
+
+The three messages look similar and mean different things, so the choice is
+about *what the message is*, not how much room it needs.
+
+Reach for **Banner** when the condition is about the whole application and is
+true no matter which screen you are on: you are offline, this build is a
+preview, your licence expires on Friday, a new version is ready to install. It
+goes across the top, above the application's own chrome.
+
+Reach for **[Alert](/dowel/components/alert/)** when the condition is about
+one part of the page and belongs beside it. An alert speaks about what it sits
+next to; a banner speaks about everything.
+
+Reach for **[Toast](/dowel/components/toast/)** when something already
+happened, needs no decision, and goes away. **If dismissing it would lose
+information, it is not a toast.**
+
+Reach for **[Dialog](/dowel/components/dialog/)** when the reader has to
+*answer* something.
+
+## Usage
+
+```tsx
+<Banner tone="warn" icon={<WifiOff />}>
+  {t('youAreOffline')}
+</Banner>
+```
+
+```tsx
+<Banner
+  sticky
+  tone="accent"
+  icon={<Download />}
+  action={<Button size="sm" onClick={reload}>{t('reload')}</Button>}
+>
+  {t('newVersionReady')}
+</Banner>
+```
+
+Nothing is drawn for a slot that was not given, so a banner with no action is
+one line with no gap held open at the end.
+
+**Colour is emphasis, never the message.** The sentence says what the tone
+suggests, so a reader who does not separate red from green gets the whole of
+it.
+
+## Dismissal is the product's decision
+
+The banner does not dismiss itself, and there is no `onClose`.
+
+Whether "you are offline" *can* be dismissed is a judgement about the product,
+not about the strip of colour: some conditions the reader is allowed to put
+away and some they are not. So the close button is passed in like any other
+action, and the product decides whether there is one.
+
+```tsx
+<Banner
+  tone="info"
+  action={
+    <Button variant="ghost" size="sm" aria-label={t('dismiss')} onClick={hide}>
+      <X />
+    </Button>
+  }
+>
+  {t('licenceExpiresFriday')}
+</Banner>
+```
+
+## `sticky`, and what it needs
+
+`sticky` pins the banner to the top of the viewport, above the application's
+own chrome, for the conditions that must not scroll away — offline, expired.
+
+It is `position: sticky`, so it needs what that needs: an ancestor that
+actually scrolls, and no `overflow: hidden` between the banner and it. A
+sticky banner inside a clipped container simply scrolls away, silently.
+
+## `role="status"`, and when to change it
+
+The default is `role="status"`, not `role="alert"`.
+
+A banner is usually already on the screen when it loads, and a live region set
+to `alert` fires on load and interrupts whatever a screen reader was saying
+about the page. `status` is announced when it changes and stays quiet when it
+does not, which is what a banner that is simply *there* should do.
+
+Pass `role="alert"` for the other case — a banner that appeared just now
+because the connection dropped.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `neutral \| accent \| good \| warn \| bad \| info` | `neutral` | |
+| `sticky` | `boolean` | `false` | Pinned to the top of the viewport |
+| `icon` | `ReactNode` | | Drawn first; the product's own |
+| `action` | `ReactNode` | | Drawn at the end: a fix, a link, a dismiss the product decides is allowed |
+| `role` | `string` | `status` | `alert` when it appeared just now |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`children` is the message. Anything else goes to the `<div>`.

@@ -70,7 +70,13 @@ describe('what a primitive drags in', () => {
    * it, and a product installing any of them already has the theme.
    */
   const ALLOWED: Record<string, string[]> = {
+    alert: ['class-variance-authority'],
     badge: ['class-variance-authority'],
+    // Its own clothes and nothing else. A banner is a strip with a slot at
+    // each end - importing Alert's `cva` would tie a message about the whole
+    // application to one about the field beside it, and those drift apart on
+    // purpose.
+    banner: ['class-variance-authority'],
     button: ['@base-ui/react', 'class-variance-authority'],
     chip: ['class-variance-authority'],
     // A Select you can type in, and it says so in its imports: the field
@@ -109,6 +115,10 @@ describe('what a primitive drags in', () => {
     // Shares Input's field clothes, so a field and a multi-line field cannot
     // come out looking like two different controls.
     textarea: ['input'],
+    // Base UI drives the queue, the live region, the timers and the swipe.
+    // What is here is the clothes and the tone vocabulary, so the manager a
+    // product already has is the one it keeps.
+    toast: ['@base-ui/react', 'class-variance-authority'],
     tooltip: ['@base-ui/react', 'class-variance-authority'],
     truncate: [],
   }
@@ -177,11 +187,18 @@ describe('a primitive has no words of its own', () => {
    * would be rendered or announced.
    */
 
+  /** Props whose value is a word in the ARIA vocabulary rather than a word in
+   * a language. `role="status"` is not English any more than `type="button"`
+   * is - nothing reads it aloud, no product translates it, and it is the
+   * component's job to pick a sane one. What is still caught for these props
+   * is nothing, so the list stays short and each entry has to earn its place. */
+  const NOT_A_WORD = new Set(['role'])
+
   /** String defaults in a destructured props list: `label = 'Copy'`. */
   function stringDefaults(source: string): string[] {
     const body = source.match(/export function \w+\(\{([\s\S]*?)\}:/)?.[1] ?? ''
     return [...body.matchAll(/(\w+)\s*=\s*'([^']*)'/g)]
-      .filter(([, , value]) => /[A-Za-z]{2}/.test(value!))
+      .filter(([, prop, value]) => /[A-Za-z]{2}/.test(value!) && !NOT_A_WORD.has(prop!))
       .map(([, prop, value]) => `${prop} = '${value}'`)
   }
 
