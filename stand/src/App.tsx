@@ -31,6 +31,15 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../registry/ui/context-menu'
+import {
+  CommandPalette,
+  CommandPaletteEmpty,
+  CommandPaletteInput,
+  CommandPaletteItem,
+  CommandPaletteList,
+  CommandPalettePopup,
+  CommandPaletteRow,
+} from '../../registry/ui/command-palette'
 import { Copyable } from '../../registry/ui/copyable'
 import {
   Dialog,
@@ -81,6 +90,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../registry/ui/select'
+import { SearchField } from '../../registry/ui/search-field'
+import { useShortcut } from '../../registry/ui/shortcut'
 import { Spinner } from '../../registry/ui/spinner'
 import { Textarea } from '../../registry/ui/textarea'
 import {
@@ -142,6 +153,19 @@ const sections = [
   },
   { id: 'select', title: 'Select', docs: '/dowel/components/select/', render: () => <SelectSection /> },
   { id: 'combobox', title: 'Combobox', docs: '/dowel/components/combobox/', render: () => <ComboboxSection /> },
+  {
+    id: 'search-field',
+    title: 'SearchField',
+    docs: '/dowel/components/search-field/',
+    render: () => <SearchFieldSection />,
+  },
+  {
+    id: 'command-palette',
+    title: 'CommandPalette',
+    docs: '/dowel/components/command-palette/',
+    render: () => <CommandPaletteSection />,
+  },
+  { id: 'shortcut', title: 'Shortcut', docs: '/dowel/components/shortcut/', render: () => <ShortcutSection /> },
 ]
 
 export function App() {
@@ -834,6 +858,137 @@ function ComboboxSection() {
             </ComboboxList>
           </ComboboxPopup>
         </Combobox>
+      </Row>
+    </>
+  )
+}
+
+/*
+ * Searching, and the shortcut that gets you there.
+ *
+ * These are the three that only exist properly when a key is pressed, so the
+ * stand is where they can be. The palette opens on Ctrl+K (Cmd+K on a Mac)
+ * from anywhere on this page that is not already a field - which is itself the
+ * behaviour worth trying, since it is the half most implementations get wrong.
+ */
+
+const COMMANDS = [
+  'Open the catalogue',
+  'New version',
+  'New note',
+  'Go to the calendar',
+  'Settings',
+  'Switch profile',
+]
+
+function SearchFieldSection() {
+  const [plain, setPlain] = useState('')
+  const [clearable, setClearable] = useState('a half-remembered line')
+  const [withShortcut, setWithShortcut] = useState('')
+
+  return (
+    <>
+      <Row label="plain">
+        <SearchField
+          className="max-w-72"
+          aria-label="Search"
+          placeholder="Search"
+          value={plain}
+          onValueChange={setPlain}
+        />
+      </Row>
+
+      <Row label="clearable - the button appears with the query">
+        <SearchField
+          className="max-w-72"
+          aria-label="Search"
+          placeholder="Search"
+          clearLabel="Clear"
+          value={clearable}
+          onValueChange={setClearable}
+        />
+      </Row>
+
+      <Row label="with its shortcut - press it and watch the focus">
+        <SearchField
+          className="max-w-72"
+          aria-label="Search everything"
+          placeholder="Search"
+          clearLabel="Clear"
+          shortcut={['Mod', '/']}
+          value={withShortcut}
+          onValueChange={setWithShortcut}
+        />
+      </Row>
+    </>
+  )
+}
+
+function CommandPaletteSection() {
+  const [open, setOpen] = useState(false)
+  const [ran, setRan] = useState<string | null>(null)
+
+  useShortcut(['Mod', 'K'], () => setOpen(true))
+
+  return (
+    <Row label="press Ctrl+K, or click">
+      <Button variant="ghost" onClick={() => setOpen(true)}>
+        Open the palette
+      </Button>
+      {ran !== null && <Badge variant="accent">{ran}</Badge>}
+
+      <CommandPalette
+        items={COMMANDS}
+        open={open}
+        onOpenChange={setOpen}
+        onValueChange={(value) => {
+          setRan(String(value))
+          setOpen(false)
+        }}
+      >
+        <CommandPalettePopup aria-label="Commands">
+          <CommandPaletteInput
+            aria-label="Command"
+            placeholder="Type a command"
+            hint={['Esc']}
+          />
+          <CommandPaletteEmpty className="px-3 py-6 text-center text-sm text-dim">
+            Nothing matched
+          </CommandPaletteEmpty>
+          <CommandPaletteList className="overflow-y-auto p-1">
+            {(command: string) => (
+              <CommandPaletteItem key={command} value={command}>
+                <CommandPaletteRow hint="command">{command}</CommandPaletteRow>
+              </CommandPaletteItem>
+            )}
+          </CommandPaletteList>
+        </CommandPalettePopup>
+      </CommandPalette>
+    </Row>
+  )
+}
+
+function ShortcutSection() {
+  const [pressed, setPressed] = useState(0)
+  const [inField, setInField] = useState('')
+
+  useShortcut(['Mod', 'J'], () => setPressed((count) => count + 1))
+
+  return (
+    <>
+      <Row label="press Ctrl+J anywhere on this page">
+        <Kbd keys={['Mod', 'J']} />
+        <Badge variant={pressed > 0 ? 'accent' : 'outline'}>{pressed}</Badge>
+      </Row>
+
+      <Row label="now press it inside this field - nothing happens, on purpose">
+        <Input
+          className="max-w-72"
+          aria-label="A field that owns its own keys"
+          placeholder="Type here, then press Ctrl+J"
+          value={inField}
+          onChange={(event) => setInField(event.target.value)}
+        />
       </Row>
     </>
   )

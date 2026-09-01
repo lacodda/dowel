@@ -38,6 +38,9 @@ const SECTIONS = [
   'context-menu',
   'select',
   'combobox',
+  'search-field',
+  'command-palette',
+  'shortcut',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

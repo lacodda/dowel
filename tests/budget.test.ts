@@ -77,6 +77,12 @@ describe('what a primitive drags in', () => {
     // clothes from Input, the popup and row clothes from Select. Only the
     // input, the chips and the empty state are its own.
     combobox: ['@base-ui/react', 'class-variance-authority', 'input', 'select'],
+    // A Combobox with the input inside the popup, which is what makes the
+    // popup a dialog. The rows are Combobox's - a palette is a list of
+    // choices, and two lists of choices in one product should not differ -
+    // and the hint at the right of the field is Kbd's, so what is bound and
+    // what is shown are drawn by the same rule.
+    'command-palette': ['@base-ui/react', 'class-variance-authority', 'combobox', 'kbd'],
     'confirm-dialog': ['@base-ui/react', 'class-variance-authority'],
     // Wears Menu's clothes rather than its own: the popup below the root is
     // literally Menu's, so two `cva` calls would only drift apart.
@@ -93,6 +99,12 @@ describe('what a primitive drags in', () => {
     // a text input sit next to each other in every form there is.
     select: ['@base-ui/react', 'class-variance-authority', 'input'],
     'preview-card': ['@base-ui/react', 'class-variance-authority'],
+    // An Input that knows it is a search box: Input's field clothes, Kbd for
+    // the shortcut it shows, and `useShortcut` for the same shortcut bound -
+    // one array, so the hint cannot drift from the binding.
+    'search-field': ['input', 'kbd', 'shortcut'],
+    // No clothes at all: a hook and two predicates, so it drags in nothing.
+    shortcut: [],
     spinner: ['class-variance-authority'],
     // Shares Input's field clothes, so a field and a multi-line field cannot
     // come out looking like two different controls.

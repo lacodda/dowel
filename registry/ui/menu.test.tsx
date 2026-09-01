@@ -241,7 +241,13 @@ describe('Menu', () => {
     )
 
     await user.click(screen.getByRole('button', { name: 'Actions' }))
-    await screen.findByRole('menu')
+    const opened = await screen.findByRole('menu')
+    // Checked before axe runs, and not decoration: axe over an empty node
+    // finds nothing and reports a pass. Without this the test would go on
+    // being green if `container` were ever dropped on the way to the portal,
+    // which is the whole thing it is here to exercise.
+    expect(host.contains(opened), 'it did not open into the container').toBe(true)
+
     const results = await import('axe-core').then((axe) => axe.default.run(host))
     expect(results.violations, JSON.stringify(results.violations.map((v) => v.id))).toEqual([])
   })
