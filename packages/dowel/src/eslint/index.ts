@@ -1,11 +1,13 @@
 import type { ESLint, Linter } from 'eslint'
+import { noNativeSelect } from './no-native-select.js'
 import { noRawColor } from './no-raw-color.js'
 
 /*
  * The dowel ESLint plugin.
  *
- * One rule, and it enforces the convention the whole system rests on: a
- * component names colours from the vocabulary and never writes one down.
+ * Two rules, and both enforce a convention the system rests on: a component
+ * names colours from the vocabulary and never writes one down, and no screen
+ * uses a native `<select>`, which the browser draws in its own chrome.
  *
  * It ships from the package rather than the registry because it is not a
  * component - it is not copied into a product and edited there, it is a check
@@ -21,16 +23,19 @@ import { noRawColor } from './no-raw-color.js'
 
 const plugin = {
   meta: { name: 'dowel' },
-  rules: { 'no-raw-color': noRawColor },
+  rules: { 'no-raw-color': noRawColor, 'no-native-select': noNativeSelect },
 } satisfies ESLint.Plugin
 
-/** The rule, applied where components live. Scoped to TypeScript sources: the
- * theme is CSS and the build tools are Node, and neither is a component. */
+/** The rules, applied where components live. Scoped to TypeScript sources:
+ * the theme is CSS and the build tools are Node, and neither is a component. */
 const recommended: Linter.Config[] = [
   {
     files: ['**/*.{ts,tsx}'],
     plugins: { dowel: plugin },
-    rules: { 'dowel/no-raw-color': 'error' },
+    rules: {
+      'dowel/no-raw-color': 'error',
+      'dowel/no-native-select': 'error',
+    },
   },
 ]
 
@@ -43,3 +48,4 @@ const dowel: ESLint.Plugin & { configs: { recommended: Linter.Config[] } } = Obj
 
 export default dowel
 export { noRawColor, findRawColor } from './no-raw-color.js'
+export { noNativeSelect } from './no-native-select.js'

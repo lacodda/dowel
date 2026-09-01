@@ -1,14 +1,18 @@
 ---
-title: The lint rule
-description: Keep raw colour and theme-aware utilities out of components, so the theme can do its job.
+title: The lint rules
+description: Two conventions the system rests on, enforced rather than remembered.
 ---
 
-The system rests on one convention: **a component never writes a colour down.**
-It names one from the vocabulary, and the theme decides what that name means —
-in dark, in light, and in each product's accent.
+Two conventions hold the system together, and both are easy to state and easy
+to break:
 
-That convention is easy to state and easy to break. `dowel-ui` ships the rule
-that enforces it.
+- **a component never writes a colour down** — it names one from the
+  vocabulary, and the theme decides what the name means, in dark, in light and
+  in each product's accent;
+- **no screen uses a native `<select>`** — the browser draws that popup itself,
+  in the operating system's chrome, and no CSS reaches inside it.
+
+`dowel-ui` ships the rules that enforce them.
 
 ## Turn it on
 
@@ -25,7 +29,7 @@ export default [
 The plugin comes with the package, so a product that has the theme already has
 the rule. ESLint is an optional peer: nothing installs it on your behalf.
 
-## What it catches
+## `no-raw-color`
 
 ```tsx
 // ✗ A colour the theme cannot reach.
@@ -69,7 +73,7 @@ translucent veil and ink on an arbitrary image are actually made of, which is
 why the theme keeps `--color-white` and `--color-black` on purpose. kilna, the
 first product to run this rule, had eleven of them and every one was right.
 
-## What it leaves alone
+### What it leaves alone
 
 The rule reads string literals in TypeScript and TSX — where a class list is
 assembled. It never reads CSS, because the theme is the one place raw colour
@@ -88,3 +92,38 @@ Two exemptions are worth copying into your own config:
 
 If a component needs a colour that has no name yet, the answer is a new token,
 not an exemption. A colour worth using is worth a word.
+
+## `no-native-select`
+
+```tsx
+// ✗ The browser's own dropdown, in the operating system's chrome.
+<select value={value} onChange={onChange}>
+  <option value="a">A</option>
+</select>
+
+// ✓ The component. Same job, drawn by the product.
+<Select items={items} value={value} onValueChange={setValue}>
+  …
+</Select>
+```
+
+A `<select>` cannot be made to look like the rest of an application. The
+browser renders its popup itself, with the operating system's fonts and
+spacing, and no amount of CSS reaches inside. On a screen where every other
+control is the product's own, the one native dropdown reads as a foreign
+object — and on Windows it reads as a foreign object from 1998.
+
+`<option>` and `<optgroup>` are reported too: they exist only inside a
+`<select>`, so one on its own is either a `<select>` being assembled somewhere
+else or a misunderstanding.
+
+The rule is about the **element**, never about the name. `<Select>` from this
+set renders `<button role="combobox">` and no native element at all, which is
+what the convention was always asking for.
+
+:::note
+This rule is the line's oldest convention, from atlas, where it was written as
+"`<select>` never — PopoverSelect". The component here is called `Select`,
+because that is what people search the registry for; the rule is what keeps the
+promise the old name was carrying.
+:::

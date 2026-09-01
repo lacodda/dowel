@@ -106,8 +106,10 @@ import dowel from 'dowel-ui/eslint'
 export default [...dowel.configs.recommended]
 ```
 
-It reports a hex, an `rgb()`, a stock Tailwind colour, `bg-white`, and any
-`dark:` utility, in the file that wrote one - see [the guide](https://lacodda.github.io/dowel/guides/linting/).
+Two rules come with it. One reports a hex, an `rgb()`, a stock Tailwind colour,
+`bg-white` and any `dark:` utility, in the file that wrote one. The other
+forbids the native `<select>`, whose popup the browser draws in the operating
+system's own chrome where no CSS reaches it - see [the guide](https://lacodda.github.io/dowel/guides/linting/).
 
 Every primitive also runs a gate of its own before it ships: axe over the
 rendered DOM in every variant, the keyboard over every interactive one, a
@@ -134,7 +136,7 @@ Development goes in versions; each one is a single coherent theme, and ends in a
 ## Documentation
 
 - [The stand](https://lacodda.github.io/dowel/stand/) - every component, live
-- [Getting started](https://lacodda.github.io/dowel/getting-started/) and [the lint rule](https://lacodda.github.io/dowel/guides/linting/)
+- [Getting started](https://lacodda.github.io/dowel/getting-started/), [the lint rules](https://lacodda.github.io/dowel/guides/linting/) and [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/)
 - [Components](https://lacodda.github.io/dowel/components/button/)
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
 
