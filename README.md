@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.8.0 - the theme, the scales, an accent per product, sixteen components including the overlays, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
+**Status:** v0.9.0 - the theme, the scales, an accent per product, twenty components including the overlays and the menus, and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -83,9 +83,17 @@ your code:
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 ```
 
-Sixteen of them so far. The everyday ones - Button, Input, Textarea, Panel,
-Badge, Chip, Kbd, Spinner, Truncate and Copyable - and the six that float above
-the page: Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip.
+Twenty of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float above the
+page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip; and
+four for choosing something: Menu, ContextMenu, Select and Combobox.
+
+`Select` is the one the line's oldest rule is about. It renders
+`<button role="combobox">` and no native `<select>` at all - the browser draws
+that popup in the operating system's own chrome, where no stylesheet reaches
+it, and on a screen of the product's own controls it reads as a foreign object.
+`multiple` is a prop on Select and on Combobox rather than a component of its
+own.
 
 The overlays are built on [Base UI](https://base-ui.com), which supplies the
 part that is genuinely hard and invisible when it works: the focus trap, the

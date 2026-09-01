@@ -34,6 +34,10 @@ const SECTIONS = [
   'popover',
   'preview-card',
   'tooltip',
+  'menu',
+  'context-menu',
+  'select',
+  'combobox',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {
