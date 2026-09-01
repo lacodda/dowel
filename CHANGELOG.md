@@ -2,10 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.11.1] - 2026-09-01
+
+### Features
+- Expose Collection and GroupLabel
+
 ## [0.11.0] - 2026-09-01
+
+### Bug Fixes
+- The light surfaces were twelve times denser than intended
 
 ### Features
 - Toast, Alert and Banner
+
+### Testing
+- Record the baselines after the light-surface fix
 
 ## [0.10.0] - 2026-09-01
 
