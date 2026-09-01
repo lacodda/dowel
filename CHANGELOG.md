@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.9.0] - 2026-09-01
+
+### Breaking Changes
+
+- **The recommended config now carries two rules**
+`dowel.configs.recommended` now enables
+`dowel/no-native-select` alongside `dowel/no-raw-color`. A product that
+uses the recommended config and has a native `<select>`, `<option>` or
+`<optgroup>` anywhere in its TSX will start failing its lint.
+
+The fix is the Select or Combobox component from the registry. Where a
+native element is genuinely wanted - a print sheet, a form posting
+without JavaScript - turn the rule off for those files:
+
+  { files: ['src/print/**'], rules: { 'dowel/no-native-select': 'off' } }
+
+### Features
+- Forbid the native `<select>`
+- Menu, ContextMenu, Select and Combobox
+- The recommended config now carries two rules
+
 ## [0.8.0] - 2026-08-31
 
 ### Breaking Changes
@@ -15,12 +36,17 @@ element instead of a boolean.
 
 `@radix-ui/react-slot` is no longer a dependency of anything here.
 
+### Bug Fixes
+- Let the scrim be turned off, and show the overlays closed
+
 ### Features
 - Compose with `render`, and drop Radix
 - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip
 
 ### Testing
 - Pin what this environment can say about the scroll lock
+- Photograph the overlays too
+- Wait for focus inside the popup, not merely off the body
 
 ## [0.7.0] - 2026-08-31
 
