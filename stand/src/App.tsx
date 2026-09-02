@@ -61,7 +61,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../../registry/ui/drawer'
+import { Calendar } from '../../registry/ui/calendar'
+import { addDays, addMonths, daysInMonth, isIsoDate, today } from '../../registry/ui/calendar-math'
 import { Checkbox, CheckboxGroup } from '../../registry/ui/checkbox'
+import { DatePicker } from '../../registry/ui/date-picker'
+import { DateRangePicker, type DateRange } from '../../registry/ui/date-range-picker'
 import { DurationField } from '../../registry/ui/duration-field'
 import { Field } from '../../registry/ui/field'
 import { Input } from '../../registry/ui/input'
@@ -114,6 +118,7 @@ import {
 } from '../../registry/ui/toast'
 import { Slider } from '../../registry/ui/slider'
 import { Switch } from '../../registry/ui/switch'
+import { TimeField } from '../../registry/ui/time-field'
 import { Textarea } from '../../registry/ui/textarea'
 import {
   Tooltip,
@@ -175,6 +180,36 @@ const sections = [
     title: 'PasswordField',
     docs: '/dowel/components/password-field/',
     render: () => <PasswordFieldSection />,
+  },
+  {
+    id: 'calendar-math',
+    title: 'calendar-math',
+    docs: '/dowel/components/calendar-math/',
+    render: () => <CalendarMathSection />,
+  },
+  {
+    id: 'calendar',
+    title: 'Calendar',
+    docs: '/dowel/components/calendar/',
+    render: () => <CalendarSection />,
+  },
+  {
+    id: 'date-picker',
+    title: 'DatePicker',
+    docs: '/dowel/components/date-picker/',
+    render: () => <DatePickerSection />,
+  },
+  {
+    id: 'date-range-picker',
+    title: 'DateRangePicker',
+    docs: '/dowel/components/date-range-picker/',
+    render: () => <DateRangePickerSection />,
+  },
+  {
+    id: 'time-field',
+    title: 'TimeField',
+    docs: '/dowel/components/time-field/',
+    render: () => <TimeFieldSection />,
   },
   { id: 'panel', title: 'Panel', docs: '/dowel/components/panel/', render: () => <PanelSection /> },
   { id: 'badge', title: 'Badge', docs: '/dowel/components/badge/', render: () => <BadgeSection /> },
@@ -807,6 +842,230 @@ function PasswordFieldSection() {
             aria-label="Disabled"
           />
         </div>
+      </Row>
+    </>
+  )
+}
+
+function CalendarMathSection() {
+  /* The cases that break naive date code, answered live. Each row shows the
+   * call and what it returns, so the stand demonstrates the module the way
+   * the Shortcut section demonstrates a hook - by running it. */
+  const cases: [string, string][] = [
+    ['today()', today()],
+    ["addMonths('2026-03-31', -1)", addMonths('2026-03-31', -1)],
+    ["addMonths('2024-03-31', -1)", addMonths('2024-03-31', -1)],
+    ["addDays('2026-12-31', 1)", addDays('2026-12-31', 1)],
+    ["addDays('2024-02-28', 1)", addDays('2024-02-28', 1)],
+    ["daysInMonth(1900, 2)", String(daysInMonth(1900, 2))],
+    ["daysInMonth(2000, 2)", String(daysInMonth(2000, 2))],
+    ["isIsoDate('2026-02-31')", String(isIsoDate('2026-02-31'))],
+    ["isIsoDate('2024-02-29')", String(isIsoDate('2024-02-29'))],
+  ]
+
+  return (
+    <Row label="no markup - the sums the Calendar runs on, answering live">
+      <div className="flex flex-col gap-1">
+        {cases.map(([call, answer]) => (
+          <div key={call} className="flex items-baseline gap-2 font-mono text-xs">
+            <span className="text-dim">{call}</span>
+            <span className="text-faint">-&gt;</span>
+            <span className="text-accent tabular-nums">{answer}</span>
+          </div>
+        ))}
+      </div>
+    </Row>
+  )
+}
+
+function CalendarSection() {
+  const [day, setDay] = useState('2026-09-14')
+
+  return (
+    <>
+      <Row label="a month - arrows move a cursor, Enter chooses">
+        <Calendar
+          value={day}
+          onValueChange={setDay}
+          locale="en-GB"
+          aria-label="A day"
+          previousMonthLabel="Previous month"
+          nextMonthLabel="Next month"
+        />
+      </Row>
+
+      <Row label="bounded - the days outside cannot be chosen">
+        <Calendar
+          value="2026-09-14"
+          min="2026-09-08"
+          max="2026-09-20"
+          locale="en-GB"
+          aria-label="A bounded day"
+          previousMonthLabel="Previous month"
+          nextMonthLabel="Next month"
+        />
+      </Row>
+
+      <Row label="a range, shaded between its ends">
+        <Calendar
+          value="2026-09-08"
+          rangeEnd="2026-09-19"
+          locale="en-GB"
+          aria-label="A range"
+          previousMonthLabel="Previous month"
+          nextMonthLabel="Next month"
+        />
+      </Row>
+    </>
+  )
+}
+
+function DatePickerSection() {
+  const [date, setDate] = useState<string | undefined>('2026-09-14')
+  const [empty, setEmpty] = useState<string | undefined>(undefined)
+
+  return (
+    <>
+      <Row label="chosen, and empty">
+        <div className="w-56">
+          <DatePicker
+            value={date}
+            onValueChange={setDate}
+            locale="en-GB"
+            placeholder="Pick a date"
+            aria-label="Release date"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </div>
+        <div className="w-56">
+          <DatePicker
+            value={empty}
+            onValueChange={setEmpty}
+            locale="en-GB"
+            placeholder="Pick a date"
+            aria-label="Another date"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </div>
+      </Row>
+
+      <Row label="inside a Field, and disabled">
+        <Field label="Released on" help="When it goes out." className="w-56">
+          <DatePicker
+            value={date}
+            onValueChange={setDate}
+            locale="en-GB"
+            placeholder="Pick a date"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </Field>
+        <div className="w-56">
+          <DatePicker
+            value="2026-09-14"
+            disabled
+            locale="en-GB"
+            placeholder="Pick a date"
+            aria-label="Disabled"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function DateRangePickerSection() {
+  const [period, setPeriod] = useState<DateRange>({ start: '2026-09-08', end: '2026-09-19' })
+  const [half, setHalf] = useState<DateRange>({ start: '2026-09-08' })
+
+  return (
+    <>
+      <Row label="whole, and half made - the middle of the interaction is a state">
+        <div className="w-64">
+          <DateRangePicker
+            value={period}
+            onValueChange={setPeriod}
+            locale="en-GB"
+            placeholder="Pick a range"
+            aria-label="Period"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </div>
+        <div className="w-64">
+          <DateRangePicker
+            value={half}
+            onValueChange={setHalf}
+            locale="en-GB"
+            placeholder="Pick a range"
+            aria-label="Half made"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </div>
+      </Row>
+
+      <Row label="empty, and inside a Field">
+        <div className="w-64">
+          <DateRangePicker
+            value={{}}
+            onValueChange={() => {}}
+            locale="en-GB"
+            placeholder="Pick a range"
+            aria-label="Empty"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </div>
+        <Field label="Reporting period" className="w-64">
+          <DateRangePicker
+            value={period}
+            onValueChange={setPeriod}
+            locale="en-GB"
+            placeholder="Pick a range"
+            previousMonthLabel="Previous month"
+            nextMonthLabel="Next month"
+          />
+        </Field>
+      </Row>
+    </>
+  )
+}
+
+function TimeFieldSection() {
+  const [start, setStart] = useState<string | null>('09:30')
+  const [empty, setEmpty] = useState<string | null>(null)
+
+  return (
+    <>
+      <Row label="type 930, or 9.30, or 9:30 pm - all of them are read">
+        <div className="w-32">
+          <TimeField value={start} onValueChange={setStart} locale="en-GB" aria-label="Starts at" />
+        </div>
+        <span className="text-xs tabular-nums text-dim">{start ?? 'null'}</span>
+      </Row>
+
+      <Row label="empty, which is not midnight">
+        <div className="w-32">
+          <TimeField
+            value={empty}
+            onValueChange={setEmpty}
+            locale="en-GB"
+            placeholder="09:30"
+            aria-label="Unset"
+          />
+        </div>
+        <span className="text-xs tabular-nums text-dim">{empty ?? 'null'}</span>
+      </Row>
+
+      <Row label="inside a Field">
+        <Field label="Starts at" help="Local time." className="w-40">
+          <TimeField value={start} onValueChange={setStart} locale="en-GB" />
+        </Field>
       </Row>
     </>
   )

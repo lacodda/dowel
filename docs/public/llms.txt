@@ -20,6 +20,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
 - [Button](https://lacodda.github.io/dowel/components/button.md): The five buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
+- [Calendar](https://lacodda.github.io/dowel/components/calendar.md): A month of days, built on Intl rather than on a date library - and a value that is a string, never a Date.
+- [calendar-math](https://lacodda.github.io/dowel/components/calendar-math.md): The date arithmetic under the Calendar, importable on its own - strings in, strings out, no Date and no library.
 - [Checkbox](https://lacodda.github.io/dowel/components/checkbox.md): A box, its tick, and the words next to it - including the dash that means "some of these".
 - [Chip](https://lacodda.github.io/dowel/components/chip.md): A badge you can act on: removable, or with a count.
 - [Combobox](https://lacodda.github.io/dowel/components/combobox.md): A Select you can type in - it filters, and it has chips.
@@ -27,6 +29,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [ConfirmDialog](https://lacodda.github.io/dowel/components/confirm-dialog.md): The dialog for a choice that cannot be taken back - announced as an alert dialog, and not dismissed by clicking away.
 - [ContextMenu](https://lacodda.github.io/dowel/components/context-menu.md): The same actions as Menu, opened by right click over an area.
 - [Copyable](https://lacodda.github.io/dowel/components/copyable.md): Any text worth showing is worth being able to take away.
+- [DatePicker](https://lacodda.github.io/dowel/components/date-picker.md): A field that opens a month, and a value a form can carry.
+- [DateRangePicker](https://lacodda.github.io/dowel/components/date-range-picker.md): Two days chosen in two clicks, and the half-made range in between.
 - [Dialog](https://lacodda.github.io/dowel/components/dialog.md): A question the reader has to answer before anything else continues.
 - [Drawer](https://lacodda.github.io/dowel/components/drawer.md): A modal panel that slides in from an edge - a filter sheet, a detail pane, a form too long to centre.
 - [DurationField](https://lacodda.github.io/dowel/components/duration-field.md): A length of time, typed the way people say it - loose going in, one spelling coming out.
@@ -48,6 +52,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.
 - [Textarea](https://lacodda.github.io/dowel/components/textarea.md): A multi-line field that can grow with what is typed into it.
+- [TimeField](https://lacodda.github.io/dowel/components/time-field.md): A time of day, typed the way people say it - loose going in, one spelling stored.
 - [Toast](https://lacodda.github.io/dowel/components/toast.md): Something that just happened, said briefly and then gone.
 - [Tooltip](https://lacodda.github.io/dowel/components/tooltip.md): A short visual label for a control with no room for one - on hover and on focus, and never the only place the words appear.
 - [Truncate](https://lacodda.github.io/dowel/components/truncate.md): Text that does not fit, cut with an ellipsis and still readable in full.

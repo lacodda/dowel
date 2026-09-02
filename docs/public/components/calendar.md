@@ -1,0 +1,80 @@
+# Calendar
+
+Source: https://lacodda.github.io/dowel/components/calendar
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#calendar
+
+A month, one with bounds, and one showing a range.
+
+## Notes
+
+**The value is `YYYY-MM-DD`, never a `Date`.** A birthday has no timezone and a
+release date has no hour. Put one in a `Date` and it becomes a moment — and
+moments cross midnight when they are serialised, which is how a date reaches a
+server a day early. The string is what a database column holds and what JSON
+carries.
+
+```tsx
+<Calendar
+  value={date}                    // '2026-09-02'
+  onValueChange={setDate}
+  previousMonthLabel="Previous month"
+  nextMonthLabel="Next month"
+/>
+```
+
+**No date library, deliberately.** `react-day-picker` is good and would bring
+`date-fns` and `@date-fns/tz` behind it — the first heavy dependency in a set
+that is otherwise Base UI or nothing. `Intl` already knows the part a library
+would be consulted for: which day the week starts on here, which days are the
+weekend, what the months are called. The rest is arithmetic, and it lives in
+`calendar-math` with no React in it, so a product doing its own date work can
+
+**Arrows move, Enter chooses.** The grid is one tab stop and the arrows move a
+cursor within it — forty-two tab stops is not a control. Only Enter or a click
+fires `onValueChange`, so a product listening for it does not receive five
+dates on the way to the sixth.
+
+| Key | |
+| --- | --- |
+| `←` `→` `↑` `↓` | move a day or a week |
+| `PageUp` `PageDown` | move a month |
+| `Home` `End` | the ends of the week |
+| `Enter` `Space` | choose the day under the cursor |
+
+**Six rows, always.** A calendar that changes height between months is a popup
+that moves under the pointer.
+
+**Every day is named in full** — "2 September 2026", not "2". A number on its
+own is not a date to anything reading the page aloud.
+
+## The arithmetic
+
+`calendar-math` is importable on its own, and every function takes and returns
+the string:
+
+| | |
+| --- | --- |
+| `today()` | the local day — not `toISOString().slice(0, 10)`, which returns tomorrow for anyone east of Greenwich in the evening |
+| `addDays(date, n)` | crosses months, years and February |
+| `addMonths(date, n)` | clamps: a step back from 31 March lands on 28 February |
+| `daysInMonth(y, m)` | the leap rule in full, century exception included |
+| `isIsoDate(value)` | shape *and* existence — `2026-02-31` is not a day |
+| `weekday(date)` | 1 is Monday, 7 is Sunday, as `Intl` numbers them |
+| `monthGrid(month, locale)` | six whole weeks, starting on the locale's first day |
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `IsoDate` | | The chosen day |
+| `onValueChange` | `(value) => void` | | Fires on Enter and on a click |
+| `month` | `IsoDate` | | Which month is shown; uncontrolled unless given |
+| `onMonthChange` | `(month) => void` | | |
+| `min`, `max` | `IsoDate` | | Bounds, inclusive |
+| `rangeEnd` | `IsoDate` | | Shades the days between, for a range |
+| `locale` | `string` | reader's own | Names and first day of the week |
+| `previousMonthLabel` | `string` | | Required — the buttons are icons |
+| `nextMonthLabel` | `string` | | Required |

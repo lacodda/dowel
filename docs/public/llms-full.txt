@@ -726,6 +726,149 @@ list is correct in both themes and in every product's accent — there are no
 
 ---
 
+# Calendar
+
+Source: https://lacodda.github.io/dowel/components/calendar
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#calendar
+
+A month, one with bounds, and one showing a range.
+
+## Notes
+
+**The value is `YYYY-MM-DD`, never a `Date`.** A birthday has no timezone and a
+release date has no hour. Put one in a `Date` and it becomes a moment — and
+moments cross midnight when they are serialised, which is how a date reaches a
+server a day early. The string is what a database column holds and what JSON
+carries.
+
+```tsx
+<Calendar
+  value={date}                    // '2026-09-02'
+  onValueChange={setDate}
+  previousMonthLabel="Previous month"
+  nextMonthLabel="Next month"
+/>
+```
+
+**No date library, deliberately.** `react-day-picker` is good and would bring
+`date-fns` and `@date-fns/tz` behind it — the first heavy dependency in a set
+that is otherwise Base UI or nothing. `Intl` already knows the part a library
+would be consulted for: which day the week starts on here, which days are the
+weekend, what the months are called. The rest is arithmetic, and it lives in
+`calendar-math` with no React in it, so a product doing its own date work can
+
+**Arrows move, Enter chooses.** The grid is one tab stop and the arrows move a
+cursor within it — forty-two tab stops is not a control. Only Enter or a click
+fires `onValueChange`, so a product listening for it does not receive five
+dates on the way to the sixth.
+
+| Key | |
+| --- | --- |
+| `←` `→` `↑` `↓` | move a day or a week |
+| `PageUp` `PageDown` | move a month |
+| `Home` `End` | the ends of the week |
+| `Enter` `Space` | choose the day under the cursor |
+
+**Six rows, always.** A calendar that changes height between months is a popup
+that moves under the pointer.
+
+**Every day is named in full** — "2 September 2026", not "2". A number on its
+own is not a date to anything reading the page aloud.
+
+## The arithmetic
+
+`calendar-math` is importable on its own, and every function takes and returns
+the string:
+
+| | |
+| --- | --- |
+| `today()` | the local day — not `toISOString().slice(0, 10)`, which returns tomorrow for anyone east of Greenwich in the evening |
+| `addDays(date, n)` | crosses months, years and February |
+| `addMonths(date, n)` | clamps: a step back from 31 March lands on 28 February |
+| `daysInMonth(y, m)` | the leap rule in full, century exception included |
+| `isIsoDate(value)` | shape *and* existence — `2026-02-31` is not a day |
+| `weekday(date)` | 1 is Monday, 7 is Sunday, as `Intl` numbers them |
+| `monthGrid(month, locale)` | six whole weeks, starting on the locale's first day |
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `IsoDate` | | The chosen day |
+| `onValueChange` | `(value) => void` | | Fires on Enter and on a click |
+| `month` | `IsoDate` | | Which month is shown; uncontrolled unless given |
+| `onMonthChange` | `(month) => void` | | |
+| `min`, `max` | `IsoDate` | | Bounds, inclusive |
+| `rangeEnd` | `IsoDate` | | Shades the days between, for a range |
+| `locale` | `string` | reader's own | Names and first day of the week |
+| `previousMonthLabel` | `string` | | Required — the buttons are icons |
+| `nextMonthLabel` | `string` | | Required |
+
+---
+
+# calendar-math
+
+Source: https://lacodda.github.io/dowel/components/calendar-math
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#calendar-math
+
+The functions answering the dates that break naive date code.
+
+## Notes
+
+**Not a component.** It has no markup and renders nothing — it is the sums the
+[Calendar](/dowel/components/calendar/) runs on, split out because the size
+gate asked the right question when the file was two and a half times over its
+ceiling: it was holding two things. `Calendar` installs it as a sibling; a
+product doing its own date work can install it alone.
+
+**Everything is `YYYY-MM-DD` in and out, never a `Date`.** A birthday has no
+timezone and a release date has no hour. Put one in a `Date` and it becomes a
+moment — and moments cross midnight when they are serialised, which is how a
+date reaches a server a day early.
+
+`Date` is used inside, in two places only: to ask `Intl` for a name and to add
+days. Both are wrapped, so no caller ever holds one.
+
+**No date library, deliberately.** `date-fns` and friends would be the first
+heavy dependency in a set that is otherwise Base UI or nothing, and `Intl`
+already knows the part a library would be consulted for.
+
+## The functions
+
+| | |
+| --- | --- |
+| `today()` | the local day — **not** `toISOString().slice(0, 10)`, which returns tomorrow for anyone east of Greenwich in the evening |
+| `addDays(date, n)` | crosses months, years and February; goes through noon, so a daylight-saving boundary cannot land it back on the day it started |
+| `addMonths(date, n)` | clamps rather than overflows: a step back from 31 March lands on 28 February, not on 3 March |
+| `daysInMonth(year, month)` | the leap rule in full — the century exception included, which is the half that gets left out |
+| `isIsoDate(value)` | shape *and* existence: `2026-02-31` has the right shape and is not a day |
+| `weekday(date)` | 1 is Monday, 7 is Sunday, as `Intl` numbers them — `Date` numbers Sunday 0, which neither sorts nor matches `getWeekInfo` |
+| `monthGrid(month, locale)` | six whole weeks, starting on the locale's first day, as dates rather than numbers |
+| `firstDayOfWeek(locale)` | 1 or 7, from `Intl`, falling back to Monday |
+| `weekdayNames(locale, start)` | the initials, rotated into that locale's order |
+
+```ts
+import { addMonths, isIsoDate, today } from '@/components/ui/calendar-math'
+
+today()                       // '2026-09-02', in the reader's own timezone
+addMonths('2026-03-31', -1)   // '2026-02-28'
+isIsoDate('2026-02-31')       // false
+```
+
+**Tested as properties, not as a table of dates.** A table proves the dates in
+it; what has to hold here is that the sums agree everywhere, so the suite walks
+twelve hundred consecutive days — two leap years and a century that is not one
+— and checks that every day produced is a day accepted, that a step out and
+back returns, and that the weekday advances by exactly one.
+
+---
+
 # Checkbox
 
 Source: https://lacodda.github.io/dowel/components/checkbox
@@ -1485,6 +1628,122 @@ does not read it.
 | `label` | `string` | **required** | What the button is called |
 | `copiedLabel` | `string` | **required** | What is announced after a copy |
 | `onCopy` | `(ok: boolean) => void` | | Told what happened |
+
+---
+
+# DatePicker
+
+Source: https://lacodda.github.io/dowel/components/date-picker
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#date-picker
+
+Empty, chosen, bounded, and inside a Field.
+
+## Notes
+
+**The trigger is a button, not a typable field.** A date input has to answer
+"what does `03/04/26` mean" in a locale it cannot be sure of, and it answers
+wrong for half the world. A button showing the date spelled out has no such
+question. Where typing genuinely matters — a birth date forty years back — a
+calendar is the wrong control anyway.
+
+```tsx
+<DatePicker
+  value={releasedOn}              // '2026-09-02'
+  onValueChange={setReleasedOn}
+  placeholder="Pick a date"
+  previousMonthLabel="Previous month"
+  nextMonthLabel="Next month"
+/>
+```
+
+**What is shown is `Intl`'s own long form** — "2 September 2026" here,
+"September 2, 2026" in the United States. The stored value never changes.
+
+**It closes when a day is chosen.** Choosing is the whole errand; waiting for
+a second dismissing click is one click too many.
+
+**`name` puts the value where a form can find it.** A button is not a field,
+so without it a form submits the screen and loses the date — the component
+writes a hidden input instead.
+
+```tsx
+<DatePicker name="released_on" ... />   // submits 2026-09-02
+```
+
+The value, the arithmetic and the keyboard are the
+[Calendar](/dowel/components/calendar/)'s; this is the field around it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `IsoDate` | | `YYYY-MM-DD` |
+| `onValueChange` | `(value) => void` | | |
+| `min`, `max` | `IsoDate` | | Bounds, inclusive |
+| `placeholder` | `string` | | Required — what the trigger says when empty |
+| `previousMonthLabel` | `string` | | Required |
+| `nextMonthLabel` | `string` | | Required |
+| `locale` | `string` | reader's own | |
+| `name` | `string` | | Puts the value in the form |
+| `disabled` | `boolean` | `false` | |
+
+---
+
+# DateRangePicker
+
+Source: https://lacodda.github.io/dowel/components/date-range-picker
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#date-range-picker
+
+Empty, half made, whole, and bounded.
+
+## Notes
+
+**The state between the two clicks is the component.** After the first click
+there is a start and no end — not an incomplete value to hide, and not a range
+of one day. It is the normal middle of the interaction, and the reader has to
+see it: the first day marked, the popup still open, the trigger already saying
+something.
+
+```tsx
+<DateRangePicker
+  value={period}                 // { start: '2026-09-02' } while deciding
+  onValueChange={setPeriod}      // fires on both clicks
+  placeholder="Pick a range"
+  previousMonthLabel="Previous month"
+  nextMonthLabel="Next month"
+/>
+```
+
+`onValueChange` firing on the first click is what lets a product show "from 2
+September" while the reader is still choosing the other end. A picker that
+reports nothing until the range is whole appears to do nothing at all.
+
+**The clicks can come in either order.** Clicking the 20th and then the 10th
+means the 10th to the 20th, because that is plainly what was meant. Refusing it
+would be correct and unhelpful.
+
+**Clicking again starts over.** Once a range is whole, the next click is a new
+start rather than an edit of the old end — which is what a reader means by
+clicking a third time.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `{ start?, end? }` | | Either end may be absent |
+| `onValueChange` | `(value) => void` | | Fires on both clicks |
+| `min`, `max` | `IsoDate` | | Bounds, inclusive |
+| `placeholder` | `string` | | Required |
+| `previousMonthLabel` | `string` | | Required |
+| `nextMonthLabel` | `string` | | Required |
+| `locale` | `string` | reader's own | |
+| `disabled` | `boolean` | `false` | |
 
 ---
 
@@ -3006,6 +3265,71 @@ the reset it grows and never shrinks back.
 | `maxRows` | `number` | | Stop growing here and scroll |
 
 Everything else goes to the `<textarea>`.
+
+---
+
+# TimeField
+
+Source: https://lacodda.github.io/dowel/components/time-field
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#time-field
+
+Filled, empty, and inside a Field with a hint.
+
+## Notes
+
+**The value is `HH:MM` in twenty-four hours, always** — whatever was typed and
+whatever is shown. That is what a database column holds and what sorts
+correctly as a string; whether the reader sees `21:30` or `9:30 PM` is a matter
+of where they live, and `Intl` answers it.
+
+```tsx
+<TimeField value={startsAt} onValueChange={setStartsAt} />   // '21:30'
+```
+
+Stored and shown are not the same string. `Intl` writes the hour without a
+leading zero, so `09:30` is displayed as `9:30` — and as `9:30 AM` in the
+United States. What leaves the component is always the padded form.
+
+**Loose going in.** Everything below means half past nine in the morning:
+
+| Typed | |
+| --- | --- |
+| `9:30`, `09:30` | the plain spellings |
+| `930`, `0930` | no colon, which is what a phone keyboard invites |
+| `9.30` | a full stop, which plenty of people use |
+| `9:30 am`, `9:30AM` | with a meridiem, spaced or not |
+
+A bare `9` is nine o'clock, not nine minutes past midnight — someone typing a
+time means the hour.
+
+**Midnight and noon are the pair that breaks twelve-hour clocks.** `12am` is
+`00:00` and `12pm` is `12:00`, which is not "add twelve if pm".
+
+**What it will not do is guess.** `25:00`, `9:60` and `13pm` are refused rather
+than clamped, and when what was typed cannot be read the box is put back to the
+value the form actually holds.
+
+**Not `<input type="time">`.** The browser draws its own control, its own
+spinner and its own clock popup, none of which a stylesheet reaches — so a form
+of the product's own fields would have one that is visibly not.
+
+**Empty is `null`.** No time is not midnight.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string \| null` | | `HH:MM`; `null` is empty |
+| `onValueChange` | `(value) => void` | | Fires on blur and Enter, not per key |
+| `locale` | `string` | reader's own | How the time is shown |
+| `placeholder` | `string` | | |
+| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
+
+`parseTime` and `formatTime` are exported beside the component, for a product
+that has to read or write the same spellings elsewhere.
 
 ---
 

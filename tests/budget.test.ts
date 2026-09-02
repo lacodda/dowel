@@ -45,16 +45,40 @@ describe('what a primitive weighs', () => {
    * while still catching a component that has quietly become a screen. */
   const CEILING = 4096
 
+  /* Components allowed past it, each with the reason and its own number.
+   *
+   * A raised ceiling is still a ceiling: the number is what the component
+   * measures today plus a little room, so it catches further growth rather
+   * than opening the gate. Adding an entry is the deliberate act the message
+   * below asks for, and the reason has to say why splitting it would be
+   * worse than the size. */
+  const RAISED: Record<string, { ceiling: number; because: string }> = {
+    calendar: {
+      ceiling: 8192,
+      because:
+        'A month grid is three things that cannot be used apart: the header that pages ' +
+        'months, the seven-by-six grid, and the keyboard that moves a cursor through it. ' +
+        'The arithmetic was already split out into `calendar-math`, which took it from ' +
+        '10.4 kB to 7.4 kB; splitting further would produce a header nobody can render ' +
+        'alone and a grid that cannot change month.',
+    },
+  }
+
   it.each(components.map((c) => [c.name, c.source] as const))(
     '%s is under the ceiling',
     (name, source) => {
       const size = codeOnly(source).length
+      const raised = RAISED[name]
+      const ceiling = raised?.ceiling ?? CEILING
       expect(
         size,
-        `\`${name}\` is ${size} bytes of code, over the ${CEILING} ceiling. ` +
-          'Either it is doing two things and should be two components, or the ceiling ' +
-          'needs raising here with a reason.',
-      ).toBeLessThanOrEqual(CEILING)
+        raised
+          ? `\`${name}\` is ${size} bytes, over its raised ceiling of ${ceiling}. ` +
+            `It was raised because: ${raised.because}`
+          : `\`${name}\` is ${size} bytes of code, over the ${CEILING} ceiling. ` +
+            'Either it is doing two things and should be two components, or the ceiling ' +
+            'needs raising here with a reason.',
+      ).toBeLessThanOrEqual(ceiling)
     },
   )
 })
@@ -107,6 +131,13 @@ describe('what a primitive drags in', () => {
     // Input's field clothes, so a duration and a text box are the same
     // control with different content.
     'duration-field': ['input'],
+    // The sums live next door with no React in them, which is what the size
+    // gate asked for; this is the grid that draws them.
+    calendar: ['calendar-math'],
+    // A field that opens a month: Input's clothes on the trigger, our own
+    // Popover for the panel, and the calendar inside it.
+    'date-picker': ['input', 'popover', 'calendar', 'calendar-math'],
+    'date-range-picker': ['input', 'popover', 'calendar', 'calendar-math'],
     drawer: ['@base-ui/react', 'class-variance-authority'],
     input: [],
     kbd: [],
@@ -126,6 +157,9 @@ describe('what a primitive drags in', () => {
     'number-field': ['@base-ui/react', 'input'],
     // The reveal is ours; the field it wraps wears Input's clothes.
     'password-field': ['input'],
+    // Reads what a person types as a time. No calendar and no library - the
+    // parsing is here and `Intl` says how it reads back.
+    'time-field': ['input'],
     // The track and the thumbs are drawn here; Base UI carries the pointer
     // maths, the keyboard, and one hidden range input per value.
     slider: ['@base-ui/react'],
