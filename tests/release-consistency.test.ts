@@ -192,8 +192,19 @@ describe('the docs do not claim an old version', () => {
      *
      * So any page that names a `vX.Y.Z` at all has to name this one. A page
      * that mentions no version is fine - the rule is against a *stale* claim,
-     * not a missing one. */
-    const pages = ['docs/src/content/docs/index.mdx', 'docs/src/content/docs/getting-started.md']
+     * not a missing one.
+     *
+     * The README joined this list after the same thing happened to it: while
+     * the gate watched two pages under `docs/`, the README's own status line
+     * sat at v0.11.1 for four releases, still saying the first product of the
+     * line was the only one on the system. A gate that names its files by
+     * hand only ever covers the files someone remembered - which is why the
+     * one place a reader is most likely to look was the one place unwatched. */
+    const pages = [
+      'README.md',
+      'docs/src/content/docs/index.mdx',
+      'docs/src/content/docs/getting-started.md',
+    ]
     for (const path of pages) {
       const versions = [...read(path).matchAll(/\bv(\d+\.\d+\.\d+)\b/g)].map((m) => m[1]!)
       for (const version of versions) {

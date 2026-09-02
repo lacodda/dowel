@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.11.1 - the theme, the scales, an accent per product, twenty-six components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. The first product of the line lives on it. See the [roadmap](#roadmap).
+**Status:** v0.15.0 - the theme, the scales, an accent per product, twenty-six components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -93,7 +93,7 @@ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
 A set carries no files of its own: it resolves into the same per-component
 installs you could have typed, so nothing of it survives in your project and
 there is no membership to leave. Each minor of the registry is also served
-frozen at `r/v0.12/…`, for an install that has to be repeatable - inside a
+frozen at `r/v0.14/…`, for an install that has to be repeatable - inside a
 snapshot the cross-references point into the same snapshot, so a component and
 the sibling it reuses are the pair that shipped together. See
 [installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
@@ -180,6 +180,77 @@ things - stock's hover fill and dowel's product hue. The first run of `check`
 against dowel's own stand reported twenty-four violations that were all correct
 code, which is exactly how that rule was learned - see
 [the migration guide](https://lacodda.github.io/dowel/guides/migration/).
+
+## A day in the life
+
+The shortest complete path: a new project, the theme, a component, a screen.
+
+**Install the theme and say which product this is.** A product of the line
+imports its accent; anything else sets `--accent-base` directly.
+
+```console
+$ pnpm add dowel-ui
+```
+
+```css
+/* src/styles.css */
+@import 'tailwindcss';
+@import 'dowel-ui/theme.css';
+@import 'dowel-ui/accents/kasl-server.css';
+```
+
+**Tell shadcn where components go.** One file, and the `ui` alias is the one
+every dowel component targets:
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": { "config": "", "css": "src/styles.css", "baseColor": "neutral", "cssVariables": true },
+  "aliases": { "components": "@/components", "ui": "@/components/ui", "lib": "@/lib", "utils": "@/lib/utils" }
+}
+```
+
+**Copy in what the screen needs.**
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
+```
+
+**Write the screen in the vocabulary.** No colour is written down, so this is
+correct in both themes and in whatever accent the product turns out to have:
+
+```tsx
+import { Panel } from '@/components/ui/panel'
+import { Button } from '@/components/ui/button'
+
+export function SignIn() {
+  return (
+    <Panel className="w-80 p-5">
+      <h1 className="text-lg font-semibold text-text">Sign in</h1>
+      <p className="text-xs text-dim">Your team's server</p>
+      <Button variant="primary" className="mt-4 w-full">Sign in</Button>
+    </Panel>
+  )
+}
+```
+
+**Check the wiring before debugging the screen.**
+
+```console
+$ npx dowel doctor
+The installation is coherent.
+```
+
+That is the whole loop, and it is the one the line's second product actually
+went through. kasl-server had written its own theme first, in the same words -
+`bg`, `raise`, `line`, `dim`, `accent` - so moving over deleted about a hundred
+and thirty lines and changed nothing on screen except one thing it silently
+fixed: the hand-written theme pinned dark ink on the accent for both themes,
+which was right on gold and wrong on the darkened gold the light theme uses,
+where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 
 ## Roadmap
 

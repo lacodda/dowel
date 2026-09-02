@@ -322,8 +322,8 @@
         "dowel-ui@^0.15.0"
       ],
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/input.json",
-        "https://lacodda.github.io/dowel/r/select.json"
+        "https://lacodda.github.io/dowel/r/v0.15/input.json",
+        "https://lacodda.github.io/dowel/r/v0.15/select.json"
       ],
       "files": [
         {
@@ -345,8 +345,8 @@
         "dowel-ui@^0.15.0"
       ],
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/combobox.json",
-        "https://lacodda.github.io/dowel/r/kbd.json"
+        "https://lacodda.github.io/dowel/r/v0.15/combobox.json",
+        "https://lacodda.github.io/dowel/r/v0.15/kbd.json"
       ],
       "files": [
         {
@@ -387,7 +387,7 @@
         "dowel-ui@^0.15.0"
       ],
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/menu.json"
+        "https://lacodda.github.io/dowel/r/v0.15/menu.json"
       ],
       "files": [
         {
@@ -580,9 +580,9 @@
         "dowel-ui@^0.15.0"
       ],
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/input.json",
-        "https://lacodda.github.io/dowel/r/kbd.json",
-        "https://lacodda.github.io/dowel/r/shortcut.json"
+        "https://lacodda.github.io/dowel/r/v0.15/input.json",
+        "https://lacodda.github.io/dowel/r/v0.15/kbd.json",
+        "https://lacodda.github.io/dowel/r/v0.15/shortcut.json"
       ],
       "files": [
         {
@@ -604,7 +604,7 @@
         "dowel-ui@^0.15.0"
       ],
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/input.json"
+        "https://lacodda.github.io/dowel/r/v0.15/input.json"
       ],
       "files": [
         {
@@ -659,7 +659,7 @@
         "dowel-ui@^0.15.0"
       ],
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/input.json"
+        "https://lacodda.github.io/dowel/r/v0.15/input.json"
       ],
       "files": [
         {
@@ -735,19 +735,19 @@
       "title": "dowel app",
       "description": "The set a product of the line actually starts from: the everyday controls, the overlays it needs on day one, and the ways of choosing something. What kilna has installed.",
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/badge.json",
-        "https://lacodda.github.io/dowel/r/button.json",
-        "https://lacodda.github.io/dowel/r/combobox.json",
-        "https://lacodda.github.io/dowel/r/confirm-dialog.json",
-        "https://lacodda.github.io/dowel/r/dialog.json",
-        "https://lacodda.github.io/dowel/r/drawer.json",
-        "https://lacodda.github.io/dowel/r/input.json",
-        "https://lacodda.github.io/dowel/r/kbd.json",
-        "https://lacodda.github.io/dowel/r/menu.json",
-        "https://lacodda.github.io/dowel/r/panel.json",
-        "https://lacodda.github.io/dowel/r/select.json",
-        "https://lacodda.github.io/dowel/r/textarea.json",
-        "https://lacodda.github.io/dowel/r/toast.json"
+        "https://lacodda.github.io/dowel/r/v0.15/badge.json",
+        "https://lacodda.github.io/dowel/r/v0.15/button.json",
+        "https://lacodda.github.io/dowel/r/v0.15/combobox.json",
+        "https://lacodda.github.io/dowel/r/v0.15/confirm-dialog.json",
+        "https://lacodda.github.io/dowel/r/v0.15/dialog.json",
+        "https://lacodda.github.io/dowel/r/v0.15/drawer.json",
+        "https://lacodda.github.io/dowel/r/v0.15/input.json",
+        "https://lacodda.github.io/dowel/r/v0.15/kbd.json",
+        "https://lacodda.github.io/dowel/r/v0.15/menu.json",
+        "https://lacodda.github.io/dowel/r/v0.15/panel.json",
+        "https://lacodda.github.io/dowel/r/v0.15/select.json",
+        "https://lacodda.github.io/dowel/r/v0.15/textarea.json",
+        "https://lacodda.github.io/dowel/r/v0.15/toast.json"
       ],
       "docs": "Import the theme and your product accent first; these are the components on top of it."
     },
@@ -758,12 +758,12 @@
       "title": "dowel forms",
       "description": "What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.",
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/button.json",
-        "https://lacodda.github.io/dowel/r/chip.json",
-        "https://lacodda.github.io/dowel/r/combobox.json",
-        "https://lacodda.github.io/dowel/r/input.json",
-        "https://lacodda.github.io/dowel/r/select.json",
-        "https://lacodda.github.io/dowel/r/textarea.json"
+        "https://lacodda.github.io/dowel/r/v0.15/button.json",
+        "https://lacodda.github.io/dowel/r/v0.15/chip.json",
+        "https://lacodda.github.io/dowel/r/v0.15/combobox.json",
+        "https://lacodda.github.io/dowel/r/v0.15/input.json",
+        "https://lacodda.github.io/dowel/r/v0.15/select.json",
+        "https://lacodda.github.io/dowel/r/v0.15/textarea.json"
       ],
       "docs": "Field, Checkbox, RadioGroup and Switch join this set in v0.16."
     },
@@ -774,10 +774,10 @@
       "title": "dowel feedback",
       "description": "The three ways of saying that something happened - one that goes away, one that is still true after a reload, one that is true on every screen - and the dialog for anything that needs an answer.",
       "registryDependencies": [
-        "https://lacodda.github.io/dowel/r/alert.json",
-        "https://lacodda.github.io/dowel/r/banner.json",
-        "https://lacodda.github.io/dowel/r/confirm-dialog.json",
-        "https://lacodda.github.io/dowel/r/toast.json"
+        "https://lacodda.github.io/dowel/r/v0.15/alert.json",
+        "https://lacodda.github.io/dowel/r/v0.15/banner.json",
+        "https://lacodda.github.io/dowel/r/v0.15/confirm-dialog.json",
+        "https://lacodda.github.io/dowel/r/v0.15/toast.json"
       ],
       "docs": "Which of the four to reach for is the harder question: see https://lacodda.github.io/dowel/guides/overlays/"
     },

@@ -10,8 +10,8 @@
     "dowel-ui@^0.15.0"
   ],
   "registryDependencies": [
-    "https://lacodda.github.io/dowel/r/input.json",
-    "https://lacodda.github.io/dowel/r/select.json"
+    "https://lacodda.github.io/dowel/r/v0.15/input.json",
+    "https://lacodda.github.io/dowel/r/v0.15/select.json"
   ],
   "files": [
     {
