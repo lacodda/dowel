@@ -216,6 +216,58 @@ describe('the docs do not claim an old version', () => {
   })
 })
 
+describe('the docs do not miscount the primitives', () => {
+  it('states the number there are, wherever it states one', () => {
+    /* Second verse of the stale-version defect, and it slipped past that gate
+     * because a count is not a `vX.Y.Z`. The README, the site's front page and
+     * the vocabulary page all say how many primitives there are, and all three
+     * still said twenty-six when there were thirty.
+     *
+     * Only a number written as a word is checked, and only next to the word
+     * it counts. "twenty-six hits" on the anti-patterns page is a fact about a
+     * lint run on kilna, not a count of components, and must not be dragged
+     * along by this. */
+    const WORDS: Record<number, string> = {
+      20: 'twenty', 21: 'twenty-one', 22: 'twenty-two', 23: 'twenty-three',
+      24: 'twenty-four', 25: 'twenty-five', 26: 'twenty-six', 27: 'twenty-seven',
+      28: 'twenty-eight', 29: 'twenty-nine', 30: 'thirty', 31: 'thirty-one',
+      32: 'thirty-two', 33: 'thirty-three', 34: 'thirty-four', 35: 'thirty-five',
+      36: 'thirty-six', 37: 'thirty-seven', 38: 'thirty-eight', 39: 'thirty-nine',
+      40: 'forty',
+    }
+
+    const count = readdirSync(resolve(root, 'registry/ui')).filter(
+      (file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'),
+    ).length
+
+    const expectedWord = WORDS[count]
+    expect(expectedWord, `no word for ${count} primitives - extend the table`).toBeDefined()
+
+    /* A number-word immediately before "components", "primitives", or "of
+     * them" is a count of these. Anything else is somebody counting something
+     * else. */
+    const pattern = /\b([a-z]+(?:-[a-z]+)?)\s+(?:components|primitives|of them)\b/gi
+
+    const pages = [
+      'README.md',
+      'docs/src/content/docs/index.mdx',
+      'docs/src/content/docs/concepts/vocabulary.mdx',
+    ]
+    const known = new Set(Object.values(WORDS))
+
+    for (const path of pages) {
+      for (const match of read(path).matchAll(pattern)) {
+        const word = match[1]!.toLowerCase()
+        if (!known.has(word)) continue
+        expect(
+          word,
+          `\`${path}\` says "${match[0]}" and there are ${count}`,
+        ).toBe(expectedWord)
+      }
+    }
+  })
+})
+
 describe('the docs show what the theme has', () => {
   it('documents every colour token the theme declares', () => {
     const theme = read('packages/dowel/src/theme.css')

@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.15.0 - the theme, the scales, an accent per product, twenty-six components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
+**Status:** v0.16.0 - the theme, the scales, an accent per product, thirty components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -98,12 +98,13 @@ snapshot the cross-references point into the same snapshot, so a component and
 the sibling it reuses are the pair that shipped together. See
 [installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
 
-Twenty-six of them so far. The everyday ones - Button, Input, Textarea, Panel,
-Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float above the
-page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip; four
-for choosing something - Menu, ContextMenu, Select and Combobox; three for
-finding it - SearchField, CommandPalette and the `useShortcut` behind them; and
-three for saying that something happened: Toast, Alert and Banner.
+Thirty of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Badge, Chip, Kbd, Spinner, Truncate and Copyable; Field and the three controls
+that answer a question - Checkbox, RadioGroup and Switch; the six that float
+above the page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and
+Tooltip; four for choosing something - Menu, ContextMenu, Select and Combobox;
+three for finding it - SearchField, CommandPalette and the `useShortcut` behind
+them; and three for saying that something happened: Toast, Alert and Banner.
 
 Those last three are the ones products keep confusing, so each page names all
 four options: a **toast** goes away, an **alert** is still true after a reload,

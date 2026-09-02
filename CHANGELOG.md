@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.16.0] - 2026-09-02
+
+### Bug Fixes
+- Never rewrite a snapshot that has shipped
+
+### Features
+- A field, and the three ways of choosing
+
 ## [0.15.0] - 2026-09-02
 
 ### Features

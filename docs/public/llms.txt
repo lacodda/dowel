@@ -1,6 +1,6 @@
 # dowel
 
-> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.15.0.
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.16.0.
 
 Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
 
