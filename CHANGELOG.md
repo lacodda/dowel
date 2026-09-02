@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.18.0] - 2026-09-02
+
+### Features
+- Dates, on Intl rather than on a date library
+
 ## [0.17.1] - 2026-09-02
 
 ### Bug Fixes

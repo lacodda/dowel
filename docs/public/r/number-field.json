@@ -6,7 +6,7 @@
   "description": "A number typed into a text input is a string that happens to look like a number, and every product then writes the same four fixes: strip the letters, clamp to a range, round to a step, and decide what an empty box means. This is those four, once, plus the stepper - because a value with a small range is faster nudged than typed.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.17.1"
+    "dowel-ui@^0.18.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/input.json"

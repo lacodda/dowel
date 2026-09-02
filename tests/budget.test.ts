@@ -134,6 +134,9 @@ describe('what a primitive drags in', () => {
     // The sums live next door with no React in them, which is what the size
     // gate asked for; this is the grid that draws them.
     calendar: ['calendar-math'],
+    // Pure functions and `Intl`, no React and no date library - which is the
+    // whole reason it exists as a file of its own.
+    'calendar-math': [],
     // A field that opens a month: Input's clothes on the trigger, our own
     // Popover for the panel, and the calendar inside it.
     'date-picker': ['input', 'popover', 'calendar', 'calendar-math'],
