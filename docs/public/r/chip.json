@@ -6,7 +6,7 @@
   "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.14.0"
+    "dowel-ui@^0.14.1"
   ],
   "registryDependencies": [],
   "files": [

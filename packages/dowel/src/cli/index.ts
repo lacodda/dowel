@@ -356,6 +356,17 @@ function commandDiff(options: Options): Outcome {
     return 0
   }
 
+  /* Nothing to compare is not the same as nothing differing. "0 components
+   * match the registry" reads as reassurance about work that never happened -
+   * found by running the published command against a project with no
+   * components in it. */
+  if (targets.length === 0) {
+    process.stdout.write(
+      `${dim('No dowel components in this project, so there is nothing to compare.')}\n`,
+    )
+    return 0
+  }
+
   if (changed.length === 0) {
     const scope = wanted ? bold(wanted) : `${targets.length} component${targets.length === 1 ? '' : 's'}`
     process.stdout.write(`${green('Unchanged')}: ${scope} ${targets.length === 1 ? 'matches' : 'match'} the registry.\n`)
