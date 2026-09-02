@@ -62,6 +62,7 @@ import {
   DrawerTrigger,
 } from '../../registry/ui/drawer'
 import { Checkbox, CheckboxGroup } from '../../registry/ui/checkbox'
+import { DurationField } from '../../registry/ui/duration-field'
 import { Field } from '../../registry/ui/field'
 import { Input } from '../../registry/ui/input'
 import { Kbd } from '../../registry/ui/kbd'
@@ -86,6 +87,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from '../../registry/ui/menu'
+import { NumberField } from '../../registry/ui/number-field'
 import { Panel, SectionLabel } from '../../registry/ui/panel'
 import {
   Select,
@@ -94,7 +96,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../registry/ui/select'
+import { PasswordField } from '../../registry/ui/password-field'
 import { Radio, RadioGroup } from '../../registry/ui/radio-group'
+import { RatingScale } from '../../registry/ui/rating-scale'
 import { SearchField } from '../../registry/ui/search-field'
 import { useShortcut } from '../../registry/ui/shortcut'
 import { Spinner } from '../../registry/ui/spinner'
@@ -108,6 +112,7 @@ import {
   ToastViewport,
   useToastManager,
 } from '../../registry/ui/toast'
+import { Slider } from '../../registry/ui/slider'
 import { Switch } from '../../registry/ui/switch'
 import { Textarea } from '../../registry/ui/textarea'
 import {
@@ -146,6 +151,31 @@ const sections = [
     render: () => <RadioGroupSection />,
   },
   { id: 'switch', title: 'Switch', docs: '/dowel/components/switch/', render: () => <SwitchSection /> },
+  {
+    id: 'number-field',
+    title: 'NumberField',
+    docs: '/dowel/components/number-field/',
+    render: () => <NumberFieldSection />,
+  },
+  { id: 'slider', title: 'Slider', docs: '/dowel/components/slider/', render: () => <SliderSection /> },
+  {
+    id: 'rating-scale',
+    title: 'RatingScale',
+    docs: '/dowel/components/rating-scale/',
+    render: () => <RatingScaleSection />,
+  },
+  {
+    id: 'duration-field',
+    title: 'DurationField',
+    docs: '/dowel/components/duration-field/',
+    render: () => <DurationFieldSection />,
+  },
+  {
+    id: 'password-field',
+    title: 'PasswordField',
+    docs: '/dowel/components/password-field/',
+    render: () => <PasswordFieldSection />,
+  },
   { id: 'panel', title: 'Panel', docs: '/dowel/components/panel/', render: () => <PanelSection /> },
   { id: 'badge', title: 'Badge', docs: '/dowel/components/badge/', render: () => <BadgeSection /> },
   { id: 'chip', title: 'Chip', docs: '/dowel/components/chip/', render: () => <ChipSection /> },
@@ -546,6 +576,234 @@ function SwitchSection() {
       <Row label="without words">
         <Switch aria-label="Notify me" />
         <Switch aria-label="Notify me" defaultChecked />
+      </Row>
+    </>
+  )
+}
+
+function NumberFieldSection() {
+  const [width, setWidth] = useState<number | null>(16)
+  const [price, setPrice] = useState<number | null>(1234.5)
+
+  return (
+    <>
+      <Row label="with a stepper, and with a unit beside it">
+        <NumberField value={width} onValueChange={setWidth} min={0} aria-label="Width" />
+        <NumberField
+          value={width}
+          onValueChange={setWidth}
+          min={0}
+          unit="px"
+          aria-label="Width in pixels"
+        />
+      </Row>
+
+      <Row label="without the stepper, for a wide range">
+        <NumberField value={price} onValueChange={setPrice} hideStepper aria-label="Amount" />
+      </Row>
+
+      <Row label="formatted - the number reads the way it is written">
+        <NumberField
+          value={price}
+          onValueChange={setPrice}
+          format={{ style: 'currency', currency: 'EUR' }}
+          hideStepper
+          aria-label="Price"
+        />
+      </Row>
+
+      <Row label="disabled">
+        <NumberField value={16} disabled aria-label="Disabled" />
+      </Row>
+    </>
+  )
+}
+
+function SliderSection() {
+  const [volume, setVolume] = useState(60)
+  const [range, setRange] = useState<number[]>([20, 70])
+
+  return (
+    <>
+      <Row label="one value">
+        <div className="w-64">
+          <Slider
+            value={volume}
+            onValueChange={(next) => setVolume(next as number)}
+            aria-label="Volume"
+          />
+        </div>
+      </Row>
+
+      <Row label="with its value shown">
+        <div className="w-64">
+          <Slider
+            value={volume}
+            onValueChange={(next) => setVolume(next as number)}
+            showValue
+            aria-label="Volume"
+          />
+        </div>
+      </Row>
+
+      <Row label="a range - two thumbs, each with its own name">
+        <div className="w-64">
+          <Slider
+            value={range}
+            onValueChange={(next) => setRange(next as number[])}
+            showValue
+            aria-label="Price"
+            getThumbLabel={(index) => (index === 0 ? 'Lowest price' : 'Highest price')}
+          />
+        </div>
+      </Row>
+
+      <Row label="vertical, and disabled">
+        <Slider defaultValue={40} orientation="vertical" aria-label="Vertical" />
+        <div className="w-48">
+          <Slider defaultValue={40} disabled aria-label="Disabled" />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function RatingScaleSection() {
+  const [score, setScore] = useState<number | undefined>(3)
+  const [unjudged, setUnjudged] = useState<number | undefined>(undefined)
+
+  return (
+    <>
+      <Row label="scored - click the filled mark again to clear it">
+        <div className="w-64">
+          <RatingScale
+            scale={5}
+            value={score}
+            onValueChange={setScore}
+            label="Difficulty"
+            emptyLabel="Not judged"
+          />
+        </div>
+      </Row>
+
+      <Row label="not judged yet, which is a state and not a zero">
+        <div className="w-64">
+          <RatingScale
+            scale={5}
+            value={unjudged}
+            onValueChange={setUnjudged}
+            label="Polish"
+            emptyLabel="Not judged"
+          />
+        </div>
+      </Row>
+
+      <Row label="a longer scale, and one that cannot be changed">
+        <div className="w-64">
+          <RatingScale
+            scale={10}
+            value={7}
+            onValueChange={() => {}}
+            label="Ten"
+            emptyLabel="Not judged"
+          />
+        </div>
+        <div className="w-40">
+          <RatingScale
+            scale={5}
+            value={2}
+            onValueChange={() => {}}
+            label="Disabled"
+            emptyLabel="Not judged"
+            disabled
+          />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function DurationFieldSection() {
+  const [estimate, setEstimate] = useState<number | null>(90)
+  const [empty, setEmpty] = useState<number | null>(null)
+
+  return (
+    <>
+      <Row label="type 90, or 1.5h, or 1:30 - all of them mean the same">
+        <div className="w-40">
+          <DurationField value={estimate} onValueChange={setEstimate} aria-label="Estimate" />
+        </div>
+        <span className="text-xs tabular-nums text-dim">
+          {estimate === null ? 'null' : `${estimate} min`}
+        </span>
+      </Row>
+
+      <Row label="empty, which is not zero">
+        <div className="w-40">
+          <DurationField
+            value={empty}
+            onValueChange={setEmpty}
+            placeholder="1h 30m"
+            aria-label="Unset"
+          />
+        </div>
+        <span className="text-xs tabular-nums text-dim">
+          {empty === null ? 'null' : `${empty} min`}
+        </span>
+      </Row>
+
+      <Row label="inside a Field">
+        <Field label="Estimate" help="How long you think it takes." className="w-56">
+          <DurationField value={estimate} onValueChange={setEstimate} placeholder="1h 30m" />
+        </Field>
+      </Row>
+    </>
+  )
+}
+
+function PasswordFieldSection() {
+  const [password, setPassword] = useState('correct horse battery staple')
+
+  return (
+    <>
+      <Row label="always starts masked - revealing is the reader's own action">
+        <div className="w-72">
+          <PasswordField
+            value={password}
+            onValueChange={setPassword}
+            showLabel="Show password"
+            hideLabel="Hide password"
+            autoComplete="current-password"
+            aria-label="Password"
+          />
+        </div>
+      </Row>
+
+      <Row label="inside a Field, with an error">
+        <Field
+          label="New password"
+          error="Too short - use at least twelve characters."
+          className="w-72"
+        >
+          <PasswordField
+            defaultValue="short"
+            showLabel="Show password"
+            hideLabel="Hide password"
+            autoComplete="new-password"
+          />
+        </Field>
+      </Row>
+
+      <Row label="disabled">
+        <div className="w-72">
+          <PasswordField
+            defaultValue="hunter2"
+            disabled
+            showLabel="Show password"
+            hideLabel="Hide password"
+            aria-label="Disabled"
+          />
+        </div>
       </Row>
     </>
   )

@@ -29,17 +29,22 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Copyable](https://lacodda.github.io/dowel/components/copyable.md): Any text worth showing is worth being able to take away.
 - [Dialog](https://lacodda.github.io/dowel/components/dialog.md): A question the reader has to answer before anything else continues.
 - [Drawer](https://lacodda.github.io/dowel/components/drawer.md): A modal panel that slides in from an edge - a filter sheet, a detail pane, a form too long to centre.
+- [DurationField](https://lacodda.github.io/dowel/components/duration-field.md): A length of time, typed the way people say it - loose going in, one spelling coming out.
 - [Field](https://lacodda.github.io/dowel/components/field.md): The label, the control, and what the form has to say about it - wired together rather than merely stacked.
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
 - [Kbd](https://lacodda.github.io/dowel/components/kbd.md): A key, as printed in a menu or a hint.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
+- [NumberField](https://lacodda.github.io/dowel/components/number-field.md): A number, its stepper, and what an empty box actually means.
 - [Panel](https://lacodda.github.io/dowel/components/panel.md): The raised surface everything else sits on.
+- [PasswordField](https://lacodda.github.io/dowel/components/password-field.md): A password, and the button that shows it - which starts off, always.
 - [Popover](https://lacodda.github.io/dowel/components/popover.md): A panel anchored to the control that opened it - positioned, not centred, and not modal.
 - [PreviewCard](https://lacodda.github.io/dowel/components/preview-card.md): The card that appears when a link is hovered - a shortcut for people who can see it, never the only place the information lives.
 - [RadioGroup](https://lacodda.github.io/dowel/components/radio-group.md): One of a few, all of them visible - the group is the control, not the button.
+- [RatingScale](https://lacodda.github.io/dowel/components/rating-scale.md): A judgement on a short scale, and the absence of one - because not judged yet is a state, not a zero.
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
 - [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
+- [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.
 - [Textarea](https://lacodda.github.io/dowel/components/textarea.md): A multi-line field that can grow with what is typed into it.

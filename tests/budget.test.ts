@@ -103,6 +103,10 @@ describe('what a primitive drags in', () => {
     // keyboard and the indeterminate state a native input cannot express.
     checkbox: ['@base-ui/react'],
     dialog: ['@base-ui/react', 'class-variance-authority'],
+    // The whole component is text a person typed being turned into minutes.
+    // Input's field clothes, so a duration and a text box are the same
+    // control with different content.
+    'duration-field': ['input'],
     drawer: ['@base-ui/react', 'class-variance-authority'],
     input: [],
     kbd: [],
@@ -116,6 +120,15 @@ describe('what a primitive drags in', () => {
     // a text input sit next to each other in every form there is.
     select: ['@base-ui/react', 'class-variance-authority', 'input'],
     'preview-card': ['@base-ui/react', 'class-variance-authority'],
+    // Base UI parses what is typed and runs the keyboard; Input's clothes so
+    // a number and a text field sit next to each other without looking like
+    // two different controls.
+    'number-field': ['@base-ui/react', 'input'],
+    // The reveal is ours; the field it wraps wears Input's clothes.
+    'password-field': ['input'],
+    // The track and the thumbs are drawn here; Base UI carries the pointer
+    // maths, the keyboard, and one hidden range input per value.
+    slider: ['@base-ui/react'],
     // An Input that knows it is a search box: Input's field clothes, Kbd for
     // the shortcut it shows, and `useShortcut` for the same shortcut bound -
     // one array, so the hint cannot drift from the binding.
@@ -123,6 +136,9 @@ describe('what a primitive drags in', () => {
     // No clothes at all: a hook and two predicates, so it drags in nothing.
     shortcut: [],
     spinner: ['class-variance-authority'],
+    // No clothes at all: a row of marks, its keyboard, and the state that is
+    // the point - not judged yet.
+    'rating-scale': [],
     // The role is the point: `switch` rather than `checkbox`, which is what
     // tells a reader the change takes effect now.
     switch: ['@base-ui/react'],
