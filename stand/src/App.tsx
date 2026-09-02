@@ -658,11 +658,14 @@ function SliderSection() {
         </div>
       </Row>
 
-      <Row label="vertical, and disabled">
-        <Slider defaultValue={40} orientation="vertical" aria-label="Vertical" />
-        <div className="w-48">
+      <Row label="disabled">
+        <div className="w-64">
           <Slider defaultValue={40} disabled aria-label="Disabled" />
         </div>
+      </Row>
+
+      <Row label="vertical - its own row, because it is a head taller than a field">
+        <Slider defaultValue={40} orientation="vertical" aria-label="Vertical" />
       </Row>
     </>
   )
