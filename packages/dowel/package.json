@@ -29,6 +29,9 @@
     "dist",
     "README.md"
   ],
+  "bin": {
+    "dowel": "./dist/cli/bin.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -37,6 +40,10 @@
     "./eslint": {
       "types": "./dist/eslint/index.d.ts",
       "import": "./dist/eslint/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js"
     },
     "./theme.css": "./dist/theme.css",
     "./tokens.json": "./dist/tokens.json",

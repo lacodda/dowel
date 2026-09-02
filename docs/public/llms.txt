@@ -47,6 +47,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 
 - [What a component has to pass](https://lacodda.github.io/dowel/guides/gates.md): The checks every primitive runs through, and what each one is there to catch.
 - [The lint rules](https://lacodda.github.io/dowel/guides/linting.md): Two conventions the system rests on, enforced rather than remembered.
+- [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration.md): The four commands that read a project, rewrite the token names that can be rewritten, and say what is left.
 - [Choosing an overlay](https://lacodda.github.io/dowel/guides/overlays.md): Six components that all float above the page, and the question each one answers.
 - [Installing from the registry](https://lacodda.github.io/dowel/guides/registry.md): Sets that install in one command, and how to pin a version of the registry so an install can be repeated.
 

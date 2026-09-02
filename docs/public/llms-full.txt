@@ -2966,6 +2966,163 @@ promise the old name was carrying.
 
 ---
 
+# Moving from stock shadcn
+
+Source: https://lacodda.github.io/dowel/guides/migration
+
+A product arriving at dowel almost never arrives from nothing. It arrives from
+stock shadcn/ui — whose theme names colours by their role in a page
+(`--background`, `--muted-foreground`, `--card`) and whose components are
+written against those names. dowel names them by what they are on a screen: a
+ground, a raised surface, dimmed ink.
+
+The two vocabularies overlap almost entirely in meaning and not at all in
+spelling. That is what these tools are for.
+
+```console
+$ npx dowel check
+```
+
+Four commands, and they divide along one line: `check`, `doctor` and `diff` only
+read; `codemod` writes, and only when asked twice. Everything reads the
+catalogue inside the package you installed, so none of it needs the network.
+
+## The order to run them in
+
+1. **`dowel check`** — what in this project is not on the dowel vocabulary.
+2. **`dowel codemod`** — rewrite the names that can be rewritten. Prints a plan;
+   add `--write` when you have read it.
+3. **`dowel check`** again — what the codemod deliberately left behind.
+4. **`dowel doctor`** — whether the installation itself is wired correctly.
+
+`dowel diff` is not part of the migration; it answers a question that comes up
+months later, and it is described [at the end](#what-you-changed-since).
+
+## `check`
+
+```console
+$ npx dowel check
+
+src/components/card.tsx
+  12:18 stock  `bg-muted` is the stock shadcn vocabulary; dowel calls this `bg-soft`.
+  14:22 color  A raw colour cannot follow the product accent or the theme.
+  19:31 both   `--accent` exists in both vocabularies: stock `--accent` is a hover
+               fill; dowel's `--accent` is the product's own hue.
+
+30 findings in 2 files - 18 stock names, 6 raw colours, 6 in both vocabularies.
+```
+
+Three marks, and they are three different situations:
+
+| | What it means | Rewritten? |
+| --- | --- | --- |
+| **`stock`** | A name that exists only in shadcn's vocabulary. | Yes, by `codemod`. |
+| **`color`** | A colour written down instead of named. | No — see below. |
+| **`both`** | A name both vocabularies use, meaning different things. | No — see below. |
+
+`check` exits non-zero when there are `stock` or `color` findings, and **zero
+when the only findings are `both`**. A fully migrated project still reports
+those — every use of `--accent` is one — so failing on them would mean a
+correct project could never pass.
+
+The same rules the linter enforces are the rules this applies, because it calls
+the same code. Test files are exempt from the colour check exactly as they are
+in [the lint config](/dowel/guides/linting/): a test about the accent has to
+write a hex down to have something to assert.
+
+## `codemod`
+
+```console
+$ npx dowel codemod              # prints what it would do
+$ npx dowel codemod --write      # does it
+```
+
+It makes exactly the substitutions the table describes and nothing else — no
+reformatting, no reordering, no touching a line it has no replacement for. The
+diff you review should contain nothing but renames.
+
+Two kinds of name are deliberately left alone, and it says which:
+
+```console
+Left alone - each with its reason:
+  --accent (22) - stock `--accent` is a hover fill; dowel's `--accent` is the
+                  product's own hue. If this project has not migrated yet, it
+                  means `--soft`; if it has, it is already right.
+  --chart-1 (5) - dowel has no chart palette yet; leave it until the charts version.
+```
+
+### Why `--accent` is never rewritten
+
+It is the one name that means opposite things in the two vocabularies. Stock
+`--accent` is the quiet fill a row takes on hover; dowel's `--accent` is the
+product's own colour — the loudest thing on the screen. A tool reading names
+cannot tell which one it is looking at.
+
+This is not a hypothetical caution. The first run of `check` against dowel's own
+stand reported twenty-four violations, every one of them a *correct* use of
+`--accent`, and a codemod that trusted the name would have rewritten all of them
+to a grey. So it reports and leaves them.
+
+Read them yourself. If the project has not migrated, they mean `--soft`; if it
+has, they are already right.
+
+### Why colours are never rewritten
+
+Which token a colour was reaching for is a decision, not a substitution.
+`#3f3f46` might be `--raise`, `--soft` or `--line` depending on what it was
+drawing, and only the person who wrote it knows. The
+[anti-patterns page](/dowel/concepts/anti-patterns/) covers the judgement;
+`check` just finds them.
+
+## `doctor`
+
+Where `check` reads a project's code, `doctor` reads its *setup* — the class of
+problem that still compiles:
+
+```console
+$ npx dowel doctor
+
+problem theme    No stylesheet imports the dowel theme, so every token is undefined.
+                 Add `@import 'dowel-ui/theme.css';` after `@import 'tailwindcss';`.
+note    accent   No accent is set, so the theme uses its own.
+```
+
+`problem` is wrong now; `note` may be deliberate, and only problems affect the
+exit code. It checks that the package is installed, that the theme is imported
+exactly once, that one accent is set rather than none or two, that
+`components.json` has the `ui` alias every component targets, and that nothing
+copied in expects a newer package than the one installed.
+
+The missing theme is worth singling out: every token resolves to nothing, CSS
+drops those properties rather than erroring, and the screen renders in browser
+defaults with the layout intact. It looks like the components are broken.
+
+## What you changed since
+
+```console
+$ npx dowel diff            # every copied component
+$ npx dowel diff dialog     # one of them
+```
+
+The registry's promise is that a copied component becomes your file. The cost is
+that nothing records what you then changed — a year later, a component differs
+from the one that shipped and there is no way to tell your deliberate edit from
+a fix you never received.
+
+`diff` compares what is in your project against the copy in the catalogue that
+came with your installed package. It does not merge and will not offer to: the
+file is yours, and a tool that reconciled it would be taking back what the
+registry gave.
+
+## Machine-readable output
+
+Every command takes `--json`, and `--cwd <dir>` to look somewhere other than
+here. `NO_COLOR` is honoured.
+
+ FENCE6
+
+---
+
 # Choosing an overlay
 
 Source: https://lacodda.github.io/dowel/guides/overlays

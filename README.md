@@ -155,6 +155,32 @@ against a baseline, and a check that it carries no word of its own to translate
 
 Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
 
+## Moving an existing project over
+
+A product arriving at dowel almost never arrives from nothing - it arrives from
+stock shadcn/ui, whose theme names colours by their role in a page
+(`--background`, `--muted-foreground`) where dowel names them by what they are
+on a screen. The package ships the tools for that crossing:
+
+```console
+$ npx dowel check              # what is not on the dowel vocabulary yet
+$ npx dowel codemod --write    # rewrite the names that can be rewritten
+$ npx dowel doctor             # whether the installation itself is wired right
+$ npx dowel diff dialog        # what you changed since you copied it in
+```
+
+`check`, `doctor` and `diff` only read; `codemod` writes, and only when asked
+twice. Everything reads the catalogue inside the installed package, so none of
+it needs the network.
+
+Two things are deliberately never rewritten, and the tools say so rather than
+guessing: a colour, because which token it was reaching for is a decision; and
+`--accent`, because it is the one name both vocabularies use for opposite
+things - stock's hover fill and dowel's product hue. The first run of `check`
+against dowel's own stand reported twenty-four violations that were all correct
+code, which is exactly how that rule was learned - see
+[the migration guide](https://lacodda.github.io/dowel/guides/migration/).
+
 ## Roadmap
 
 Development goes in versions; each one is a single coherent theme, and ends in a release.
@@ -173,6 +199,7 @@ Development goes in versions; each one is a single coherent theme, and ends in a
 
 - [The stand](https://lacodda.github.io/dowel/stand/) - every component, live
 - [Getting started](https://lacodda.github.io/dowel/getting-started/), [the lint rules](https://lacodda.github.io/dowel/guides/linting/) and [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/)
+- [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration/) - the four commands and what they refuse to do
 - [Components](https://lacodda.github.io/dowel/components/button/)
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
 - [The vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary/) this system uses for its own parts, and [the mistakes](https://lacodda.github.io/dowel/concepts/anti-patterns/) that actually get made against it
