@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.13.0] - 2026-09-02
+
+### Documentation
+- What the machine-readable half serves
+
+### Features
+- The documentation in the form a machine reads
+
 ## [0.12.0] - 2026-09-02
 
 ### Features
