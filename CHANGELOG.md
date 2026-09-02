@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.11.2] - 2026-09-02
+
+### Bug Fixes
+- Never grow taller than the window
+
 ## [0.11.1] - 2026-09-01
 
 ### Features
