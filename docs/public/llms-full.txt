@@ -1,4 +1,4 @@
-# dowel 0.16.0
+# dowel 0.17.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,8 +23,8 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.16.0.** The theme and its scales, an accent for each of the fourteen
-products of the line, and thirty primitives. Components install from the
+**v0.17.0.** The theme and its scales, an accent for each of the fourteen
+products of the line, and thirty-five primitives. Components install from the
 registry with `npx shadcn add`, singly or as a
 [set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also
 carries the [migration tools](/dowel/guides/migration/) a project crossing from
@@ -341,7 +341,7 @@ drawn in all fourteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Thirty of them.
+A single component: Button, Dialog, Select. Thirty-five of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,

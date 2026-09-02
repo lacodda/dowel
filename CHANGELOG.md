@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.17.0] - 2026-09-02
+
+### Features
+- Numbers, scales, and the two fields with no foundation
+
+### Testing
+- Photograph the five new sections
+- Record the baselines for numbers and scales
+- Re-record the slider after the stand fix
+
 ## [0.16.0] - 2026-09-02
 
 ### Bug Fixes

@@ -42,7 +42,7 @@ drawn in all fourteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Thirty of them.
+A single component: Button, Dialog, Select. Thirty-five of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,

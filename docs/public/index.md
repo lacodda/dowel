@@ -17,8 +17,8 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.16.0.** The theme and its scales, an accent for each of the fourteen
-products of the line, and thirty primitives. Components install from the
+**v0.17.0.** The theme and its scales, an accent for each of the fourteen
+products of the line, and thirty-five primitives. Components install from the
 registry with `npx shadcn add`, singly or as a
 [set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also
 carries the [migration tools](/dowel/guides/migration/) a project crossing from

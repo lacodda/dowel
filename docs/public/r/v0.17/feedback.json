@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "extends": "none",
+  "name": "feedback",
+  "type": "registry:style",
+  "title": "dowel feedback",
+  "description": "The three ways of saying that something happened - one that goes away, one that is still true after a reload, one that is true on every screen - and the dialog for anything that needs an answer.",
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.17/alert.json",
+    "https://lacodda.github.io/dowel/r/v0.17/banner.json",
+    "https://lacodda.github.io/dowel/r/v0.17/confirm-dialog.json",
+    "https://lacodda.github.io/dowel/r/v0.17/toast.json"
+  ],
+  "docs": "Which of the four to reach for is the harder question: see https://lacodda.github.io/dowel/guides/overlays/"
+}

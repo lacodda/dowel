@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "extends": "none",
+  "name": "forms",
+  "type": "registry:style",
+  "title": "dowel forms",
+  "description": "What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.",
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.17/button.json",
+    "https://lacodda.github.io/dowel/r/v0.17/checkbox.json",
+    "https://lacodda.github.io/dowel/r/v0.17/chip.json",
+    "https://lacodda.github.io/dowel/r/v0.17/combobox.json",
+    "https://lacodda.github.io/dowel/r/v0.17/field.json",
+    "https://lacodda.github.io/dowel/r/v0.17/input.json",
+    "https://lacodda.github.io/dowel/r/v0.17/radio-group.json",
+    "https://lacodda.github.io/dowel/r/v0.17/select.json",
+    "https://lacodda.github.io/dowel/r/v0.17/switch.json",
+    "https://lacodda.github.io/dowel/r/v0.17/textarea.json"
+  ],
+  "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to."
+}
