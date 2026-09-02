@@ -9,7 +9,7 @@
     "dowel-ui@^0.14.0"
   ],
   "registryDependencies": [
-    "https://lacodda.github.io/dowel/r/menu.json"
+    "https://lacodda.github.io/dowel/r/v0.14/menu.json"
   ],
   "files": [
     {

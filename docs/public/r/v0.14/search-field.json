@@ -8,9 +8,9 @@
     "dowel-ui@^0.14.0"
   ],
   "registryDependencies": [
-    "https://lacodda.github.io/dowel/r/input.json",
-    "https://lacodda.github.io/dowel/r/kbd.json",
-    "https://lacodda.github.io/dowel/r/shortcut.json"
+    "https://lacodda.github.io/dowel/r/v0.14/input.json",
+    "https://lacodda.github.io/dowel/r/v0.14/kbd.json",
+    "https://lacodda.github.io/dowel/r/v0.14/shortcut.json"
   ],
   "files": [
     {

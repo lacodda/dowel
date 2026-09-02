@@ -10,8 +10,8 @@
     "dowel-ui@^0.14.0"
   ],
   "registryDependencies": [
-    "https://lacodda.github.io/dowel/r/combobox.json",
-    "https://lacodda.github.io/dowel/r/kbd.json"
+    "https://lacodda.github.io/dowel/r/v0.14/combobox.json",
+    "https://lacodda.github.io/dowel/r/v0.14/kbd.json"
   ],
   "files": [
     {

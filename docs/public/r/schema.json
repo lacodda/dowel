@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://lacodda.github.io/dowel/r/schema.json",
   "title": "dowel registry item",
-  "description": "The shape of an item served by the dowel registry, as of 0.13.0. Narrower than shadcn's own registry schema in three places: a file target stays inside the consumer project, a sibling is named by full URL, and a style item extends nothing.",
+  "description": "The shape of an item served by the dowel registry, as of 0.14.0. Narrower than shadcn's own registry schema in three places: a file target stays inside the consumer project, a sibling is named by full URL, and a style item extends nothing.",
   "type": "object",
   "required": [
     "name",

@@ -17,11 +17,12 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.13.0.** The theme and its scales, an accent for each of the fourteen
+**v0.14.0.** The theme and its scales, an accent for each of the fourteen
 products of the line, and twenty-six primitives. Components install from the
 registry with `npx shadcn add`, singly or as a
-[set](/dowel/guides/registry/); the theme is the `dowel-ui` package.
-[kilna](https://github.com/lacodda/kilna) runs on it.
+[set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also
+carries the [migration tools](/dowel/guides/migration/) a project crossing from
+stock shadcn runs on itself. [kilna](https://github.com/lacodda/kilna) runs on it.
 
 Development goes in versions, each one a single coherent theme; the
 [roadmap](https://github.com/lacodda/dowel#roadmap) says what is next.
