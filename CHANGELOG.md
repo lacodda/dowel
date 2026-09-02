@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.12.0] - 2026-09-02
+
+### Features
+- Sets that install in one command, and a frozen path per minor
+
 ## [0.11.2] - 2026-09-02
 
 ### Bug Fixes
