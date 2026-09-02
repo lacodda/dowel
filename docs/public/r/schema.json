@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lacodda.github.io/dowel/r/schema.json",
+  "title": "dowel registry item",
+  "description": "The shape of an item served by the dowel registry, as of 0.13.0. Narrower than shadcn's own registry schema in three places: a file target stays inside the consumer project, a sibling is named by full URL, and a style item extends nothing.",
+  "type": "object",
+  "required": [
+    "name",
+    "type",
+    "title",
+    "description"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The item name, which is also its filename: `button` is served at `/r/button.json`."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "registry:file",
+        "registry:style",
+        "registry:ui"
+      ],
+      "description": "`registry:ui` is a component, `registry:file` a loose file such as an accent, `registry:style` a theme or a set that installs other items."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What the CLI prints while installing."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One sentence saying what the item is for. Derived from the source file for components, so the two cannot disagree."
+    },
+    "extends": {
+      "const": "none",
+      "description": "Only ever `none`. Inheriting shadcn's defaults restores the stock palette that the dowel theme exists to drop."
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "npm packages the file imports. Derived from the source, and `dowel-ui` is pinned to the version released alongside the item, because a bare name installs the version that does not have the API yet."
+    },
+    "registryDependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^https://lacodda\\.github\\.io/dowel/r/(v\\d+\\.\\d+/)?[a-z][a-z0-9-]*\\.json$",
+        "description": "A full URL into this registry. A bare name means *shadcn's* component of that name, which is how a stranger's Input once landed beside ours."
+      },
+      "description": "Other items this one needs. Inside a pinned snapshot these point into the same snapshot, so a component and the sibling it reuses are the pair that shipped together."
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "type",
+          "target",
+          "content"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Where the file lives in the registry, for reading rather than for writing."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "registry:ui",
+              "registry:file",
+              "registry:lib",
+              "registry:hook"
+            ],
+            "description": "What kind of file this is, which decides which alias resolves its target."
+          },
+          "target": {
+            "type": "string",
+            "pattern": "^(~|@components|@ui|@lib|@hooks)/(?!.*\\.\\.).*$",
+            "description": "Where the file is written in the consumer project. Must start with `~/` or a shadcn alias, and must not climb out with `..`."
+          },
+          "content": {
+            "type": "string",
+            "description": "The file itself. dowel ships content inline rather than by reference, so an item is self-contained."
+          }
+        }
+      },
+      "description": "The files written into the consumer project. A set carries none: it is only a list of other items."
+    },
+    "docs": {
+      "type": "string",
+      "description": "What the CLI prints after installing - what to import, what to do next."
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "registry:style"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "extends"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "registry:ui"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "files"
+        ]
+      }
+    }
+  ]
+}

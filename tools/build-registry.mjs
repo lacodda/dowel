@@ -303,7 +303,39 @@ const presetItems = presets.map(({ name, title, description, components, docs })
   docs,
 }))
 
-const items = [themeItem, ...accentItems, ...componentItems, ...presetItems]
+/*
+ * The briefing a consumer project keeps for its own agents.
+ *
+ * A product on dowel has rules that are invisible from inside it: that the
+ * components were copied rather than installed and re-adding overwrites edits;
+ * that no colour is ever written down; that a `dark:` utility means a missing
+ * token. An agent working in that repository cannot infer any of it from the
+ * code - the code is simply a file in `components/ui` that looks ordinary.
+ *
+ * So it installs as an item, like anything else, rather than being a passage in
+ * these docs that someone is supposed to copy by hand. It lands at the project
+ * root, where the conventions put a file of this kind, and it is the consumer's
+ * to edit afterwards.
+ */
+const agentsItem = {
+  $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+  name: 'agents',
+  type: 'registry:file',
+  title: 'Agent briefing',
+  description:
+    "What an agent working in a product on dowel has to know: that components are copied rather than installed, that no colour is ever written down, and where to look things up. Lands at the project root as AGENTS.md.",
+  files: [
+    {
+      path: 'files/AGENTS.md',
+      target: '~/AGENTS.md',
+      type: 'registry:file',
+      content: readFileSync(resolve(root, 'registry/files/AGENTS.md'), 'utf8').replace(/\r\n/g, '\n'),
+    },
+  ],
+  docs: 'Replace `<product>` in the accent import with your own, and add whatever else your project expects of an agent.',
+}
+
+const items = [themeItem, ...accentItems, ...componentItems, ...presetItems, agentsItem]
 
 /*
  * The registry is served twice.

@@ -1,0 +1,68 @@
+# Button
+
+Source: https://lacodda.github.io/dowel/components/button
+
+FENCE0 
+
+The component lands in `components/ui/button.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#button
+
+Every variant, size and state - in either theme, and in the accent of any product of the line.
+
+## Variants
+
+`primary` is the one action a screen is about — one per screen, or it is not
+primary. `ghost` is the default and the quiet one. `soft` is for something
+already chosen. `danger` is destructive, and stays quiet until hovered, because
+a red button is not a warning if everything is red.
+
+## Sizes
+
+Two text sizes and two icon sizes. An icon button is square by construction
+rather than by a padding that happens to match.
+
+## States
+
+Disabled keeps the button's own colour and loses contact instead, so it reads
+the same whatever the product's accent is.
+
+A link rendered with `render` is still a link: it navigates, it opens in a new
+tab, and a screen reader announces it as one. A `<button>` painted to look like
+a link does none of that.
+
+```tsx
+<Button render={<a href="/somewhere" />} variant="primary">
+  Go
+</Button>
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `primary \| ghost \| soft \| danger \| icon` | `ghost` | What the button is for |
+| `size` | `sm \| md \| icon-sm \| icon-md` | `md` | |
+| `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+Everything else goes to the `<button>`: `onClick`, `disabled`, `type`,
+`aria-*`, and the rest.
+
+## Notes
+
+**It is a real button.** Enter and Space activate it, Tab reaches it, and a
+disabled one is skipped by the keyboard and ignores the pointer. None of that
+is written into the component — it comes free with the element, and is exactly
+what a `<div onClick>` throws away.
+
+**`type` defaults to `button`.** A bare `<button>` inside a form submits it,
+which surprises everyone once. Pass `type="submit"` when that is what you want.
+
+**The caller wins a conflict.** `className` is merged by utility group, so
+`<Button className="rounded-full">` gets round corners rather than two radii
+fighting over source order.
+
+**No colour of its own.** Every variant is written in tokens, so the same class
+list is correct in both themes and in every product's accent — there are no
+`dark:` utilities anywhere in it.

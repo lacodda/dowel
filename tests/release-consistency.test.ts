@@ -183,6 +183,28 @@ describe('what the package ships', () => {
   })
 })
 
+describe('the docs do not claim an old version', () => {
+  it('states the current one where it states one at all', () => {
+    /* The site's front page carried "v0.4.0" through eight releases, naming
+     * one primitive when there were twenty-six. Nobody reads their own front
+     * page, and no check looked at it: the release ritual verifies the
+     * manifests, the registry and the CHANGELOG, none of which is prose.
+     *
+     * So any page that names a `vX.Y.Z` at all has to name this one. A page
+     * that mentions no version is fine - the rule is against a *stale* claim,
+     * not a missing one. */
+    const pages = ['docs/src/content/docs/index.mdx', 'docs/src/content/docs/getting-started.md']
+    for (const path of pages) {
+      const versions = [...read(path).matchAll(/\bv(\d+\.\d+\.\d+)\b/g)].map((m) => m[1]!)
+      for (const version of versions) {
+        expect(version, `\`${path}\` still claims v${version}; the package is ${pkg.version}`).toBe(
+          pkg.version,
+        )
+      }
+    }
+  })
+})
+
 describe('the docs show what the theme has', () => {
   it('documents every colour token the theme declares', () => {
     const theme = read('packages/dowel/src/theme.css')

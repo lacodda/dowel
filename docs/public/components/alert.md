@@ -1,0 +1,93 @@
+# Alert
+
+Source: https://lacodda.github.io/dowel/components/alert
+
+FENCE0 
+
+The component lands in `components/ui/alert.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#alert
+
+Every tone, with and without an icon, a heading and an action - in either theme, and in the accent of any product of the line.
+
+## When this and not a Toast, a Banner or a Dialog
+
+The three messages look similar and mean different things, so the choice is
+about *what the message is*, not how much room it needs.
+
+Reach for **Alert** when the message is a condition that is *still true* —
+and will still be true after a reload — about the thing it sits beside: this
+field could not be saved, this profile has no axes yet, this export is out of
+date. It sits in the flow of the page, next to what it is about.
+
+Reach for **[Toast](/dowel/components/toast/)** when something already
+happened, needs no decision, and stops being interesting immediately. **If
+dismissing it would lose information, it is not a toast** — that is an alert.
+
+Reach for **[Banner](/dowel/components/banner/)** when the condition is about
+the whole application rather than one part of it, and is true on every screen.
+An alert belongs to what it sits beside; a banner belongs to the whole screen.
+
+Reach for **[Dialog](/dowel/components/dialog/)** when the reader has to
+*answer* something.
+
+## Usage
+
+```tsx
+<Alert tone="warn" icon={<AlertTriangle />} title={t('notSaved')}>
+  {t('connectionDropped')}
+</Alert>
+```
+
+```tsx
+<Alert
+  tone="info"
+  title={t('noAxesYet')}
+  action={<Button size="sm">{t('addOne')}</Button>}
+>
+  {t('axesExplained')}
+</Alert>
+```
+
+Everything but the body is optional, and nothing is drawn for a slot that was
+not given — a one-line alert comes out one line tall.
+
+The icon is the product's own, on purpose. An icon that means "warning" here
+should be the one it means everywhere else in the product, and a component
+library that ships its own set makes that impossible.
+
+**Colour is emphasis, never the message.** An alert that means "failed" says so
+in words as well, so a reader who does not separate red from green gets the
+whole of it.
+
+## `role` is yours to give
+
+There is no default, deliberately.
+
+An alert that appears *because of something the reader just did* should be
+`role="alert"`, so it is announced. One that is simply part of the page —
+already there when the screen loaded — should have no role at all, or a screen
+reader interrupts whatever it was saying to read the furniture.
+
+Only the product knows which it has.
+
+```tsx
+{/* Already on the screen. Read in its turn. */}
+<Alert tone="info">{t('exportIsStale')}</Alert>
+
+{/* Appeared just now, because saving failed. Announce it. */}
+<Alert tone="bad" role="alert">{t('couldNotSave')}</Alert>
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `neutral \| good \| warn \| bad \| info` | `neutral` | |
+| `icon` | `ReactNode` | | Drawn before the text; the product's own |
+| `title` | `ReactNode` | | The heading. Optional — a one-line alert needs none |
+| `action` | `ReactNode` | | Drawn at the end: a link, a fix, a dismiss the product owns |
+| `role` | `string` | | No default. `alert` when it appeared just now |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`children` is the body. Anything else goes to the `<div>`.

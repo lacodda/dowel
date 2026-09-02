@@ -1,0 +1,111 @@
+# Vocabulary
+
+Source: https://lacodda.github.io/dowel/concepts/vocabulary
+
+Every design system invents words, and most of them define those words nowhere —
+so a reader meets *primitive*, *token*, *registry* and *accent* in the middle of
+a paragraph about something else and has to reconstruct each one from context.
+
+These are the words dowel uses, each defined once. Nothing here is new; it is
+the same system the other pages describe, named.
+
+## Token
+
+A name for a value that the theme decides. `--bg`, `--accent`, `--radius-md`.
+
+A token is a **contract, not a variable**: renaming one is a breaking change for
+every product on the system, which is why the vocabulary is frozen at 1.0. It is
+also the only way a colour reaches a component — nothing in dowel writes a
+colour down, and a [lint rule](/dowel/guides/linting/) enforces it.
+
+The full list is the [token reference](/dowel/reference/tokens/); the sizes,
+radii, durations and layers are [the scales](/dowel/reference/scales/).
+
+## Theme
+
+The stylesheet that gives every token a value, twice: once for dark and once for
+light. One file, `dowel-ui/theme.css`.
+
+It is a *derivation*, not a palette. A product supplies one colour and the theme
+works out the rest — the hover shade, the soft fill, the focus ring, and what
+colour text has to be on top of an accent fill so it stays legible.
+
+## Accent
+
+The one colour a product states about itself: its own, from the line's registry
+of marks. `--accent-base`, one declaration.
+
+Everything accent-shaped is mixed from it. A product of the line imports its
+accent file (`dowel-ui/accents/kilna.css`); anything else sets the value
+directly. See [the accents](/dowel/reference/accents/), where the same screen is
+drawn in all fourteen.
+
+## Primitive
+
+A single component: Button, Dialog, Select. Twenty-six of them.
+
+A primitive is not a widget with options bolted on — its parts are exposed
+(`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
+because a product that cannot reach a part has to abandon the component
+entirely the first time its screen differs.
+
+A primitive is [four things at once](/dowel/guides/gates/): the component, its
+test, its page here, and its section on the stand. Missing any one, it does not
+exist.
+
+## Registry
+
+Where components are served from, and the reason they are *copied* rather than
+imported.
+
+`npx shadcn add <url>` writes the file into your project, and from that moment
+it is your file — edit it, rename its props, delete it. Nothing upstream reaches
+back in, and nothing upstream merges for you either. That is the trade in both
+directions.
+
+## Set
+
+Several components installed by one command: `app`, `forms`, `feedback`.
+
+A set carries no files of its own — it resolves into exactly the per-component
+installs you could have typed, so nothing of it survives in your project. There
+is no membership to leave. See [installing from the
+registry](/dowel/guides/registry/).
+
+## Snapshot
+
+A frozen copy of the whole registry, one per minor version, at
+`/r/v0.12/…`, never rewritten.
+
+It exists because a registry is not a package: nothing in your lockfile records
+which version of a component was copied in. Inside a snapshot, the
+cross-references point into that same snapshot, so a component and the sibling
+it reuses are the pair that shipped together.
+
+## The stand
+
+The other half of this site: <a href="/dowel/stand/">every component, live</a>,
+in either theme and in the accent of any product of the line.
+
+These pages explain; the stand shows. They were one thing for a version and it
+went badly — a documentation site cannot load a full CSS reset without
+flattening its own chrome, so the components were displayed as guests in someone
+else's styling. The stand is its own application for that reason.
+
+## Gate
+
+A check a component must pass before it ships: axe over the rendered DOM in
+every variant, the keyboard over every interactive one, a weight budget, a
+picture in both themes against a baseline, and a check that it carries no word
+of its own to translate.
+
+Gates are [documented](/dowel/guides/gates/) because they are a promise about
+what the components are, not only a build step.
+
+## The line
+
+The fourteen products these tokens are shared by — the reason a design system
+exists here at all rather than a folder of components in one application.
+
+*dowel* is a woodworking dowel: the hidden peg that joins two pieces so the seam
+does not show. The system is meant to be invisible while it works.

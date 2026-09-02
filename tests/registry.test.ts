@@ -74,10 +74,14 @@ beforeAll(() => {
   execFileSync('node', ['tools/build-registry.mjs'], { cwd: root })
   const read = (file: string) => JSON.parse(readFileSync(resolve(registryDir, file), 'utf8'))
   catalogue = read('registry.json')
-  const isItem = (file: string) => !file.includes('/') && file !== 'registry.json'
+  /* `registry.json` is the catalogue and `schema.json` describes the items
+   * rather than being one - both live in the same directory because both are
+   * served from it, and neither is something a consumer installs. */
+  const notAnItem = new Set(['registry.json', 'schema.json'])
+  const isItem = (file: string) => !file.includes('/') && !notAnItem.has(file)
   items = served().filter(isItem).map(read)
   pinnedItems = served()
-    .filter((file) => file.startsWith(`${pinned}/`) && !file.endsWith('/registry.json'))
+    .filter((file) => file.startsWith(`${pinned}/`) && !notAnItem.has(file.slice(pinned.length + 1)))
     .map(read)
 })
 

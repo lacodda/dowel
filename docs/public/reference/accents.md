@@ -1,0 +1,91 @@
+# Accents
+
+Source: https://lacodda.github.io/dowel/reference/accents
+
+A product of the line states one thing about its appearance: which product it
+is. Its accent is the colour of its mark — the same colour as the tile on its
+README and the icon in the taskbar, because those are the same fact.
+
+```css
+@import 'dowel-ui/theme.css';
+@import 'dowel-ui/accents/kilna.css';
+```
+
+The second line is one declaration. Everything else — the hover shade, the soft
+fill behind a chip, the focus ring, the colour text has to be on an accent
+fill, and the trace of the hue the greys carry — is derived from it.
+
+A product outside the line sets the value directly:
+
+```css
+@import 'dowel-ui/theme.css';
+
+:root {
+  --accent-base: #2f7d6b;
+}
+```
+
+## The line, in dark
+
+[The same screen in every accent of the line, dark theme - see https://lacodda.github.io/dowel/reference/accents/]
+
+## The line, in light
+
+[The same screen in every accent of the line, light theme - see https://lacodda.github.io/dowel/reference/accents/]
+
+Every tile above is the same markup. Nothing in it knows which product it is
+drawing: the only difference between one tile and the next is `--accent-base`.
+
+That is the claim worth checking by eye rather than by reasoning. Gold and lime
+are light colours and take dark glyphs; magenta and cobalt are dark and take
+white — and neither the buttons nor the chips nor the links needed a rule of
+their own to get there.
+
+## What a product should not do
+
+Set the accent, and stop:
+
+```css
+/* No. The theme derives these, and derived values stay in step with the
+   theme when it changes. */
+:root {
+  --accent-base: #d9569e;
+  --accent-2: #e879b4;
+  --on-accent: #fff;
+}
+```
+
+The third line is the one that matters. `--on-accent` is what a reader's eye
+lands on when it crosses a button, and stating it by hand is how a product ends
+up with white text at 3.6:1 on its own primary action — which is exactly what
+the line's products did before this theme existed.
+
+## Installing from the registry
+
+The theme and the accents are also shadcn-compatible registry items, for a
+project that would rather copy them in than depend on the package:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/accent-kilna.json
+```
+
+The theme lands in `dowel/theme.css` and is yours: edit it, and nothing
+upstream will argue. It is served whole rather than as a list of variables,
+because it is `color-mix()` over your accent, relative colour, a Tailwind
+`@theme` block and two media queries - taken apart into key-value pairs it
+would stop being the file that was tested.
+
+Registering the namespace once makes the names shorter:
+
+```console
+$ npx shadcn@latest registry add @dowel=https://lacodda.github.io/dowel/r/{name}.json
+$ npx shadcn@latest add @dowel/accent-kilna
+```
+
+## Adding a product
+
+Accents are generated from the registry the package carries, so a new product
+is a row in one list rather than a file to write. The contrast tests read that
+same list: an accent that could not carry legible text would fail the build
+before it reached a screen.

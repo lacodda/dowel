@@ -1,0 +1,3544 @@
+# dowel 0.13.0
+
+The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
+
+---
+
+# dowel
+
+Source: https://lacodda.github.io/dowel/
+
+One theme, one token vocabulary, one set of primitives - so every product in the line looks made by one hand, and nobody sees the joint.
+
+## Two places
+
+**[The stand](/dowel/stand/)** is where the components are. Every one of them,
+live, in either theme and in the accent of any product of the line — change the
+accent and watch what follows from it: the hover shade, the soft fill, the focus
+ring, the colour of text on an accent fill. None of which a component states for
+itself.
+
+**These pages** are where the reasons are. What a token means, why a scale has
+the steps it has, what a component will and will not do for you.
+
+## Status
+
+**v0.13.0.** The theme and its scales, an accent for each of the fourteen
+products of the line, and twenty-six primitives. Components install from the
+registry with `npx shadcn add`, singly or as a
+[set](/dowel/guides/registry/); the theme is the `dowel-ui` package.
+[kilna](https://github.com/lacodda/kilna) runs on it.
+
+Development goes in versions, each one a single coherent theme; the
+[roadmap](https://github.com/lacodda/dowel#roadmap) says what is next.
+
+---
+
+# Getting Started
+
+Source: https://lacodda.github.io/dowel/getting-started
+
+dowel ships in two parts: the **theme** as an npm package, and **primitives** as
+a shadcn-compatible registry.
+
+## Install the theme
+
+```console
+$ pnpm add dowel-ui
+```
+
+:::note
+The package is `dowel-ui`, not `dowel`: npm declines the bare name as too
+close to `del` and `bower`. The design system is dowel everywhere else — the
+repository, these docs, the mark.
+:::
+
+```css
+/* src/styles.css */
+@import 'tailwindcss';
+@import 'dowel-ui/theme.css';
+```
+
+That is a working theme: the vocabulary of the line, in dark and light, with
+dowel's own amber as the accent.
+
+## Make it the product's
+
+A product states one colour — its own, from the line's registry of marks — and
+the theme derives the rest:
+
+```css
+@import 'dowel-ui/theme.css';
+
+:root {
+  --accent-base: #d9569e;
+}
+```
+
+This moves the accent and its hover partner, the accent's soft fill, the focus
+ring, and the tint the greys carry. It also settles what colour text has to be
+on top of an accent fill, which is the part products usually get wrong: a light
+accent takes dark glyphs, a dark one takes white, and `--on-accent` works that
+out rather than asking.
+
+If the chrome should stay neutral instead of leaning towards the product's hue,
+point the neutrals somewhere else:
+
+```css
+:root {
+  --accent-base: #d9569e;
+  --neutral-base: #8e8e93;
+}
+```
+
+## Themes
+
+Dark is the default. Without a class on the root element the reader's operating
+system decides; a class pins it.
+
+```html
+<html>                <!-- follows the operating system -->
+<html class="light">  <!-- pinned light -->
+<html class="dark">   <!-- pinned dark -->
+```
+
+A component never uses a `dark:` utility. Every colour goes through a token, and
+the theme swaps the token underneath — which is what lets a product be checked
+against a mockup in the mockup's own words.
+
+## Use the tokens
+
+With Tailwind 4 they are utilities, because the theme declares them in a
+`@theme` block:
+
+```html
+<div class="bg-raise text-text border border-line">
+  <button class="bg-accent text-on-accent">Save</button>
+</div>
+```
+
+Outside Tailwind they are ordinary custom properties:
+
+```css
+.thing {
+  background: var(--raise);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+```
+
+The stock Tailwind palette is dropped on purpose, so `bg-zinc-800` does not
+compile. See the [token reference](/dowel/reference/tokens/) for the whole
+vocabulary, shown in both themes.
+
+## Primitives
+
+Primitives are copied into your project rather than imported:
+
+```console
+$ npx shadcn add https://lacodda.github.io/dowel/r/button.json
+```
+
+The component lands in `components/ui/` and is yours to edit.
+
+Or take the set a product usually starts from — the everyday controls, the
+overlays it needs on day one, and the ways of choosing something — in one
+command:
+
+```console
+$ npx shadcn add https://lacodda.github.io/dowel/r/app.json
+```
+
+There are three such sets, and each minor of the registry is also served
+frozen at a path that never changes, for an install that has to be repeatable.
+See [installing from the registry](/dowel/guides/registry/).
+
+---
+
+# Anti-patterns
+
+Source: https://lacodda.github.io/dowel/concepts/anti-patterns
+
+Every one of these has been made — in a product of the line, or in dowel itself.
+They are listed because a rule with no failure attached reads as a preference,
+and preferences get overruled at four in the afternoon.
+
+## Writing a colour down
+
+```tsx
+// ✗
+<div className="bg-[#d9569e]" />
+<div className="border-zinc-800" />
+<div style={{ color: 'rgb(217 86 158)' }} />
+```
+
+**What happens:** the element keeps that colour in the other theme, and in every
+other product. It is also invisible until someone opens the light theme, which
+is usually a screenshot from a user.
+
+**Instead:** name a token. `bg-accent`, `border-line`, `text-dim`. The
+[`dowel/no-raw-color`](/dowel/guides/linting/) rule reports the raw value.
+
+**The exception, and it is a real one:** a translucent black or white is not a
+colour, it is a veil — `bg-black/50` over a photograph, `text-white/70` on a
+cover image. Those are legitimate and the rule allows them. This was found by
+running the rule over a real product before publishing it: twenty-six hits, and
+eleven of them were this.
+
+## Deciding which theme you are in
+
+```tsx
+// ✗
+<div className="bg-white dark:bg-zinc-900" />
+```
+
+**What happens:** two sets of colours to keep in step, and a component that
+cannot be checked against a mockup, because the mockup speaks in one theme and
+the component speaks in two.
+
+**Instead:** one token. `bg-raise` *is* the raised surface, and the theme decides
+what that means. A `dark:` utility in a dowel component means a token is missing
+— that is the bug, not the utility.
+
+## The native `<select>`
+
+```tsx
+// ✗
+<select value={value} onChange={...}>
+```
+
+**What happens:** the browser draws that popup itself, in the operating system's
+chrome, at the operating system's font size. No stylesheet reaches inside it. On
+a screen where every other control is the product's own, it reads as a foreign
+object — and on Windows it is a different foreign object than on macOS.
+
+**Instead:** [`Select`](/dowel/components/select/), which renders
+`<button role="combobox">` and no native element at all. Enforced by
+[`dowel/no-native-select`](/dowel/guides/linting/), which found six violations
+on its first run — all of them in dowel's own stand.
+
+## Hiding a component's parts behind props
+
+```tsx
+// ✗
+<Dialog title="Delete" footer={<Button>OK</Button>} />
+```
+
+**What happens:** the first screen whose dialog needs two buttons and a
+description, or a title with an icon in it, cannot use the component. It gets
+copied and edited, and now there are two dialogs.
+
+**Instead:** expose the parts. `DialogPopup`, `DialogTitle`, `DialogDescription`,
+`DialogActions`. More lines at the call site, and every screen that differs can
+still use the component rather than fork it.
+
+## A word inside a primitive
+
+```tsx
+// ✗
+<button aria-label="Remove">
+```
+
+**What happens:** the product ships English into a Russian interface, and there
+is no way to fix it without editing a file that came from the registry — which
+the next `add` overwrites.
+
+**Instead:** the prop is required. A Chip that can be removed but cannot be named
+does not compile. A [gate](/dowel/guides/gates/) checks for words in the source,
+and it found the debt the day it was written.
+
+## Reinstalling a component to get the newer one
+
+```console
+$ npx shadcn add .../r/button.json   # over a button you have edited
+```
+
+**What happens:** your edits are gone. The registry model has no merge — the
+file became yours the moment it was copied, and `add` writes over it.
+
+**Instead:** treat the copy as yours and port changes deliberately. If you want
+the version you had, install from a [snapshot](/dowel/guides/registry/) into a
+scratch directory and diff by hand.
+
+## Overriding what the theme derived
+
+```css
+/* ✗ */
+:root {
+  --accent-base: #d9569e;
+  --on-accent: #ffffff;
+}
+```
+
+**What happens:** unreadable text on accent-coloured buttons, and it looks fine
+to whoever wrote it because they picked the accent that happens to work.
+
+This is not hypothetical. White on the accent gave **2.7:1** for twelve of the
+line's fourteen products before the derivation was fixed — every one of them
+below the readable threshold, in shipped code.
+
+**Instead:** state `--accent-base` and let `--on-accent` be worked out. It is the
+one calculation this system most exists to do for you. If the greys should stay
+neutral rather than lean towards the product's hue, that is `--neutral-base` —
+also a parameter, also derived from.
+
+## Adding a component without its four parts
+
+**What happens:** a component with no test is one nobody dares change; with no
+page, one nobody finds; with no section on the stand, one nobody can look at in
+the other theme. Each is a small omission and they are permanent.
+
+**Instead:** `pnpm new-component` writes all four, and a test asserts the rule
+for every component in the registry — because rules like this decay, and the
+first exception is always reasonable.
+
+---
+
+# Vocabulary
+
+Source: https://lacodda.github.io/dowel/concepts/vocabulary
+
+Every design system invents words, and most of them define those words nowhere —
+so a reader meets *primitive*, *token*, *registry* and *accent* in the middle of
+a paragraph about something else and has to reconstruct each one from context.
+
+These are the words dowel uses, each defined once. Nothing here is new; it is
+the same system the other pages describe, named.
+
+## Token
+
+A name for a value that the theme decides. `--bg`, `--accent`, `--radius-md`.
+
+A token is a **contract, not a variable**: renaming one is a breaking change for
+every product on the system, which is why the vocabulary is frozen at 1.0. It is
+also the only way a colour reaches a component — nothing in dowel writes a
+colour down, and a [lint rule](/dowel/guides/linting/) enforces it.
+
+The full list is the [token reference](/dowel/reference/tokens/); the sizes,
+radii, durations and layers are [the scales](/dowel/reference/scales/).
+
+## Theme
+
+The stylesheet that gives every token a value, twice: once for dark and once for
+light. One file, `dowel-ui/theme.css`.
+
+It is a *derivation*, not a palette. A product supplies one colour and the theme
+works out the rest — the hover shade, the soft fill, the focus ring, and what
+colour text has to be on top of an accent fill so it stays legible.
+
+## Accent
+
+The one colour a product states about itself: its own, from the line's registry
+of marks. `--accent-base`, one declaration.
+
+Everything accent-shaped is mixed from it. A product of the line imports its
+accent file (`dowel-ui/accents/kilna.css`); anything else sets the value
+directly. See [the accents](/dowel/reference/accents/), where the same screen is
+drawn in all fourteen.
+
+## Primitive
+
+A single component: Button, Dialog, Select. Twenty-six of them.
+
+A primitive is not a widget with options bolted on — its parts are exposed
+(`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
+because a product that cannot reach a part has to abandon the component
+entirely the first time its screen differs.
+
+A primitive is [four things at once](/dowel/guides/gates/): the component, its
+test, its page here, and its section on the stand. Missing any one, it does not
+exist.
+
+## Registry
+
+Where components are served from, and the reason they are *copied* rather than
+imported.
+
+`npx shadcn add <url>` writes the file into your project, and from that moment
+it is your file — edit it, rename its props, delete it. Nothing upstream reaches
+back in, and nothing upstream merges for you either. That is the trade in both
+directions.
+
+## Set
+
+Several components installed by one command: `app`, `forms`, `feedback`.
+
+A set carries no files of its own — it resolves into exactly the per-component
+installs you could have typed, so nothing of it survives in your project. There
+is no membership to leave. See [installing from the
+registry](/dowel/guides/registry/).
+
+## Snapshot
+
+A frozen copy of the whole registry, one per minor version, at
+`/r/v0.12/…`, never rewritten.
+
+It exists because a registry is not a package: nothing in your lockfile records
+which version of a component was copied in. Inside a snapshot, the
+cross-references point into that same snapshot, so a component and the sibling
+it reuses are the pair that shipped together.
+
+## The stand
+
+The other half of this site: <a href="/dowel/stand/">every component, live</a>,
+in either theme and in the accent of any product of the line.
+
+These pages explain; the stand shows. They were one thing for a version and it
+went badly — a documentation site cannot load a full CSS reset without
+flattening its own chrome, so the components were displayed as guests in someone
+else's styling. The stand is its own application for that reason.
+
+## Gate
+
+A check a component must pass before it ships: axe over the rendered DOM in
+every variant, the keyboard over every interactive one, a weight budget, a
+picture in both themes against a baseline, and a check that it carries no word
+of its own to translate.
+
+Gates are [documented](/dowel/guides/gates/) because they are a promise about
+what the components are, not only a build step.
+
+## The line
+
+The fourteen products these tokens are shared by — the reason a design system
+exists here at all rather than a folder of components in one application.
+
+*dowel* is a woodworking dowel: the hidden peg that joins two pieces so the seam
+does not show. The system is meant to be invisible while it works.
+
+---
+
+# Alert
+
+Source: https://lacodda.github.io/dowel/components/alert
+
+FENCE0 
+
+The component lands in `components/ui/alert.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#alert
+
+Every tone, with and without an icon, a heading and an action - in either theme, and in the accent of any product of the line.
+
+## When this and not a Toast, a Banner or a Dialog
+
+The three messages look similar and mean different things, so the choice is
+about *what the message is*, not how much room it needs.
+
+Reach for **Alert** when the message is a condition that is *still true* —
+and will still be true after a reload — about the thing it sits beside: this
+field could not be saved, this profile has no axes yet, this export is out of
+date. It sits in the flow of the page, next to what it is about.
+
+Reach for **[Toast](/dowel/components/toast/)** when something already
+happened, needs no decision, and stops being interesting immediately. **If
+dismissing it would lose information, it is not a toast** — that is an alert.
+
+Reach for **[Banner](/dowel/components/banner/)** when the condition is about
+the whole application rather than one part of it, and is true on every screen.
+An alert belongs to what it sits beside; a banner belongs to the whole screen.
+
+Reach for **[Dialog](/dowel/components/dialog/)** when the reader has to
+*answer* something.
+
+## Usage
+
+```tsx
+<Alert tone="warn" icon={<AlertTriangle />} title={t('notSaved')}>
+  {t('connectionDropped')}
+</Alert>
+```
+
+```tsx
+<Alert
+  tone="info"
+  title={t('noAxesYet')}
+  action={<Button size="sm">{t('addOne')}</Button>}
+>
+  {t('axesExplained')}
+</Alert>
+```
+
+Everything but the body is optional, and nothing is drawn for a slot that was
+not given — a one-line alert comes out one line tall.
+
+The icon is the product's own, on purpose. An icon that means "warning" here
+should be the one it means everywhere else in the product, and a component
+library that ships its own set makes that impossible.
+
+**Colour is emphasis, never the message.** An alert that means "failed" says so
+in words as well, so a reader who does not separate red from green gets the
+whole of it.
+
+## `role` is yours to give
+
+There is no default, deliberately.
+
+An alert that appears *because of something the reader just did* should be
+`role="alert"`, so it is announced. One that is simply part of the page —
+already there when the screen loaded — should have no role at all, or a screen
+reader interrupts whatever it was saying to read the furniture.
+
+Only the product knows which it has.
+
+```tsx
+{/* Already on the screen. Read in its turn. */}
+<Alert tone="info">{t('exportIsStale')}</Alert>
+
+{/* Appeared just now, because saving failed. Announce it. */}
+<Alert tone="bad" role="alert">{t('couldNotSave')}</Alert>
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `neutral \| good \| warn \| bad \| info` | `neutral` | |
+| `icon` | `ReactNode` | | Drawn before the text; the product's own |
+| `title` | `ReactNode` | | The heading. Optional — a one-line alert needs none |
+| `action` | `ReactNode` | | Drawn at the end: a link, a fix, a dismiss the product owns |
+| `role` | `string` | | No default. `alert` when it appeared just now |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`children` is the body. Anything else goes to the `<div>`.
+
+---
+
+# Badge
+
+Source: https://lacodda.github.io/dowel/components/badge
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#badge
+
+Every variant, including the four status colours.
+
+## Notes
+
+**A badge is not a button.** It is state attached to something — a count, a
+status, a label. If it can be clicked, it is a [Chip](/dowel/components/chip/).
+
+**Colour is emphasis, never the message.** A badge that means "failed" says so
+in words as well. Colour alone is invisible to a reader who does not separate
+red from green, and to anyone printing the screen.
+
+```tsx
+<Badge variant="bad">Failed</Badge>
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `outline \| soft \| accent \| good \| warn \| bad \| info` | `outline` | |
+
+---
+
+# Banner
+
+Source: https://lacodda.github.io/dowel/components/banner
+
+FENCE0 
+
+The component lands in `components/ui/banner.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#banner
+
+Every tone, with and without an icon and an action, loose and pinned - in either theme, and in the accent of any product of the line.
+
+## When this and not an Alert, a Toast or a Dialog
+
+The three messages look similar and mean different things, so the choice is
+about *what the message is*, not how much room it needs.
+
+Reach for **Banner** when the condition is about the whole application and is
+true no matter which screen you are on: you are offline, this build is a
+preview, your licence expires on Friday, a new version is ready to install. It
+goes across the top, above the application's own chrome.
+
+Reach for **[Alert](/dowel/components/alert/)** when the condition is about
+one part of the page and belongs beside it. An alert speaks about what it sits
+next to; a banner speaks about everything.
+
+Reach for **[Toast](/dowel/components/toast/)** when something already
+happened, needs no decision, and goes away. **If dismissing it would lose
+information, it is not a toast.**
+
+Reach for **[Dialog](/dowel/components/dialog/)** when the reader has to
+*answer* something.
+
+## Usage
+
+```tsx
+<Banner tone="warn" icon={<WifiOff />}>
+  {t('youAreOffline')}
+</Banner>
+```
+
+```tsx
+<Banner
+  sticky
+  tone="accent"
+  icon={<Download />}
+  action={<Button size="sm" onClick={reload}>{t('reload')}</Button>}
+>
+  {t('newVersionReady')}
+</Banner>
+```
+
+Nothing is drawn for a slot that was not given, so a banner with no action is
+one line with no gap held open at the end.
+
+**Colour is emphasis, never the message.** The sentence says what the tone
+suggests, so a reader who does not separate red from green gets the whole of
+it.
+
+## Dismissal is the product's decision
+
+The banner does not dismiss itself, and there is no `onClose`.
+
+Whether "you are offline" *can* be dismissed is a judgement about the product,
+not about the strip of colour: some conditions the reader is allowed to put
+away and some they are not. So the close button is passed in like any other
+action, and the product decides whether there is one.
+
+```tsx
+<Banner
+  tone="info"
+  action={
+    <Button variant="ghost" size="sm" aria-label={t('dismiss')} onClick={hide}>
+      <X />
+    </Button>
+  }
+>
+  {t('licenceExpiresFriday')}
+</Banner>
+```
+
+## `sticky`, and what it needs
+
+`sticky` pins the banner to the top of the viewport, above the application's
+own chrome, for the conditions that must not scroll away — offline, expired.
+
+It is `position: sticky`, so it needs what that needs: an ancestor that
+actually scrolls, and no `overflow: hidden` between the banner and it. A
+sticky banner inside a clipped container simply scrolls away, silently.
+
+## `role="status"`, and when to change it
+
+The default is `role="status"`, not `role="alert"`.
+
+A banner is usually already on the screen when it loads, and a live region set
+to `alert` fires on load and interrupts whatever a screen reader was saying
+about the page. `status` is announced when it changes and stays quiet when it
+does not, which is what a banner that is simply *there* should do.
+
+Pass `role="alert"` for the other case — a banner that appeared just now
+because the connection dropped.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `neutral \| accent \| good \| warn \| bad \| info` | `neutral` | |
+| `sticky` | `boolean` | `false` | Pinned to the top of the viewport |
+| `icon` | `ReactNode` | | Drawn first; the product's own |
+| `action` | `ReactNode` | | Drawn at the end: a fix, a link, a dismiss the product decides is allowed |
+| `role` | `string` | `status` | `alert` when it appeared just now |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`children` is the message. Anything else goes to the `<div>`.
+
+---
+
+# Button
+
+Source: https://lacodda.github.io/dowel/components/button
+
+FENCE0 
+
+The component lands in `components/ui/button.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#button
+
+Every variant, size and state - in either theme, and in the accent of any product of the line.
+
+## Variants
+
+`primary` is the one action a screen is about — one per screen, or it is not
+primary. `ghost` is the default and the quiet one. `soft` is for something
+already chosen. `danger` is destructive, and stays quiet until hovered, because
+a red button is not a warning if everything is red.
+
+## Sizes
+
+Two text sizes and two icon sizes. An icon button is square by construction
+rather than by a padding that happens to match.
+
+## States
+
+Disabled keeps the button's own colour and loses contact instead, so it reads
+the same whatever the product's accent is.
+
+A link rendered with `render` is still a link: it navigates, it opens in a new
+tab, and a screen reader announces it as one. A `<button>` painted to look like
+a link does none of that.
+
+```tsx
+<Button render={<a href="/somewhere" />} variant="primary">
+  Go
+</Button>
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `primary \| ghost \| soft \| danger \| icon` | `ghost` | What the button is for |
+| `size` | `sm \| md \| icon-sm \| icon-md` | `md` | |
+| `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+Everything else goes to the `<button>`: `onClick`, `disabled`, `type`,
+`aria-*`, and the rest.
+
+## Notes
+
+**It is a real button.** Enter and Space activate it, Tab reaches it, and a
+disabled one is skipped by the keyboard and ignores the pointer. None of that
+is written into the component — it comes free with the element, and is exactly
+what a `<div onClick>` throws away.
+
+**`type` defaults to `button`.** A bare `<button>` inside a form submits it,
+which surprises everyone once. Pass `type="submit"` when that is what you want.
+
+**The caller wins a conflict.** `className` is merged by utility group, so
+`<Button className="rounded-full">` gets round corners rather than two radii
+fighting over source order.
+
+**No colour of its own.** Every variant is written in tokens, so the same class
+list is correct in both themes and in every product's accent — there are no
+`dark:` utilities anywhere in it.
+
+---
+
+# Chip
+
+Source: https://lacodda.github.io/dowel/components/chip
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#chip
+
+Plain, with a count, and removable.
+
+## Notes
+
+**The difference from a Badge is whether something happens when you click it.**
+If something does, that part is a real `<button>` with a real label — not a
+decorative cross. Every product wrote the removable tag and every one made the
+cross a `<span>`, which the keyboard cannot reach and a screen reader does not
+announce.
+
+```tsx
+<Chip onRemove={() => drop(tag)} removeLabel={t('remove')}>
+  {tag}
+</Chip>
+```
+
+**`removeLabel` is yours, and required.** The two props travel together in the
+type: a remove button exists only where there is a word for it, so a chip that
+can be removed but not named will not compile. A primitive with a string of its own cannot be
+translated, so the word for "remove" comes from the product.
+
+**The remove click does not reach what the chip sits in.** Chips usually live
+inside something else that is also clickable, and removing a tag should not
+also open the row it was on.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `outline \| accent \| soft` | `outline` | |
+| `count` | `number` | | Shown after the label |
+| `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
+| `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |
+
+---
+
+# Combobox
+
+Source: https://lacodda.github.io/dowel/components/combobox
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#combobox
+
+Filtering as it is typed, the empty state, and the multiple case with chips.
+
+## Notes
+
+A Select you can type in. The list narrows as the query is typed, which is the
+only difference that matters and the reason to reach for this one.
+
+Everything the [Select](/dowel/components/select/) page says about the native
+element applies here too - there is no `<select>` underneath - but the input is
+a real `<input role="combobox">`, so autofill, spellcheck and the phone
+keyboard still work.
+
+Filtering is Base UI's. Give the root an `items` array and it matches the query
+against them with `Intl.Collator`, so accents and case behave the way a reader
+in that language expects rather than the way `toLowerCase` does, and the match
+is anywhere in the word rather than only at the start. `filter` replaces the
+comparison; `filter={null}` turns it off entirely for a list that is filtered
+on a server.
+
+### Chips are Base UI's, not hand-made
+
+Inventing chips is the obvious move and it goes wrong in one specific way:
+hand-made chips end up as `<div>`s with an X that only a pointer can reach, and
+the multi-select becomes keyboard-inaccessible at exactly the point where it
+holds the most state. `ComboboxChips`, `ComboboxChip` and `ComboboxChipRemove`
+are focusable, walk with the arrows, and delete with Backspace or Delete - and
+Backspace on an empty input removes the last one.
+
+`ComboboxChips` takes plain children, not a render function. It is
+`ComboboxValue` inside it that maps the chosen values, because it is the part
+that knows what they are.
+
+### Two behaviours worth knowing
+
+`ComboboxEmpty` renders only when nothing matched, and announces itself
+politely. Its element stays mounted for that announcement to work, so it must
+not be hidden with `display: none` or removed conditionally - which is why it
+is a component rather than a `{items.length === 0 && …}` in the product.
+
+`ComboboxClear` is not a "clear what I typed" button. In single-selection mode
+Base UI shows it only once a value has been *selected*; the query clears itself
+when the popup closes.
+
+### Combobox or Select
+
+**Combobox** when the options are too many to scan - a country, a tag, a
+person - or when the reader already knows the answer and typing it is faster
+than finding it. Also when a multi-select has to *show* what is chosen, since
+this is the one with chips.
+
+**Select** when the list is short enough to read: a status, a currency, a
+priority. A search box over five options is noise, and it asks the reader to
+type where they could have pointed.
+
+```tsx
+import {
+  Combobox,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxPopup,
+} from '@/components/ui/combobox'
+
+<Combobox items={countries}>
+  <ComboboxInput aria-label={t('country')} placeholder={t('searchCountries')} />
+  <ComboboxPopup>
+    <ComboboxEmpty>{t('noCountries')}</ComboboxEmpty>
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item} value={item}>
+          {item}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxPopup>
+</Combobox>
+```
+
+With chips, for the `multiple` case:
+
+```tsx
+<Combobox items={tags} multiple>
+  <ComboboxChips>
+    <ComboboxValue>
+      {(value) =>
+        value.map((tag) => (
+          <ComboboxChip key={tag}>
+            {tag}
+            <ComboboxChipRemove aria-label={t('remove')} />
+          </ComboboxChip>
+        ))
+      }
+    </ComboboxValue>
+    <ComboboxInput aria-label={t('tags')} />
+  </ComboboxChips>
+  {/* popup as above */}
+</Combobox>
+```
+
+## Props
+
+### `Combobox` (root)
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `items` | `Array` | | What gets filtered |
+| `multiple` | `boolean` | `false` | Turns `value` into an array, and makes chips meaningful |
+| `filter` | `function \| null` | `Intl.Collator` | `null` to filter elsewhere |
+| `value` / `onValueChange` | | | Controlled; `defaultValue` for uncontrolled |
+| `filteredItems` | `Array` | | When the product filters it itself |
+
+### `ComboboxInput`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | Matches Input's heights |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `ComboboxPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | A floor; it matches the input's width |
+| `side` | `top \| right \| bottom \| left` | `bottom` | A preference - Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | | Alignment along that side |
+| `sideOffset` | `number` | `4` | Distance from the input |
+| `container` | `Element \| Ref` | document body | Where to portal to |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+`ComboboxList`, `ComboboxItem`, `ComboboxItemIndicator`, `ComboboxEmpty`,
+`ComboboxStatus`, `ComboboxTrigger`, `ComboboxIcon`, `ComboboxClear`,
+`ComboboxInputGroup`, `ComboboxChips`, `ComboboxChip`, `ComboboxChipRemove`,
+`ComboboxValue`, `ComboboxGroup` and `ComboboxGroupLabel` pass their props to
+Base UI unchanged. `comboboxPopupVariants` and `comboboxItemVariants` are
+Select's, re-exported: the two dropdowns are the same object seen twice, and
+two `cva` calls that started identical do not stay that way.
+
+---
+
+# CommandPalette
+
+Source: https://lacodda.github.io/dowel/components/command-palette
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#command-palette
+
+Open and listing everything, narrowed by a query, and with nothing matching.
+
+## What is yours and what is ours
+
+This is the part worth reading before the props.
+
+**dowel supplies the box, the filtering and the keyboard.** The dim over the
+page, the box in the upper third of it, the field, the narrowing as you type,
+the highlight, the arrows, the type-ahead, Enter, Escape, and the
+announcement of all of it to a screen reader.
+
+**The product supplies what makes it that product's palette:**
+
+- **the items** — what is in the box at all, and what each row shows;
+- **the grouping** — whether commands, recent files and settings are three
+  labelled groups or one flat list;
+- **what running one does** — every word, and every consequence.
+
+That division is why `items` is `unknown[]` rather than a list of strings. A
+palette lists commands, works, settings and recent files in the same box; a
+type admitting only strings would push every product into the same
+stringly-typed workaround, mapping identifiers back to objects on the way out.
+
+It is also why nothing here has a word of its own. The empty state has no
+default text, the field has no default placeholder, and the popup has no
+default name — those are the product's, in the product's language, and a
+default here would ship English to every reader who does not read English with
+no way for the product to reach it.
+
+## Notes
+
+### It is a Combobox, not a Dialog with a field in it
+
+The obvious build is a Dialog containing a search input. That is the wrong
+arrangement, and it fails quietly: a screen reader is told about a dialog that
+happens to contain a text box, with no stated relationship between what is
+typed and the list that changes underneath.
+
+Base UI's own arrangement is the other way round — put the input **inside** the
+popup and the popup becomes `role="dialog"` on its own, while the input is
+still announced as the `role="combobox"` that owns the list. Both are true at
+once, which is the whole reason this component exists rather than being
+assembled per product.
+
+Everything that follows from that is Base UI's and is not reimplemented here:
+the filtering with `Intl.Collator` (so accents and case behave the way a reader
+in that language expects, rather than the way `toLowerCase` does), the
+highlight, the arrow keys, and the type-ahead.
+
+### Give the popup a name
+
+The one thing the arrangement costs. A Dialog takes its name from a visible
+title; a palette has no title — it opens straight onto a field — so there is
+nothing for the popup to point `aria-labelledby` at, and an unnamed dialog is
+one a screen reader announces as nothing.
+
+So `aria-label` on `CommandPalettePopup` is **required by the type**, not
+merely recommended: the component cannot supply it for the reason above, and a
+palette that forgets it fails to compile rather than shipping a dialog that
+announces itself as nothing.
+
+### It is opened from somewhere else
+
+`CommandPalette` is controlled by `open` / `onOpenChange`, because what opens a
+palette is a keystroke bound elsewhere in the application — which is what
+[`useShortcut`](/dowel/components/shortcut/) is for. The popup is anchored to
+the viewport rather than to a trigger, since it has no trigger to point at.
+
+### The arrows walk through the field
+
+Pressing Down past the last row does not jump straight back to the first: the
+highlight comes off the list and back onto the query, and the next Down enters
+at the top again. That is right for a palette — the field is where the reader
+edits what they typed, so walking off the end should reach it rather than skip
+it — but it is one stop more than the list has, which is worth knowing before
+it looks like a bug.
+
+Nothing in the list ever takes focus. The highlight is `aria-activedescendant`
+on the input throughout, which is what lets typing carry on between arrow
+presses.
+
+```tsx
+import { useShortcut } from '@/components/ui/shortcut'
+import {
+  CommandPalette,
+  CommandPaletteEmpty,
+  CommandPaletteInput,
+  CommandPaletteItem,
+  CommandPaletteList,
+  CommandPalettePopup,
+  CommandPaletteRow,
+} from '@/components/ui/command-palette'
+
+const [open, setOpen] = useState(false)
+useShortcut(['Mod', 'K'], () => setOpen(true))
+
+<CommandPalette
+  items={commands}
+  open={open}
+  onOpenChange={setOpen}
+  onValueChange={(command) => command && run(command)}
+>
+  <CommandPalettePopup aria-label={t('commands')}>
+    <CommandPaletteInput
+      aria-label={t('command')}
+      placeholder={t('typeACommand')}
+      hint={['Escape']}
+    />
+    <CommandPaletteEmpty>{t('nothingMatched')}</CommandPaletteEmpty>
+    <CommandPaletteList>
+      {(command) => (
+        <CommandPaletteItem key={command.id} value={command}>
+          <CommandPaletteRow icon={command.icon} hint={t(command.where)}>
+            {t(command.label)}
+          </CommandPaletteRow>
+        </CommandPaletteItem>
+      )}
+    </CommandPaletteList>
+  </CommandPalettePopup>
+</CommandPalette>
+```
+
+`onValueChange` reports `null` as well as a value — a palette that is cleared
+says so — which is why the example checks before running anything.
+
+### More than one kind of thing
+
+A palette that lists works, versions and notes together is a `List` over the
+*groups*, with a `Collection` inside each — not a `List` inside a `List`, since
+the list is the listbox and there is one per palette:
+
+```tsx
+<CommandPaletteList>
+  {(group: Group) => (
+    <CommandPaletteGroup key={group.kind} items={group.items}>
+      <CommandPaletteGroupLabel>{t(`kind.${group.kind}`)}</CommandPaletteGroupLabel>
+      <CommandPaletteCollection>
+        {(hit: Hit) => (
+          <CommandPaletteItem key={hit.id} value={hit}>
+            <CommandPaletteRow hint={t(`kind.${group.kind}`)}>{hit.title}</CommandPaletteRow>
+          </CommandPaletteItem>
+        )}
+      </CommandPaletteCollection>
+    </CommandPaletteGroup>
+  )}
+</CommandPaletteList>
+```
+
+The arrow keys walk the flattened rows, so reaching the end of one group steps
+into the next rather than stopping at a caption.
+
+Mapping a group's rows by hand works too, but then the palette has to be told
+how to match an item back to a value — and for rows fetched fresh from a
+server, identity comparison never does, so it needs an `isItemEqualToValue`
+that `Collection` makes unnecessary.
+
+### Searching somewhere else
+
+The filtering is client-side over `items`. A palette whose search happens on a
+server should pass `filter={null}`: without it the already-filtered hits are
+filtered a second time against the same query, by title alone, which throws
+away every hit that matched on something the client cannot see.
+
+### Palette or SearchField
+
+**CommandPalette** when it is the same box for the whole application, reached
+by a shortcut from anywhere, and choosing a row *does* something.
+
+**[SearchField](/dowel/components/search-field/)** when the query filters
+something already on screen, in place, and there is nothing to choose.
+
+**[Combobox](/dowel/components/combobox/)** when the typing ends in a value
+going into a form field.
+
+## Props
+
+### `CommandPalette` (root)
+
+Base UI's Combobox root, unchanged.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `items` | `unknown[]` | | What gets filtered. Anything, not only strings |
+| `open` / `onOpenChange` | | | Controlled — the shortcut lives elsewhere |
+| `onValueChange` | `(value, details) => void` | | Run what was chosen. Reports `null` on a clear |
+| `filter` | `function \| null` | | Replaces the comparison; `null` for a list filtered on a server |
+
+### `CommandPalettePopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `md \| lg` | `md` | How tall the list may grow before it scrolls |
+| `container` | `Element \| Ref` | document body | Where to portal to |
+| `aria-label` | `string` | **required** | What the palette is called — see above |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `CommandPaletteInput`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `hint` | `string[]` | | Drawn at the right of the field, as `['Escape']`. Decorative and `aria-hidden` |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+Everything else reaches the `<input>`, so `placeholder` and `aria-label` work
+as usual.
+
+### `CommandPaletteRow`
+
+The row's own layout, for use inside a `CommandPaletteItem`.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `icon` | `ReactNode` | | Drawn first, at its natural size |
+| `hint` | `ReactNode` | | Drawn last and quiet — where the command lives, or its shortcut |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+`CommandPaletteItem`, `CommandPaletteList`, `CommandPaletteEmpty` and
+`CommandPaletteGroup` pass their props to Base UI unchanged. `Empty` stays
+mounted so its announcement fires, so it must not be hidden or rendered
+conditionally.
+
+`commandPalettePopupVariants` is exported for the same clothes elsewhere, and
+`commandPaletteItemVariants` is Combobox's row — a palette is a list of
+choices, and two lists of choices in one product should not differ.
+
+---
+
+# ConfirmDialog
+
+Source: https://lacodda.github.io/dowel/components/confirm-dialog
+
+FENCE0 
+
+The component lands in `components/ui/confirm-dialog.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#confirm-dialog
+
+The three sizes, with a destructive action - in either theme, and in the accent of any product of the line.
+
+## When this and not a Dialog
+
+Almost everything about the two is the same, and that is the point: the
+difference is not clothes, it is what the popup is allowed to do.
+
+Reach for **Dialog** when the content is a place the user went — a form, a
+detail view, a picker. Wandering out of it by clicking away is the right
+behaviour, because nothing is lost.
+
+Reach for **ConfirmDialog** when the popup is a question about something
+irreversible: deleting, discarding, revoking, overwriting. A stray click beside
+it must not count as an answer.
+
+The test is not how important the content feels. It is whether dismissing it by
+accident would be a loss.
+
+## Usage
+
+```tsx
+<ConfirmDialog>
+  <ConfirmDialogTrigger render={<Button variant="danger" />}>
+    Delete project
+  </ConfirmDialogTrigger>
+  <ConfirmDialogPopup>
+    <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
+    <ConfirmDialogDescription>
+      Everything in it goes too. This cannot be undone.
+    </ConfirmDialogDescription>
+    <ConfirmDialogActions>
+      <Button render={<ConfirmDialogClose />}>Cancel</Button>
+      <Button variant="danger" onClick={remove}>Delete</Button>
+    </ConfirmDialogActions>
+  </ConfirmDialogPopup>
+</ConfirmDialog>
+```
+
+The parts are exposed rather than wrapped in one component with `title` and
+`footer` props — a dialog that owns its own close button owns a word for it,
+and that is a word the product cannot translate.
+
+## Props
+
+### `ConfirmDialog` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `onOpenChange` | `(open, details) => void` | | |
+
+`modal` and `disablePointerDismissal` are not accepted here. Base UI forces
+both on for an alert dialog, which is the whole difference from Dialog.
+
+### `ConfirmDialogPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+It renders its own portal and its own backdrop, so there is nothing to arrange
+around it.
+
+### The rest
+
+| Part | | |
+| --- | --- | --- |
+| `ConfirmDialogTrigger` | | What opens it. `render` to use your own button |
+| `ConfirmDialogTitle` | | The question. The popup's `aria-labelledby` points at it |
+| `ConfirmDialogDescription` | | What the answer costs. The popup's `aria-describedby` |
+| `ConfirmDialogActions` | | Right-aligned row for the two answers |
+| `ConfirmDialogClose` | | Closes it. `render` to use your own button |
+
+## Notes
+
+**It announces itself as `alertdialog`.** That is the semantic half of the
+difference, and the only one a screen reader can hear: it tells the reader the
+popup is interrupting rather than presenting, and that the description should
+be read out without being asked for.
+
+**A press outside does nothing.** Not a preference, not a prop — Base UI's
+`AlertDialog.Root` omits `disablePointerDismissal` from Dialog's props and
+forces it true.
+
+**`Escape` still closes it.** This surprises people who expect "not
+dismissible" to mean both, and it is the right call: a popup with no keyboard
+way out is a trap. The distinction that survives is between a deliberate
+keypress and an absentminded click.
+
+**So give it a close.** Since only something inside can dismiss it by pointer,
+a `ConfirmDialogPopup` with no `ConfirmDialogClose` in it is a dead end for
+anyone on a touch screen.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.
+
+---
+
+# ContextMenu
+
+Source: https://lacodda.github.io/dowel/components/context-menu
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#context-menu
+
+Right click inside the panel to open it.
+
+## Notes
+
+A list of actions opened by a right click, or by a long press on a touch
+screen, over an *area* rather than from a button. The trigger is not a control
+- it is the region the menu belongs to: a row, a canvas, a file tile - so it
+renders a `<div>` and is announced as nothing at all.
+
+That is the only difference from [Menu](/dowel/components/menu/). Everything
+below the root is Menu's own - Base UI re-exports the portal, the positioner,
+the popup and the items from the menu package - so the popup that opens here
+is the same popup, with the same keyboard, the same type-ahead and the same
+submenus. The clothes are imported from Menu rather than copied, which is
+declared in the component's dependency budget: two class lists that started
+identical do not stay that way.
+
+**Use it when** the actions belong to a thing on the screen and there is no
+room for a button beside it - a row in a long table, an item on a canvas.
+**Use Menu instead** when there is a button, because a right click is
+undiscoverable: nobody finds a context menu they were not expecting. A context
+menu should repeat actions that are reachable some other way, not hide them.
+
+It positions against the point that was clicked, so there is no `side` or
+`align` to give it, and no anchor to attach it to from elsewhere. Base UI also
+withholds `openOnHover`, `modal` and `handle` here for the same reason.
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuPopup,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
+
+<ContextMenu>
+  <ContextMenuTrigger render={<tr />}>{row}</ContextMenuTrigger>
+  <ContextMenuPopup>
+    <ContextMenuItem onClick={rename}>{t('rename')}</ContextMenuItem>
+    <ContextMenuItem onClick={duplicate}>{t('duplicate')}</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem tone="danger" onClick={remove}>
+      {t('delete')}
+    </ContextMenuItem>
+  </ContextMenuPopup>
+</ContextMenu>
+```
+
+## Props
+
+### `ContextMenuPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | How wide the popup starts |
+| `container` | `Element \| Ref` | document body | Where to portal to |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `ContextMenuItem`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default \| danger` | `default` | `danger` draws the destructive one apart |
+| `disabled` | `boolean` | `false` | Skipped by the keyboard, not only dimmed |
+| `closeOnClick` | `boolean` | `true` | For the item that should leave the menu open |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+`ContextMenu` (root), `ContextMenuTrigger` (the area), `ContextMenuGroup`,
+`ContextMenuGroupLabel`, `ContextMenuSeparator`, `ContextMenuSub`,
+`ContextMenuSubTrigger`, `ContextMenuCheckboxItem` and
+`ContextMenuCheckboxIndicator` pass their props to Base UI unchanged.
+
+---
+
+# Copyable
+
+Source: https://lacodda.github.io/dowel/components/copyable
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#copyable
+
+An id, a hash, a path - copied with one click.
+
+## Notes
+
+**The rule comes from nitid:** if a value is worth showing, it is worth being
+able to copy. Selecting a monospaced id by hand is a small daily tax.
+
+**It is a `<button>`,** so the keyboard reaches it and a screen reader says
+what it does.
+
+**The confirmation is announced, not only drawn.** A tick that appears silently
+tells a sighted user it worked and tells nobody else.
+
+**A refusal is reported.** The clipboard needs a secure context and sometimes a
+permission; a button that looks like it worked and did not is worse than one
+that admits it failed.
+
+```tsx
+<Copyable
+  value={commit.sha}
+  label={t('copy')}
+  copiedLabel={t('copied')}
+  onCopy={(ok) => ok || toast(t('copy.failed'))}
+>
+  {commit.short}
+</Copyable>
+```
+
+**Both labels are required, on purpose.** They are what a screen reader
+announces, and a default would be an English word this component invented —
+one the product's translations never reach. Requiring them means a product
+that forgets fails to compile rather than shipping English to a reader who
+does not read it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `string` | | The visible text |
+| `value` | `string` | the text | What lands on the clipboard, if different |
+| `label` | `string` | **required** | What the button is called |
+| `copiedLabel` | `string` | **required** | What is announced after a copy |
+| `onCopy` | `(ok: boolean) => void` | | Told what happened |
+
+---
+
+# Dialog
+
+Source: https://lacodda.github.io/dowel/components/dialog
+
+FENCE0 
+
+The component lands in `components/ui/dialog.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#dialog
+
+Every size, with a title, a description and a row of actions - in either theme, and in the accent of any product of the line.
+
+## When this and not an Alert, a Toast or a Drawer
+
+Reach for **Dialog** when the reader has to *answer* something before the
+thing they started can continue: delete this or not, which profile to switch
+to, what to call the version being saved. It takes the whole screen out of
+reach, which is only fair when nothing else can proceed.
+
+Reach for **[Alert](/dowel/components/alert/)** when there is nothing to
+answer — a condition that is still true, sitting beside what it is about.
+
+Reach for **[Toast](/dowel/components/toast/)** when something already
+happened and needs no decision at all.
+
+Reach for **[Drawer](/dowel/components/drawer/)** when the panel is a place to
+work rather than a question: a chat, a form with its own life, anything the
+reader returns to. A drawer can be left open; a dialog is answered and gone.
+
+## Usage
+
+```tsx
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogPopup size="sm">
+    <DialogTitle>{t('deleteDraft')}</DialogTitle>
+    <DialogDescription>{t('deleteDraftHint')}</DialogDescription>
+    <DialogActions>
+      <DialogClose render={<Button>{t('cancel')}</Button>} />
+      <Button variant="danger" onClick={remove}>
+        {t('delete')}
+      </Button>
+    </DialogActions>
+  </DialogPopup>
+</Dialog>
+```
+
+## Notes
+
+**The parts are exposed rather than wrapped.** A single component taking
+`title` and `footer` props is a slot with extra steps, and a dialog that owns
+its own close button owns a word for it — a word the product cannot translate.
+
+**The behaviour is Base UI's**: the focus trap, returning focus to whatever
+opened it, `Escape`, the scroll lock, and the `aria-labelledby` tying the
+popup to its own title. What is ours is the clothes and the motion.
+
+**It never grows taller than the window.** A dialog with more in it than the
+window is tall would otherwise centre itself and hang off both ends — the
+title out of reach above the viewport, the buttons below it. The popup is
+capped at the viewport height and scrolls inside itself, and that scroll does
+not reach the page behind. Found on a release editor in a consuming product,
+which is the shape that does it: half a dozen fields and a row of actions.
+
+**Give it a title.** `DialogTitle` is what names the dialog to a screen
+reader; without one the popup is announced as an unlabelled region. If the
+design has no visible heading, the title is still the right element to render
+visually hidden.
+
+## Props
+
+`DialogPopup`:
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm` \| `md` \| `lg` | `md` | Width; the height is capped at the viewport in every one |
+| `backdrop` | `boolean` | `true` | The popup draws the scrim itself. Turn it off only where the dialog is shown alongside other things on purpose - a gallery, a screenshot |
+| `container` | `Element` | `document.body` | Where to portal to |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`Dialog`, `DialogTrigger`, `DialogClose`, `DialogTitle`, `DialogDescription`
+and `DialogActions` take the props their Base UI parts take; `render` composes
+each with your own element. `DialogBackdrop` is exported for the rare case of
+drawing the scrim yourself, and is not needed otherwise.
+
+---
+
+# Drawer
+
+Source: https://lacodda.github.io/dowel/components/drawer
+
+FENCE0 
+
+The component lands in `components/ui/drawer.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#drawer
+
+The three sides - right, left and a bottom sheet - in either theme, and in the accent of any product of the line.
+
+## When this and not a Dialog
+
+Both are modal, and both hold the screen while they are open. The difference is
+shape, and shape follows content.
+
+Reach for **Dialog** when the content is short and self-contained: a question,
+a small form, a confirmation with two buttons. Centred, and gone in a moment.
+
+Reach for **Drawer** when the content is tall or long-lived — a filter sheet
+with a dozen controls, a detail pane you read alongside the list, a form that
+would need scrolling in a centred box. It pins itself to an edge and keeps its
+full height, so scrolling happens inside it rather than moving the whole panel.
+
+On a small screen a bottom-sheet drawer is usually the right answer where a
+desktop layout would use a dialog: it is reachable by thumb and it can be
+swiped away.
+
+## Usage
+
+```tsx
+<Drawer swipeDirection="right">
+  <DrawerTrigger render={<Button />}>Filters</DrawerTrigger>
+  <DrawerPopup side="right">
+    <DrawerTitle>Filters</DrawerTitle>
+    <DrawerDescription>Narrow the list down.</DrawerDescription>
+
+    {/* the controls */}
+
+    <DrawerActions>
+      <Button render={<DrawerClose />}>Cancel</Button>
+      <Button variant="primary">Apply</Button>
+    </DrawerActions>
+  </DrawerPopup>
+</Drawer>
+```
+
+`DrawerPopup` renders its own portal, backdrop and viewport, so there is
+nothing to arrange around it.
+
+### Match the swipe to the side
+
+`side` lives on the popup and `swipeDirection` on the root, so the two are set
+together by hand — there is no way for the component to infer one from the
+other:
+
+| `side` | `swipeDirection` |
+| --- | --- |
+| `right` | `"right"` |
+| `left` | `"left"` |
+| `bottom` | `"down"` (Base UI's default) |
+
+Left unmatched, the drawer slides in from one edge and is flicked away towards
+another.
+
+## Props
+
+### `Drawer` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `onOpenChange` | `(open, details) => void` | | |
+| `swipeDirection` | `up \| down \| left \| right` | `down` | Which way a finger dismisses it — match it to `side` |
+| `modal` | `boolean \| 'trap-focus'` | `true` | |
+| `snapPoints` | `DrawerSnapPoint[]` | | Partial heights for a bottom sheet |
+
+### `DrawerPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `side` | `right \| left \| bottom` | `right` | The edge it comes from, and the axis it slides along |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+| Part | | |
+| --- | --- | --- |
+| `DrawerTrigger` | | What opens it. `render` to use your own button |
+| `DrawerTitle` | | The popup's `aria-labelledby` points at it |
+| `DrawerDescription` | | The popup's `aria-describedby` |
+| `DrawerActions` | | Pushed to the bottom of the panel, right-aligned |
+| `DrawerClose` | | Closes it. `render` to use your own button |
+
+## Notes
+
+**Base UI positions none of it.** Unlike Popover there is no positioner and no
+anchor to measure against — the edge is entirely CSS, which is what the `side`
+variant is. It drives three things that have to agree: where the viewport
+pushes the panel, which border it grows against, and which way it is translated
+while opening and closing.
+
+**The transitions key off `data-starting-style` and `data-ending-style`**
+rather than `data-closed`, which is Base UI's own convention for the drawer.
+The reason is that a drawer is dragged as well as animated: the popup carries a
+live `--drawer-swipe-movement-*` while a finger is on it, and the transform has
+to compose with that rather than replace it.
+
+**The page behind it is genuinely out of reach.** This is the half that gets
+forgotten, because a drawer covers only one edge and the rest of the page looks
+usable. It is not — Base UI marks it inert, so Tab cannot walk off into a page
+the user cannot see they are editing.
+
+**`DrawerActions` sits at the bottom.** `mt-auto`, so the buttons stay at the
+foot of a tall panel rather than wandering up it when there is little content.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.
+
+---
+
+# Input
+
+Source: https://lacodda.github.io/dowel/components/input
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#input
+
+A field in every state, in either theme.
+
+## Notes
+
+**It is a plain `<input>`.** Autofill, spellcheck, `type="email"` validation
+and the right keyboard on a phone all still work, because none of them were
+replaced with something that looks similar.
+
+**Invalid is driven by `aria-invalid`**, not by a prop of its own. The
+attribute is what a screen reader reads, so making it the source of the colour
+keeps the two from disagreeing:
+
+```tsx
+<Input aria-invalid={!valid} aria-describedby="email-error" />
+```
+
+**The focus ring is drawn outside the border**, not instead of it. A field that
+only changes colour on focus is invisible to a reader who does not separate
+those two colours.
+
+## Props
+
+Everything an `<input>` takes, plus `className`. `ref` reaches the element,
+for focusing it or reading its selection.
+
+---
+
+# Kbd
+
+Source: https://lacodda.github.io/dowel/components/kbd
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#kbd
+
+Single keys and whole shortcuts, written the way this platform writes them.
+
+## Notes
+
+**It is a `<kbd>` element**, so a screen reader announces it as keyboard input
+rather than reading a stray capital letter.
+
+**The platform substitution is the useful part.** A shortcut written `Ctrl+K`
+is simply wrong on a Mac, where it is `⌘K` — and every product either
+hard-codes one of them or writes the branch again.
+
+```tsx
+<Kbd keys={['Mod', 'K']} />
+```
+
+`Mod` is command on Apple platforms and control everywhere else. `Alt` and
+`Shift` substitute the same way; `Enter`, `Escape` and the arrows are written
+as symbols on every platform.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `keys` | `string[]` | | A shortcut, in order. Without it, the children are the key |
+
+---
+
+# Menu
+
+Source: https://lacodda.github.io/dowel/components/menu
+
+FENCE0 
+
+The component lands in `components/ui/menu.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#menu
+
+Items, a destructive item, a checkbox item, a group with its label, a separator and a submenu - in either theme, and in the accent of any product of the line.
+
+## When this and not a Select, a Combobox or a Dialog
+
+Reach for **Menu** when the entries are *actions*: the row menu, the overflow
+menu, the one behind the three dots. Choosing one does something and the menu
+closes.
+
+Reach for **[Select](/dowel/components/select/)** when the entries are
+*values* and one of them stays chosen afterwards. A menu forgets; a select
+remembers, and shows what it remembers on the trigger.
+
+Reach for **[Combobox](/dowel/components/combobox/)** when there are enough
+values that finding one by typing is faster than reading the list.
+
+Reach for **[Dialog](/dowel/components/dialog/)** when the action needs more
+from the reader than picking it — a name to type, a choice to confirm.
+
+## Usage
+
+```tsx
+<Menu>
+  <MenuTrigger render={<Button variant="icon" aria-label={t('actions')}><MoreHorizontal /></Button>} />
+  <MenuPopup>
+    <MenuItem onClick={rename}>{t('rename')}</MenuItem>
+    <MenuCheckboxItem checked={pinned} onCheckedChange={setPinned}>
+      <MenuCheckboxIndicator><Check /></MenuCheckboxIndicator>
+      {t('keepThisDate')}
+    </MenuCheckboxItem>
+    <MenuSeparator />
+    <MenuItem tone="danger" onClick={remove}>{t('delete')}</MenuItem>
+  </MenuPopup>
+</Menu>
+```
+
+## Notes
+
+**What makes a menu hard is the keyboard**, and that is the part worth not
+writing again: arrows that wrap, Home and End, type-ahead that finds an item
+by its first letters, a submenu that opens on the right key and closes when
+the pointer leaves diagonally. Base UI has all of it. The click-outside
+listener and the Escape handler every product wrote by hand come with it.
+
+**The items are exposed rather than taken as an array.** A list of
+`{ label, onSelect }` is enough until the first separator, the first checkbox
+item and the first submenu — and each of those arrives as another field on the
+object rather than as the JSX it obviously is.
+
+**A trigger that is only an icon needs a name.** `MenuTrigger` renders your
+own button; if that button has no text, give it an `aria-label`, or the menu
+is announced as an unlabelled control.
+
+**`tone="danger"` is for the item that destroys something**, not for emphasis.
+One per menu at most: a list where several entries are red says nothing about
+which of them is the dangerous one.
+
+## Props
+
+`MenuPopup`:
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm` \| `md` | `md` | The minimum width of the panel |
+| `side` | `top` \| `right` \| `bottom` \| `left` | | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start` \| `center` \| `end` | | Alignment along that side |
+| `sideOffset` | `number` | `4` | Distance from the trigger, in pixels |
+| `container` | `Element` | `document.body` | Where to portal to |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`MenuItem`, `MenuSubTrigger` and `MenuCheckboxItem`:
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default` \| `danger` | `default` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`Menu`, `MenuTrigger`, `MenuGroup`, `MenuGroupLabel`, `MenuSeparator`,
+`MenuSub` and `MenuCheckboxIndicator` take the props their Base UI parts take;
+`render` composes each with your own element.
+
+---
+
+# Panel
+
+Source: https://lacodda.github.io/dowel/components/panel
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#panel
+
+The three surfaces, and the caption that usually sits above one.
+
+## Notes
+
+**Three variants, for three distances from the page.** `raised` sits on it,
+`floating` has left it — a menu, a popover — and says so with a shadow, and
+`inset` is for something inside another panel, where a second border would be
+a box drawn in a box.
+
+**The corner is `lg`.** The two products this came from disagreed about it —
+16px in one, 12px in the other — for a component with the same name and the
+same job in both.
+
+**`SectionLabel`** is included because a panel almost always has one and every
+product wrote its own. Its letter-spacing is the one they argued about: 0.08em
+in six files and 0.09em in three, for the same visual element. It is a token
+now, so the argument cannot recur.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `raised \| floating \| inset` | `raised` | How far from the page |
+
+---
+
+# Popover
+
+Source: https://lacodda.github.io/dowel/components/popover
+
+FENCE0 
+
+The component lands in `components/ui/popover.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#popover
+
+The sizes and the four sides, with and without the arrow - in either theme, and in the accent of any product of the line.
+
+## When this and not a Dialog
+
+Both hold interactive content, so the choice is about where the content
+belongs and what it interrupts.
+
+Reach for **Popover** when the content is *about* the control: a filter panel
+on a filter button, a colour picker on a swatch, a short form on an edit
+button. It appears beside its trigger, the page underneath stays live, and
+focus is not trapped.
+
+Reach for **Dialog** when the content is the screen's whole business for the
+moment, or when it is long enough that anchoring it beside a button is absurd.
+
+Reach for **Tooltip** if the content is a *label* — a few words, nothing to
+click. A popover holds things you interact with; a tooltip holds a phrase.
+
+## Usage
+
+```tsx
+<Popover>
+  <PopoverTrigger render={<Button />}>Filters</PopoverTrigger>
+  <PopoverPopup side="bottom" align="start" sideOffset={8}>
+    <PopoverTitle>Filters</PopoverTitle>
+    <PopoverDescription>Narrow the list down.</PopoverDescription>
+    <Button render={<PopoverClose />}>Done</Button>
+  </PopoverPopup>
+</Popover>
+```
+
+`PopoverPopup` renders its own portal, positioner and arrow, so there is
+nothing to arrange around it.
+
+## Positioning
+
+`side` and `align` are a preference, not an instruction. Base UI measures the
+trigger and the panel and flips or shifts the popup when the preferred side
+does not fit, so a popover near the bottom of the window comes out above its
+trigger. That is the behaviour worth having — a popover that stays where it was
+told is a popover half off the screen.
+
+The arrow follows: it is rotated to whichever side the popup actually landed
+on, not the side that was asked for.
+
+## Props
+
+### `Popover` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `onOpenChange` | `(open, details) => void` | | |
+| `modal` | `boolean \| 'trap-focus'` | `false` | Leave it off unless the panel really is a decision |
+
+### `PopoverPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | |
+| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | `center` | Alignment along that side |
+| `sideOffset` | `number` | `8` | Distance from the trigger, in pixels |
+| `arrow` | `boolean` | `true` | Draw the notch pointing back at the trigger |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+| Part | | |
+| --- | --- | --- |
+| `PopoverTrigger` | | What opens it, and what the panel is measured against |
+| `PopoverTitle` | | The popup's `aria-labelledby` points at it |
+| `PopoverDescription` | | The popup's `aria-describedby` |
+| `PopoverClose` | | Closes it. `render` to use your own button |
+| `PopoverArrow` | | Exported for a popup assembled by hand |
+
+## Notes
+
+**It is not modal.** What is under the panel stays in the accessibility tree
+and stays clickable. That is right for something beside a control and wrong for
+something the page has to wait on — for that, use Dialog or ConfirmDialog.
+
+**The trigger says whether it is open.** `aria-expanded` is the only way a
+screen reader learns that this button revealed something rather than did
+something, and Base UI puts it there.
+
+**It is portalled.** An anchored popup rendered in place is clipped by the
+first ancestor with `overflow: hidden`, which is where most of them go to die.
+
+**Give it a title.** The popup's accessible name comes from `PopoverTitle`;
+without one a screen reader announces "dialog" and nothing else.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.
+
+---
+
+# PreviewCard
+
+Source: https://lacodda.github.io/dowel/components/preview-card
+
+FENCE0 
+
+The component lands in `components/ui/preview-card.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#preview-card
+
+A link, its card, and the three sizes - in either theme, and in the accent of any product of the line.
+
+## When this and not a Tooltip
+
+A **tooltip** holds a phrase and nothing can be reached inside it. A
+**preview card** holds rich content — an avatar, a couple of lines, a figure —
+and it *is* hoverable: the pointer travels from the link into the card without
+it disappearing, so a link inside it can actually be clicked.
+
+That is the trick the component exists for. A card that vanished when the
+pointer left the link could not be read, let alone clicked into.
+
+## When this and not a Popover
+
+A **popover** is opened deliberately, from a button, and is reachable by
+everyone. A **preview card** opens on hover over a link, and is not.
+
+## It is an enhancement, not a delivery mechanism
+
+Base UI treats this the way it treats Tooltip: a visual aid for sighted mouse
+and keyboard users. It is not reachable on a touch screen and not announced by
+a screen reader.
+
+**So nothing in the card may be the only place it appears.** Everything shown
+has to also be on the page the link points at. The card saves a click for
+people who can see it; it is never how the information gets delivered.
+
+The other half of that promise is the trigger. Render it as the anchor itself,
+so it stays a real link — it navigates, it opens in a new tab, and a screen
+reader announces it as one.
+
+If the content has to be reachable by everyone, use a Popover opened from a
+real button instead.
+
+## Usage
+
+```tsx
+<PreviewCard>
+  <PreviewCardTrigger render={<a href="/people/ada" />} delay={300}>
+    Ada Lovelace
+  </PreviewCardTrigger>
+  <PreviewCardPopup>
+    <Avatar src={ada.avatar} />
+    <p>Wrote the first algorithm intended for a machine.</p>
+    <a href="/people/ada/notes">Read the notes</a>
+  </PreviewCardPopup>
+</PreviewCard>
+```
+
+`PreviewCardPopup` renders its own portal, positioner and arrow.
+
+Note that `delay` sits on the **trigger** here, not on the root — unlike
+Tooltip, where it is a root prop.
+
+## Props
+
+### `PreviewCard` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `onOpenChange` | `(open, details) => void` | | |
+
+### `PreviewCardTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
+| `render` | `ReactElement` | | Render the anchor itself, so it stays a real link |
+
+### `PreviewCardPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | |
+| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | `center` | |
+| `sideOffset` | `number` | `8` | Distance from the link, in pixels |
+| `arrow` | `boolean` | `true` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`PreviewCardArrow` is exported too, for a popup assembled by hand.
+
+## Notes
+
+**It opens on focus as well as on hover**, so someone tabbing through a
+paragraph of links gets the same previews.
+
+**`Escape` closes it** without leaving the link.
+
+**It is portalled.** A card rendered in place is clipped by the paragraph the
+link sits in.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.
+
+---
+
+# SearchField
+
+Source: https://lacodda.github.io/dowel/components/search-field
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#search-field
+
+Empty with its shortcut showing, and with a query and the clear button in its place.
+
+## Notes
+
+An Input with three small things the products kept not doing, so they are done
+once here rather than four times badly.
+
+**A magnifier**, so the field is recognisable before it is read.
+
+**A way to clear it that is not "select all and delete"** — and one a keyboard
+can reach. This is the half that goes wrong: the cross is usually a decorative
+`<span>` with an `onClick`, which Tab skips and a screen reader does not
+announce, so the only way to empty the field is the one the mouse knows. Here
+it is a real `<button>` with a name, and clearing puts the cursor back in the
+field, because clearing and then having to click the field again is half a
+feature.
+
+**The shortcut that focuses it**, shown in the field rather than learned. The
+same array both draws the hint and binds the key, so what is shown and what
+works cannot drift apart.
+
+### `type="search"` is deliberate
+
+It is what tells a browser to offer previous queries, and what makes Escape
+clear the field on the platforms where that is the convention. The browser's
+own clear button is hidden, because it is drawn in the operating system's
+chrome and cannot be made to match — the same reason the line does not use a
+native `<select>`.
+
+### The two props that are switches
+
+`clearLabel` is the clear button. Leave it out and no button is drawn, which
+is the right shape for a field that filters as you type and is emptied by
+other means. There is no separate `showClear` flag, because a flag can
+disagree with the label, and a button announced as nothing is worse than no
+button at all.
+
+`shortcut` is the same idea: give it one and it is both shown and bound; leave
+it out and neither happens.
+
+The hint and the clear button share the right edge, so the hint gives way as
+soon as there is something to clear.
+
+### The shortcut does not fire while someone is typing
+
+It is [`useShortcut`](/dowel/components/shortcut/) underneath, with its default
+intact: `Mod+K` typed into another field belongs to that field. It focuses
+*and selects*, so the shortcut replaces a stale query rather than appending to
+it.
+
+```tsx
+import { SearchField } from '@/components/ui/search-field'
+
+<SearchField
+  value={query}
+  onValueChange={setQuery}
+  aria-label={t('search')}
+  placeholder={t('searchPlaceholder')}
+  clearLabel={t('clear')}
+  shortcut={['Mod', 'K']}
+/>
+```
+
+### SearchField or Combobox
+
+**SearchField** when what is typed filters something the reader is already
+looking at — a table, a list of files, a page of results. There is nothing to
+choose from a popup; the query is the whole interaction.
+
+**[Combobox](/dowel/components/combobox/)** when the typing ends in a choice:
+the reader is picking one of a set, and the query is only how they find it.
+
+**[CommandPalette](/dowel/components/command-palette/)** when it is the same
+box for the whole application, opened by a shortcut from anywhere.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Required and controlled — a search box that owns its own text cannot be cleared by the thing that owns the results |
+| `onValueChange` | `(value: string) => void` | | Told the new query on every keystroke |
+| `clearLabel` | `string` | | What the clear button is called. No default; without it no button is drawn |
+| `shortcut` | `string[]` | | As `['Mod', 'K']`. Shown at the right of the field, and bound |
+| `ref` | `Ref<HTMLInputElement>` | | Reaches the input, not the wrapper |
+| `className` | `string` | | Merged onto the wrapper so the caller wins a conflict |
+
+Everything else is passed to the `<input>`, so `placeholder`, `aria-label`,
+`disabled`, `name` and the rest work as usual. `type` is not among them: it is
+always `search`.
+
+---
+
+# Select
+
+Source: https://lacodda.github.io/dowel/components/select
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#select
+
+Closed, open, grouped, and with more than one chosen.
+
+## Notes
+
+The component the oldest rule in the line is about. A native `<select>` cannot
+be dressed: the browser draws its popup itself, in the operating system's
+chrome, with the operating system's fonts and spacing, and no CSS reaches
+inside it. On a screen where every other control is the product's own, the one
+native dropdown reads as a foreign object - and on Windows it reads as a
+foreign object from 1998.
+
+So this renders `<button role="combobox">` and a portalled list of
+`role="option"`, with zero native elements. The test asserts exactly that,
+because it is the whole reason the component exists, and the ESLint rule
+`dowel/no-native-select` stops the native one coming back by hand.
+
+What that costs is everything the browser was doing for free: the keyboard,
+type-ahead, the announcement of the selected value, the scroll into view, and
+on a phone the whole native picker. Base UI reimplements all of it, which is
+the only reason the trade is worth making - a hand-rolled dropdown is how a
+product ships a control a screen reader cannot see.
+
+The trigger wears Input's field classes, imported rather than copied, because
+a select and a text field sit next to each other in every form there has ever
+been.
+
+### Two traps worth knowing
+
+`SelectValue`'s `children` is a **function of the value**, not a node. Passing
+a node pins the trigger to that node forever and the selection never appears;
+the placeholder goes in `placeholder`.
+
+And what it shows is the **raw value** - `plum`, not `Plum` - unless the root
+is given an `items` map to look the label up in. A product that skips `items`
+gets its own identifiers on screen, and it is not obvious why.
+
+### Select or Combobox
+
+**Select** when the options are few enough to read: a status, a currency, a
+priority. The reader scans a list and picks.
+
+**[Combobox](/dowel/components/combobox/)** when they are not. A Select stops
+being usable somewhere around thirty options, and a country picker, a tag
+field or a person picker is well past that - the reader knows what they want
+and needs to type it rather than hunt for it. Combobox is also the one with
+chips, so it is the answer for multi-select that has to *show* what is chosen.
+
+Both support `multiple`, and both refuse to be a native `<select>`.
+
+```tsx
+import {
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+<Select items={labels} value={value} onValueChange={setValue}>
+  <SelectTrigger aria-label={t('priority')}>
+    <SelectValue placeholder={t('choosePriority')} />
+  </SelectTrigger>
+  <SelectPopup>
+    <SelectItem value="low">{t('low')}</SelectItem>
+    <SelectItem value="high">{t('high')}</SelectItem>
+  </SelectPopup>
+</Select>
+```
+
+## Props
+
+### `Select` (root)
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `multiple` | `boolean` | `false` | Turns `value` into an array |
+| `items` | `Record \| Array` | | What the trigger looks labels up in |
+| `value` / `onValueChange` | | | Controlled; `defaultValue` for uncontrolled |
+| `disabled` | `boolean` | `false` | |
+
+### `SelectTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | Matches Input's heights |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `SelectPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | A floor; it matches the trigger's width |
+| `side` | `top \| right \| bottom \| left` | `bottom` | A preference - Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | | Alignment along that side |
+| `sideOffset` | `number` | `4` | Distance from the trigger |
+| `container` | `Element \| Ref` | document body | Where to portal to |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+`SelectValue`, `SelectIcon`, `SelectItem`, `SelectItemText`,
+`SelectItemIndicator`, `SelectGroup`, `SelectGroupLabel` and `SelectSeparator`
+pass their props to Base UI unchanged. The `cva` variants
+(`selectTriggerVariants`, `selectPopupVariants`, `selectItemVariants`) are
+exported for a product that needs the same clothes somewhere else.
+
+---
+
+# Shortcut
+
+Source: https://lacodda.github.io/dowel/components/shortcut
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#shortcut
+
+A bound shortcut, and a field it deliberately does not fire into.
+
+## Notes
+
+Not a component — a hook and two predicates. There is nothing to draw, which
+is why the page is mostly about a default.
+
+Binding a key is four lines everyone can write. The two decisions inside those
+four lines are what this exists for.
+
+### A shortcut must not fire while someone is typing
+
+This is the default, and it is the point. A keystroke aimed at an `<input>`, a
+`<textarea>` or anything `contenteditable` belongs to that thing, always.
+
+It is the bug nobody can describe afterwards. `Mod+K` inside a text editor
+means "delete to end of line"; a palette opening on top of that looks like the
+application misheard, and the person reporting it can only say that sometimes
+the wrong thing happens when they type. Every product writes this check
+eventually, usually after the bug report, and usually forgetting
+`contenteditable`.
+
+`whileTyping: true` turns it off, and there is exactly one shape of shortcut
+that wants it: one belonging to the field itself — `Escape` closing the box it
+is typed in. Never one that takes the person somewhere else.
+
+### `Mod` is command on Apple platforms and control everywhere else
+
+The other half. A shortcut hard-coded to `ctrlKey` is dead on every Mac; one
+hard-coded to `metaKey` is dead everywhere else. `Mod` matches whichever the
+machine sends.
+
+It is deliberately the same word [`Kbd`](/dowel/components/kbd/) draws by, so
+one array can be passed to both and **what is bound and what is shown cannot
+disagree** — which is how a hint ends up promising `Ctrl+K` on a machine where
+the shortcut is `⌘K`.
+
+### The match is exact, in both directions
+
+`['Mod', 'K']` fires on `Mod+K` and on nothing else. Not on `Mod+Shift+K`,
+which is usually a different command entirely — "open in a new window" next to
+"open". And a bare `['K']` does not fire while a modifier is held, which is the
+direction that is easier to miss: a loose bare key swallows every shortcut in
+the application that shares its letter.
+
+```tsx
+import { useShortcut } from '@/components/ui/shortcut'
+
+useShortcut(['Mod', 'K'], () => setPaletteOpen(true))
+
+// Belongs to the field, so it fires even while typing.
+useShortcut(['Escape'], close, { whileTyping: true })
+
+// Only on the screens that have the thing it opens.
+useShortcut(['Mod', 'S'], save, { enabled: canSave })
+```
+
+A match calls `preventDefault`, so the browser does not also scroll the page
+or open its own find bar over what just opened.
+
+The handler may be written inline. It is read through a ref, so a caller
+passing a fresh arrow function on every render does not rebind the listener —
+which is how these end up firing twice.
+
+## API
+
+### `useShortcut(shortcut, onPress, options?)`
+
+| Argument | Type | Default | |
+| --- | --- | --- | --- |
+| `shortcut` | `string[]` | | As `['Mod', 'K']`. `Mod`, `Shift` and `Alt` are the modifiers; the rest is the key |
+| `onPress` | `(event: KeyboardEvent) => void` | | Given the original event, for a product that has to look at it |
+| `options.enabled` | `boolean` | `true` | `false` binds nothing at all |
+| `options.whileTyping` | `boolean` | `false` | `true` fires into fields as well. See above before reaching for it |
+
+### `matchesShortcut(event, shortcut): boolean`
+
+The comparison on its own, for a product that already owns the handler and
+only needs the question answered. Exact on every modifier.
+
+### `isTypingTarget(target): boolean`
+
+Whether the event landed on something that owns its own keys — an `<input>`, a
+`<textarea>`, or anything `contenteditable`.
+
+## Where it is already used
+
+[`SearchField`](/dowel/components/search-field/) takes a `shortcut` array and
+binds it with this hook, and
+[`CommandPalette`](/dowel/components/command-palette/) is opened with it: the
+palette has no trigger to point at, and the one it does have is a keystroke.
+
+---
+
+# Spinner
+
+Source: https://lacodda.github.io/dowel/components/spinner
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#spinner
+
+Three sizes and three tones.
+
+## Notes
+
+**It says something to a screen reader.** A page that is busy is otherwise
+silently identical to a page that is empty. The word for what is loading comes
+from the product:
+
+```tsx
+<Spinner label={t('loading.versions')} />
+```
+
+**Under `prefers-reduced-motion` it stops turning.** That is not a detail: for
+some readers a spinning thing is not decoration but a symptom. A stopped
+spinner still says "busy" through its role, which is the part carrying the
+meaning anyway.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | |
+| `tone` | `current \| dim \| accent` | `current` | Follows the surrounding text by default |
+| `label` | `string` | | What is being waited for, for a screen reader |
+
+---
+
+# Textarea
+
+Source: https://lacodda.github.io/dowel/components/textarea
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#textarea
+
+Fixed and growing, with and without a ceiling.
+
+## Notes
+
+**`autoResize` is the reason this is not just a taller Input.** A fixed box
+makes someone scroll inside a scroll; a box that grows without limit pushes the
+button they are reaching for off the screen. `maxRows` is where it stops
+growing and starts scrolling after all.
+
+```tsx
+<Textarea autoResize maxRows={10} />
+```
+
+**Height is reset before measuring.** Worth knowing if you write your own: a
+box already tall enough reports its own height as `scrollHeight`, so without
+the reset it grows and never shrinks back.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `autoResize` | `boolean` | `false` | Grow to fit instead of scrolling |
+| `maxRows` | `number` | | Stop growing here and scroll |
+
+Everything else goes to the `<textarea>`.
+
+---
+
+# Toast
+
+Source: https://lacodda.github.io/dowel/components/toast
+
+FENCE0 
+
+The component lands in `components/ui/toast.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#toast
+
+Every tone, with a title, a sentence, an action and a dismiss - in either theme, and in the accent of any product of the line.
+
+## When this and not an Alert, a Banner or a Dialog
+
+The three messages look similar and mean different things, so the choice is
+about *what the message is*, not how much room it needs.
+
+Reach for **Toast** when something already happened, needs no decision from
+the reader, and stops being interesting almost immediately: saved, sent,
+copied, deleted with an undo. **If dismissing it would lose information, it is
+not a toast** — a toast is guaranteed to go away on its own, and anything the
+reader might need to come back to has gone with it.
+
+Reach for **[Alert](/dowel/components/alert/)** when the message is a
+condition that is *still true* — and will still be true after a reload —
+about the thing it sits beside: this field could not be saved, this profile
+has no axes yet.
+
+Reach for **[Banner](/dowel/components/banner/)** when the condition is about
+the whole application rather than one part of it, and is true on every screen:
+you are offline, this build is a preview.
+
+Reach for **[Dialog](/dowel/components/dialog/)** when the reader has to
+*answer* something. A toast that asks a question is a question the reader can
+miss by looking away.
+
+## Why Base UI's toast and not Sonner
+
+Sonner is the usual answer, and it is a good library. It is not the right one
+here: `@base-ui/react` is already a dependency of half of these components, and
+its toast brings a manager that does more than `toast()` — `add`, `update`,
+`close`, `promise`, priorities, a queue with a limit, pause on hover and focus,
+and swipe to dismiss. A product installing dowel would be installing a second
+toast library to get less.
+
+So what is in this file is the clothes and the tone vocabulary. The queue, the
+live region, the timers and the gestures are Base UI's.
+
+## Usage
+
+Three pieces: a provider around the part of the application that can raise
+one, a viewport where they stack, and the manager wherever something happens.
+
+```tsx
+<ToastProvider>
+  <App />
+  <ToastViewport>
+    <Toasts />
+  </ToastViewport>
+</ToastProvider>
+```
+
+```tsx
+function Toasts() {
+  const { toasts } = useToastManager()
+  return toasts.map((toast) => (
+    <Toast key={toast.id} toast={toast}>
+      <ToastTitle />
+      <ToastDescription />
+      <ToastClose aria-label={t('dismiss')} />
+    </Toast>
+  ))
+}
+```
+
+```tsx
+const manager = useToastManager()
+
+manager.add({ type: 'success', title: t('saved') })
+
+manager.add({
+  type: 'info',
+  title: t('deleted'),
+  description: t('deletedWhat', { name }),
+  actionProps: { onClick: undo },
+})
+
+manager.promise(save(), {
+  loading: t('saving'),
+  success: t('saved'),
+  error: t('couldNotSave'),
+})
+```
+
+One provider per screen. Nesting them gives a product two queues that do not
+know about each other, and a toast raised into the wrong one is a toast nobody
+sees.
+
+To raise a toast from outside React — a store, an event handler, a worker —
+build the manager with `createToastManager()` and pass it to `ToastProvider`'s
+`toastManager` prop.
+
+## Tone follows the type
+
+`type` is Base UI's word for what happened; `tone` is dowel's word for how it
+looks. The component maps one onto the other, so a product that says what
+happened does not also have to say which colour that is:
+
+| `type` | `tone` |
+| --- | --- |
+| `success` | `good` |
+| `warning` | `warn` |
+| `error` | `bad` |
+| `info`, `loading` | `info` |
+| anything else | `neutral` |
+
+Passing `tone` explicitly wins over the map, for the case where a product
+knows better.
+
+**Colour is emphasis, never the message.** The stripe down the side says the
+same thing the sentence says, so a reader who does not separate green from red
+gets the whole of it.
+
+## Accessibility
+
+`Toast` is a `role="dialog"` inside the viewport's `role="region"`, which is
+what makes it announced without stealing focus. Base UI drives the live region,
+the timers, the pause on hover and focus, and the swipe.
+
+`ToastClose` needs a label — it draws a cross and nothing else, and a bare
+cross is announced as nothing. It is deliberately `aria-hidden` while the
+stack is collapsed and neither hovered nor focused: a collapsed stack is one
+announcement, not one announcement plus a dismiss button per toast.
+
+## Props
+
+### `Toast`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `toast` | `ToastObject` | | The object from `useToastManager().toasts` |
+| `tone` | `neutral \| good \| warn \| bad \| info` | from `toast.type` | Explicit wins over the map |
+| `swipeDirection` | `up \| down \| left \| right` or an array | `['down', 'right']` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `ToastViewport`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `container` | `Element \| null \| Ref` | the document body | Where to portal to |
+| `className` | `string` | | Bottom right by default — the corner that covers neither a form nor a menu |
+
+### The parts
+
+| Part | |
+| --- | --- |
+| `ToastTitle` | The heading; the toast's `aria-labelledby` |
+| `ToastDescription` | The sentence under it; the toast's `aria-describedby` |
+| `ToastAction` | The one thing the reader can do about it — undo, or go and look |
+| `ToastClose` | The dismiss button. Give it a label |
+
+### The manager
+
+| | |
+| --- | --- |
+| `useToastManager()` | `toasts`, `add`, `update`, `close`, `promise` |
+| `createToastManager()` | A manager for raising toasts outside React |
+
+---
+
+# Tooltip
+
+Source: https://lacodda.github.io/dowel/components/tooltip
+
+FENCE0 
+
+The component lands in `components/ui/tooltip.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tooltip
+
+Both widths and the four sides - in either theme, and in the accent of any product of the line.
+
+## When this and not a Popover
+
+Not size. The line is whether anything inside can be reached.
+
+A **tooltip** holds a phrase: no links, no buttons, no fields. There is no way
+to get into it — it is tied to a trigger that is hovered or focused, and it
+disappears the moment attention moves.
+
+A **Popover** holds things you interact with, whatever its length. If the
+content has a button in it, it is a popover even if it is four words long.
+
+And there is a second question, which matters more:
+
+## It is a visual aid, and only that
+
+Base UI puts no `role="tooltip"` on the popup and no `aria-describedby` on the
+trigger, deliberately. A tooltip cannot be reached on a touch screen and is not
+reliably announced by a screen reader, so the library does not pretend
+otherwise.
+
+**So the trigger must carry its own `aria-label`**, saying roughly what the
+tooltip says. The tooltip serves a sighted mouse or keyboard user; the
+`aria-label` is what everyone else gets.
+
+```tsx
+<TooltipTrigger render={<Button variant="icon" aria-label="Archive" />}>
+  <ArchiveIcon />
+</TooltipTrigger>
+```
+
+If the words are load-bearing — if not reading them means not understanding the
+control — this is the wrong component. Put them inline, or use a Popover with
+`openOnHover` on the trigger, which touch and screen reader users can reach.
+
+## Usage
+
+```tsx
+<TooltipProvider delay={600}>
+  <Tooltip>
+    <TooltipTrigger render={<Button variant="icon" aria-label="Archive" />}>
+      <ArchiveIcon />
+    </TooltipTrigger>
+    <TooltipPopup>Move to the archive</TooltipPopup>
+  </Tooltip>
+</TooltipProvider>
+```
+
+`TooltipPopup` renders its own portal, positioner and arrow.
+
+`TooltipProvider` is optional and shared: once one tooltip in a group has
+opened, the next opens instantly instead of waiting out its delay again. A
+toolbar of icon buttons without it feels broken in a way nobody can name.
+
+## Props
+
+### `Tooltip` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `disabled` | `boolean` | `false` | Turns it off without unmounting it |
+| `open` / `defaultOpen` / `onOpenChange` | | | Controlled, if it has to be |
+
+`delay` is **not** a root prop — it belongs to the trigger, the same as on
+PreviewCard. Passing it here is silently ignored at runtime.
+
+### `TooltipTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
+| `render` | `ReactElement` | | Give it an `aria-label` — the tooltip does not name it |
+
+### `TooltipPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| wide` | `sm` | `sm` caps at 16rem, `wide` at 24rem |
+| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `top` | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | `center` | |
+| `sideOffset` | `number` | `6` | Distance from the trigger, in pixels |
+| `arrow` | `boolean` | `true` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+| Part | | |
+| --- | --- | --- |
+| `TooltipProvider` | | A shared delay for a group. `delay`, `closeDelay`, `timeout` |
+| `TooltipArrow` | | Exported for a popup assembled by hand |
+
+## Notes
+
+**It opens on focus, not only on hover.** This is the half that gets forgotten,
+and forgetting it is invisible: someone tabbing through a row of unlabelled
+icon buttons never hovers anything.
+
+**`Escape` closes it** while the trigger still has focus — the way out for
+someone who can see it covering what they were reading.
+
+**Small text, on purpose.** `text-xs`. It sits over the thing it explains and
+has to be readable without taking the page over.
+
+**`--z-popup`, above everything else.** A tooltip labels whatever is on top of
+it, including the contents of a popover or a dialog, so it has to be able to
+sit above them.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.
+
+---
+
+# Truncate
+
+Source: https://lacodda.github.io/dowel/components/truncate
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#truncate
+
+One line and several, with the full text on hover.
+
+## Notes
+
+**The cut text is still available.** The element carries its own text as a
+`title`, so hovering shows what was lost. Every product wrote the one-line
+version of this and none of them remembered that part — cutting text without a
+way to read it is losing it.
+
+**`lines` needs a different mechanism, not a different value.** One line is
+`truncate`; more than one is `line-clamp`, which is why it is a prop rather
+than something you write yourself.
+
+```tsx
+<Truncate lines={2}>{description}</Truncate>
+```
+
+Pass `title=""` where the full text is already on screen and the tooltip would
+be noise.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `string` | | Must be a string, so it can go in the `title` |
+| `lines` | `number` | `1` | Cut after this many |
+| `title` | `string` | the text | Pass `""` to silence the tooltip |
+
+---
+
+# What a component has to pass
+
+Source: https://lacodda.github.io/dowel/guides/gates
+
+A component library decays by accretion — one reasonable addition at a time,
+each defensible on its own. These are the checks that hold the line, and every
+one of them exists because of a specific way that decay happens.
+
+They all run in `pnpm test`, except the screenshots, which need a browser.
+
+## Accessibility
+
+[axe-core](https://github.com/dequelabs/axe-core) runs over the rendered DOM of
+every primitive, in every variant, and the interactive ones are driven by the
+keyboard as well: Tab reaches them, Enter and Space fire them, `disabled` is
+skipped.
+
+This catches the failures that are invisible in a screenshot and in a
+class-list assertion — an icon button with no name, a state announced only by
+colour, a control the keyboard cannot reach. They fail for one reader, months
+later, with nobody to tell.
+
+Five axe rules are off, and each is off because jsdom cannot evaluate it rather
+than because it was inconvenient:
+
+- `color-contrast` — jsdom resolves no colour. Contrast is computed against the
+  real tokens instead, for both themes and all fourteen accents.
+- `region`, `page-has-heading-one`, `landmark-one-main`, `html-has-lang` — a
+  primitive rendered on its own is legitimately not a page. Those are the
+  product's to satisfy.
+
+## Weight, and what a component drags in
+
+Two budgets. The first is a ceiling on code size with comments excluded —
+comments are the point of these files, and taxing them would discourage exactly
+what should be encouraged.
+
+The second matters more: **the dependency list is declared, not observed.** Only
+Button pulls in anything from Radix today. A component that starts importing
+something new fails the gate, and adding it to the list is the decision — a new
+dependency is a cost every product of the line pays.
+
+## No words of its own
+
+A string written into a component is a string the product cannot translate. It
+ships in English to every reader who does not read English, and no amount of
+i18n in the product reaches it.
+
+So visible text arrives through props, and a prop that names something for a
+screen reader has **no default** — a default is the same English string wearing
+a different hat:
+
+```tsx
+// The product's word, in the product's language.
+<Chip onRemove={() => drop(tag)} removeLabel={t('remove')}>
+  {tag}
+</Chip>
+```
+
+On `Chip` the two props travel together in the type, so a chip that can be
+removed but not named does not compile. This gate found real debt the first
+time it ran: `'Remove'`, `'Copy'` and `'Copied'` were all defaults once.
+
+## Shape
+
+The stand is photographed section by section, in both themes, and compared
+against committed baselines. This is the one thing the rest cannot check: that
+a padding change did not make every button in the line two pixels taller, or
+that a variant still looks different from its neighbour.
+
+```console
+$ pnpm visual           # compare against the baselines
+$ pnpm visual:update    # accept what changed, on purpose
+```
+
+Snapshots run on Linux only, in the same container image CI uses. That is not a
+missing configuration — the theme asks for the operating system's own typeface
+on purpose, so a screenshot taken on Windows can never equal one taken on
+Linux. Pinning one platform is what makes a baseline mean something.
+
+The accent is left at dowel's own amber. Colour is checked numerically for
+every accent of the line; what a picture catches is shape.
+
+---
+
+# The lint rules
+
+Source: https://lacodda.github.io/dowel/guides/linting
+
+Two conventions hold the system together, and both are easy to state and easy
+to break:
+
+- **a component never writes a colour down** — it names one from the
+  vocabulary, and the theme decides what the name means, in dark, in light and
+  in each product's accent;
+- **no screen uses a native `<select>`** — the browser draws that popup itself,
+  in the operating system's chrome, and no CSS reaches inside it.
+
+`dowel-ui` ships the rules that enforce them.
+
+## Turn it on
+
+```js
+// eslint.config.js
+import dowel from 'dowel-ui/eslint'
+
+export default [
+  // ...your config
+  ...dowel.configs.recommended,
+]
+```
+
+The plugin comes with the package, so a product that has the theme already has
+the rule. ESLint is an optional peer: nothing installs it on your behalf.
+
+## `no-raw-color`
+
+```tsx
+// ✗ A colour the theme cannot reach.
+<div className="bg-[#d9569e]" />
+<div className="border-zinc-800" />
+<div style={{ color: 'rgb(217 86 158)' }} />
+
+// ✗ A component deciding which theme it is in.
+<div className="bg-white dark:bg-neutral-900" />
+
+// ✓ Names from the vocabulary. Both themes, every accent, one class list.
+<div className="bg-raise border border-line text-text" />
+<button className="bg-accent text-on-accent hover:bg-accent-2" />
+```
+
+The two errors are separate because the two fixes are:
+
+- **a raw colour** is swapped for the token that means what it was trying to
+  mean;
+- **a `dark:` utility** is deleted. There is nothing to replace it with — the
+  token underneath already changes.
+
+Tailwind's stock palette (`zinc-800`, `red-500`) is reported too. The line
+drops it from the theme deliberately, so those classes compile to nothing; the
+rule points at the file that wrote one instead of leaving you to find a colour
+that silently did not arrive.
+
+`bg-white` and `text-black` are the same mistake in shorter clothes: white
+chrome stays white when the ground turns white.
+
+With an opacity, though, they are allowed:
+
+```tsx
+// ✓ A scrim is made of black. A caption over a photograph is made of white.
+<div className="fixed inset-0 bg-black/50" />
+<span className="text-white/70">{caption}</span>
+```
+
+Neither is a theme colour that failed to get a name — that is what a
+translucent veil and ink on an arbitrary image are actually made of, which is
+why the theme keeps `--color-white` and `--color-black` on purpose. kilna, the
+first product to run this rule, had eleven of them and every one was right.
+
+### What it leaves alone
+
+The rule reads string literals in TypeScript and TSX — where a class list is
+assembled. It never reads CSS, because the theme is the one place raw colour
+belongs: that is what a token *is*.
+
+Two exemptions are worth copying into your own config:
+
+```js
+{
+  // Data that is *about* colour - a brand registry, a chart palette - and
+  // tests that must write a colour to have something to check.
+  files: ['src/brand.ts', '**/*.test.{ts,tsx}'],
+  rules: { 'dowel/no-raw-color': 'off' },
+}
+```
+
+If a component needs a colour that has no name yet, the answer is a new token,
+not an exemption. A colour worth using is worth a word.
+
+## `no-native-select`
+
+```tsx
+// ✗ The browser's own dropdown, in the operating system's chrome.
+<select value={value} onChange={onChange}>
+  <option value="a">A</option>
+</select>
+
+// ✓ The component. Same job, drawn by the product.
+<Select items={items} value={value} onValueChange={setValue}>
+  …
+</Select>
+```
+
+A `<select>` cannot be made to look like the rest of an application. The
+browser renders its popup itself, with the operating system's fonts and
+spacing, and no amount of CSS reaches inside. On a screen where every other
+control is the product's own, the one native dropdown reads as a foreign
+object — and on Windows it reads as a foreign object from 1998.
+
+`<option>` and `<optgroup>` are reported too: they exist only inside a
+`<select>`, so one on its own is either a `<select>` being assembled somewhere
+else or a misunderstanding.
+
+The rule is about the **element**, never about the name. `<Select>` from this
+set renders `<button role="combobox">` and no native element at all, which is
+what the convention was always asking for.
+
+:::note
+This rule is the line's oldest convention, from atlas, where it was written as
+"`<select>` never — PopoverSelect". The component here is called `Select`,
+because that is what people search the registry for; the rule is what keeps the
+promise the old name was carrying.
+:::
+
+---
+
+# Choosing an overlay
+
+Source: https://lacodda.github.io/dowel/guides/overlays
+
+Six things in this set float above the page, and they look similar enough that
+picking the wrong one is easy. The difference is never how they are drawn — it
+is what they promise the reader.
+
+## Which one
+
+| | Interrupts? | Holds actions? | Opens on |
+| --- | --- | --- | --- |
+| **Dialog** | yes | yes | a deliberate click |
+| **ConfirmDialog** | yes, harder | yes, one of them destructive | a deliberate click |
+| **Drawer** | yes | yes | a deliberate click |
+| **Popover** | no | yes | a deliberate click |
+| **PreviewCard** | no | no | hover, after a pause |
+| **Tooltip** | no | never | hover or focus |
+
+**Dialog** stops the work. Everything behind it goes inert — not merely dimmed,
+but out of reach of the keyboard and of a screen reader — so use it when the
+answer is genuinely needed before anything else can happen.
+
+**ConfirmDialog** is a Dialog for a choice that cannot be taken back. It
+announces itself as `alertdialog`, and **clicking away does not dismiss it** —
+an answer given by a stray click is exactly what it exists to prevent. `Escape`
+still closes it, deliberately: a popup with no keyboard exit is a trap, and
+pressing Escape is a decision rather than an accident. Reach for it when the
+action deletes, overwrites or sends.
+
+**Drawer** is a Dialog that arrives from an edge. Same interruption, more room;
+it suits a panel of settings or a form that would look cramped in a box.
+
+**Popover** floats next to what opened it and leaves the page alone. It can
+hold controls — a filter, a small form, a menu of options. If the reader can
+carry on without answering it, this is the one.
+
+**PreviewCard** is what a link looks like before you follow it. It appears on
+hover after a pause, and it is not for anything the reader has to click:
+appearing on hover means it can vanish on the way to the thing inside it.
+
+**Tooltip** names a control that is otherwise only an icon. It carries no
+interactive content at all — never a link, never a button — because there is no
+way to reach one with a keyboard. If you want to put a button inside a tooltip,
+you want a Popover.
+
+:::caution[The trigger needs its own label]
+Base UI puts neither `role="tooltip"` on the popup nor `aria-describedby` on the
+trigger: a tooltip here is **for sighted users**, and a screen reader never
+reads it. The same is true of PreviewCard.
+
+So the control must carry the meaning itself:
+
+```tsx
+<TooltipTrigger render={<Button variant="icon" aria-label={t('delete')} />}>
+  <TrashIcon />
+</TooltipTrigger>
+<TooltipPopup>{t('delete')}</TooltipPopup>
+```
+
+Without that `aria-label`, the button is announced as "button" and the tooltip
+is the only thing that would have said what it does — to everyone except the
+people who cannot see it.
+:::
+
+:::caution
+A tooltip is also not a place for information the reader needs. It is invisible
+on a touch screen and gone the moment the pointer moves. Anything essential
+belongs on the page.
+:::
+
+## What they all get right
+
+The behaviour is Base UI's, which means it is the same behaviour in each of
+them and it is the part that is hard to write:
+
+- focus moves into the overlay when it opens and returns to whatever opened it
+  when it closes;
+- `Escape` closes what should be closeable;
+- a modal locks the scroll and marks the page behind it inert;
+- the popup is named by its own title through `aria-labelledby`, without anyone
+  wiring up an id.
+
+What is dowel's is the clothes — and the enter and the leave, which are class
+lists rather than a state machine, because Base UI puts `data-open`,
+`data-closed` and `data-starting-style` on the element for you.
+
+## Stacking
+
+Overlays sit on named layers rather than on numbers picked in the moment:
+
+```css
+--z-popup: 10;      /* a popup in the flow */
+--z-sticky: 20;
+--z-menu: 30;
+--z-floating: 40;   /* Popover, PreviewCard */
+--z-overlay: 50;    /* the scrim */
+--z-modal: 60;      /* Dialog, ConfirmDialog, Drawer */
+--z-palette: 70;
+--z-toast: 80;      /* has to clear everything */
+```
+
+A component reads these directly — `[z-index:var(--z-modal)]` — because
+Tailwind has no z-index namespace and `z-50` would be a literal fifty with
+nothing to say about what it covers.
+
+---
+
+# Installing from the registry
+
+Source: https://lacodda.github.io/dowel/guides/registry
+
+Components are not imported from a package. They are copied into your project
+by `shadcn`, and from that moment they are your files: edit them, delete them,
+rename their props. Nothing upstream reaches back in.
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
+```
+
+That is the whole distribution model, and the two things below make it
+practical: a way to install a working set in one command, and a way to install
+the same thing twice.
+
+## Sets
+
+A product does not begin by wanting a Chip. It begins by wanting a screen, and
+reaches for a dozen primitives over the following week — twelve commands, each
+of them a small decision about whether this one is needed yet.
+
+Three sets cover that opening week. They are read off what the line's products
+actually converged on, not composed here.
+
+| | Installs |
+| --- | --- |
+| **`app`** | Button, Input, Textarea, Panel, Badge, Kbd, Dialog, ConfirmDialog, Drawer, Menu, Select, Combobox, Toast — what [kilna](https://github.com/lacodda/kilna) has after moving over |
+| **`forms`** | Button, Input, Textarea, Select, Combobox, Chip |
+| **`feedback`** | Toast, Alert, Banner, ConfirmDialog |
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
+```
+
+A set carries no files of its own. It resolves into exactly the per-component
+installs you could have typed, so what lands on disk is identical either way,
+and nothing about the set survives in your project — there is no membership to
+leave. Having installed `app`, delete the Drawer you turned out not to need;
+nothing will disagree with you.
+
+The theme is not part of any set. It is imported rather than copied for most
+products, and a set that reinstalled it would overwrite a file you may have
+already made yours:
+
+```css
+@import 'tailwindcss';
+@import 'dowel-ui/theme.css';
+@import 'dowel-ui/accents/kilna.css';
+```
+
+## Pinning a version
+
+`/r/` always serves the newest build. That is the right default — a component
+copied today should be today's component — but it means the URL in your notes
+does not describe what you installed, and a registry is not a package: nothing
+in your lockfile records which version of a Dialog was copied in.
+
+So each minor is also served frozen, at a path that never changes again:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/v0.12/dialog.json
+```
+
+Inside a pinned snapshot the cross-references point into the same snapshot. A
+component that reuses a sibling — Textarea shares the Input's field styling —
+brings in *that* version of the sibling, so a set installed from `v0.12` is the
+set that shipped with v0.12, and not a v0.12 Textarea beside whatever Input is
+current.
+
+Reach for it when the install has to be repeatable: a scaffolding script, a
+migration you want to do in two steps, a second developer setting up the same
+screen next month. For everyday work, use `/r/` and let the copy be current.
+
+:::note
+A pinned path is a promise about the registry, not about your project. Once a
+component is copied in it is your file, and a later `add` of the same component
+overwrites it — including the edits you made. That is the trade the model
+makes: no upstream reaches in, and no upstream merges for you either.
+:::
+
+## Reading the registry
+
+The catalogue lists every item served — the theme, the fourteen product
+accents, every component, and the sets:
+
+- [`/r/registry.json`](https://lacodda.github.io/dowel/r/registry.json) — served alongside the docs
+- `dowel-ui/registry.json` — the same catalogue inside the package, at the
+  version you installed
+
+The second is there for a reader with the package and without the network: a
+namespace registered in `components.json`, a script checking whether a
+component exists before shelling out to the CLI, an agent handed the dependency
+rather than the docs site.
+
+---
+
+# Accents
+
+Source: https://lacodda.github.io/dowel/reference/accents
+
+A product of the line states one thing about its appearance: which product it
+is. Its accent is the colour of its mark — the same colour as the tile on its
+README and the icon in the taskbar, because those are the same fact.
+
+```css
+@import 'dowel-ui/theme.css';
+@import 'dowel-ui/accents/kilna.css';
+```
+
+The second line is one declaration. Everything else — the hover shade, the soft
+fill behind a chip, the focus ring, the colour text has to be on an accent
+fill, and the trace of the hue the greys carry — is derived from it.
+
+A product outside the line sets the value directly:
+
+```css
+@import 'dowel-ui/theme.css';
+
+:root {
+  --accent-base: #2f7d6b;
+}
+```
+
+## The line, in dark
+
+[The same screen in every accent of the line, dark theme - see https://lacodda.github.io/dowel/reference/accents/]
+
+## The line, in light
+
+[The same screen in every accent of the line, light theme - see https://lacodda.github.io/dowel/reference/accents/]
+
+Every tile above is the same markup. Nothing in it knows which product it is
+drawing: the only difference between one tile and the next is `--accent-base`.
+
+That is the claim worth checking by eye rather than by reasoning. Gold and lime
+are light colours and take dark glyphs; magenta and cobalt are dark and take
+white — and neither the buttons nor the chips nor the links needed a rule of
+their own to get there.
+
+## What a product should not do
+
+Set the accent, and stop:
+
+```css
+/* No. The theme derives these, and derived values stay in step with the
+   theme when it changes. */
+:root {
+  --accent-base: #d9569e;
+  --accent-2: #e879b4;
+  --on-accent: #fff;
+}
+```
+
+The third line is the one that matters. `--on-accent` is what a reader's eye
+lands on when it crosses a button, and stating it by hand is how a product ends
+up with white text at 3.6:1 on its own primary action — which is exactly what
+the line's products did before this theme existed.
+
+## Installing from the registry
+
+The theme and the accents are also shadcn-compatible registry items, for a
+project that would rather copy them in than depend on the package:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/accent-kilna.json
+```
+
+The theme lands in `dowel/theme.css` and is yours: edit it, and nothing
+upstream will argue. It is served whole rather than as a list of variables,
+because it is `color-mix()` over your accent, relative colour, a Tailwind
+`@theme` block and two media queries - taken apart into key-value pairs it
+would stop being the file that was tested.
+
+Registering the namespace once makes the names shorter:
+
+```console
+$ npx shadcn@latest registry add @dowel=https://lacodda.github.io/dowel/r/{name}.json
+$ npx shadcn@latest add @dowel/accent-kilna
+```
+
+## Adding a product
+
+Accents are generated from the registry the package carries, so a new product
+is a row in one list rather than a file to write. The contrast tests read that
+same list: an accent that could not carry legible text would fail the build
+before it reached a screen.
+
+---
+
+# Scales
+
+Source: https://lacodda.github.io/dowel/reference/scales
+
+Colour is one half of a vocabulary; this is the other. Every corner, size,
+shadow, speed and layer a product draws has a name here, so that a screen can
+be described in words rather than in pixels.
+
+These values are not derived from a ratio. They were read off the products the
+line already ships — the radius that appears twenty times, the two type sizes
+that carry nine tenths of every screen — and then tidied. A scale invented from
+a formula is a scale nobody's existing code fits.
+
+## Radius
+
+`md` is the control radius: inputs, buttons, list rows. Anything bigger is a surface; anything smaller sits inside something else.
+
+- `--radius-xs`
+- `--radius-sm`
+- `--radius-md`
+- `--radius-lg`
+- `--radius-xl`
+- `--radius-2xl`
+
+A shape nested inside another needs a smaller corner than its parent, or the
+inner curve reads as wrong against the outer one. `--radius-inner` is that
+correction, expressed rather than guessed:
+
+```css
+.card { border-radius: var(--radius-lg); }
+.card > header { border-radius: var(--radius-inner) var(--radius-inner) 0 0; }
+```
+
+## Type
+
+Seven steps from 10px to 21px, each with the line height it is set on.
+
+- `--text-2xs`
+- `--text-xs`
+- `--text-sm`
+- `--text-base`
+- `--text-lg`
+- `--text-xl`
+- `--text-2xl`
+
+`base` is body text. The two steps below it are for metadata — a timestamp, a
+count, a label — and the ones above are headings. There is deliberately nothing
+between them: the products this scale came from had nine sizes inside four
+pixels, and no reader could tell any of them apart.
+
+Three weights. `bold` is absent because nothing in the line uses it - `semibold` is what emphasis looks like here.
+
+- `--font-weight-normal`
+- `--font-weight-medium`
+- `--font-weight-semibold`
+
+Letter spacing, for the two cases that need it: the uppercase caption, and a large heading that would otherwise read as loose.
+
+- `--tracking-caption`
+- `--tracking-tight`
+
+## Motion
+
+`quick` for a colour or an opacity that should feel immediate, `base` for something that moves, `slow` for something arriving from off-screen.
+
+- `--duration-quick`
+- `--duration-base`
+- `--duration-slow`
+
+`out` for anything the user asked for - it arrives fast and settles. `in-out` for something moving on its own.
+
+- `--ease-out`
+- `--ease-in-out`
+
+There is no `ease-in`. It starts slowly, which on a control the user just
+clicked reads as lag.
+
+Durations are custom properties rather than utilities, because Tailwind's
+`duration-*` takes a literal number:
+
+```css
+.thing {
+  transition: opacity var(--duration-quick) var(--ease-out);
+}
+```
+
+All of it is cut to nothing under `prefers-reduced-motion` — that is handled by
+the theme, and a product does not have to remember it.
+
+## Elevation
+
+Three steps, shown in both themes: a shadow tuned for a dark ground disappears on a light one, so each theme has its own.
+
+- `--shadow-lift`
+- `--shadow-raise`
+- `--shadow-float`
+
+Use `lift` for something that has left the page by a millimetre — a hovered
+row, a sticky header. `raise` is the working elevation of menus, popovers and
+toasts. `float` is for the thing that takes over the screen: a modal, a command
+palette.
+
+The products this came from had one shadow and used it for all three, which is
+why a modal never felt further away than the menu it covered.
+
+## Stacking order
+
+What covers what. The values only mean anything relative to each other.
+
+- `--z-popup`
+- `--z-sticky`
+- `--z-menu`
+- `--z-floating`
+- `--z-overlay`
+- `--z-modal`
+- `--z-palette`
+- `--z-toast`
+
+```css
+.modal { z-index: var(--z-modal); }
+```
+
+Named layers exist because the alternative is arithmetic in the dark. A command
+palette has to sit above a modal; with bare numbers that means writing `70`
+somewhere and hoping nobody later writes `80` for a tooltip. With names, the
+order is a sentence you can read.
+
+A toast is last on purpose: a message about what just happened has to be
+visible over whatever caused it.
+
+---
+
+# Tokens
+
+Source: https://lacodda.github.io/dowel/reference/tokens
+
+The theme is a vocabulary, and this is the whole of it. Every colour in a
+product goes through one of these names; a component never writes a colour of
+its own and never uses a `dark:` utility, because the theme swaps the token
+underneath instead.
+
+Each swatch below is painted by the token itself, in both themes. The chequered
+ground shows through the translucent ones — `soft`, `line` and every `-soft`
+variant are meant to sit *over* a surface rather than replace it.
+
+## The two parameters
+
+A product does not restate the vocabulary. It sets its own hue, and the rest
+follows:
+
+```css
+@import 'dowel-ui/theme.css';
+
+:root {
+  /* The product's colour from the brand-line registry. */
+  --accent-base: #d9569e;
+}
+```
+
+That one line moves the accent, both of its partners, the accent's soft fill,
+the focus ring, and the tint in the greys. `--neutral-base` follows
+`--accent-base` unless a product sets it separately — a product that wants
+plain grey chrome points it at a grey.
+
+| Parameter | What it does |
+| --- | --- |
+| `--accent-base` | The product's hue. Everything accent-shaped is mixed from it. |
+| `--neutral-base` | The hue tinted into the greys. Follows the accent by default. |
+| `--neutral-tint` | How much of that hue reaches the grounds and the text. |
+| `--neutral-tint-strong` | The same, for the dimmer inks where the tint needs to carry further. |
+| `--ground` | The untinted base of the page. |
+| `--ink` | The untinted base of the text. |
+
+## Grounds and surfaces
+
+What a screen is built on: the page, the raised card, and the two translucent lifts that work over either.
+
+- `--bg`
+- `--raise`
+- `--soft`
+- `--softer`
+
+## Hairlines
+
+Borders and separators. `line-2` is the one that has to be seen — a scrollbar thumb, a focused edge.
+
+- `--line`
+- `--line-2`
+
+## Ink
+
+Three weights of text: what you read, what you glance at, and what is only there when you look for it.
+
+- `--text`
+- `--dim`
+- `--faint`
+
+## Accent
+
+The product's own colour. `accent-2` is the hover and active partner; `on-accent` is whatever stays legible on top of an accent fill.
+
+- `--accent`
+- `--accent-2`
+- `--accent-soft`
+- `--on-accent`
+
+`on-accent` is worked out rather than chosen. A light accent — gold, lime,
+amber — takes dark glyphs; a dark one takes white. This is the same rule the
+brand-line S tile follows, and it means a product cannot pick its accent and
+then forget to fix the text on top of it.
+
+## Status
+
+Meaning, not decoration. These do not follow the product accent: a green that shifted per product would stop meaning good.
+
+- `--good`
+- `--good-soft`
+- `--warn`
+- `--warn-soft`
+- `--bad`
+- `--bad-soft`
+- `--info`
+- `--info-soft`
+
+Status never rests on colour alone. A badge carries an icon and a word as well,
+so that it survives a monochrome screen and a reader who does not separate red
+from green.
+
+What stays legible on a status fill, worked out the same way `on-accent` is.
+
+- `--on-good`
+- `--on-warn`
+- `--on-bad`
+- `--on-info`
+
+Each status fill has its own partner, and the distinction matters: `on-accent`
+is derived from the *accent*, so using it on a `warn` fill is right only by
+coincidence. The first product to move onto dowel had a count on a yellow badge
+drawn in `on-accent` — white, at 1.95:1 — and it looked correct for as long as
+that product happened to pin white.
+
+```html
+<span class="bg-warn text-on-warn">3</span>
+```
+
+## Themes
+
+Dark is the default: the bare root element is the dark theme. Light arrives two
+ways, and they are kept identical on purpose.
+
+```html
+<html>          <!-- follows the operating system -->
+<html class="dark">   <!-- pinned dark -->
+<html class="light">  <!-- pinned light -->
+```
+
+A product that offers a theme switch writes the class; a product that does not
+gets the reader's system preference for free.
+
+## Using them
+
+With Tailwind 4 the tokens are utilities, because the theme declares them in an
+`@theme` block:
+
+```html
+<div class="bg-raise text-text border border-line">
+  <button class="bg-accent text-on-accent">Save</button>
+</div>
+```
+
+The stock palette is dropped deliberately — `--color-*: initial` — so a stray
+`bg-zinc-800` does not compile. If a colour is worth using, it is worth having
+a name in the vocabulary.
+
+Outside Tailwind they are ordinary custom properties:
+
+ FENCE4

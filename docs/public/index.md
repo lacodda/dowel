@@ -1,0 +1,27 @@
+# dowel
+
+Source: https://lacodda.github.io/dowel/
+
+One theme, one token vocabulary, one set of primitives - so every product in the line looks made by one hand, and nobody sees the joint.
+
+## Two places
+
+**[The stand](/dowel/stand/)** is where the components are. Every one of them,
+live, in either theme and in the accent of any product of the line — change the
+accent and watch what follows from it: the hover shade, the soft fill, the focus
+ring, the colour of text on an accent fill. None of which a component states for
+itself.
+
+**These pages** are where the reasons are. What a token means, why a scale has
+the steps it has, what a component will and will not do for you.
+
+## Status
+
+**v0.13.0.** The theme and its scales, an accent for each of the fourteen
+products of the line, and twenty-six primitives. Components install from the
+registry with `npx shadcn add`, singly or as a
+[set](/dowel/guides/registry/); the theme is the `dowel-ui` package.
+[kilna](https://github.com/lacodda/kilna) runs on it.
+
+Development goes in versions, each one a single coherent theme; the
+[roadmap](https://github.com/lacodda/dowel#roadmap) says what is next.

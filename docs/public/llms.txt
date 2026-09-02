@@ -1,0 +1,68 @@
+# dowel
+
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.13.0.
+
+Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
+
+## Start here
+
+- [dowel](https://lacodda.github.io/dowel/index.md): The lacodda line design system - theme tokens and React primitives, distributed as a shadcn-compatible registry.
+- [Getting Started](https://lacodda.github.io/dowel/getting-started.md): Install the dowel theme and give a product its own accent.
+
+## Concepts
+
+- [Anti-patterns](https://lacodda.github.io/dowel/concepts/anti-patterns.md): The mistakes that actually get made against this system, each with what happens and what to do instead.
+- [Vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary.md): The words dowel uses for its own parts, each defined once, so a page can use one without explaining it again.
+
+## Components
+
+- [Alert](https://lacodda.github.io/dowel/components/alert.md): A condition that is still true, about the thing it sits beside.
+- [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
+- [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
+- [Button](https://lacodda.github.io/dowel/components/button.md): The five buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
+- [Chip](https://lacodda.github.io/dowel/components/chip.md): A badge you can act on: removable, or with a count.
+- [Combobox](https://lacodda.github.io/dowel/components/combobox.md): A Select you can type in - it filters, and it has chips.
+- [CommandPalette](https://lacodda.github.io/dowel/components/command-palette.md): One box that finds anything. dowel supplies the box, the filtering and the keyboard; the product supplies the commands.
+- [ConfirmDialog](https://lacodda.github.io/dowel/components/confirm-dialog.md): The dialog for a choice that cannot be taken back - announced as an alert dialog, and not dismissed by clicking away.
+- [ContextMenu](https://lacodda.github.io/dowel/components/context-menu.md): The same actions as Menu, opened by right click over an area.
+- [Copyable](https://lacodda.github.io/dowel/components/copyable.md): Any text worth showing is worth being able to take away.
+- [Dialog](https://lacodda.github.io/dowel/components/dialog.md): A question the reader has to answer before anything else continues.
+- [Drawer](https://lacodda.github.io/dowel/components/drawer.md): A modal panel that slides in from an edge - a filter sheet, a detail pane, a form too long to centre.
+- [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
+- [Kbd](https://lacodda.github.io/dowel/components/kbd.md): A key, as printed in a menu or a hint.
+- [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
+- [Panel](https://lacodda.github.io/dowel/components/panel.md): The raised surface everything else sits on.
+- [Popover](https://lacodda.github.io/dowel/components/popover.md): A panel anchored to the control that opened it - positioned, not centred, and not modal.
+- [PreviewCard](https://lacodda.github.io/dowel/components/preview-card.md): The card that appears when a link is hovered - a shortcut for people who can see it, never the only place the information lives.
+- [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
+- [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
+- [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
+- [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
+- [Textarea](https://lacodda.github.io/dowel/components/textarea.md): A multi-line field that can grow with what is typed into it.
+- [Toast](https://lacodda.github.io/dowel/components/toast.md): Something that just happened, said briefly and then gone.
+- [Tooltip](https://lacodda.github.io/dowel/components/tooltip.md): A short visual label for a control with no room for one - on hover and on focus, and never the only place the words appear.
+- [Truncate](https://lacodda.github.io/dowel/components/truncate.md): Text that does not fit, cut with an ellipsis and still readable in full.
+
+## Guides
+
+- [What a component has to pass](https://lacodda.github.io/dowel/guides/gates.md): The checks every primitive runs through, and what each one is there to catch.
+- [The lint rules](https://lacodda.github.io/dowel/guides/linting.md): Two conventions the system rests on, enforced rather than remembered.
+- [Choosing an overlay](https://lacodda.github.io/dowel/guides/overlays.md): Six components that all float above the page, and the question each one answers.
+- [Installing from the registry](https://lacodda.github.io/dowel/guides/registry.md): Sets that install in one command, and how to pin a version of the registry so an install can be repeated.
+
+## Reference
+
+- [Accents](https://lacodda.github.io/dowel/reference/accents.md): One colour per product of the lacodda line, and the theme derives the rest from it.
+- [Scales](https://lacodda.github.io/dowel/reference/scales.md): Radius, type, motion, elevation and stacking order - the sizes and speeds every product of the lacodda line is drawn on.
+- [Tokens](https://lacodda.github.io/dowel/reference/tokens.md): The token vocabulary every product of the lacodda line shares, in the dark and light themes.
+
+## Registry
+
+- [Catalogue](https://lacodda.github.io/dowel/r/registry.json): every item served - the theme, an accent per product, each component, and the sets
+- [JSON Schema](https://lacodda.github.io/dowel/r/schema.json): the shape of a dowel registry item, for validating or generating one
+- Sets install in one command: `app`, `forms`, `feedback` at https://lacodda.github.io/dowel/r/app.json and siblings
+- Each minor is also served frozen at `https://lacodda.github.io/dowel/r/v<major>.<minor>/`, for an install that has to be repeatable
+
+## Full text
+
+- [llms-full.txt](https://lacodda.github.io/dowel/llms-full.txt): every page above, in one document

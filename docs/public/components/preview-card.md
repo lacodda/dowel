@@ -1,0 +1,107 @@
+# PreviewCard
+
+Source: https://lacodda.github.io/dowel/components/preview-card
+
+FENCE0 
+
+The component lands in `components/ui/preview-card.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#preview-card
+
+A link, its card, and the three sizes - in either theme, and in the accent of any product of the line.
+
+## When this and not a Tooltip
+
+A **tooltip** holds a phrase and nothing can be reached inside it. A
+**preview card** holds rich content — an avatar, a couple of lines, a figure —
+and it *is* hoverable: the pointer travels from the link into the card without
+it disappearing, so a link inside it can actually be clicked.
+
+That is the trick the component exists for. A card that vanished when the
+pointer left the link could not be read, let alone clicked into.
+
+## When this and not a Popover
+
+A **popover** is opened deliberately, from a button, and is reachable by
+everyone. A **preview card** opens on hover over a link, and is not.
+
+## It is an enhancement, not a delivery mechanism
+
+Base UI treats this the way it treats Tooltip: a visual aid for sighted mouse
+and keyboard users. It is not reachable on a touch screen and not announced by
+a screen reader.
+
+**So nothing in the card may be the only place it appears.** Everything shown
+has to also be on the page the link points at. The card saves a click for
+people who can see it; it is never how the information gets delivered.
+
+The other half of that promise is the trigger. Render it as the anchor itself,
+so it stays a real link — it navigates, it opens in a new tab, and a screen
+reader announces it as one.
+
+If the content has to be reachable by everyone, use a Popover opened from a
+real button instead.
+
+## Usage
+
+```tsx
+<PreviewCard>
+  <PreviewCardTrigger render={<a href="/people/ada" />} delay={300}>
+    Ada Lovelace
+  </PreviewCardTrigger>
+  <PreviewCardPopup>
+    <Avatar src={ada.avatar} />
+    <p>Wrote the first algorithm intended for a machine.</p>
+    <a href="/people/ada/notes">Read the notes</a>
+  </PreviewCardPopup>
+</PreviewCard>
+```
+
+`PreviewCardPopup` renders its own portal, positioner and arrow.
+
+Note that `delay` sits on the **trigger** here, not on the root — unlike
+Tooltip, where it is a root prop.
+
+## Props
+
+### `PreviewCard` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `onOpenChange` | `(open, details) => void` | | |
+
+### `PreviewCardTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
+| `render` | `ReactElement` | | Render the anchor itself, so it stays a real link |
+
+### `PreviewCardPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | |
+| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | `center` | |
+| `sideOffset` | `number` | `8` | Distance from the link, in pixels |
+| `arrow` | `boolean` | `true` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`PreviewCardArrow` is exported too, for a popup assembled by hand.
+
+## Notes
+
+**It opens on focus as well as on hover**, so someone tabbing through a
+paragraph of links gets the same previews.
+
+**`Escape` closes it** without leaving the link.
+
+**It is portalled.** A card rendered in place is clipped by the paragraph the
+link sits in.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.

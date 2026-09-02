@@ -1,0 +1,106 @@
+# Popover
+
+Source: https://lacodda.github.io/dowel/components/popover
+
+FENCE0 
+
+The component lands in `components/ui/popover.tsx` and is yours to edit.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#popover
+
+The sizes and the four sides, with and without the arrow - in either theme, and in the accent of any product of the line.
+
+## When this and not a Dialog
+
+Both hold interactive content, so the choice is about where the content
+belongs and what it interrupts.
+
+Reach for **Popover** when the content is *about* the control: a filter panel
+on a filter button, a colour picker on a swatch, a short form on an edit
+button. It appears beside its trigger, the page underneath stays live, and
+focus is not trapped.
+
+Reach for **Dialog** when the content is the screen's whole business for the
+moment, or when it is long enough that anchoring it beside a button is absurd.
+
+Reach for **Tooltip** if the content is a *label* — a few words, nothing to
+click. A popover holds things you interact with; a tooltip holds a phrase.
+
+## Usage
+
+```tsx
+<Popover>
+  <PopoverTrigger render={<Button />}>Filters</PopoverTrigger>
+  <PopoverPopup side="bottom" align="start" sideOffset={8}>
+    <PopoverTitle>Filters</PopoverTitle>
+    <PopoverDescription>Narrow the list down.</PopoverDescription>
+    <Button render={<PopoverClose />}>Done</Button>
+  </PopoverPopup>
+</Popover>
+```
+
+`PopoverPopup` renders its own portal, positioner and arrow, so there is
+nothing to arrange around it.
+
+## Positioning
+
+`side` and `align` are a preference, not an instruction. Base UI measures the
+trigger and the panel and flips or shifts the popup when the preferred side
+does not fit, so a popover near the bottom of the window comes out above its
+trigger. That is the behaviour worth having — a popover that stays where it was
+told is a popover half off the screen.
+
+The arrow follows: it is rotated to whichever side the popup actually landed
+on, not the side that was asked for.
+
+## Props
+
+### `Popover` — the root
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `onOpenChange` | `(open, details) => void` | | |
+| `modal` | `boolean \| 'trap-focus'` | `false` | Leave it off unless the panel really is a decision |
+
+### `PopoverPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | |
+| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
+| `align` | `start \| center \| end` | `center` | Alignment along that side |
+| `sideOffset` | `number` | `8` | Distance from the trigger, in pixels |
+| `arrow` | `boolean` | `true` | Draw the notch pointing back at the trigger |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+| Part | | |
+| --- | --- | --- |
+| `PopoverTrigger` | | What opens it, and what the panel is measured against |
+| `PopoverTitle` | | The popup's `aria-labelledby` points at it |
+| `PopoverDescription` | | The popup's `aria-describedby` |
+| `PopoverClose` | | Closes it. `render` to use your own button |
+| `PopoverArrow` | | Exported for a popup assembled by hand |
+
+## Notes
+
+**It is not modal.** What is under the panel stays in the accessibility tree
+and stays clickable. That is right for something beside a control and wrong for
+something the page has to wait on — for that, use Dialog or ConfirmDialog.
+
+**The trigger says whether it is open.** `aria-expanded` is the only way a
+screen reader learns that this button revealed something rather than did
+something, and Base UI puts it there.
+
+**It is portalled.** An anchored popup rendered in place is clipped by the
+first ancestor with `overflow: hidden`, which is where most of them go to die.
+
+**Give it a title.** The popup's accessible name comes from `PopoverTitle`;
+without one a screen reader announces "dialog" and nothing else.
+
+**No colour of its own.** Every class is written in tokens, so the same list is
+correct in both themes and in every product's accent — no `dark:` utilities
+anywhere in it.

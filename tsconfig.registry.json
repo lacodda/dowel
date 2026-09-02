@@ -15,6 +15,8 @@
     // typechecks.
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "playwright.config.ts"
+    "playwright.config.ts",
+    // The type of the one function a gate imports from a generator.
+    "tools/build-llms.d.ts"
   ]
 }

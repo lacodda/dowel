@@ -1,0 +1,82 @@
+# ContextMenu
+
+Source: https://lacodda.github.io/dowel/components/context-menu
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#context-menu
+
+Right click inside the panel to open it.
+
+## Notes
+
+A list of actions opened by a right click, or by a long press on a touch
+screen, over an *area* rather than from a button. The trigger is not a control
+- it is the region the menu belongs to: a row, a canvas, a file tile - so it
+renders a `<div>` and is announced as nothing at all.
+
+That is the only difference from [Menu](/dowel/components/menu/). Everything
+below the root is Menu's own - Base UI re-exports the portal, the positioner,
+the popup and the items from the menu package - so the popup that opens here
+is the same popup, with the same keyboard, the same type-ahead and the same
+submenus. The clothes are imported from Menu rather than copied, which is
+declared in the component's dependency budget: two class lists that started
+identical do not stay that way.
+
+**Use it when** the actions belong to a thing on the screen and there is no
+room for a button beside it - a row in a long table, an item on a canvas.
+**Use Menu instead** when there is a button, because a right click is
+undiscoverable: nobody finds a context menu they were not expecting. A context
+menu should repeat actions that are reachable some other way, not hide them.
+
+It positions against the point that was clicked, so there is no `side` or
+`align` to give it, and no anchor to attach it to from elsewhere. Base UI also
+withholds `openOnHover`, `modal` and `handle` here for the same reason.
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuPopup,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
+
+<ContextMenu>
+  <ContextMenuTrigger render={<tr />}>{row}</ContextMenuTrigger>
+  <ContextMenuPopup>
+    <ContextMenuItem onClick={rename}>{t('rename')}</ContextMenuItem>
+    <ContextMenuItem onClick={duplicate}>{t('duplicate')}</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem tone="danger" onClick={remove}>
+      {t('delete')}
+    </ContextMenuItem>
+  </ContextMenuPopup>
+</ContextMenu>
+```
+
+## Props
+
+### `ContextMenuPopup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `md` | How wide the popup starts |
+| `container` | `Element \| Ref` | document body | Where to portal to |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `ContextMenuItem`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default \| danger` | `default` | `danger` draws the destructive one apart |
+| `disabled` | `boolean` | `false` | Skipped by the keyboard, not only dimmed |
+| `closeOnClick` | `boolean` | `true` | For the item that should leave the menu open |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### The rest
+
+`ContextMenu` (root), `ContextMenuTrigger` (the area), `ContextMenuGroup`,
+`ContextMenuGroupLabel`, `ContextMenuSeparator`, `ContextMenuSub`,
+`ContextMenuSubTrigger`, `ContextMenuCheckboxItem` and
+`ContextMenuCheckboxIndicator` pass their props to Base UI unchanged.

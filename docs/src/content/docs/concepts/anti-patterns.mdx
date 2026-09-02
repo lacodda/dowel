@@ -1,0 +1,137 @@
+---
+title: Anti-patterns
+description: The mistakes that actually get made against this system, each with what happens and what to do instead.
+---
+
+Every one of these has been made — in a product of the line, or in dowel itself.
+They are listed because a rule with no failure attached reads as a preference,
+and preferences get overruled at four in the afternoon.
+
+## Writing a colour down
+
+```tsx
+// ✗
+<div className="bg-[#d9569e]" />
+<div className="border-zinc-800" />
+<div style={{ color: 'rgb(217 86 158)' }} />
+```
+
+**What happens:** the element keeps that colour in the other theme, and in every
+other product. It is also invisible until someone opens the light theme, which
+is usually a screenshot from a user.
+
+**Instead:** name a token. `bg-accent`, `border-line`, `text-dim`. The
+[`dowel/no-raw-color`](/dowel/guides/linting/) rule reports the raw value.
+
+**The exception, and it is a real one:** a translucent black or white is not a
+colour, it is a veil — `bg-black/50` over a photograph, `text-white/70` on a
+cover image. Those are legitimate and the rule allows them. This was found by
+running the rule over a real product before publishing it: twenty-six hits, and
+eleven of them were this.
+
+## Deciding which theme you are in
+
+```tsx
+// ✗
+<div className="bg-white dark:bg-zinc-900" />
+```
+
+**What happens:** two sets of colours to keep in step, and a component that
+cannot be checked against a mockup, because the mockup speaks in one theme and
+the component speaks in two.
+
+**Instead:** one token. `bg-raise` *is* the raised surface, and the theme decides
+what that means. A `dark:` utility in a dowel component means a token is missing
+— that is the bug, not the utility.
+
+## The native `<select>`
+
+```tsx
+// ✗
+<select value={value} onChange={...}>
+```
+
+**What happens:** the browser draws that popup itself, in the operating system's
+chrome, at the operating system's font size. No stylesheet reaches inside it. On
+a screen where every other control is the product's own, it reads as a foreign
+object — and on Windows it is a different foreign object than on macOS.
+
+**Instead:** [`Select`](/dowel/components/select/), which renders
+`<button role="combobox">` and no native element at all. Enforced by
+[`dowel/no-native-select`](/dowel/guides/linting/), which found six violations
+on its first run — all of them in dowel's own stand.
+
+## Hiding a component's parts behind props
+
+```tsx
+// ✗
+<Dialog title="Delete" footer={<Button>OK</Button>} />
+```
+
+**What happens:** the first screen whose dialog needs two buttons and a
+description, or a title with an icon in it, cannot use the component. It gets
+copied and edited, and now there are two dialogs.
+
+**Instead:** expose the parts. `DialogPopup`, `DialogTitle`, `DialogDescription`,
+`DialogActions`. More lines at the call site, and every screen that differs can
+still use the component rather than fork it.
+
+## A word inside a primitive
+
+```tsx
+// ✗
+<button aria-label="Remove">
+```
+
+**What happens:** the product ships English into a Russian interface, and there
+is no way to fix it without editing a file that came from the registry — which
+the next `add` overwrites.
+
+**Instead:** the prop is required. A Chip that can be removed but cannot be named
+does not compile. A [gate](/dowel/guides/gates/) checks for words in the source,
+and it found the debt the day it was written.
+
+## Reinstalling a component to get the newer one
+
+```console
+$ npx shadcn add .../r/button.json   # over a button you have edited
+```
+
+**What happens:** your edits are gone. The registry model has no merge — the
+file became yours the moment it was copied, and `add` writes over it.
+
+**Instead:** treat the copy as yours and port changes deliberately. If you want
+the version you had, install from a [snapshot](/dowel/guides/registry/) into a
+scratch directory and diff by hand.
+
+## Overriding what the theme derived
+
+```css
+/* ✗ */
+:root {
+  --accent-base: #d9569e;
+  --on-accent: #ffffff;
+}
+```
+
+**What happens:** unreadable text on accent-coloured buttons, and it looks fine
+to whoever wrote it because they picked the accent that happens to work.
+
+This is not hypothetical. White on the accent gave **2.7:1** for twelve of the
+line's fourteen products before the derivation was fixed — every one of them
+below the readable threshold, in shipped code.
+
+**Instead:** state `--accent-base` and let `--on-accent` be worked out. It is the
+one calculation this system most exists to do for you. If the greys should stay
+neutral rather than lean towards the product's hue, that is `--neutral-base` —
+also a parameter, also derived from.
+
+## Adding a component without its four parts
+
+**What happens:** a component with no test is one nobody dares change; with no
+page, one nobody finds; with no section on the stand, one nobody can look at in
+the other theme. Each is a small omission and they are permanent.
+
+**Instead:** `pnpm new-component` writes all four, and a test asserts the rule
+for every component in the registry — because rules like this decay, and the
+first exception is always reasonable.

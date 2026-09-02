@@ -1,0 +1,94 @@
+# Installing from the registry
+
+Source: https://lacodda.github.io/dowel/guides/registry
+
+Components are not imported from a package. They are copied into your project
+by `shadcn`, and from that moment they are your files: edit them, delete them,
+rename their props. Nothing upstream reaches back in.
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
+```
+
+That is the whole distribution model, and the two things below make it
+practical: a way to install a working set in one command, and a way to install
+the same thing twice.
+
+## Sets
+
+A product does not begin by wanting a Chip. It begins by wanting a screen, and
+reaches for a dozen primitives over the following week — twelve commands, each
+of them a small decision about whether this one is needed yet.
+
+Three sets cover that opening week. They are read off what the line's products
+actually converged on, not composed here.
+
+| | Installs |
+| --- | --- |
+| **`app`** | Button, Input, Textarea, Panel, Badge, Kbd, Dialog, ConfirmDialog, Drawer, Menu, Select, Combobox, Toast — what [kilna](https://github.com/lacodda/kilna) has after moving over |
+| **`forms`** | Button, Input, Textarea, Select, Combobox, Chip |
+| **`feedback`** | Toast, Alert, Banner, ConfirmDialog |
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
+```
+
+A set carries no files of its own. It resolves into exactly the per-component
+installs you could have typed, so what lands on disk is identical either way,
+and nothing about the set survives in your project — there is no membership to
+leave. Having installed `app`, delete the Drawer you turned out not to need;
+nothing will disagree with you.
+
+The theme is not part of any set. It is imported rather than copied for most
+products, and a set that reinstalled it would overwrite a file you may have
+already made yours:
+
+```css
+@import 'tailwindcss';
+@import 'dowel-ui/theme.css';
+@import 'dowel-ui/accents/kilna.css';
+```
+
+## Pinning a version
+
+`/r/` always serves the newest build. That is the right default — a component
+copied today should be today's component — but it means the URL in your notes
+does not describe what you installed, and a registry is not a package: nothing
+in your lockfile records which version of a Dialog was copied in.
+
+So each minor is also served frozen, at a path that never changes again:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/v0.12/dialog.json
+```
+
+Inside a pinned snapshot the cross-references point into the same snapshot. A
+component that reuses a sibling — Textarea shares the Input's field styling —
+brings in *that* version of the sibling, so a set installed from `v0.12` is the
+set that shipped with v0.12, and not a v0.12 Textarea beside whatever Input is
+current.
+
+Reach for it when the install has to be repeatable: a scaffolding script, a
+migration you want to do in two steps, a second developer setting up the same
+screen next month. For everyday work, use `/r/` and let the copy be current.
+
+:::note
+A pinned path is a promise about the registry, not about your project. Once a
+component is copied in it is your file, and a later `add` of the same component
+overwrites it — including the edits you made. That is the trade the model
+makes: no upstream reaches in, and no upstream merges for you either.
+:::
+
+## Reading the registry
+
+The catalogue lists every item served — the theme, the fourteen product
+accents, every component, and the sets:
+
+- [`/r/registry.json`](https://lacodda.github.io/dowel/r/registry.json) — served alongside the docs
+- `dowel-ui/registry.json` — the same catalogue inside the package, at the
+  version you installed
+
+The second is there for a reader with the package and without the network: a
+namespace registered in `components.json`, a script checking whether a
+component exists before shelling out to the CLI, an agent handed the dependency
+rather than the docs site.
