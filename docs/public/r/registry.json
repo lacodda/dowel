@@ -222,7 +222,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -241,7 +241,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -260,7 +260,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -280,7 +280,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -299,7 +299,7 @@
       "description": "The interesting part is the words. A checkbox on its own is a nine-pixel target that says nothing; wired to a label it is the whole row, and the row is what a finger and a pointer both aim at. So the label is part of the component rather than something a caller remembers to add - the commonest bug in a hand-rolled checkbox is a `<label>` that is next to the input instead of tied to it, which looks identical and does nothing.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -318,7 +318,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -338,7 +338,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -361,7 +361,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -384,7 +384,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -403,7 +403,7 @@
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -423,7 +423,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -443,7 +443,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -463,7 +463,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -481,7 +481,7 @@
       "title": "Duration-field",
       "description": "The alternative is what products keep building: two number boxes labelled \"hours\" and \"minutes\", which means two tab stops, two validations, and a reader who has to divide 90 minutes in their head before typing. Here they write `1h 30m`, or `90m`, or `1.5h`, and it means the same thing.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -502,7 +502,7 @@
       "description": "Every form is the same four parts repeated: a name for the control, the control, sometimes a hint, and sometimes an error. Written by hand each time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no screen reader mentions, the error appears in red and is announced by nothing at all. This is that arrangement, once.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -520,7 +520,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -538,7 +538,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -558,7 +558,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -577,7 +577,7 @@
       "description": "A number typed into a text input is a string that happens to look like a number, and every product then writes the same four fixes: strip the letters, clamp to a range, round to a step, and decide what an empty box means. This is those four, once, plus the stepper - because a value with a small range is faster nudged than typed.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -598,7 +598,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -616,7 +616,7 @@
       "title": "Password-field",
       "description": "The reveal is the whole component, and it is not a convenience. A masked field is the only one in a form where a typo cannot be seen, so people either paste (fine) or type slowly and get it wrong anyway; the toggle is what turns an unverifiable field into a checkable one, and it is why long passphrases became usable at all.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -638,7 +638,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -658,7 +658,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -678,7 +678,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -696,7 +696,7 @@
       "title": "Rating-scale",
       "description": "Generalised from kilna, where it is how a work is scored on each of its axes. The shape is a row of marks rather than stars: stars carry a meaning of their own - a review, a public verdict - and this is as often \"how hard was this\" or \"how finished is it\" as it is \"how good\".",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -714,7 +714,7 @@
       "title": "Search-field",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -738,7 +738,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -775,7 +775,7 @@
       "description": "The case for it over a NumberField is that the number does not matter much: a volume, an opacity, a weight in a search filter. Where the exact figure does matter, a slider is a worse field with more pixels - it cannot be typed into, it cannot be pasted into, and it has no state for \"empty\".",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -794,7 +794,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -813,7 +813,7 @@
       "description": "The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair. A checkbox is an answer collected now and submitted later, with the rest of the form; a switch is a setting that applies the moment it moves. Put a switch in a form with a Save button and the reader cannot tell whether anything happened - they flipped it, and nothing said so.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -831,7 +831,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -853,7 +853,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -873,7 +873,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -891,7 +891,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.17.0"
+        "dowel-ui@^0.17.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -937,14 +937,17 @@
         "https://lacodda.github.io/dowel/r/checkbox.json",
         "https://lacodda.github.io/dowel/r/chip.json",
         "https://lacodda.github.io/dowel/r/combobox.json",
+        "https://lacodda.github.io/dowel/r/duration-field.json",
         "https://lacodda.github.io/dowel/r/field.json",
         "https://lacodda.github.io/dowel/r/input.json",
+        "https://lacodda.github.io/dowel/r/number-field.json",
+        "https://lacodda.github.io/dowel/r/password-field.json",
         "https://lacodda.github.io/dowel/r/radio-group.json",
         "https://lacodda.github.io/dowel/r/select.json",
         "https://lacodda.github.io/dowel/r/switch.json",
         "https://lacodda.github.io/dowel/r/textarea.json"
       ],
-      "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to."
+      "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to. Slider and RatingScale are not in this set - install them where the question calls for one."
     },
     {
       "extends": "none",

@@ -262,6 +262,9 @@ const presets = [
       'button',
       'input',
       'textarea',
+      'number-field',
+      'duration-field',
+      'password-field',
       'field',
       'checkbox',
       'radio-group',
@@ -270,7 +273,12 @@ const presets = [
       'combobox',
       'chip',
     ],
-    docs: 'Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to.',
+    /* Slider and RatingScale are deliberately not here. A set is what a
+     * product starts a form with, not everything that could go in one: these
+     * three are fields in the same sense as Input and Select - somebody types
+     * a value and it is saved - while a slider and a rating are controls for
+     * a particular kind of question, reached for on purpose. */
+    docs: 'Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to. Slider and RatingScale are not in this set - install them where the question calls for one.',
   },
   {
     name: 'feedback',

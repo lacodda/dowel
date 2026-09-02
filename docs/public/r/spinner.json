@@ -6,7 +6,7 @@
   "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.17.0"
+    "dowel-ui@^0.17.1"
   ],
   "registryDependencies": [],
   "files": [

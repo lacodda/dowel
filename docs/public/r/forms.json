@@ -10,12 +10,15 @@
     "https://lacodda.github.io/dowel/r/checkbox.json",
     "https://lacodda.github.io/dowel/r/chip.json",
     "https://lacodda.github.io/dowel/r/combobox.json",
+    "https://lacodda.github.io/dowel/r/duration-field.json",
     "https://lacodda.github.io/dowel/r/field.json",
     "https://lacodda.github.io/dowel/r/input.json",
+    "https://lacodda.github.io/dowel/r/number-field.json",
+    "https://lacodda.github.io/dowel/r/password-field.json",
     "https://lacodda.github.io/dowel/r/radio-group.json",
     "https://lacodda.github.io/dowel/r/select.json",
     "https://lacodda.github.io/dowel/r/switch.json",
     "https://lacodda.github.io/dowel/r/textarea.json"
   ],
-  "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to."
+  "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to. Slider and RatingScale are not in this set - install them where the question calls for one."
 }
