@@ -1,0 +1,81 @@
+---
+title: Checkbox
+description: A box, its tick, and the words next to it - including the dash that means "some of these".
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/checkbox.json
+```
+
+<Stand component="checkbox" caption="Unchecked, checked, indeterminate and disabled, and a group with a parent box." />
+
+## Notes
+
+**The words are part of the component.** A checkbox on its own is a nine-pixel
+target that says nothing; tied to its label it is the whole row, which is what
+a finger and a pointer both aim at. The commonest bug in a hand-rolled checkbox
+is a `<label>` sitting *next to* the input rather than tied to it — identical
+on screen, and it does nothing.
+
+```tsx
+<Checkbox>Remember me</Checkbox>
+```
+
+Leave the words out only where the row already names it — a table cell — and
+then say so:
+
+```tsx
+<Checkbox aria-label="Select row" />
+```
+
+**The box is drawn rather than native.** `appearance: none` on a real
+`<input type="checkbox">` is the alternative, and it takes the indeterminate
+state with it: the dash is not something the input can be told to draw.
+
+**`indeterminate` is a state, not a third value.** It means "some of the things
+below are checked"; clicking still means check-all. A tri-state value would
+make every caller handle a case that does not exist. It is announced as
+`aria-checked="mixed"`, because a dash on its own is nothing to a screen
+reader.
+
+**`CheckboxGroup` exists for the parent box.** Given `allValues`, it works out
+whether the parent is checked, unchecked or somewhere between, and clicking it
+sets all of them — the part that goes wrong when it is written by hand.
+
+```tsx
+<CheckboxGroup allValues={['a', 'b']} defaultValue={['a']}>
+  <Checkbox parent aria-label="All" />
+  <Checkbox name="a" value="a">Apple</Checkbox>
+  <Checkbox name="b" value="b">Pear</Checkbox>
+</CheckboxGroup>
+```
+
+**Checkbox or [Switch](/dowel/components/switch/)?** If there is a Save button,
+it is a checkbox: an answer collected now and submitted later. If the change is
+the action, it is a switch.
+
+## Props
+
+### Checkbox
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words. Without them, give `aria-label` |
+| `checked` | `boolean` | | Controlled |
+| `defaultChecked` | `boolean` | | Uncontrolled |
+| `onCheckedChange` | `(checked) => void` | | |
+| `indeterminate` | `boolean` | `false` | Draws the dash, announces `mixed` |
+| `parent` | `boolean` | `false` | Stands for the whole group |
+| `disabled` | `boolean` | `false` | |
+| `name`, `value` | `string` | | For a form and for the group |
+
+### CheckboxGroup
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string[]` | | Controlled |
+| `defaultValue` | `string[]` | | Uncontrolled |
+| `onValueChange` | `(value) => void` | | |
+| `allValues` | `string[]` | | What makes a parent box work |

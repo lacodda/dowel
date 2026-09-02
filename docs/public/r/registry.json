@@ -293,6 +293,25 @@
       ]
     },
     {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "The interesting part is the words. A checkbox on its own is a nine-pixel target that says nothing; wired to a label it is the whole row, and the row is what a finger and a pointer both aim at. So the label is part of the component rather than something a caller remembers to add - the commonest bug in a hand-rolled checkbox is a `<label>` that is next to the input instead of tied to it, which looks identical and does nothing.",
+      "dependencies": [
+        "@base-ui/react",
+        "dowel-ui@^0.15.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/checkbox.tsx",
+          "target": "@ui/checkbox.tsx",
+          "type": "registry:ui",
+          "content": "import type { ReactNode } from 'react'\nimport { Checkbox as Base } from '@base-ui/react/checkbox'\nimport { CheckboxGroup as BaseGroup } from '@base-ui/react/checkbox-group'\nimport { cn } from 'dowel-ui'\n\n/*\n * Checkbox - a box, its tick, and the words next to it.\n *\n * The interesting part is the words. A checkbox on its own is a nine-pixel\n * target that says nothing; wired to a label it is the whole row, and the row\n * is what a finger and a pointer both aim at. So the label is part of the\n * component rather than something a caller remembers to add - the commonest\n * bug in a hand-rolled checkbox is a `<label>` that is next to the input\n * instead of tied to it, which looks identical and does nothing.\n *\n * The box is drawn rather than native. `appearance: none` on a real\n * `<input type=checkbox>` is the other way, and it takes the indeterminate\n * state with it: the dash is not a character the input can be told to draw.\n * Base UI renders a button with the right role and state, and the tick and\n * the dash are ours, in the accent, sized to the text next to them.\n *\n * `indeterminate` is a real state, not a third value: it says \"some of the\n * things below are checked\", and clicking still means check-all. A tri-state\n * value would make every caller handle a case that does not exist.\n */\n\nexport interface CheckboxProps {\n  /** The words next to the box. Omit only for a checkbox in a table cell,\n   * and then give `aria-label` instead. */\n  children?: ReactNode\n  checked?: boolean\n  defaultChecked?: boolean\n  onCheckedChange?: (checked: boolean) => void\n  /** Some but not all of what this stands for is checked. Draws a dash;\n   * clicking still checks everything. */\n  indeterminate?: boolean\n  /** This is the box that stands for the whole group. Inside a\n   * `CheckboxGroup` with `allValues`, its state follows the children - checked,\n   * unchecked, or the dash in between - and clicking it sets all of them.\n   * Working that out by hand is where the indeterminate state usually goes\n   * wrong, so the group does it. */\n  parent?: boolean\n  disabled?: boolean\n  required?: boolean\n  name?: string\n  value?: string\n  'aria-label'?: string\n  className?: string\n}\n\nexport function Checkbox({\n  children,\n  indeterminate = false,\n  className,\n  ...props\n}: CheckboxProps) {\n  const box = (\n    <Base.Root\n      indeterminate={indeterminate}\n      className={cn(\n        // `group` is what the two marks below hang their state off: the\n        // indeterminate one belongs to the element, not to a prop.\n        'group flex size-4 shrink-0 items-center justify-center rounded-xs border border-line-2 bg-transparent',\n        'transition-colors',\n        'hover:border-accent',\n        'data-[checked]:border-accent data-[checked]:bg-accent',\n        'data-[indeterminate]:border-accent data-[indeterminate]:bg-accent',\n        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n        'disabled:cursor-not-allowed disabled:opacity-50',\n        // Without a label the box is the whole control, so the caller's\n        // classes land on it.\n        children === undefined && className,\n      )}\n      {...props}\n    >\n      {/* Both marks are rendered and the state picks one, rather than the\n        * `indeterminate` prop picking it. A parent checkbox never receives\n        * that prop - the group works its state out from the children and says\n        * so on the element - so choosing in JavaScript would leave the parent\n        * drawing a tick while announcing `mixed`. */}\n      <Base.Indicator\n        className=\"flex text-on-accent group-data-[indeterminate]:hidden\"\n        render={<span />}\n      >\n        <svg viewBox=\"0 0 16 16\" className=\"size-3\" aria-hidden>\n          <path\n            d=\"M3.5 8.5l3 3 6-6.5\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"2.5\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n          />\n        </svg>\n      </Base.Indicator>\n      <span className=\"hidden text-on-accent group-data-[indeterminate]:flex\" aria-hidden>\n        <svg viewBox=\"0 0 16 16\" className=\"size-3\">\n          <path d=\"M4 8h8\" stroke=\"currentColor\" strokeWidth=\"2.5\" strokeLinecap=\"round\" />\n        </svg>\n      </span>\n    </Base.Root>\n  )\n\n  if (children === undefined) return box\n\n  return (\n    <label\n      className={cn(\n        'flex cursor-pointer items-center gap-2 text-sm text-text',\n        'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50',\n        className,\n      )}\n    >\n      {box}\n      {children}\n    </label>\n  )\n}\n\n/*\n * A group of checkboxes that share a name and a value.\n *\n * It exists for the parent checkbox: given `allValues`, Base UI works out\n * whether the parent is checked, unchecked or indeterminate, and clicking it\n * sets all of them. Doing that by hand is where the indeterminate state\n * usually goes wrong.\n */\nexport interface CheckboxGroupProps {\n  children: ReactNode\n  value?: string[]\n  defaultValue?: string[]\n  onValueChange?: (value: string[]) => void\n  /** Every value in the group, which is what makes a parent checkbox work. */\n  allValues?: string[]\n  disabled?: boolean\n  className?: string\n}\n\nexport function CheckboxGroup({ children, className, ...props }: CheckboxGroupProps) {\n  return (\n    <BaseGroup className={cn('flex flex-col gap-2', className)} {...props}>\n      {children}\n    </BaseGroup>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "chip",
       "type": "registry:ui",
       "title": "Chip",
@@ -457,6 +476,25 @@
       ]
     },
     {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Every form is the same four parts repeated: a name for the control, the control, sometimes a hint, and sometimes an error. Written by hand each time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no screen reader mentions, the error appears in red and is announced by nothing at all. This is that arrangement, once.",
+      "dependencies": [
+        "@base-ui/react",
+        "dowel-ui@^0.15.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/field.tsx",
+          "target": "@ui/field.tsx",
+          "type": "registry:ui",
+          "content": "import type { ReactElement, ReactNode } from 'react'\nimport { Field as Base } from '@base-ui/react/field'\nimport { cn } from 'dowel-ui'\n\n/*\n * Field - the label, the control, and what the form has to say about it.\n *\n * Every form is the same four parts repeated: a name for the control, the\n * control, sometimes a hint, and sometimes an error. Written by hand each\n * time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no\n * screen reader mentions, the error appears in red and is announced by\n * nothing at all. This is that arrangement, once.\n *\n * The wiring is the point, and Base UI does it: the label points at the\n * control, the description and the error are named by `aria-describedby`, and\n * the control is marked invalid while an error is showing. None of that is\n * visible when it works, which is exactly why a product stops doing it.\n *\n * `error` is a string this is given, not a rule this enforces. dowel has no\n * opinion about where the string came from - Base UI's own `validate`, a\n * schema, react-hook-form, or a server that just said no - because a design\n * system that picked a form library would be choosing for products that\n * already chose. The one thing it insists on is that an error, once it\n * exists, is announced and points at the field it belongs to.\n *\n * The label is always rendered. A field whose name is only a placeholder\n * loses that name the moment someone types, and a placeholder is not a label\n * to anything that reads the page aloud; `labelHidden` takes it off the\n * screen and leaves it in the accessibility tree.\n */\n\nexport interface FieldProps {\n  /** What the control is called. Always rendered; `labelHidden` only takes it\n   * off the screen. */\n  label: ReactNode\n  /** The control itself - Input, Textarea, Select, Checkbox, anything.\n   *\n   * A single element rather than arbitrary nodes, because it is handed to\n   * Base UI to carry the field's id and its `aria-*` wiring. Two children, or\n   * a bare string, would leave the label naming nothing. */\n  children: ReactElement\n  /** A hint under the control. Hidden while an error is showing: two lines of\n   * small print under one field is one line too many, and the error is the\n   * one that matters. */\n  help?: ReactNode\n  /** What is wrong, if anything. Its presence is what marks the control\n   * invalid - there is no separate `invalid` prop to keep in step. */\n  error?: ReactNode\n  /** Keep the label for screen readers but take it off the screen. For a\n   * field whose meaning is obvious in context - a search box in a toolbar. */\n  labelHidden?: boolean\n  className?: string\n  /** Marks the field required, which is a statement about the form rather\n   * than about validation: the label gets the mark a reader looks for. */\n  required?: boolean\n  /** The control's `name`, forwarded so a `Form` can attach a server error to\n   * this field by name. */\n  name?: string\n  disabled?: boolean\n}\n\nexport function Field({\n  label,\n  children,\n  help,\n  error,\n  labelHidden = false,\n  className,\n  required = false,\n  name,\n  disabled = false,\n}: FieldProps) {\n  const invalid = error !== undefined && error !== null && error !== false\n\n  return (\n    <Base.Root\n      name={name}\n      disabled={disabled}\n      // Base UI marks the control invalid from its own validity state; this\n      // says so for an error that arrived from anywhere else.\n      invalid={invalid || undefined}\n      className={cn('flex flex-col gap-1.5', className)}\n    >\n      <Base.Label\n        className={cn(\n          'text-2xs font-medium uppercase tracking-caption text-faint',\n          // Off the screen, still in the accessibility tree. Not\n          // `display: none`, which would take it out of both.\n          labelHidden && 'sr-only',\n        )}\n      >\n        {label}\n        {required && (\n          <span aria-hidden className=\"ml-0.5 text-bad\">\n            *\n          </span>\n        )}\n      </Base.Label>\n\n      {/* The control is handed to Base UI rather than merely nested inside\n        * it. This is the whole component: a plain child renders a label whose\n        * `for` points at an id nothing carries, so the label looks wired and\n        * names nothing - which is exactly the bug this exists to prevent, and\n        * it is invisible in a screenshot. `render` gives the child the id,\n        * `aria-labelledby` and `aria-describedby` instead. */}\n      <Base.Control render={children} />\n\n      {/* The error wins the one line under the control. `match` is not used:\n        * the string is already the decision - this renders whatever it was\n        * handed rather than asking the browser what is wrong. */}\n      {invalid ? (\n        <Base.Error className=\"text-xs text-bad\" match>\n          {error}\n        </Base.Error>\n      ) : (\n        help !== undefined && <Base.Description className=\"text-xs text-dim\">{help}</Base.Description>\n      )}\n    </Base.Root>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
@@ -572,6 +610,26 @@
       ]
     },
     {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio-group",
+      "description": "The rule for reaching for this rather than a Select is whether the options are worth the space: a handful of short choices read faster laid out than hidden behind a trigger, and each one becomes a target rather than a step.",
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "dowel-ui@^0.15.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/radio-group.tsx",
+          "target": "@ui/radio-group.tsx",
+          "type": "registry:ui",
+          "content": "import type { ReactNode } from 'react'\nimport { Radio as Base } from '@base-ui/react/radio'\nimport { RadioGroup as BaseGroup } from '@base-ui/react/radio-group'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * RadioGroup - one of a few, all of them visible.\n *\n * The rule for reaching for this rather than a Select is whether the options\n * are worth the space: a handful of short choices read faster laid out than\n * hidden behind a trigger, and each one becomes a target rather than a step.\n * Past about five, or when the labels are long, a Select is the honest\n * choice - this is not a Select with more pixels.\n *\n * The group is the control, not the button. That is what the arrow keys\n * follow, what a screen reader announces as one thing with a position in it,\n * and why `Radio` on its own is not exported: a radio outside a group is a\n * checkbox that cannot be unchecked.\n *\n * The dot is drawn rather than native, for the same reason as the tick in\n * Checkbox: a real `<input type=radio>` cannot be styled without\n * `appearance: none`, and after that the dot has to be drawn anyway.\n */\n\nexport interface RadioGroupProps {\n  children: ReactNode\n  value?: string\n  defaultValue?: string\n  onValueChange?: (value: string) => void\n  disabled?: boolean\n  readOnly?: boolean\n  required?: boolean\n  name?: string\n  /** Lay the options out in a row. For two or three short ones; a column is\n   * the default because it stays readable as labels grow. */\n  orientation?: VariantProps<typeof radioGroupVariants>['orientation']\n  'aria-label'?: string\n  className?: string\n}\n\n/* The layout lives in `cva` rather than in a destructured default, which is\n * how every other primitive here states one. It also keeps the word out of\n * the component's signature: a string default in a props list is how a\n * primitive ends up shipping English, and the gate that watches for that\n * cannot tell an enum value from a label. */\nexport const radioGroupVariants = cva('flex', {\n  variants: {\n    orientation: {\n      vertical: 'flex-col gap-2',\n      horizontal: 'flex-row flex-wrap gap-4',\n    },\n  },\n  defaultVariants: { orientation: 'vertical' },\n})\n\nexport function RadioGroup({ children, orientation, className, ...props }: RadioGroupProps) {\n  return (\n    <BaseGroup className={cn(radioGroupVariants({ orientation }), className)} {...props}>\n      {children}\n    </BaseGroup>\n  )\n}\n\nexport interface RadioProps {\n  value: string\n  /** The words next to the dot. */\n  children?: ReactNode\n  disabled?: boolean\n  className?: string\n}\n\nexport function Radio({ value, children, disabled, className }: RadioProps) {\n  const dot = (\n    <Base.Root\n      value={value}\n      disabled={disabled}\n      className={cn(\n        'flex size-4 shrink-0 items-center justify-center rounded-full border border-line-2 bg-transparent',\n        'transition-colors',\n        'hover:border-accent',\n        'data-[checked]:border-accent',\n        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n        'disabled:cursor-not-allowed disabled:opacity-50',\n        children === undefined && className,\n      )}\n    >\n      <Base.Indicator className=\"size-2 rounded-full bg-accent\" render={<span />} />\n    </Base.Root>\n  )\n\n  if (children === undefined) return dot\n\n  return (\n    <label\n      className={cn(\n        'flex cursor-pointer items-center gap-2 text-sm text-text',\n        'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50',\n        className,\n      )}\n    >\n      {dot}\n      {children}\n    </label>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "search-field",
       "type": "registry:ui",
       "title": "Search-field",
@@ -647,6 +705,25 @@
           "target": "@ui/spinner.tsx",
           "type": "registry:ui",
           "content": "import type { HTMLAttributes } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * Spinner.\n *\n * Something is happening and the answer has not arrived. It carries no text of\n * its own - what is loading is the product's word, not the system's - but it\n * does have to say *something* to a screen reader, or a page that is busy is\n * silently identical to a page that is empty.\n *\n * Under `prefers-reduced-motion` the theme stops the animation. That is not a\n * detail: for some readers a spinning thing is not decoration but a symptom.\n * A stopped spinner still says \"busy\" through `role`, which is the part that\n * carried the meaning all along.\n */\nexport const spinnerVariants = cva('inline-block animate-spin rounded-full border-2 border-current', {\n  variants: {\n    size: {\n      sm: 'size-3.5 border-[1.5px]',\n      md: 'size-4',\n      lg: 'size-6',\n    },\n    tone: {\n      /* Follows the text it sits in. */\n      current: 'text-current',\n      dim: 'text-dim',\n      accent: 'text-accent',\n    },\n  },\n  defaultVariants: { size: 'md', tone: 'current' },\n})\n\nexport interface SpinnerProps\n  extends HTMLAttributes<HTMLSpanElement>,\n    VariantProps<typeof spinnerVariants> {\n  /** What is being waited for, for a screen reader. The product's word. */\n  label?: string\n}\n\nexport function Spinner({ size, tone, label, className, ...props }: SpinnerProps) {\n  return (\n    <span role=\"status\" aria-live=\"polite\" className={cn('inline-flex items-center gap-2', className)} {...props}>\n      <span\n        // The gap in the ring is what makes the rotation visible.\n        className={cn(spinnerVariants({ size, tone }), 'border-r-transparent')}\n        aria-hidden\n      />\n      {label && <span className=\"sr-only\">{label}</span>}\n    </span>\n  )\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair. A checkbox is an answer collected now and submitted later, with the rest of the form; a switch is a setting that applies the moment it moves. Put a switch in a form with a Save button and the reader cannot tell whether anything happened - they flipped it, and nothing said so.",
+      "dependencies": [
+        "@base-ui/react",
+        "dowel-ui@^0.15.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/switch.tsx",
+          "target": "@ui/switch.tsx",
+          "type": "registry:ui",
+          "content": "import type { ReactNode } from 'react'\nimport { Switch as Base } from '@base-ui/react/switch'\nimport { cn } from 'dowel-ui'\n\n/*\n * Switch - a setting that takes effect when you flip it.\n *\n * The difference from Checkbox is not how it looks, and getting it wrong is\n * the commonest mistake in the pair. A checkbox is an answer collected now\n * and submitted later, with the rest of the form; a switch is a setting that\n * applies the moment it moves. Put a switch in a form with a Save button and\n * the reader cannot tell whether anything happened - they flipped it, and\n * nothing said so.\n *\n * The rule, then: if there is a Save button, it is a Checkbox. If the change\n * is the action, it is a Switch.\n *\n * The thumb slides with `--duration-quick`, and the track carries the accent\n * when on - the only colour in the control, so a row of settings reads as a\n * column of on-and-off rather than a field of decoration. Under reduced\n * motion the theme drops the transition; the position still changes, which is\n * the part that carries the meaning.\n */\n\nexport interface SwitchProps {\n  /** The words next to the switch. A switch with no label is a light with no\n   * caption - give `aria-label` if the meaning is genuinely in the context. */\n  children?: ReactNode\n  checked?: boolean\n  defaultChecked?: boolean\n  onCheckedChange?: (checked: boolean) => void\n  disabled?: boolean\n  required?: boolean\n  readOnly?: boolean\n  name?: string\n  'aria-label'?: string\n  className?: string\n}\n\nexport function Switch({ children, className, ...props }: SwitchProps) {\n  const control = (\n    <Base.Root\n      className={cn(\n        'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-line-2 bg-soft',\n        'transition-colors duration-quick ease-out',\n        'hover:border-accent',\n        'data-[checked]:border-accent data-[checked]:bg-accent',\n        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n        'disabled:cursor-not-allowed disabled:opacity-50',\n        children === undefined && className,\n      )}\n      {...props}\n    >\n      <Base.Thumb\n        className={cn(\n          'size-3.5 rounded-full bg-dim shadow-lift',\n          'transition-[transform,background-color] duration-quick ease-out',\n          'translate-x-0.5 data-[checked]:translate-x-[1.125rem]',\n          'data-[checked]:bg-on-accent',\n        )}\n      />\n    </Base.Root>\n  )\n\n  if (children === undefined) return control\n\n  return (\n    <label\n      className={cn(\n        'flex cursor-pointer items-center gap-2.5 text-sm text-text',\n        'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50',\n        className,\n      )}\n    >\n      {control}\n      {children}\n    </label>\n  )\n}\n"
         }
       ]
     },
@@ -759,13 +836,17 @@
       "description": "What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.",
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json",
+        "https://lacodda.github.io/dowel/r/checkbox.json",
         "https://lacodda.github.io/dowel/r/chip.json",
         "https://lacodda.github.io/dowel/r/combobox.json",
+        "https://lacodda.github.io/dowel/r/field.json",
         "https://lacodda.github.io/dowel/r/input.json",
+        "https://lacodda.github.io/dowel/r/radio-group.json",
         "https://lacodda.github.io/dowel/r/select.json",
+        "https://lacodda.github.io/dowel/r/switch.json",
         "https://lacodda.github.io/dowel/r/textarea.json"
       ],
-      "docs": "Field, Checkbox, RadioGroup and Switch join this set in v0.16."
+      "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to."
     },
     {
       "extends": "none",

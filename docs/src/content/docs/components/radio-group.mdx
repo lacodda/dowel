@@ -1,0 +1,69 @@
+---
+title: RadioGroup
+description: One of a few, all of them visible - the group is the control, not the button.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/radio-group.json
+```
+
+<Stand component="radio-group" caption="A column of options, a row of them, and a disabled group." />
+
+## Notes
+
+**Reach for this when the options are worth the space.** A handful of short
+choices read faster laid out than hidden behind a trigger, and each one becomes
+a target rather than a step. Past about five, or when the labels are long, a
+[Select](/dowel/components/select/) is the honest choice — this is not a Select
+with more pixels.
+
+```tsx
+<RadioGroup aria-label="Ripeness" defaultValue="ripe">
+  <Radio value="green">Green</Radio>
+  <Radio value="ripe">Ripe</Radio>
+  <Radio value="soft">Soft</Radio>
+</RadioGroup>
+```
+
+**The group is the control.** That is what the arrow keys move within, what a
+screen reader announces as one thing with a position in it, and why the group
+takes the value rather than each button. `Radio` outside a group is a checkbox
+that cannot be unchecked, which is why it is only useful inside one.
+
+**One tab stop, not three.** Tab reaches the group and the arrows move the
+choice — the behaviour a native radio group has and a row of styled buttons
+does not.
+
+**`orientation="horizontal"` for two or three short options.** A column is the
+default because it stays readable as labels grow.
+
+Name the group. It is the question the options answer, and without it a reader
+hears three values and no subject:
+
+```tsx
+<RadioGroup aria-label="Ripeness">        {/* or */}
+<Field label="Ripeness"><RadioGroup>...   {/* named by the field */}
+```
+
+## Props
+
+### RadioGroup
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Controlled |
+| `defaultValue` | `string` | | Uncontrolled |
+| `onValueChange` | `(value) => void` | | |
+| `orientation` | `vertical` \| `horizontal` | `vertical` | |
+| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
+| `name` | `string` | | For a form |
+
+### Radio
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Required |
+| `children` | `ReactNode` | | The words next to the dot |
+| `disabled` | `boolean` | `false` | |

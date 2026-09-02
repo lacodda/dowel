@@ -94,12 +94,23 @@ describe('what a primitive drags in', () => {
     // literally Menu's, so two `cva` calls would only drift apart.
     'context-menu': ['@base-ui/react', 'menu'],
     copyable: [],
+    // The whole component is the wiring Base UI does: the label's `for`, the
+    // `aria-describedby` for hint and error, and the invalid state. Without
+    // it this would be a `<div>` with a `<label>` beside it, which is the bug
+    // it exists to prevent.
+    field: ['@base-ui/react'],
+    // The tick and the dash are drawn here; Base UI carries the role, the
+    // keyboard and the indeterminate state a native input cannot express.
+    checkbox: ['@base-ui/react'],
     dialog: ['@base-ui/react', 'class-variance-authority'],
     drawer: ['@base-ui/react', 'class-variance-authority'],
     input: [],
     kbd: [],
     menu: ['@base-ui/react', 'class-variance-authority'],
     panel: ['class-variance-authority'],
+    // The group is the control - one tab stop, arrows within it - and that is
+    // Base UI's roving focus rather than anything drawn here.
+    'radio-group': ['@base-ui/react', 'class-variance-authority'],
     popover: ['@base-ui/react', 'class-variance-authority'],
     // The trigger is a field, so it wears Input's field clothes: a select and
     // a text input sit next to each other in every form there is.
@@ -112,6 +123,9 @@ describe('what a primitive drags in', () => {
     // No clothes at all: a hook and two predicates, so it drags in nothing.
     shortcut: [],
     spinner: ['class-variance-authority'],
+    // The role is the point: `switch` rather than `checkbox`, which is what
+    // tells a reader the change takes effect now.
+    switch: ['@base-ui/react'],
     // Shares Input's field clothes, so a field and a multi-line field cannot
     // come out looking like two different controls.
     textarea: ['input'],

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "type": "registry:ui",
+  "title": "Switch",
+  "description": "The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair. A checkbox is an answer collected now and submitted later, with the rest of the form; a switch is a setting that applies the moment it moves. Put a switch in a form with a Save button and the reader cannot tell whether anything happened - they flipped it, and nothing said so.",
+  "dependencies": [
+    "@base-ui/react",
+    "dowel-ui@^0.15.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/switch.tsx",
+      "target": "@ui/switch.tsx",
+      "type": "registry:ui",
+      "content": "import type { ReactNode } from 'react'\nimport { Switch as Base } from '@base-ui/react/switch'\nimport { cn } from 'dowel-ui'\n\n/*\n * Switch - a setting that takes effect when you flip it.\n *\n * The difference from Checkbox is not how it looks, and getting it wrong is\n * the commonest mistake in the pair. A checkbox is an answer collected now\n * and submitted later, with the rest of the form; a switch is a setting that\n * applies the moment it moves. Put a switch in a form with a Save button and\n * the reader cannot tell whether anything happened - they flipped it, and\n * nothing said so.\n *\n * The rule, then: if there is a Save button, it is a Checkbox. If the change\n * is the action, it is a Switch.\n *\n * The thumb slides with `--duration-quick`, and the track carries the accent\n * when on - the only colour in the control, so a row of settings reads as a\n * column of on-and-off rather than a field of decoration. Under reduced\n * motion the theme drops the transition; the position still changes, which is\n * the part that carries the meaning.\n */\n\nexport interface SwitchProps {\n  /** The words next to the switch. A switch with no label is a light with no\n   * caption - give `aria-label` if the meaning is genuinely in the context. */\n  children?: ReactNode\n  checked?: boolean\n  defaultChecked?: boolean\n  onCheckedChange?: (checked: boolean) => void\n  disabled?: boolean\n  required?: boolean\n  readOnly?: boolean\n  name?: string\n  'aria-label'?: string\n  className?: string\n}\n\nexport function Switch({ children, className, ...props }: SwitchProps) {\n  const control = (\n    <Base.Root\n      className={cn(\n        'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-line-2 bg-soft',\n        'transition-colors duration-quick ease-out',\n        'hover:border-accent',\n        'data-[checked]:border-accent data-[checked]:bg-accent',\n        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n        'disabled:cursor-not-allowed disabled:opacity-50',\n        children === undefined && className,\n      )}\n      {...props}\n    >\n      <Base.Thumb\n        className={cn(\n          'size-3.5 rounded-full bg-dim shadow-lift',\n          'transition-[transform,background-color] duration-quick ease-out',\n          'translate-x-0.5 data-[checked]:translate-x-[1.125rem]',\n          'data-[checked]:bg-on-accent',\n        )}\n      />\n    </Base.Root>\n  )\n\n  if (children === undefined) return control\n\n  return (\n    <label\n      className={cn(\n        'flex cursor-pointer items-center gap-2.5 text-sm text-text',\n        'has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50',\n        className,\n      )}\n    >\n      {control}\n      {children}\n    </label>\n  )\n}\n"
+    }
+  ]
+}

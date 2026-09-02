@@ -61,6 +61,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../../registry/ui/drawer'
+import { Checkbox, CheckboxGroup } from '../../registry/ui/checkbox'
+import { Field } from '../../registry/ui/field'
 import { Input } from '../../registry/ui/input'
 import { Kbd } from '../../registry/ui/kbd'
 import {
@@ -92,6 +94,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../registry/ui/select'
+import { Radio, RadioGroup } from '../../registry/ui/radio-group'
 import { SearchField } from '../../registry/ui/search-field'
 import { useShortcut } from '../../registry/ui/shortcut'
 import { Spinner } from '../../registry/ui/spinner'
@@ -105,6 +108,7 @@ import {
   ToastViewport,
   useToastManager,
 } from '../../registry/ui/toast'
+import { Switch } from '../../registry/ui/switch'
 import { Textarea } from '../../registry/ui/textarea'
 import {
   Tooltip,
@@ -133,6 +137,15 @@ const sections = [
   { id: 'button', title: 'Button', docs: '/dowel/components/button/', render: () => <ButtonSection /> },
   { id: 'input', title: 'Input', docs: '/dowel/components/input/', render: () => <InputSection /> },
   { id: 'textarea', title: 'Textarea', docs: '/dowel/components/textarea/', render: () => <TextareaSection /> },
+  { id: 'field', title: 'Field', docs: '/dowel/components/field/', render: () => <FieldSection /> },
+  { id: 'checkbox', title: 'Checkbox', docs: '/dowel/components/checkbox/', render: () => <CheckboxSection /> },
+  {
+    id: 'radio-group',
+    title: 'RadioGroup',
+    docs: '/dowel/components/radio-group/',
+    render: () => <RadioGroupSection />,
+  },
+  { id: 'switch', title: 'Switch', docs: '/dowel/components/switch/', render: () => <SwitchSection /> },
   { id: 'panel', title: 'Panel', docs: '/dowel/components/panel/', render: () => <PanelSection /> },
   { id: 'badge', title: 'Badge', docs: '/dowel/components/badge/', render: () => <BadgeSection /> },
   { id: 'chip', title: 'Chip', docs: '/dowel/components/chip/', render: () => <ChipSection /> },
@@ -389,6 +402,150 @@ function TextareaSection() {
           maxRows={6}
           placeholder="Type several lines and watch it grow, then keep going and watch it stop."
         />
+      </Row>
+    </>
+  )
+}
+
+function FieldSection() {
+  return (
+    <>
+      <Row label="with a hint">
+        <Field label="Email" help="We only use it to sign you in." className="w-64">
+          <Input type="email" placeholder="you@example.com" />
+        </Field>
+      </Row>
+
+      <Row label="with an error - the hint gives up its line">
+        <Field
+          label="Email"
+          help="We only use it to sign you in."
+          error="That address is not valid."
+          className="w-64"
+        >
+          <Input type="email" defaultValue="not-an-address" />
+        </Field>
+      </Row>
+
+      <Row label="required, and a label only a screen reader hears">
+        <Field label="Name" required className="w-64">
+          <Input placeholder="Ada Lovelace" />
+        </Field>
+        <Field label="Search" labelHidden className="w-64">
+          <Input type="search" placeholder="Search" />
+        </Field>
+      </Row>
+
+      <Row label="around anything, not only an Input">
+        <Field label="Notes" help="Grows as you type." className="w-64">
+          <Textarea autoResize maxRows={5} placeholder="Say what happened" />
+        </Field>
+      </Row>
+    </>
+  )
+}
+
+function CheckboxSection() {
+  return (
+    <>
+      <Row label="states">
+        <Checkbox>Unchecked</Checkbox>
+        <Checkbox defaultChecked>Checked</Checkbox>
+        <Checkbox indeterminate>Some of them</Checkbox>
+        <Checkbox disabled>Disabled</Checkbox>
+        <Checkbox defaultChecked disabled>
+          Both
+        </Checkbox>
+      </Row>
+
+      <Row label="a group with a parent box - click it and watch the dash resolve">
+        <CheckboxGroup allValues={['apple', 'pear', 'plum']} defaultValue={['apple']}>
+          <Checkbox parent aria-label="All fruit">
+            All fruit
+          </Checkbox>
+          <div className="ml-6 flex flex-col gap-2">
+            <Checkbox name="apple" value="apple">
+              Apple
+            </Checkbox>
+            <Checkbox name="pear" value="pear">
+              Pear
+            </Checkbox>
+            <Checkbox name="plum" value="plum">
+              Plum
+            </Checkbox>
+          </div>
+        </CheckboxGroup>
+      </Row>
+
+      <Row label="without words, for a table cell">
+        <Checkbox aria-label="Select row" />
+        <Checkbox aria-label="Select row" defaultChecked />
+      </Row>
+    </>
+  )
+}
+
+function RadioGroupSection() {
+  return (
+    <>
+      <Row label="a column, which is the default">
+        <RadioGroup aria-label="Ripeness" defaultValue="ripe">
+          <Radio value="green">Green</Radio>
+          <Radio value="ripe">Ripe</Radio>
+          <Radio value="soft">Past it</Radio>
+        </RadioGroup>
+      </Row>
+
+      <Row label="a row, for two or three short options">
+        <RadioGroup aria-label="Size" defaultValue="md" orientation="horizontal">
+          <Radio value="sm">Small</Radio>
+          <Radio value="md">Medium</Radio>
+          <Radio value="lg">Large</Radio>
+        </RadioGroup>
+      </Row>
+
+      <Row label="inside a Field, which names the group">
+        <Field label="Ripeness" help="How you like them." className="w-64">
+          <RadioGroup defaultValue="ripe">
+            <Radio value="green">Green</Radio>
+            <Radio value="ripe">Ripe</Radio>
+          </RadioGroup>
+        </Field>
+      </Row>
+
+      <Row label="disabled">
+        <RadioGroup aria-label="Disabled" defaultValue="a" disabled>
+          <Radio value="a">One</Radio>
+          <Radio value="b">Two</Radio>
+        </RadioGroup>
+      </Row>
+    </>
+  )
+}
+
+function SwitchSection() {
+  return (
+    <>
+      <Row label="states">
+        <Switch>Off</Switch>
+        <Switch defaultChecked>On</Switch>
+        <Switch disabled>Disabled</Switch>
+        <Switch defaultChecked disabled>
+          Both
+        </Switch>
+      </Row>
+
+      <Row label="a column of settings, which is what it is for">
+        <div className="flex w-64 flex-col gap-3">
+          <Switch defaultChecked>Notify me about replies</Switch>
+          <Switch>Notify me about everything</Switch>
+          <Switch defaultChecked>Keep me signed in</Switch>
+        </div>
+      </Row>
+
+      <Row label="without words">
+        <Switch aria-label="Notify me" />
+        <Switch aria-label="Notify me" defaultChecked />
       </Row>
     </>
   )

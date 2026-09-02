@@ -726,6 +726,87 @@ list is correct in both themes and in every product's accent — there are no
 
 ---
 
+# Checkbox
+
+Source: https://lacodda.github.io/dowel/components/checkbox
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#checkbox
+
+Unchecked, checked, indeterminate and disabled, and a group with a parent box.
+
+## Notes
+
+**The words are part of the component.** A checkbox on its own is a nine-pixel
+target that says nothing; tied to its label it is the whole row, which is what
+a finger and a pointer both aim at. The commonest bug in a hand-rolled checkbox
+is a `<label>` sitting *next to* the input rather than tied to it — identical
+on screen, and it does nothing.
+
+```tsx
+<Checkbox>Remember me</Checkbox>
+```
+
+Leave the words out only where the row already names it — a table cell — and
+then say so:
+
+```tsx
+<Checkbox aria-label="Select row" />
+```
+
+**The box is drawn rather than native.** `appearance: none` on a real
+`<input type="checkbox">` is the alternative, and it takes the indeterminate
+state with it: the dash is not something the input can be told to draw.
+
+**`indeterminate` is a state, not a third value.** It means "some of the things
+below are checked"; clicking still means check-all. A tri-state value would
+make every caller handle a case that does not exist. It is announced as
+`aria-checked="mixed"`, because a dash on its own is nothing to a screen
+reader.
+
+**`CheckboxGroup` exists for the parent box.** Given `allValues`, it works out
+whether the parent is checked, unchecked or somewhere between, and clicking it
+sets all of them — the part that goes wrong when it is written by hand.
+
+```tsx
+<CheckboxGroup allValues={['a', 'b']} defaultValue={['a']}>
+  <Checkbox parent aria-label="All" />
+  <Checkbox name="a" value="a">Apple</Checkbox>
+  <Checkbox name="b" value="b">Pear</Checkbox>
+</CheckboxGroup>
+```
+
+**Checkbox or [Switch](/dowel/components/switch/)?** If there is a Save button,
+it is a checkbox: an answer collected now and submitted later. If the change is
+the action, it is a switch.
+
+## Props
+
+### Checkbox
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words. Without them, give `aria-label` |
+| `checked` | `boolean` | | Controlled |
+| `defaultChecked` | `boolean` | | Uncontrolled |
+| `onCheckedChange` | `(checked) => void` | | |
+| `indeterminate` | `boolean` | `false` | Draws the dash, announces `mixed` |
+| `parent` | `boolean` | `false` | Stands for the whole group |
+| `disabled` | `boolean` | `false` | |
+| `name`, `value` | `string` | | For a form and for the group |
+
+### CheckboxGroup
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string[]` | | Controlled |
+| `defaultValue` | `string[]` | | Uncontrolled |
+| `onValueChange` | `(value) => void` | | |
+| `allValues` | `string[]` | | What makes a parent box work |
+
+---
+
 # Chip
 
 Source: https://lacodda.github.io/dowel/components/chip
@@ -1617,6 +1698,73 @@ anywhere in it.
 
 ---
 
+# Field
+
+Source: https://lacodda.github.io/dowel/components/field
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#field
+
+A field with a hint, a field with an error, and a field whose label is only for screen readers.
+
+## Notes
+
+**The wiring is the whole component.** Every form is the same four parts
+repeated — a name, the control, sometimes a hint, sometimes an error — and
+written by hand each time they drift apart: the label loses its `htmlFor`, the
+hint becomes a `<div>` nothing announces, the error turns red and is read out
+by nothing at all. None of that shows in a screenshot.
+
+```tsx
+<Field label="Email" help="We only use it to sign you in.">
+  <Input type="email" />
+</Field>
+```
+
+**The control is handed over, not just nested.** `Field` passes its id and
+`aria-*` attributes to the element you give it, which is why `children` is a
+single element rather than arbitrary nodes. A plain child would render a label
+whose `for` points at an id nothing carries — it looks wired and names nothing.
+
+**`error` is a string, not a rule.** dowel has no opinion about where it came
+from, because a design system that picked a form library would be choosing for
+products that already chose. Its presence is what marks the control invalid, so
+there is no separate `invalid` prop to keep in step.
+
+```tsx
+// Base UI's own validation
+<Field.Root validate={...}>
+
+// a schema, react-hook-form, or a server that just said no
+<Field label="Email" error={errors.email?.message}>
+  <Input />
+</Field>
+```
+
+**The error takes the hint's place rather than joining it.** Two lines of small
+print under one control is one too many, and the error is the one that matters.
+
+**The label is always rendered.** A field named only by its placeholder loses
+that name the moment someone types, and a placeholder was never a label to
+anything reading the page aloud. `labelHidden` takes it off the screen with
+`sr-only` and leaves it in the accessibility tree.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | Required. Always rendered |
+| `children` | `ReactElement` | | The control. One element |
+| `help` | `ReactNode` | | A hint, hidden while an error shows |
+| `error` | `ReactNode` | | Its presence marks the control invalid |
+| `labelHidden` | `boolean` | `false` | Keep the label for readers, not the screen |
+| `required` | `boolean` | `false` | Adds the mark a reader looks for |
+| `name` | `string` | | So a `Form` can attach a server error by name |
+| `disabled` | `boolean` | `false` | |
+
+---
+
 # Input
 
 Source: https://lacodda.github.io/dowel/components/input
@@ -2032,6 +2180,75 @@ anywhere in it.
 
 ---
 
+# RadioGroup
+
+Source: https://lacodda.github.io/dowel/components/radio-group
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#radio-group
+
+A column of options, a row of them, and a disabled group.
+
+## Notes
+
+**Reach for this when the options are worth the space.** A handful of short
+choices read faster laid out than hidden behind a trigger, and each one becomes
+a target rather than a step. Past about five, or when the labels are long, a
+[Select](/dowel/components/select/) is the honest choice — this is not a Select
+with more pixels.
+
+```tsx
+<RadioGroup aria-label="Ripeness" defaultValue="ripe">
+  <Radio value="green">Green</Radio>
+  <Radio value="ripe">Ripe</Radio>
+  <Radio value="soft">Soft</Radio>
+</RadioGroup>
+```
+
+**The group is the control.** That is what the arrow keys move within, what a
+screen reader announces as one thing with a position in it, and why the group
+takes the value rather than each button. `Radio` outside a group is a checkbox
+that cannot be unchecked, which is why it is only useful inside one.
+
+**One tab stop, not three.** Tab reaches the group and the arrows move the
+choice — the behaviour a native radio group has and a row of styled buttons
+does not.
+
+**`orientation="horizontal"` for two or three short options.** A column is the
+default because it stays readable as labels grow.
+
+Name the group. It is the question the options answer, and without it a reader
+hears three values and no subject:
+
+```tsx
+<RadioGroup aria-label="Ripeness">        {/* or */}
+<Field label="Ripeness"><RadioGroup>...   {/* named by the field */}
+```
+
+## Props
+
+### RadioGroup
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Controlled |
+| `defaultValue` | `string` | | Uncontrolled |
+| `onValueChange` | `(value) => void` | | |
+| `orientation` | `vertical` \| `horizontal` | `vertical` | |
+| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
+| `name` | `string` | | For a form |
+
+### Radio
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Required |
+| `children` | `ReactNode` | | The words next to the dot |
+| `disabled` | `boolean` | `false` | |
+
+---
+
 # SearchField
 
 Source: https://lacodda.github.io/dowel/components/search-field
@@ -2382,6 +2599,62 @@ meaning anyway.
 | `size` | `sm \| md \| lg` | `md` | |
 | `tone` | `current \| dim \| accent` | `current` | Follows the surrounding text by default |
 | `label` | `string` | | What is being waited for, for a screen reader |
+
+---
+
+# Switch
+
+Source: https://lacodda.github.io/dowel/components/switch
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#switch
+
+Off, on, and disabled, with and without words.
+
+## Notes
+
+**The difference from [Checkbox](/dowel/components/checkbox/) is not how it
+looks**, and getting it wrong is the commonest mistake in the pair. A checkbox
+is an answer collected now and submitted later, with the rest of the form. A
+switch is a setting that applies the moment it moves.
+
+> If there is a Save button, it is a Checkbox. If the change *is* the action, it
+> is a Switch.
+
+Put a switch in a form behind a Save button and the reader cannot tell whether
+anything happened: they flipped it, and nothing said so.
+
+```tsx
+<Switch defaultChecked>Notify me</Switch>
+```
+
+**It reports its state, not only its position.** The role is `switch` and
+`aria-checked` follows it — which matters more than it looks, because under
+reduced motion the theme drops the slide and the position is all that changes
+on screen.
+
+**The track carries the accent when on**, and it is the only colour in the
+control, so a column of settings reads as a list of on-and-off rather than a
+field of decoration.
+
+A switch with no words is a light with no caption. Leave them out only where
+the meaning is genuinely in the context, and then name it:
+
+```tsx
+<Switch aria-label="Notify me" />
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words. Without them, give `aria-label` |
+| `checked` | `boolean` | | Controlled |
+| `defaultChecked` | `boolean` | | Uncontrolled |
+| `onCheckedChange` | `(checked) => void` | | |
+| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
+| `name` | `string` | | For a form |
 
 ---
 
