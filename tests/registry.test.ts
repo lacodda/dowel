@@ -246,6 +246,49 @@ describe('every component is four files', () => {
   })
 })
 
+describe('what the registry is built from', () => {
+  it('is committed, all of it', () => {
+    /* Every source the generator reads has to be in the repository, and this
+     * is not the obvious tautology it looks like.
+     *
+     * `AGENTS.md` - the briefing dowel ships as an item - was matched by a
+     * global ignore rule meant to keep AI-assistant files out of every
+     * repository. `git add -A` skipped it in silence, `git status` showed
+     * nothing, and all 836 tests passed, because the file was on the author's
+     * disk. CI on both platforms was the first thing to notice, by which time
+     * it was on `main`.
+     *
+     * Anything whose bytes end up inside a registry item belongs here. */
+    const sources = ['registry/files/AGENTS.md', 'packages/dowel/src/theme.css', 'packages/dowel/src/line.ts']
+
+    for (const path of sources) {
+      expect(existsSync(resolve(root, path)), `\`${path}\` is missing`).toBe(true)
+
+      const tracked = execFileSync('git', ['ls-files', '--', path], { cwd: root, encoding: 'utf8' }).trim()
+      expect(
+        tracked,
+        `\`${path}\` is not tracked by git - the registry builds from it, so everyone else's build fails`,
+      ).toBe(path)
+    }
+  })
+
+  it('has every component file committed', () => {
+    // The same failure, for the files that arrive by directory listing rather
+    // than by name: a component present locally and ignored would be served
+    // by the author's build and by nobody else's.
+    const listed = readdirSync(resolve(root, 'registry/ui')).filter((file) => file.endsWith('.tsx'))
+    const tracked = new Set(
+      execFileSync('git', ['ls-files', '--', 'registry/ui'], { cwd: root, encoding: 'utf8' })
+        .trim()
+        .split('\n')
+        .map((path) => path.replace('registry/ui/', '')),
+    )
+    for (const file of listed) {
+      expect(tracked, `\`registry/ui/${file}\` is not tracked by git`).toContain(file)
+    }
+  })
+})
+
 describe('the presets', () => {
   const presets = () => items.filter((item) => item.type === 'registry:style' && item.name !== 'theme')
 

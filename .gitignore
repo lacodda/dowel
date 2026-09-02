@@ -8,6 +8,14 @@ dist/
 # being committed as a second one that then goes stale.
 packages/*/README.md
 
+# The agent briefing dowel *ships*, as a registry item a consumer installs.
+#
+# A global ignore rule keeps AI-assistant files out of every repository, and it
+# is right - but here `AGENTS.md` is a product, not an artefact of working on
+# one. Without this line `git add -A` skips it silently, the registry item
+# builds from a file only the author has, and CI is the first thing to notice.
+!registry/files/AGENTS.md
+
 # Docs site output is built in CI only
 docs/dist/
 docs/.astro/

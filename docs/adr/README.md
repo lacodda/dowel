@@ -10,3 +10,4 @@ Technical decisions that shape dowel, in the order they were made. Format: Conte
 | [0004](0004-theme-ships-as-a-file.md) | The theme ships through the registry as a file, not as `cssVars` | accepted |
 | [0005](0005-the-lint-rule-ships-with-the-package.md) | The lint rule ships with the package, not through the registry | accepted |
 | [0006](0006-sets-and-a-pinned-registry.md) | Sets install in one command, and each minor is served frozen | accepted |
+| [0007](0007-machine-readable-docs.md) | The documentation is generated for machines from the same source as for people | accepted |
