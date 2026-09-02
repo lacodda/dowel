@@ -222,7 +222,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -241,7 +241,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -260,7 +260,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -280,7 +280,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -299,7 +299,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -319,7 +319,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -342,7 +342,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -365,7 +365,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -384,7 +384,7 @@
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -404,7 +404,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -424,7 +424,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -432,7 +432,7 @@
           "path": "ui/dialog.tsx",
           "target": "@ui/dialog.tsx",
           "type": "registry:ui",
-          "content": "import { Dialog as Base } from '@base-ui/react/dialog'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * Dialog.\n *\n * The parts are exposed rather than wrapped in one component with `title` and\n * `footer` props. The products that did it the other way ended up passing\n * `footer={<>…</>}` within a week, which is a slot with extra steps - and a\n * dialog that owns its own close button owns a word for it, which is a word\n * the product cannot translate.\n *\n * Behaviour is Base UI's: the focus trap, the return of focus to whatever\n * opened it, `Escape`, the scroll lock, and the `aria-labelledby` that ties\n * the popup to its own title. None of that is worth rewriting, and all of it\n * is wrong in the ways nobody notices until someone is navigating by keyboard.\n *\n * What is ours is the clothes, and the enter and leave: the popup arrives with\n * `data-open` and leaves with `data-closed`, both of which Base UI sets, so\n * the animation is a class list rather than a state machine.\n */\n\nexport const dialogPopupVariants = cva(\n  [\n    'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',\n    'rounded-xl border border-line bg-raise p-5 text-text shadow-float',\n    'focus-visible:outline-none',\n    // The enter and the leave. `duration-*` reads the token directly because\n    // Tailwind's own utility takes a literal number.\n    '[transition:opacity_var(--duration-base)_var(--ease-out),transform_var(--duration-base)_var(--ease-out)]',\n    'data-[closed]:scale-[0.98] data-[closed]:opacity-0',\n    'data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0',\n  ],\n  {\n    variants: {\n      size: {\n        sm: 'w-[min(24rem,calc(100vw-2rem))]',\n        md: 'w-[min(28rem,calc(100vw-2rem))]',\n        lg: 'w-[min(40rem,calc(100vw-2rem))]',\n      },\n    },\n    defaultVariants: { size: 'md' },\n  },\n)\n\n/** The root. Controlled with `open` and `onOpenChange`, or left to manage\n * itself around a `Dialog.Trigger`. */\nexport const Dialog = Base.Root\n\n/** What opens it. Give it `render` to use your own button. */\nexport const DialogTrigger = Base.Trigger\n\n/** What closes it - the same, for a cancel button or an X. */\nexport const DialogClose = Base.Close\n\n/** The scrim. Dark because a modal is a modal: what is behind it is out of\n * reach, and saying so with contrast is the only thing that reads at a\n * glance. */\nexport function DialogBackdrop({ className, ...props }: Base.Backdrop.Props) {\n  return (\n    <Base.Backdrop\n      className={cn(\n        'fixed inset-0 bg-black/50 backdrop-blur-[2px]',\n        '[z-index:var(--z-overlay)]',\n        '[transition:opacity_var(--duration-base)_var(--ease-out)]',\n        'data-[closed]:opacity-0 data-[starting-style]:opacity-0',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport interface DialogPopupProps\n  extends Base.Popup.Props,\n    VariantProps<typeof dialogPopupVariants> {\n  /** Where to portal to. Defaults to the document body, which is what keeps\n   * the popup from being clipped by whatever it was opened from. Pass an\n   * element to put it somewhere else - inside a dialog that is already open,\n   * or into a container being screenshotted. */\n  container?: Base.Portal.Props['container']\n  /** Whether to draw the scrim. On by default, and it should stay on for\n   * anything a person actually uses: the dim is what says the page behind is\n   * out of reach. Turn it off where the popup is shown alongside other things\n   * on purpose - a component gallery, a screenshot - because a scrim is\n   * `position: fixed` and covers everything, not only its own container. */\n  backdrop?: boolean\n}\n\n/** The dialog itself. Portalled, so it is not clipped by whatever it was\n * opened from. */\nexport function DialogPopup({\n  size,\n  container,\n  backdrop = true,\n  className,\n  children,\n  ...props\n}: DialogPopupProps) {\n  return (\n    <Base.Portal container={container}>\n      {backdrop && <DialogBackdrop />}\n      <Base.Popup\n        className={cn(dialogPopupVariants({ size }), '[z-index:var(--z-modal)]', className)}\n        {...props}\n      >\n        {children}\n      </Base.Popup>\n    </Base.Portal>\n  )\n}\n\n/** The heading. Base UI points the popup's `aria-labelledby` at it, so a\n * dialog with one is named for a screen reader without anyone arranging it. */\nexport function DialogTitle({ className, ...props }: Base.Title.Props) {\n  return <Base.Title className={cn('text-base font-semibold', className)} {...props} />\n}\n\n/** The line under the heading, and the popup's `aria-describedby`. */\nexport function DialogDescription({ className, ...props }: Base.Description.Props) {\n  return <Base.Description className={cn('mt-1 text-sm text-dim', className)} {...props} />\n}\n\n/** Where the actions go. Right-aligned, because the primary action of a\n * dialog belongs where the eye leaves the sentence. */\nexport function DialogActions({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {\n  return <div className={cn('mt-5 flex justify-end gap-2', className)} {...props} />\n}\n"
+          "content": "import { Dialog as Base } from '@base-ui/react/dialog'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * Dialog.\n *\n * The parts are exposed rather than wrapped in one component with `title` and\n * `footer` props. The products that did it the other way ended up passing\n * `footer={<>…</>}` within a week, which is a slot with extra steps - and a\n * dialog that owns its own close button owns a word for it, which is a word\n * the product cannot translate.\n *\n * Behaviour is Base UI's: the focus trap, the return of focus to whatever\n * opened it, `Escape`, the scroll lock, and the `aria-labelledby` that ties\n * the popup to its own title. None of that is worth rewriting, and all of it\n * is wrong in the ways nobody notices until someone is navigating by keyboard.\n *\n * What is ours is the clothes, and the enter and leave: the popup arrives with\n * `data-open` and leaves with `data-closed`, both of which Base UI sets, so\n * the animation is a class list rather than a state machine.\n */\n\nexport const dialogPopupVariants = cva(\n  [\n    'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',\n    'rounded-xl border border-line bg-raise p-5 text-text shadow-float',\n    'focus-visible:outline-none',\n    // The width was capped from the start and the height was not, so a dialog\n    // with more in it than the window is tall centred itself and hung off both\n    // ends - the top out of reach above the viewport, the buttons below it.\n    // Found on a release editor in kilna, which is exactly the shape that does\n    // it: half a dozen fields and a row of actions.\n    'max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain',\n    // The enter and the leave. `duration-*` reads the token directly because\n    // Tailwind's own utility takes a literal number.\n    '[transition:opacity_var(--duration-base)_var(--ease-out),transform_var(--duration-base)_var(--ease-out)]',\n    'data-[closed]:scale-[0.98] data-[closed]:opacity-0',\n    'data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0',\n  ],\n  {\n    variants: {\n      size: {\n        sm: 'w-[min(24rem,calc(100vw-2rem))]',\n        md: 'w-[min(28rem,calc(100vw-2rem))]',\n        lg: 'w-[min(40rem,calc(100vw-2rem))]',\n      },\n    },\n    defaultVariants: { size: 'md' },\n  },\n)\n\n/** The root. Controlled with `open` and `onOpenChange`, or left to manage\n * itself around a `Dialog.Trigger`. */\nexport const Dialog = Base.Root\n\n/** What opens it. Give it `render` to use your own button. */\nexport const DialogTrigger = Base.Trigger\n\n/** What closes it - the same, for a cancel button or an X. */\nexport const DialogClose = Base.Close\n\n/** The scrim. Dark because a modal is a modal: what is behind it is out of\n * reach, and saying so with contrast is the only thing that reads at a\n * glance. */\nexport function DialogBackdrop({ className, ...props }: Base.Backdrop.Props) {\n  return (\n    <Base.Backdrop\n      className={cn(\n        'fixed inset-0 bg-black/50 backdrop-blur-[2px]',\n        '[z-index:var(--z-overlay)]',\n        '[transition:opacity_var(--duration-base)_var(--ease-out)]',\n        'data-[closed]:opacity-0 data-[starting-style]:opacity-0',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\nexport interface DialogPopupProps\n  extends Base.Popup.Props,\n    VariantProps<typeof dialogPopupVariants> {\n  /** Where to portal to. Defaults to the document body, which is what keeps\n   * the popup from being clipped by whatever it was opened from. Pass an\n   * element to put it somewhere else - inside a dialog that is already open,\n   * or into a container being screenshotted. */\n  container?: Base.Portal.Props['container']\n  /** Whether to draw the scrim. On by default, and it should stay on for\n   * anything a person actually uses: the dim is what says the page behind is\n   * out of reach. Turn it off where the popup is shown alongside other things\n   * on purpose - a component gallery, a screenshot - because a scrim is\n   * `position: fixed` and covers everything, not only its own container. */\n  backdrop?: boolean\n}\n\n/** The dialog itself. Portalled, so it is not clipped by whatever it was\n * opened from. */\nexport function DialogPopup({\n  size,\n  container,\n  backdrop = true,\n  className,\n  children,\n  ...props\n}: DialogPopupProps) {\n  return (\n    <Base.Portal container={container}>\n      {backdrop && <DialogBackdrop />}\n      <Base.Popup\n        className={cn(dialogPopupVariants({ size }), '[z-index:var(--z-modal)]', className)}\n        {...props}\n      >\n        {children}\n      </Base.Popup>\n    </Base.Portal>\n  )\n}\n\n/** The heading. Base UI points the popup's `aria-labelledby` at it, so a\n * dialog with one is named for a screen reader without anyone arranging it. */\nexport function DialogTitle({ className, ...props }: Base.Title.Props) {\n  return <Base.Title className={cn('text-base font-semibold', className)} {...props} />\n}\n\n/** The line under the heading, and the popup's `aria-describedby`. */\nexport function DialogDescription({ className, ...props }: Base.Description.Props) {\n  return <Base.Description className={cn('mt-1 text-sm text-dim', className)} {...props} />\n}\n\n/** Where the actions go. Right-aligned, because the primary action of a\n * dialog belongs where the eye leaves the sentence. */\nexport function DialogActions({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {\n  return <div className={cn('mt-5 flex justify-end gap-2', className)} {...props} />\n}\n"
         }
       ]
     },
@@ -444,7 +444,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -462,7 +462,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -480,7 +480,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -500,7 +500,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -519,7 +519,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -539,7 +539,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -559,7 +559,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -577,7 +577,7 @@
       "title": "Search-field",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -601,7 +601,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -638,7 +638,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -656,7 +656,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -678,7 +678,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -698,7 +698,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [
@@ -716,7 +716,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.11.1"
+        "dowel-ui@^0.11.2"
       ],
       "registryDependencies": [],
       "files": [

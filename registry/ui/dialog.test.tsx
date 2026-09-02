@@ -241,6 +241,27 @@ describe('Dialog', () => {
     expect(new Set(drawn.values()).size, 'two sizes draw the same').toBe(sizes.length)
   })
 
+  // The width was capped at every size from the start and the height was not,
+  // so a dialog taller than the window centred itself and hung off both ends:
+  // the title above the viewport, the buttons below it. Found on a release
+  // editor in a consuming product, which is the shape that does it — half a
+  // dozen fields and a row of actions.
+  it('never grows taller than the window, at any size', () => {
+    for (const size of ['sm', 'md', 'lg'] as const) {
+      const classes = dialogPopupVariants({ size })
+      expect(classes, `\`${size}\` has no height cap`).toMatch(/max-h-/)
+      expect(classes, `\`${size}\` cannot scroll what it cannot show`).toMatch(
+        /overflow-y-auto/,
+      )
+    }
+  })
+
+  // A dialog is the top of its own stack: a flick that runs past the end of it
+  // must not scroll the page behind, which is still there under the backdrop.
+  it('keeps a scroll of its own from reaching the page behind', () => {
+    expect(dialogPopupVariants({})).toMatch(/overscroll-contain/)
+  })
+
   it('lets the caller win a conflict', () => {
     render(
       <Dialog open>
