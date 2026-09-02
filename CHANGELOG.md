@@ -4,6 +4,9 @@ All notable changes to this project are documented in this file.
 
 ## [0.13.0] - 2026-09-02
 
+### Bug Fixes
+- Commit the agent briefing the registry ships
+
 ### Documentation
 - What the machine-readable half serves
 
