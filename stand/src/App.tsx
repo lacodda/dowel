@@ -352,7 +352,16 @@ export function App() {
         </p>
 
         {sections.map((section) => (
-          <section key={section.id} id={section.id} className="mb-12">
+          <section
+            key={section.id}
+            id={section.id}
+            /* `scroll-mt` clears the sticky header. Without it, scrolling to a
+             * section - which is what an anchor link and the visual gate both
+             * do - leaves its top underneath the bar. It went unnoticed until
+             * the Calendar, whose first row is tall enough to be worth
+             * photographing from the top. */
+            className="mb-12 scroll-mt-20"
+          >
             <div className="mb-4 flex items-baseline gap-3">
               <h2 className="text-xl font-semibold">{section.title}</h2>
               {/* The other half of the pair: this shows what the component
