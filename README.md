@@ -175,6 +175,22 @@ Development goes in versions; each one is a single coherent theme, and ends in a
 - [Getting started](https://lacodda.github.io/dowel/getting-started/), [the lint rules](https://lacodda.github.io/dowel/guides/linting/) and [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/)
 - [Components](https://lacodda.github.io/dowel/components/button/)
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
+- [The vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary/) this system uses for its own parts, and [the mistakes](https://lacodda.github.io/dowel/concepts/anti-patterns/) that actually get made against it
+
+## For a machine
+
+The documentation is also served in the form an agent reads, generated from the
+same sources the site is built from:
+
+- [llms.txt](https://lacodda.github.io/dowel/llms.txt) - the index, and
+  [llms-full.txt](https://lacodda.github.io/dowel/llms-full.txt) for all of it
+  in one request
+- any page as plain Markdown, by appending `.md` to its URL
+- [a JSON Schema](https://lacodda.github.io/dowel/r/schema.json) of a registry
+  item, validated against every item the registry serves
+- an [`AGENTS.md`](https://lacodda.github.io/dowel/r/agents.json) a consumer
+  installs like any other item, so a product on dowel can tell its own agents
+  what its code cannot
 
 ## License
 
