@@ -358,18 +358,38 @@ describe('the pinned snapshot', () => {
    * has no answer unless a version of the registry stays put. `/r/` is always
    * the newest thing built; `/r/v0.12/` never changes again. */
 
-  it('serves every item the unpinned registry serves', () => {
-    expect(pinnedItems.map((item) => item.name).sort()).toEqual(items.map((item) => item.name).sort())
+  it('serves a subset of what the registry serves, never something else', () => {
+    /* A subset rather than the same set, and the difference is the point.
+     * A snapshot is frozen at its minor: components added afterwards are
+     * legitimately absent from it, and demanding parity would force the
+     * snapshot to be rewritten - the one thing it exists not to do.
+     *
+     * This assertion used to demand equality, and it passed only because the
+     * builder did rewrite the snapshot on every build. v0.16 found that: four
+     * new components had written themselves into the already-published v0.15.
+     * What must still hold is that the snapshot invents nothing - every item
+     * in it is a real item of this registry, under its own name. */
+    const live = new Set(items.map((item) => item.name))
+    for (const item of pinnedItems) {
+      expect(live, `the snapshot serves \`${item.name}\`, which the registry does not`).toContain(item.name)
+    }
   })
 
-  it('ships the same files, byte for byte', () => {
-    // The snapshot is the same build, addressed differently - not a second
-    // rendering of the components that could drift from the first.
-    const byName = new Map(items.map((item) => [item.name, item]))
+  it('keeps what it shipped, even after a component changes', () => {
+    /* The snapshot is not compared against today's files, because a component
+     * edited after the release is *supposed* to differ from its pinned copy -
+     * that is what pinning bought. What has to hold is that each pinned item
+     * is a complete, installable thing on its own. */
     for (const item of pinnedItems) {
-      expect(item.files ?? [], `\`${item.name}\` differs between the snapshot and the live registry`).toEqual(
-        byName.get(item.name)?.files ?? [],
-      )
+      if (item.type === 'registry:style' || item.type === 'registry:item') continue
+      const files = item.files ?? []
+      if (files.length === 0) continue
+      for (const file of files) {
+        expect(
+          typeof file.content === 'string' && file.content.length > 0,
+          `pinned \`${item.name}\` carries an empty \`${file.path}\`, so installing it writes nothing`,
+        ).toBe(true)
+      }
     }
   })
 
@@ -385,6 +405,51 @@ describe('the pinned snapshot', () => {
         ).toBe(true)
       }
     }
+  })
+
+  it('is not rewritten once it has been released', () => {
+    /* The invariant the whole snapshot rests on, and the one no assertion
+     * about file contents can reach: these tests run the generator themselves
+     * in `beforeAll`, so by the time they read the directory a rewrite has
+     * already happened and looks like the truth.
+     *
+     * git is where the answer lives. If a tag exists for this snapshot's
+     * minor, the released tree is the authority, and the working tree must
+     * still agree with it. A mutation that removed the write-once guard
+     * survived every other assertion here and is caught by this one.
+     *
+     * Before the first release of a minor there is no tag, and nothing to
+     * compare against - the snapshot is being written for the first time,
+     * which is exactly when it is allowed to change. */
+    const tags = execFileSync('git', ['tag', '--list', `${pinned}.*`], { cwd: root, encoding: 'utf8' })
+      .split('\n')
+      .filter(Boolean)
+    if (tags.length === 0) return
+
+    const released = tags.sort().at(-1)!
+    const changed = execFileSync(
+      'git',
+      ['diff', '--name-only', released, '--', `docs/public/r/${pinned}/`],
+      { cwd: root, encoding: 'utf8' },
+    ).trim()
+
+    expect(
+      changed,
+      `the ${pinned} snapshot has changed since ${released}:\n${changed}\n\n` +
+        'A published snapshot is the one thing in the registry that never moves - ' +
+        'a consumer pinned to it would silently receive something else.',
+    ).toBe('')
+
+    const untracked = execFileSync(
+      'git',
+      ['ls-files', '--others', '--exclude-standard', `docs/public/r/${pinned}/`],
+      { cwd: root, encoding: 'utf8' },
+    ).trim()
+
+    expect(
+      untracked,
+      `the ${pinned} snapshot has gained files since ${released}:\n${untracked}`,
+    ).toBe('')
   })
 
   it('is named for the version being released', () => {

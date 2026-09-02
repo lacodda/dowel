@@ -17,7 +17,7 @@
  * Output goes to the docs site, so the registry is served from the same place
  * as the documentation that explains it.
  */
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { basename, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { lineProducts } from '../packages/dowel/src/line.ts'
@@ -258,8 +258,19 @@ const presets = [
     title: 'dowel forms',
     description:
       'What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.',
-    components: ['button', 'input', 'textarea', 'select', 'combobox', 'chip'],
-    docs: 'Field, Checkbox, RadioGroup and Switch join this set in v0.16.',
+    components: [
+      'button',
+      'input',
+      'textarea',
+      'field',
+      'checkbox',
+      'radio-group',
+      'switch',
+      'select',
+      'combobox',
+      'chip',
+    ],
+    docs: 'Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to.',
   },
   {
     name: 'feedback',
@@ -354,9 +365,19 @@ const items = [themeItem, ...accentItems, ...componentItems, ...presetItems, age
  *
  * Snapshots are committed rather than built on deploy, like the rest of the
  * registry - the docs workflow publishes `docs/public` as it stands.
+ *
+ * "Written once" is enforced rather than intended. The minor comes from the
+ * package version, so every build between a release and the next version bump
+ * targets the snapshot that has already shipped - and the work done in that
+ * window is exactly the work that must not appear in it. v0.16 caught this:
+ * four new components wrote themselves into the published v0.15 snapshot,
+ * which is the one thing it promises never to do. An existing snapshot is now
+ * left alone.
  */
 const [major, minor] = packageVersion.split('.')
 const snapshot = `v${major}.${minor}`
+const snapshotDir = resolve(outDir, snapshot)
+const snapshotExists = existsSync(snapshotDir)
 
 /** The same items with sibling names turned into URLs against one base. */
 function addressed(base) {
@@ -396,7 +417,17 @@ function write(dir, base) {
 }
 
 write(outDir, `${homepage}/r`)
-write(resolve(outDir, snapshot), `${homepage}/r/${snapshot}`)
+
+/* The snapshot is written the first time this minor is built and never again.
+ * Re-running the build after a release must not touch what that release
+ * served, and the check is presence rather than a comparison: a snapshot that
+ * differs from what shipped is not a snapshot to reconcile, it is one that
+ * should never have been rewritten. */
+if (snapshotExists) {
+  console.log(`registry: ${snapshot} snapshot already exists, left untouched`)
+} else {
+  write(snapshotDir, `${homepage}/r/${snapshot}`)
+}
 
 /*
  * The catalogue also ships inside the package.
@@ -414,4 +445,4 @@ write(resolve(outDir, snapshot), `${homepage}/r/${snapshot}`)
 const catalogue = readFileSync(resolve(outDir, 'registry.json'), 'utf8')
 writeFileSync(resolve(root, 'packages/dowel/dist/registry.json'), catalogue)
 
-console.log(`registry: ${items.length} items, plus the ${snapshot} snapshot`)
+console.log(`registry: ${items.length} items, ${snapshotExists ? `${snapshot} snapshot kept` : `plus the ${snapshot} snapshot`}`)
