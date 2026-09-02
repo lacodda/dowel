@@ -135,6 +135,25 @@ describe('what the package ships', () => {
     }
   })
 
+  it('ships the catalogue, at the version the package is', () => {
+    // Not to install from - `shadcn add` wants a URL. It answers "what is in
+    // this registry" for a reader that has the package and not the network: a
+    // namespace in `components.json`, a script checking whether a component
+    // exists, an agent handed the dependency instead of the docs site.
+    //
+    // A stale copy would be worse than none: it would name components the
+    // installed version does not have. So it is compared against the registry
+    // this build produced, not merely required to exist.
+    const shipped = resolve(root, 'packages/dowel/dist/registry.json')
+    if (!existsSync(shipped)) return
+
+    const text = (value: string) => value.replace(/\r\n/g, '\n')
+    expect(
+      text(readFileSync(shipped, 'utf8')),
+      'the catalogue in the package is not the one being served',
+    ).toBe(text(read('docs/public/r/registry.json')))
+  })
+
   it('ships a theme and a token file that agree with the source', () => {
     // `dist` is what npm uploads, and it is built rather than committed - so
     // it can be older than the theme it was generated from. A release that

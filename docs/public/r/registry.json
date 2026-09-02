@@ -222,7 +222,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -241,7 +241,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -260,7 +260,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -280,7 +280,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -299,7 +299,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -319,7 +319,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -342,7 +342,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -365,7 +365,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -384,7 +384,7 @@
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -404,7 +404,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -424,7 +424,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -444,7 +444,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -462,7 +462,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -480,7 +480,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -500,7 +500,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -519,7 +519,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -539,7 +539,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -559,7 +559,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -577,7 +577,7 @@
       "title": "Search-field",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -601,7 +601,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -638,7 +638,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -656,7 +656,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -678,7 +678,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -698,7 +698,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -716,7 +716,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.11.2"
+        "dowel-ui@^0.12.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -727,6 +727,59 @@
           "content": "import type { HTMLAttributes } from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * Truncate.\n *\n * Text that does not fit, cut with an ellipsis - and, importantly, still\n * readable in full: the element carries its own text as a `title`, so hovering\n * shows what was cut. Every product wrote the one-line version of this and\n * none of them remembered the title.\n *\n * `lines` truncates after that many instead of one, which needs a different\n * mechanism (`line-clamp`) rather than a different value.\n */\nexport interface TruncateProps extends HTMLAttributes<HTMLSpanElement> {\n  /** The text. A string, because the component has to be able to put it in a\n   * `title` - arbitrary children could not be. */\n  children: string\n  /** Cut after this many lines. One by default. */\n  lines?: number\n  /** Say what the full text is on hover. On by default; turn it off where the\n   * text is already visible elsewhere, or the tooltip is noise. */\n  title?: string | undefined\n}\n\nexport function Truncate({ children, lines = 1, className, title, ...props }: TruncateProps) {\n  return (\n    <span\n      // The browser shows this only when the text is actually cut, so it costs\n      // nothing when everything fits.\n      title={title ?? children}\n      className={cn(\n        lines === 1 ? 'block truncate' : 'block overflow-hidden',\n        className,\n      )}\n      style={\n        lines > 1\n          ? { display: '-webkit-box', WebkitLineClamp: lines, WebkitBoxOrient: 'vertical' }\n          : undefined\n      }\n      {...props}\n    >\n      {children}\n    </span>\n  )\n}\n"
         }
       ]
+    },
+    {
+      "extends": "none",
+      "name": "app",
+      "type": "registry:style",
+      "title": "dowel app",
+      "description": "The set a product of the line actually starts from: the everyday controls, the overlays it needs on day one, and the ways of choosing something. What kilna has installed.",
+      "registryDependencies": [
+        "https://lacodda.github.io/dowel/r/badge.json",
+        "https://lacodda.github.io/dowel/r/button.json",
+        "https://lacodda.github.io/dowel/r/combobox.json",
+        "https://lacodda.github.io/dowel/r/confirm-dialog.json",
+        "https://lacodda.github.io/dowel/r/dialog.json",
+        "https://lacodda.github.io/dowel/r/drawer.json",
+        "https://lacodda.github.io/dowel/r/input.json",
+        "https://lacodda.github.io/dowel/r/kbd.json",
+        "https://lacodda.github.io/dowel/r/menu.json",
+        "https://lacodda.github.io/dowel/r/panel.json",
+        "https://lacodda.github.io/dowel/r/select.json",
+        "https://lacodda.github.io/dowel/r/textarea.json",
+        "https://lacodda.github.io/dowel/r/toast.json"
+      ],
+      "docs": "Import the theme and your product accent first; these are the components on top of it."
+    },
+    {
+      "extends": "none",
+      "name": "forms",
+      "type": "registry:style",
+      "title": "dowel forms",
+      "description": "What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.",
+      "registryDependencies": [
+        "https://lacodda.github.io/dowel/r/button.json",
+        "https://lacodda.github.io/dowel/r/chip.json",
+        "https://lacodda.github.io/dowel/r/combobox.json",
+        "https://lacodda.github.io/dowel/r/input.json",
+        "https://lacodda.github.io/dowel/r/select.json",
+        "https://lacodda.github.io/dowel/r/textarea.json"
+      ],
+      "docs": "Field, Checkbox, RadioGroup and Switch join this set in v0.16."
+    },
+    {
+      "extends": "none",
+      "name": "feedback",
+      "type": "registry:style",
+      "title": "dowel feedback",
+      "description": "The three ways of saying that something happened - one that goes away, one that is still true after a reload, one that is true on every screen - and the dialog for anything that needs an answer.",
+      "registryDependencies": [
+        "https://lacodda.github.io/dowel/r/alert.json",
+        "https://lacodda.github.io/dowel/r/banner.json",
+        "https://lacodda.github.io/dowel/r/confirm-dialog.json",
+        "https://lacodda.github.io/dowel/r/toast.json"
+      ],
+      "docs": "Which of the four to reach for is the harder question: see https://lacodda.github.io/dowel/guides/overlays/"
     }
   ]
 }

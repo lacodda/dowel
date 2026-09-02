@@ -166,69 +166,220 @@ function npmDependencies(source) {
  * which registry, and it is built from the homepage rather than written out,
  * because a hardcoded absolute URL is what broke the accents.
  */
-function siblingDependencies(source) {
+function siblingNames(source) {
   return [
     ...new Set(
       [...source.matchAll(/from\s+'\.\/([\w-]+)'/g)].map((match) => match[1]),
     ),
-  ]
-    .sort()
-    .map((name) => `${homepage}/r/${name}.json`)
+  ].sort()
 }
 
-const componentItems = readdirSync(componentDir)
+const componentSources = readdirSync(componentDir)
   .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
-  .map((file) => {
-    const name = basename(file, '.tsx')
-    const content = readFileSync(resolve(componentDir, file), 'utf8').replace(/\r\n/g, '\n')
-    const title = name.charAt(0).toUpperCase() + name.slice(1)
+  .map((file) => ({
+    file,
+    name: basename(file, '.tsx'),
+    content: readFileSync(resolve(componentDir, file), 'utf8').replace(/\r\n/g, '\n'),
+  }))
 
-    // The first paragraph of the file's own block comment, so the description
-    // and the code cannot disagree about what the component is for.
-    const doc = content.match(/\/\*\n \* [A-Z][^\n]*\n \*\n \* ([\s\S]*?)\.\n/)
-    const description = doc ? `${doc[1].replace(/\n \* /g, ' ').trim()}.` : `The ${name} primitive.`
+const componentItems = componentSources.map(({ file, name, content }) => {
+  const title = name.charAt(0).toUpperCase() + name.slice(1)
 
+  // The first paragraph of the file's own block comment, so the description
+  // and the code cannot disagree about what the component is for.
+  const doc = content.match(/\/\*\n \* [A-Z][^\n]*\n \*\n \* ([\s\S]*?)\.\n/)
+  const description = doc ? `${doc[1].replace(/\n \* /g, ' ').trim()}.` : `The ${name} primitive.`
+
+  return {
+    $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+    name,
+    type: 'registry:ui',
+    title,
+    description,
+    dependencies: npmDependencies(content),
+    registryDependencies: siblingNames(content),
+    files: [
+      {
+        path: `ui/${file}`,
+        target: `@ui/${file}`,
+        type: 'registry:ui',
+        content,
+      },
+    ],
+  }
+})
+
+/*
+ * Presets: a set installed by one command.
+ *
+ * A product does not start by wanting a Chip. It starts by wanting a screen,
+ * and reaches for twelve primitives over the following week - which is twelve
+ * commands, each of them a decision about whether this one is really needed
+ * yet. The sets below are what the line's products actually converged on, read
+ * off their installs rather than composed here: `app` is what kilna has after
+ * moving over.
+ *
+ * A preset carries no files of its own. It is a `registry:style` whose whole
+ * content is `registryDependencies`, so `shadcn add` resolves it into the same
+ * per-component installs the reader could have typed - the copied files are
+ * identical either way, and nothing about the preset survives in the consumer
+ * project. That matters: a preset is a starting point, not a bundle to stay
+ * subscribed to. Having installed `app`, a product removes what it does not
+ * want and the preset has no opinion about it.
+ *
+ * `extends: none` for the same reason the theme states it: a set of dowel
+ * components must not drag in shadcn's stock palette underneath.
+ */
+const presets = [
+  {
+    name: 'app',
+    title: 'dowel app',
+    description:
+      'The set a product of the line actually starts from: the everyday controls, the overlays it needs on day one, and the ways of choosing something. What kilna has installed.',
+    components: [
+      'button',
+      'input',
+      'textarea',
+      'panel',
+      'badge',
+      'kbd',
+      'dialog',
+      'confirm-dialog',
+      'drawer',
+      'menu',
+      'select',
+      'combobox',
+      'toast',
+    ],
+    docs: 'Import the theme and your product accent first; these are the components on top of it.',
+  },
+  {
+    name: 'forms',
+    title: 'dowel forms',
+    description:
+      'What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.',
+    components: ['button', 'input', 'textarea', 'select', 'combobox', 'chip'],
+    docs: 'Field, Checkbox, RadioGroup and Switch join this set in v0.16.',
+  },
+  {
+    name: 'feedback',
+    title: 'dowel feedback',
+    description:
+      'The three ways of saying that something happened - one that goes away, one that is still true after a reload, one that is true on every screen - and the dialog for anything that needs an answer.',
+    components: ['toast', 'alert', 'banner', 'confirm-dialog'],
+    docs: 'Which of the four to reach for is the harder question: see https://lacodda.github.io/dowel/guides/overlays/',
+  },
+]
+
+/** The names a preset resolves to, its components' own siblings included.
+ *
+ * `shadcn add` does resolve dependencies recursively, so listing only the
+ * named components would install correctly. It is written out in full anyway,
+ * because the preset is also read: `shadcn list` prints these names, and a set
+ * whose printed contents differ from what lands on disk is a set that has to
+ * be traced through three files to understand. */
+function resolvePreset(names) {
+  const byName = new Map(componentItems.map((item) => [item.name, item]))
+  const seen = new Set()
+  const walk = (name) => {
+    if (seen.has(name)) return
+    seen.add(name)
+    const item = byName.get(name)
+    if (!item) throw new Error(`preset names \`${name}\`, which is not a component`)
+    for (const sibling of item.registryDependencies) walk(sibling)
+  }
+  for (const name of names) walk(name)
+  return [...seen].sort()
+}
+
+const presetItems = presets.map(({ name, title, description, components, docs }) => ({
+  $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+  extends: 'none',
+  name,
+  type: 'registry:style',
+  title,
+  description,
+  registryDependencies: resolvePreset(components),
+  docs,
+}))
+
+const items = [themeItem, ...accentItems, ...componentItems, ...presetItems]
+
+/*
+ * The registry is served twice.
+ *
+ * `/r/<name>.json` is the unpinned path and always the newest thing built: it
+ * is what the README and the docs tell people to type, and what someone
+ * installing a component today should get.
+ *
+ * `/r/v<major>.<minor>/<name>.json` is a snapshot, written once per minor and
+ * never rewritten. It exists because a registry is not a package: nothing in
+ * a consumer's lockfile records which version of a component was copied in,
+ * so "install what I installed" has no other answer. Inside a snapshot the
+ * cross-references point into the same snapshot, so a set installed from one
+ * is the set that shipped with that version, down to the sibling a component
+ * pulls in.
+ *
+ * Snapshots are committed rather than built on deploy, like the rest of the
+ * registry - the docs workflow publishes `docs/public` as it stands.
+ */
+const [major, minor] = packageVersion.split('.')
+const snapshot = `v${major}.${minor}`
+
+/** The same items with sibling names turned into URLs against one base. */
+function addressed(base) {
+  return items.map((item) => {
+    if (!item.registryDependencies?.length) return item
     return {
-      $schema: 'https://ui.shadcn.com/schema/registry-item.json',
-      name,
-      type: 'registry:ui',
-      title,
-      description,
-      dependencies: npmDependencies(content),
-      registryDependencies: siblingDependencies(content),
-      files: [
-        {
-          path: `ui/${file}`,
-          target: `@ui/${file}`,
-          type: 'registry:ui',
-          content,
-        },
-      ],
+      ...item,
+      registryDependencies: item.registryDependencies.map((name) => `${base}/${name}.json`),
     }
   })
-
-const items = [themeItem, ...accentItems, ...componentItems]
-
-mkdirSync(outDir, { recursive: true })
-
-// One file per item, at the URL the CLI is given.
-for (const item of items) {
-  writeFileSync(resolve(outDir, `${item.name}.json`), `${JSON.stringify(item, null, 2)}\n`)
 }
 
-// The catalogue: what `shadcn list` and a namespace registration read. The
-// per-item `$schema` is dropped here - the catalogue declares its own, and an
-// item nested inside it is not a document of its own.
-const registry = {
-  $schema: 'https://ui.shadcn.com/schema/registry.json',
-  name: 'dowel',
-  homepage,
-  items: items.map((item) => {
-    const entry = { ...item }
-    delete entry.$schema
-    return entry
-  }),
-}
-writeFileSync(resolve(outDir, 'registry.json'), `${JSON.stringify(registry, null, 2)}\n`)
+/** Everything a registry serves, written into one directory. */
+function write(dir, base) {
+  const addressedItems = addressed(base)
+  mkdirSync(dir, { recursive: true })
 
-console.log(`registry: ${items.length} items`)
+  // One file per item, at the URL the CLI is given.
+  for (const item of addressedItems) {
+    writeFileSync(resolve(dir, `${item.name}.json`), `${JSON.stringify(item, null, 2)}\n`)
+  }
+
+  // The catalogue: what `shadcn list` and a namespace registration read. The
+  // per-item `$schema` is dropped here - the catalogue declares its own, and an
+  // item nested inside it is not a document of its own.
+  const registry = {
+    $schema: 'https://ui.shadcn.com/schema/registry.json',
+    name: 'dowel',
+    homepage,
+    items: addressedItems.map((item) => {
+      const entry = { ...item }
+      delete entry.$schema
+      return entry
+    }),
+  }
+  writeFileSync(resolve(dir, 'registry.json'), `${JSON.stringify(registry, null, 2)}\n`)
+}
+
+write(outDir, `${homepage}/r`)
+write(resolve(outDir, snapshot), `${homepage}/r/${snapshot}`)
+
+/*
+ * The catalogue also ships inside the package.
+ *
+ * Not to install from - `shadcn add` wants a URL, and the site serves one.
+ * What it answers is "what is in this registry", for a reader that has the
+ * package and not the network: a namespace registered in `components.json`, a
+ * script deciding whether a component exists before shelling out to the CLI,
+ * an agent given the dependency rather than the docs site. It is the version
+ * that was installed, which is the version whose components the project has.
+ *
+ * Only the catalogue, not the per-item files: those carry every component's
+ * full source, and a package is not a mirror of the registry.
+ */
+const catalogue = readFileSync(resolve(outDir, 'registry.json'), 'utf8')
+writeFileSync(resolve(root, 'packages/dowel/dist/registry.json'), catalogue)
+
+console.log(`registry: ${items.length} items, plus the ${snapshot} snapshot`)

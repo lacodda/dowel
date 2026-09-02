@@ -4,7 +4,7 @@ description: Install the dowel theme and give a product its own accent.
 ---
 
 dowel ships in two parts: the **theme** as an npm package, and **primitives** as
-a shadcn-compatible registry. The theme is here now; the registry follows.
+a shadcn-compatible registry.
 
 ## Install the theme
 
@@ -98,10 +98,22 @@ vocabulary, shown in both themes.
 
 ## Primitives
 
-Primitives arrive with v0.4.0, copied into your project rather than imported:
+Primitives are copied into your project rather than imported:
 
 ```console
 $ npx shadcn add https://lacodda.github.io/dowel/r/button.json
 ```
 
 The component lands in `components/ui/` and is yours to edit.
+
+Or take the set a product usually starts from — the everyday controls, the
+overlays it needs on day one, and the ways of choosing something — in one
+command:
+
+```console
+$ npx shadcn add https://lacodda.github.io/dowel/r/app.json
+```
+
+There are three such sets, and each minor of the registry is also served
+frozen at a path that never changes, for an install that has to be repeatable.
+See [installing from the registry](/dowel/guides/registry/).

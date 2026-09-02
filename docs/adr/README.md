@@ -9,3 +9,4 @@ Technical decisions that shape dowel, in the order they were made. Format: Conte
 | [0003](0003-derived-accent-and-contrast.md) | The accent family is derived from one hue, and contrast is a test | accepted |
 | [0004](0004-theme-ships-as-a-file.md) | The theme ships through the registry as a file, not as `cssVars` | accepted |
 | [0005](0005-the-lint-rule-ships-with-the-package.md) | The lint rule ships with the package, not through the registry | accepted |
+| [0006](0006-sets-and-a-pinned-registry.md) | Sets install in one command, and each minor is served frozen | accepted |

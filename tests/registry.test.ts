@@ -44,19 +44,40 @@ interface RegistryItem {
 let items: RegistryItem[]
 let catalogue: { name: string; homepage: string; items: RegistryItem[] }
 
+/** Every file the registry serves, snapshot directories included, as paths
+ * relative to `docs/public/r`. Flat `readdirSync` stopped being enough when
+ * the pinned snapshot arrived: it hands back the directory name and reading
+ * it throws, which is a failure that says nothing about the registry. */
+function served(dir = registryDir, prefix = ''): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory()
+      ? served(resolve(dir, entry.name), `${prefix}${entry.name}/`)
+      : [`${prefix}${entry.name}`],
+  )
+}
+
 /** The registry as committed, before anything regenerates it. It is checked
  * in rather than built in CI - the docs workflow runs only `astro build` - so
  * what is committed is what gets deployed. */
-const committed = new Map(
-  readdirSync(registryDir).map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]),
-)
+const committed = new Map(served().map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]))
+
+/** The snapshot directory of the version being released: `r/v0.12`. */
+const pinned = (() => {
+  const [major, minor] = JSON.parse(readFileSync(resolve(root, 'packages/dowel/package.json'), 'utf8'))
+    .version.split('.')
+  return `v${major}.${minor}`
+})()
+
+let pinnedItems: RegistryItem[]
 
 beforeAll(() => {
   execFileSync('node', ['tools/build-registry.mjs'], { cwd: root })
   const read = (file: string) => JSON.parse(readFileSync(resolve(registryDir, file), 'utf8'))
   catalogue = read('registry.json')
-  items = readdirSync(registryDir)
-    .filter((file) => file !== 'registry.json')
+  const isItem = (file: string) => !file.includes('/') && file !== 'registry.json'
+  items = served().filter(isItem).map(read)
+  pinnedItems = served()
+    .filter((file) => file.startsWith(`${pinned}/`) && !file.endsWith('/registry.json'))
     .map(read)
 })
 
@@ -72,9 +93,7 @@ describe('what is deployed', () => {
     // publishes as-is: it never runs this generator. So a theme edited without
     // rebuilding the registry would ship a stale theme to every consumer,
     // while every other check passed.
-    const current = new Map(
-      readdirSync(registryDir).map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]),
-    )
+    const current = new Map(served().map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]))
 
     expect([...current.keys()].sort(), 'the registry gained or lost an item').toEqual(
       [...committed.keys()].sort(),
@@ -220,6 +239,112 @@ describe('every component is four files', () => {
 
   it.each(components)('%s is in the registry', (name) => {
     expect(items.map((item) => item.name)).toContain(name)
+  })
+})
+
+describe('the presets', () => {
+  const presets = () => items.filter((item) => item.type === 'registry:style' && item.name !== 'theme')
+
+  it('there are some', () => {
+    // Guards every check below: `filter` over nothing passes each of them
+    // while proving nothing at all.
+    expect(presets().length).toBeGreaterThan(0)
+  })
+
+  it('carries no file of its own', () => {
+    // A preset is a starting point, not a bundle to stay subscribed to. It
+    // resolves into the same per-component installs the reader could have
+    // typed, and nothing of the preset survives in the consumer's project - so
+    // removing a component afterwards is an ordinary edit, with no set to
+    // disagree with.
+    for (const preset of presets()) {
+      expect(preset.files ?? [], `\`${preset.name}\` ships a file of its own`).toEqual([])
+    }
+  })
+
+  it('starts from nothing, like the theme', () => {
+    // Without `extends: none` a set of dowel components drags shadcn's stock
+    // palette in underneath - the palette the theme exists to drop.
+    for (const preset of presets()) {
+      expect(preset.extends, `\`${preset.name}\` inherits shadcn's defaults`).toBe('none')
+    }
+  })
+
+  it('names only components, and at least two of them', () => {
+    // One component is not a set; it is a component with a second name, and a
+    // reader who installs it gets less than the singular command would give.
+    const componentNames = new Set(items.filter((item) => item.type === 'registry:ui').map((item) => item.name))
+    for (const preset of presets()) {
+      const named = (preset.registryDependencies ?? []).map((url) => url.split('/').pop()!.replace(/\.json$/, ''))
+      expect(named.length, `\`${preset.name}\` is not a set`).toBeGreaterThan(1)
+      for (const name of named) {
+        expect(componentNames, `\`${preset.name}\` names \`${name}\`, which is not a component`).toContain(name)
+      }
+    }
+  })
+
+  it('lists what a component of it pulls in, rather than leaving it implied', () => {
+    // The CLI resolves siblings recursively either way, so this is about the
+    // set being *read*: `shadcn list` prints these names, and a set whose
+    // printed contents differ from what lands on disk has to be traced through
+    // three files to understand.
+    const byName = new Map(items.map((item) => [item.name, item]))
+    for (const preset of presets()) {
+      const named = new Set(
+        (preset.registryDependencies ?? []).map((url) => url.split('/').pop()!.replace(/\.json$/, '')),
+      )
+      for (const name of named) {
+        for (const sibling of byName.get(name)?.registryDependencies ?? []) {
+          const siblingName = sibling.split('/').pop()!.replace(/\.json$/, '')
+          expect(named, `\`${preset.name}\` installs \`${siblingName}\` via \`${name}\` without listing it`).toContain(
+            siblingName,
+          )
+        }
+      }
+    }
+  })
+})
+
+describe('the pinned snapshot', () => {
+  /* A registry is not a package: nothing in a consumer's lockfile records
+   * which version of a component was copied in, so "install what I installed"
+   * has no answer unless a version of the registry stays put. `/r/` is always
+   * the newest thing built; `/r/v0.12/` never changes again. */
+
+  it('serves every item the unpinned registry serves', () => {
+    expect(pinnedItems.map((item) => item.name).sort()).toEqual(items.map((item) => item.name).sort())
+  })
+
+  it('ships the same files, byte for byte', () => {
+    // The snapshot is the same build, addressed differently - not a second
+    // rendering of the components that could drift from the first.
+    const byName = new Map(items.map((item) => [item.name, item]))
+    for (const item of pinnedItems) {
+      expect(item.files ?? [], `\`${item.name}\` differs between the snapshot and the live registry`).toEqual(
+        byName.get(item.name)?.files ?? [],
+      )
+    }
+  })
+
+  it('points inside itself, never back at the moving registry', () => {
+    // This is the whole reason the snapshot exists. A pinned Textarea whose
+    // sibling URL is unpinned installs today's Input beside a year-old
+    // Textarea - the one arrangement the snapshot was supposed to rule out.
+    for (const item of pinnedItems) {
+      for (const dependency of item.registryDependencies ?? []) {
+        expect(
+          dependency.startsWith(`https://lacodda.github.io/dowel/r/${pinned}/`),
+          `pinned \`${item.name}\` depends on \`${dependency}\`, which moves`,
+        ).toBe(true)
+      }
+    }
+  })
+
+  it('is named for the version being released', () => {
+    // The snapshot is written once per minor, at release. A directory named
+    // for a version other than this one means the release was cut without
+    // rebuilding, and the version it claims to pin was never in it.
+    expect(existsSync(resolve(registryDir, pinned))).toBe(true)
   })
 })
 

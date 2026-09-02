@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "extends": "none",
+  "name": "forms",
+  "type": "registry:style",
+  "title": "dowel forms",
+  "description": "What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.",
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.12/button.json",
+    "https://lacodda.github.io/dowel/r/v0.12/chip.json",
+    "https://lacodda.github.io/dowel/r/v0.12/combobox.json",
+    "https://lacodda.github.io/dowel/r/v0.12/input.json",
+    "https://lacodda.github.io/dowel/r/v0.12/select.json",
+    "https://lacodda.github.io/dowel/r/v0.12/textarea.json"
+  ],
+  "docs": "Field, Checkbox, RadioGroup and Switch join this set in v0.16."
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "extends": "none",
+  "name": "app",
+  "type": "registry:style",
+  "title": "dowel app",
+  "description": "The set a product of the line actually starts from: the everyday controls, the overlays it needs on day one, and the ways of choosing something. What kilna has installed.",
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/badge.json",
+    "https://lacodda.github.io/dowel/r/button.json",
+    "https://lacodda.github.io/dowel/r/combobox.json",
+    "https://lacodda.github.io/dowel/r/confirm-dialog.json",
+    "https://lacodda.github.io/dowel/r/dialog.json",
+    "https://lacodda.github.io/dowel/r/drawer.json",
+    "https://lacodda.github.io/dowel/r/input.json",
+    "https://lacodda.github.io/dowel/r/kbd.json",
+    "https://lacodda.github.io/dowel/r/menu.json",
+    "https://lacodda.github.io/dowel/r/panel.json",
+    "https://lacodda.github.io/dowel/r/select.json",
+    "https://lacodda.github.io/dowel/r/textarea.json",
+    "https://lacodda.github.io/dowel/r/toast.json"
+  ],
+  "docs": "Import the theme and your product accent first; these are the components on top of it."
+}

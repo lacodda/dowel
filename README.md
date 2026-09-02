@@ -83,6 +83,21 @@ your code:
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 ```
 
+Or the set a product usually starts from, in one command - `app`, `forms` and
+`feedback` are three sets read off what the line's products converged on:
+
+```bash
+npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
+```
+
+A set carries no files of its own: it resolves into the same per-component
+installs you could have typed, so nothing of it survives in your project and
+there is no membership to leave. Each minor of the registry is also served
+frozen at `r/v0.12/…`, for an install that has to be repeatable - inside a
+snapshot the cross-references point into the same snapshot, so a component and
+the sibling it reuses are the pair that shipped together. See
+[installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
+
 Twenty-six of them so far. The everyday ones - Button, Input, Textarea, Panel,
 Badge, Chip, Kbd, Spinner, Truncate and Copyable; the six that float above the
 page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and Tooltip; four
