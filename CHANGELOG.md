@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.15.0] - 2026-09-02
+
+### Features
+- The second consumer, and the walkthrough it proved
+
 ## [0.14.1] - 2026-09-02
 
 ### Bug Fixes
