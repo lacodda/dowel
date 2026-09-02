@@ -73,6 +73,20 @@ for (const theme of ['dark', 'light'] as const) {
       await page.goto('./')
       await expect(page.locator('html')).toHaveClass(new RegExp(theme))
       await page.waitForLoadState('networkidle')
+
+      /* The sticky header is hidden for the duration of the shots.
+       *
+       * Each picture is of a section, and Playwright scrolls the section into
+       * view to take one - which puts it under the bar, so the header lands
+       * across the top of any section tall enough to still be there. It went
+       * unnoticed until the Calendar, whose first row is tall enough to be
+       * photographed from the top.
+       *
+       * `scroll-mt` on the section does not fix it: that moves an anchor
+       * jump, not an element screenshot. Removing the bar does, and costs
+       * nothing - the header is chrome, and every one of these pictures is of
+       * a component. */
+      await page.addStyleTag({ content: 'header { display: none !important }' })
     })
 
     for (const id of SECTIONS) {
