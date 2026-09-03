@@ -5,7 +5,7 @@
   "title": "Color-field",
   "description": "Picking a colour for something the product stores: a tag, a project, a calendar. Note what that is *not* - it is not choosing the appearance of the interface. The theme decides that, from one accent, and a field that let a reader repaint the chrome would undo the argument the whole system rests on.",
   "dependencies": [
-    "dowel-ui@^0.20.0"
+    "dowel-ui@^0.20.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/input.json"

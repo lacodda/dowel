@@ -86,6 +86,35 @@ describe('the showcase', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Badge' })).toBeDefined()
   })
 
+  it('shows the brand mark from the asset rather than a copy of it', () => {
+    /* It was drawn by hand here once and was the wrong sign: an empty outline
+     * where the real mark is a filled cell carrying the `dw` monogram. A
+     * transcription would only set up the next drift - the master moves, the
+     * stand keeps showing what it used to be - so the file itself is loaded. */
+    const { container } = render(<App />)
+    const mark = container.querySelector('header img')
+    expect(mark, 'the header should carry the mark').not.toBeNull()
+    // Vite inlines a small SVG, so what matters is that it is the real one.
+    expect(decodeURIComponent(atob((mark!.getAttribute('src') ?? '').split(',')[1] ?? ''))).toContain('dw')
+  })
+
+  it('says which entries are not components, instead of hinting with a lowercase name', () => {
+    render(<App />)
+    const nav = screen.getByRole('navigation', { name: /components/i })
+
+    // `calendar-math` is pure date arithmetic and `useShortcut` is a hook.
+    // They sat in the same list as forty-three components under names in two
+    // different styles, which left a reader to guess why one was lowercase.
+    const group = within(nav).getByRole('heading', { name: /without markup/i })
+    expect(group).toBeDefined()
+
+    const utilities = within(nav)
+      .getAllByRole('list')
+      .at(-1)!
+    expect(within(utilities).getByRole('link', { name: 'calendar-math' })).toBeDefined()
+    expect(within(utilities).getByRole('link', { name: 'useShortcut' })).toBeDefined()
+  })
+
   it('has no accessibility violations on a component page either', async () => {
     window.history.replaceState(null, '', `${import.meta.env.BASE_URL}badge`)
     const { unmount } = await expectNoA11yViolations(<App />)

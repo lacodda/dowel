@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn, lineProducts, useThemeSwitch } from 'dowel-ui'
+import markUrl from '../../assets/logo-m.svg'
 import { linkProps, useRoute } from './router'
 import { useStoredState } from './use-stored-state'
 import { Alert } from '../../registry/ui/alert'
@@ -154,8 +155,15 @@ import { Truncate } from '../../registry/ui/truncate'
  * by reasoning about `color-mix`.
  */
 
-/** The sections of the stand: one per component, in the order a screen is
- * built. Each new component adds an entry here. */
+/* The sections of the stand: one per component, in the order a screen is
+ * built. Each new component adds an entry here.
+ *
+ * Two of them are not components at all - `calendar-math` is pure date
+ * arithmetic with no React in it, and `useShortcut` is a hook - and they are
+ * marked `utility` so the navigation can say so. They were previously mixed
+ * into the same list under names in two different styles, which left a reader
+ * to guess why one entry was lowercase; the answer was never "for no reason",
+ * but the list gave no way to tell. */
 const sections = [
   { id: 'button', title: 'Button', docs: '/dowel/components/button/', render: () => <ButtonSection /> },
   { id: 'input', title: 'Input', docs: '/dowel/components/input/', render: () => <InputSection /> },
@@ -197,6 +205,7 @@ const sections = [
   {
     id: 'calendar-math',
     title: 'calendar-math',
+    kind: 'utility',
     docs: '/dowel/components/calendar-math/',
     render: () => <CalendarMathSection />,
   },
@@ -268,7 +277,13 @@ const sections = [
     docs: '/dowel/components/command-palette/',
     render: () => <CommandPaletteSection />,
   },
-  { id: 'shortcut', title: 'Shortcut', docs: '/dowel/components/shortcut/', render: () => <ShortcutSection /> },
+  {
+    id: 'shortcut',
+    title: 'useShortcut',
+    kind: 'utility',
+    docs: '/dowel/components/shortcut/',
+    render: () => <ShortcutSection />,
+  },
   { id: 'toast', title: 'Toast', docs: '/dowel/components/toast/', render: () => <ToastSection /> },
   { id: 'alert', title: 'Alert', docs: '/dowel/components/alert/', render: () => <AlertSection /> },
   { id: 'banner', title: 'Banner', docs: '/dowel/components/banner/', render: () => <BannerSection /> },
@@ -335,7 +350,7 @@ export function App() {
             {/* The line's mark, in the accent now in force: the honeycomb is
               * drawn with `currentColor`, so the identity follows the same
               * token every component follows. */}
-            <Mark className="size-5 text-accent" />
+            <Mark className="size-5" />
             dowel
           </a>
           <span className="rounded-full border border-line px-2 py-0.5 font-mono text-2xs text-dim">
@@ -402,29 +417,38 @@ export function App() {
             * not enough: the box stayed put and its bottom half stayed out of
             * reach, which made the last dozen components unreachable without
             * scrolling the article beside them. */}
-          <ul className="sticky top-8 m-0 max-h-[calc(100vh-6rem)] list-none space-y-0.5 overflow-y-auto p-0 pr-1">
-            {sections.map((section) => {
-              const active = section.id === current?.id
-              return (
-                <li key={section.id}>
-                  <a
-                    {...linkProps(section.id, navigate)}
-                    // The current page is named as such for a screen reader,
-                    // which cannot see that it is the tinted one.
-                    aria-current={active ? 'page' : undefined}
-                    className={cn(
-                      'block rounded-md px-2 py-1 text-sm no-underline transition-colors',
-                      active
-                        ? 'bg-accent-soft font-medium text-accent'
-                        : 'text-dim hover:bg-raise hover:text-text',
-                    )}
-                  >
-                    {section.title}
-                  </a>
-                </li>
-              )
-            })}
-          </ul>
+          <div className="sticky top-8 max-h-[calc(100vh-6rem)] overflow-y-auto pr-1">
+            <ul className="m-0 list-none space-y-0.5 p-0">
+              {sections
+                .filter((section) => section.kind !== 'utility')
+                .map((section) => (
+                  <NavLink
+                    key={section.id}
+                    section={section}
+                    active={section.id === current?.id}
+                    navigate={navigate}
+                  />
+                ))}
+            </ul>
+
+            {/* Not components, and the list says so rather than leaving a
+              * reader to infer it from a lowercase name. */}
+            <h2 className="mt-5 mb-1 px-2 text-2xs uppercase tracking-caption text-faint">
+              Without markup
+            </h2>
+            <ul className="m-0 list-none space-y-0.5 p-0">
+              {sections
+                .filter((section) => section.kind === 'utility')
+                .map((section) => (
+                  <NavLink
+                    key={section.id}
+                    section={section}
+                    active={section.id === current?.id}
+                    navigate={navigate}
+                  />
+                ))}
+            </ul>
+          </div>
         </nav>
 
         <main className="min-w-0 flex-1">
@@ -449,19 +473,52 @@ export function App() {
   )
 }
 
-/** The line's mark: a honeycomb cell, drawn in whatever colour it inherits. */
-function Mark({ className }: { className?: string }) {
+/** One row of the navigation. Shared by both groups, so a change to how a
+ * link looks cannot land in one list and miss the other. */
+function NavLink({
+  section,
+  active,
+  navigate,
+}: {
+  section: { id: string; title: string }
+  active: boolean
+  navigate: (to: string) => void
+}) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-      <path
-        d="M7 3h10l5 9-5 9H7l-5-9z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <li>
+      <a
+        {...linkProps(section.id, navigate)}
+        // The current page is named as such for a screen reader, which cannot
+        // see that it is the tinted one.
+        aria-current={active ? 'page' : undefined}
+        className={cn(
+          'block rounded-md px-2 py-1 text-sm no-underline transition-colors',
+          active ? 'bg-accent-soft font-medium text-accent' : 'text-dim hover:bg-raise hover:text-text',
+        )}
+      >
+        {section.title}
+      </a>
+    </li>
   )
+}
+
+/*
+ * The line's mark.
+ *
+ * The file itself, not a copy of it in JSX. It was hand-drawn here first and
+ * was simply the wrong sign - an empty outline where the real mark is a filled
+ * cell with the `dw` monogram inside - and transcribing the right one would
+ * only have set up the next drift, where `assets/logo-m.svg` moves and the
+ * stand keeps showing what it used to be.
+ *
+ * `logo-m.svg` is the middle master, which is the one a site header takes.
+ * Its amber is fixed rather than following the accent switch: the switch
+ * shows what a *product's* colour does to the components, while the mark
+ * belongs to dowel itself, and a sign that repaints when someone previews
+ * another accent has stopped being a sign.
+ */
+function Mark({ className }: { className?: string }) {
+  return <img src={markUrl} alt="" aria-hidden className={className} />
 }
 
 /** The front page: what the stand is for, and a way into it. */
