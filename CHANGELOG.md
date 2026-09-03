@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.19.0] - 2026-09-03
+
+### Features
+- Give every component a page of its own
+
 ## [0.18.2] - 2026-09-03
 
 ### Bug Fixes
@@ -17,10 +22,8 @@ All notable changes to this project are documented in this file.
 ### Features
 - Dates, on Intl rather than on a date library
 
-## [0.18.0] - 2026-09-02
-
-### Features
-- Dates, on Intl rather than on a date library
+### Testing
+- Re-record what the five fixes changed
 
 ## [0.17.1] - 2026-09-02
 
@@ -44,6 +47,10 @@ All notable changes to this project are documented in this file.
 
 ### Features
 - A field, and the three ways of choosing
+
+### Testing
+- Photograph the four new sections
+- Record the baselines for the form controls
 
 ## [0.15.0] - 2026-09-02
 
