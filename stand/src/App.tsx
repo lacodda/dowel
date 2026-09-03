@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
-import { lineProducts, useThemeSwitch } from 'dowel-ui'
+import { useEffect, useRef, useState } from 'react'
+import { cn, lineProducts, useThemeSwitch } from 'dowel-ui'
+import { linkProps, useRoute } from './router'
+import { useStoredState } from './use-stored-state'
 import { Alert } from '../../registry/ui/alert'
 import { Badge } from '../../registry/ui/badge'
 import { Banner } from '../../registry/ui/banner'
@@ -261,9 +263,23 @@ const sections = [
   { id: 'banner', title: 'Banner', docs: '/dowel/components/banner/', render: () => <BannerSection /> },
 ]
 
+/** The version this stand was built from, injected by Vite out of the package
+ * manifest so the number on the page cannot drift from the one shipped. */
+declare const __DOWEL_VERSION__: string
+
 export function App() {
   const { theme, setTheme } = useThemeSwitch('dowel.stand.theme')
-  const [accent, setAccent] = useState('dowel')
+  const [accent, setAccent] = useStoredState('dowel.stand.accent', 'dowel')
+  const { path, navigate } = useRoute()
+
+  /*
+   * An unknown path shows the overview rather than an error.
+   *
+   * A stand is a place people arrive at from a stale link or a typo, and a
+   * 404 of our own would be a worse answer than the front page - there is
+   * nothing here that a reader could have destroyed by getting the URL wrong.
+   */
+  const current = sections.find((section) => section.id === path)
 
   /*
    * The accent goes on the root element, which is where a product sets it too.
@@ -284,12 +300,31 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-bg text-text">
-      <header className="sticky top-0 border-b border-line bg-bg/90 backdrop-blur" style={{ zIndex: 'var(--z-sticky)' }}>
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-3 px-6 py-3">
-          <a href="/dowel/" className="text-sm font-semibold text-text no-underline">
+      {/*
+        * The header is a plain block, not `sticky`.
+        *
+        * It was sticky, and that put it into every visual baseline: the gate
+        * photographs a section, the bar floats over the top of the frame, and
+        * five separate hypotheses about `addStyleTag` failed to explain why
+        * hiding it worked locally and not in CI. With a page per component
+        * there is nothing to stay visible above - the navigation is beside the
+        * content, not over it - so the cause is gone rather than suppressed.
+        */}
+      <header className="border-b border-line bg-bg">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-6 py-3">
+          <a
+            {...linkProps('', navigate)}
+            className="flex items-center gap-2 text-sm font-semibold text-text no-underline"
+          >
+            {/* The line's mark, in the accent now in force: the honeycomb is
+              * drawn with `currentColor`, so the identity follows the same
+              * token every component follows. */}
+            <Mark className="size-5 text-accent" />
             dowel
           </a>
-          <span className="text-2xs uppercase tracking-caption text-faint">components</span>
+          <span className="rounded-full border border-line px-2 py-0.5 font-mono text-2xs text-dim">
+            v{__DOWEL_VERSION__}
+          </span>
           <a
             href="/dowel/"
             className="text-xs text-dim no-underline hover:text-text"
@@ -344,36 +379,124 @@ export function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-6 py-8">
-        <p className="mb-8 max-w-prose text-sm text-dim">
-          Every component, in the accent of every product of the line. Change the accent above and
-          watch what follows from it: the hover shade, the soft fill, the focus ring, and the colour
-          of text on an accent fill — none of which any component states for itself.
-        </p>
+      <div className="mx-auto flex max-w-6xl gap-8 px-6 py-8">
+        <nav aria-label="Components" className="hidden w-44 shrink-0 md:block">
+          {/* The list is taller than the screen - forty components - so it
+            * scrolls on its own rather than with the page. Sticky alone was
+            * not enough: the box stayed put and its bottom half stayed out of
+            * reach, which made the last dozen components unreachable without
+            * scrolling the article beside them. */}
+          <ul className="sticky top-8 m-0 max-h-[calc(100vh-6rem)] list-none space-y-0.5 overflow-y-auto p-0 pr-1">
+            {sections.map((section) => {
+              const active = section.id === current?.id
+              return (
+                <li key={section.id}>
+                  <a
+                    {...linkProps(section.id, navigate)}
+                    // The current page is named as such for a screen reader,
+                    // which cannot see that it is the tinted one.
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'block rounded-md px-2 py-1 text-sm no-underline transition-colors',
+                      active
+                        ? 'bg-accent-soft font-medium text-accent'
+                        : 'text-dim hover:bg-raise hover:text-text',
+                    )}
+                  >
+                    {section.title}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
 
+        <main className="min-w-0 flex-1">
+          {current ? (
+            <section key={current.id}>
+              <div className="mb-4 flex items-baseline gap-3">
+                <h1 className="text-xl font-semibold">{current.title}</h1>
+                {/* The other half of the pair: this shows what the component
+                    does, its page says why it does it that way. */}
+                <a href={current.docs} className="text-xs text-dim no-underline hover:text-accent">
+                  docs ↗
+                </a>
+              </div>
+              {current.render()}
+            </section>
+          ) : (
+            <Overview navigate={navigate} />
+          )}
+        </main>
+      </div>
+    </div>
+  )
+}
+
+/** The line's mark: a honeycomb cell, drawn in whatever colour it inherits. */
+function Mark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+      <path
+        d="M7 3h10l5 9-5 9H7l-5-9z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+/** The front page: what the stand is for, and a way into it. */
+function Overview({ navigate }: { navigate: (to: string) => void }) {
+  return (
+    <div>
+      <h1 className="mb-3 text-2xl font-semibold">Every component, in every accent</h1>
+      <p className="mb-6 max-w-prose text-sm text-dim">
+        Change the accent in the header and watch what follows from it: the hover shade, the soft
+        fill, the focus ring, and the colour of text on an accent fill — none of which any component
+        states for itself. Change the theme and watch the same components hold in both.
+      </p>
+      {/* On a wide screen this list is the same list as the navigation beside
+        * it, and two copies of forty links is not a front page. It shows below
+        * the breakpoint that hides the sidebar, where it is the only way in. */}
+      <ul className="m-0 grid list-none grid-cols-2 gap-2 p-0 md:hidden">
         {sections.map((section) => (
-          <section
-            key={section.id}
-            id={section.id}
-            /* `scroll-mt` clears the sticky header. Without it, scrolling to a
-             * section - which is what an anchor link and the visual gate both
-             * do - leaves its top underneath the bar. It went unnoticed until
-             * the Calendar, whose first row is tall enough to be worth
-             * photographing from the top. */
-            className="mb-12 scroll-mt-20"
-          >
-            <div className="mb-4 flex items-baseline gap-3">
-              <h2 className="text-xl font-semibold">{section.title}</h2>
-              {/* The other half of the pair: this shows what the component
-                  does, its page says why it does it that way. */}
-              <a href={section.docs} className="text-xs text-dim no-underline hover:text-accent">
-                docs ↗
-              </a>
-            </div>
-            {section.render()}
-          </section>
+          <li key={section.id}>
+            <a
+              {...linkProps(section.id, navigate)}
+              className="block rounded-lg border border-line bg-raise px-3 py-2 text-sm text-text no-underline transition-colors hover:border-accent hover:text-accent"
+            >
+              {section.title}
+            </a>
+          </li>
         ))}
-      </main>
+      </ul>
+
+      <div className="hidden gap-3 md:grid md:grid-cols-3">
+        <Panel className="p-4">
+          <h2 className="mb-1 text-sm font-semibold">{sections.length} components</h2>
+          <p className="m-0 text-xs text-dim">
+            Pick one from the list. Each has a page of its own, so the address bar names what you
+            are looking at and the link can be sent to someone.
+          </p>
+        </Panel>
+        <Panel className="p-4">
+          <h2 className="mb-1 text-sm font-semibold">Two themes</h2>
+          <p className="m-0 text-xs text-dim">
+            Every component is drawn in both, from the same tokens. Nothing here carries a
+            <code className="px-1 font-mono text-2xs">dark:</code> utility of its own.
+          </p>
+        </Panel>
+        <Panel className="p-4">
+          <h2 className="mb-1 text-sm font-semibold">{lineProducts.length} accents</h2>
+          <p className="m-0 text-xs text-dim">
+            One per product of the line. The choice is remembered, so the stand opens where you
+            left it.
+          </p>
+        </Panel>
+      </div>
     </div>
   )
 }
@@ -410,7 +533,7 @@ function ButtonSection() {
         </Button>
       </Row>
 
-      <Row label="sizes">
+      <Row label="sizes, text and icon">
         <Button variant="primary" size="sm">
           Small
         </Button>
@@ -1514,6 +1637,7 @@ function SelectSection() {
 function ComboboxSection() {
   const [one, setOne] = useState<string | null>(null)
   const [many, setMany] = useState<string[]>(['Cherry'])
+  const chipsRef = useRef<HTMLDivElement>(null)
 
   return (
     <>
@@ -1540,7 +1664,7 @@ function ComboboxSection() {
           value={many}
           onValueChange={(value) => setMany(value as string[])}
         >
-          <ComboboxChips className="w-72">
+          <ComboboxChips ref={chipsRef} className="w-72">
             {/* `Value` is what knows the chosen items, so the chips are drawn
                 from it rather than from the state next to it. */}
             <ComboboxValue>
@@ -1558,7 +1682,10 @@ function ComboboxSection() {
                 last chip. */}
             <ComboboxInput bare placeholder="Fruit" aria-label="Fruits" />
           </ComboboxChips>
-          <ComboboxPopup>
+          {/* Anchored to the chips box, not the input inside it: an empty
+              input is narrower than the field, and the list would hang short
+              of the box a reader is looking at. */}
+          <ComboboxPopup anchor={chipsRef}>
             <ComboboxEmpty>Nothing matches</ComboboxEmpty>
             <ComboboxList>
               {(fruit: string) => (

@@ -184,16 +184,27 @@ export interface ComboboxPopupProps
   align?: Base.Positioner.Props['align']
   /** Distance from the input, in pixels. */
   sideOffset?: Base.Positioner.Props['sideOffset']
+  /**
+   * What to line the list up with. Defaults to the input that owns it.
+   *
+   * Pass the `ComboboxChips` box when there is one: with chips, the input is
+   * only as wide as what has been typed - an empty one measured 214px inside
+   * a 288px field - so a list anchored to it hangs short of the box a reader
+   * sees. Base UI publishes the anchor's width as `--anchor-width`, which is
+   * how the mismatch is visible from outside.
+   */
+  anchor?: Base.Positioner.Props['anchor']
   /** Where to portal to. Defaults to the document body. */
   container?: Base.Portal.Props['container']
 }
 
-/** The list. Portalled and positioned against the input. */
+/** The list. Portalled and positioned against the input, or the given anchor. */
 export function ComboboxPopup({
   size,
   side,
   align,
   sideOffset = 4,
+  anchor,
   container,
   className,
   children,
@@ -205,6 +216,7 @@ export function ComboboxPopup({
         side={side}
         align={align}
         sideOffset={sideOffset}
+        anchor={anchor}
         className="[z-index:var(--z-menu)]"
       >
         <Base.Popup className={cn(comboboxPopupVariants({ size }), className)} {...props}>

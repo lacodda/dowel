@@ -214,6 +214,32 @@ describe('the docs do not claim an old version', () => {
       }
     }
   })
+
+  it('is not typed by hand on the stand', () => {
+    /* The stand shows the version it was built from, which makes it one more
+     * place a stale number can sit - and the failure above is exactly what
+     * happens when a version is written down twice.
+     *
+     * So it is not written down: Vite substitutes `__DOWEL_VERSION__` out of
+     * the package manifest at build time. This checks the wiring rather than
+     * the number, because the number is not there to check - a refactor that
+     * replaced it with a literal would pass every other test in this file
+     * while reintroducing the drift they exist to prevent. */
+    const app = read('stand/src/App.tsx')
+    expect(app, 'the stand should show the injected version').toContain('__DOWEL_VERSION__')
+
+    const literal = new RegExp(`v${pkg.version.replace(/\./g, '\\.')}`)
+    expect(
+      literal.test(app),
+      'the stand hardcodes the version; it should render `__DOWEL_VERSION__` instead',
+    ).toBe(false)
+
+    // And the substitution has to be configured, or the identifier is simply
+    // undefined at runtime - which is how it first failed under the test
+    // runner, where no Vite build had defined it.
+    expect(read('stand/vite.config.ts')).toContain('__DOWEL_VERSION__')
+    expect(read('vitest.config.ts')).toContain('__DOWEL_VERSION__')
+  })
 })
 
 describe('the docs do not miscount the primitives', () => {
