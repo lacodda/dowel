@@ -5,7 +5,7 @@
   "title": "Copyable",
   "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
   "dependencies": [
-    "dowel-ui@^0.19.0"
+    "dowel-ui@^0.19.1"
   ],
   "registryDependencies": [],
   "files": [

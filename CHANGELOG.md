@@ -2,10 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.19.1] - 2026-09-03
+
+### Bug Fixes
+- Hand a deep link back to the stand from the site 404
+
 ## [0.19.0] - 2026-09-03
 
 ### Features
 - Give every component a page of its own
+
+### Testing
+- Re-record what the page-per-component layout changed
 
 ## [0.18.2] - 2026-09-03
 
