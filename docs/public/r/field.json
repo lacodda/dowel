@@ -6,7 +6,7 @@
   "description": "Every form is the same four parts repeated: a name for the control, the control, sometimes a hint, and sometimes an error. Written by hand each time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no screen reader mentions, the error appears in red and is announced by nothing at all. This is that arrangement, once.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.18.0"
+    "dowel-ui@^0.18.1"
   ],
   "registryDependencies": [],
   "files": [

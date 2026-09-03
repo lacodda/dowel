@@ -6,7 +6,7 @@
   "description": "The case for it over a NumberField is that the number does not matter much: a volume, an opacity, a weight in a search filter. Where the exact figure does matter, a slider is a worse field with more pixels - it cannot be typed into, it cannot be pasted into, and it has no state for \"empty\".",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.18.0"
+    "dowel-ui@^0.18.1"
   ],
   "registryDependencies": [],
   "files": [

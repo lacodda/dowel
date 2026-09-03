@@ -5,7 +5,7 @@
   "title": "Date-range-picker",
   "description": "The interesting part is the state between them. After the first click there is a start and no end, and that is not an incomplete range to be hidden or a range of one day - it is the normal middle of the interaction, and the calendar has to show it: the first day marked, the days under the pointer shading as the reader moves, the popup staying open. Products that skip it end up with a picker that seems to do nothing until the second click.",
   "dependencies": [
-    "dowel-ui@^0.18.0"
+    "dowel-ui@^0.18.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/calendar.json",

@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.18.1] - 2026-09-03
+
+### Bug Fixes
+- Clear the sticky header when scrolling to a section
+- Keep the sticky header out of the pictures
+- Five defects a live run found, and none of the tests did
+
+### Features
+- Dates, on Intl rather than on a date library
+
 ## [0.18.0] - 2026-09-02
 
 ### Features
