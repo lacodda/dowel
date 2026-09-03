@@ -76,11 +76,14 @@ describe('what a primitive weighs', () => {
         'nobody can use without reassembling it.',
     },
     'command-palette': {
-      ceiling: 4608,
+      ceiling: 4864,
       because:
-        'The explicit viewport anchor. A palette has no trigger to point at, and without ' +
-        'it the positioner never resolves and the popup renders fully transparent - ' +
-        'present, sized, and invisible.',
+        'The explicit viewport anchor, and the clothes its three parts were missing. ' +
+        'A palette has no trigger to point at, so without the anchor the positioner ' +
+        'never resolves and the popup renders fully transparent. The item, list and ' +
+        'empty state were bare re-exports - the comment claimed "the same clothes as a ' +
+        'Combobox row" and the component wore none, so the rows inherited the popup ' +
+        'font and stood a third taller than every other list in the set.',
     },
     calendar: {
       ceiling: 8192,

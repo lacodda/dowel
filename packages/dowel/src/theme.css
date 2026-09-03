@@ -423,9 +423,26 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+/*
+ * In `@layer base`, so a component can turn it off.
+ *
+ * Unlayered, this rule has the same specificity as `focus-visible:outline-none`
+ * from Tailwind - both are one pseudo-class - and wins on source order alone,
+ * because the theme is imported before the utilities. Every component that
+ * draws its own focus ring got this one on top of it: the command palette's
+ * field had an accent outline it had explicitly opted out of, and a combobox
+ * with chips drew two rings, one around the box and one around the input
+ * inside it.
+ *
+ * A layered rule loses to any unlayered one regardless of specificity, which
+ * is the whole point of cascade layers - the base layer states a default and
+ * a component overrides it by saying so.
+ */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

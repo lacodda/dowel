@@ -50,14 +50,34 @@ export const commandPalettePopupVariants = cva(
 export const CommandPalette = Base.Root
 
 /** A row. The same clothes as a Combobox row, on purpose: a palette is a list
- * of choices, and two lists of choices in one product should not differ. */
-export const CommandPaletteItem = Base.Item
+ * of choices, and two lists of choices in one product should not differ.
+ *
+ * They did differ, for as long as this was a bare re-export: the comment said
+ * "the same clothes" and the component wore none, so the rows inherited the
+ * popup's 16px and stood a third taller than every other list in the set. A
+ * live run caught it - the palette looked like a different product. */
+export function CommandPaletteItem({ className, ...props }: Base.Item.Props) {
+  return <Base.Item className={cn(comboboxItemVariants(), className)} {...props} />
+}
 
 /** The list. Takes a render function over the filtered items. */
-export const CommandPaletteList = Base.List
+export function CommandPaletteList({ className, ...props }: Base.List.Props) {
+  return <Base.List className={cn('overflow-y-auto p-1', className)} {...props} />
+}
 
-/** Shown when nothing matches. The words are the product's. */
-export const CommandPaletteEmpty = Base.Empty
+/** Shown when nothing matches. The words are the product's.
+ *
+ * Base UI keeps it mounted so the announcement fires, which means its padding
+ * is spent whether or not it has anything to say - and a palette with six
+ * results had a 48px hole under the field. It collapses when empty instead. */
+export function CommandPaletteEmpty({ className, ...props }: Base.Empty.Props) {
+  return (
+    <Base.Empty
+      className={cn('px-2 py-3 text-center text-sm text-faint empty:hidden empty:p-0', className)}
+      {...props}
+    />
+  )
+}
 
 /** A labelled group, for a palette that lists more than one kind of thing. */
 export const CommandPaletteGroup = Base.Group

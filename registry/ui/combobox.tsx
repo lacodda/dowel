@@ -1,3 +1,4 @@
+import type { Ref } from 'react'
 import { Combobox as Base } from '@base-ui/react/combobox'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
@@ -36,25 +37,30 @@ import { selectItemVariants, selectPopupVariants } from './select'
  * component here rather than a `{items.length === 0 && …}` in the product.
  */
 
-export const comboboxInputVariants = cva([fieldClasses], {
+/* Two bases, chosen by `bare`, rather than one base and an override.
+ *
+ * Inside `ComboboxChips` the container is the field, so the input has no
+ * border, no background and no focus ring of its own - a bordered box inside a
+ * bordered box reads as two controls, and two focus rings appear as one thick
+ * one. The obvious way to write that is `fieldClasses` plus a few `-none`
+ * classes, and it does not work: `tailwind-merge` does not treat
+ * `focus-visible:outline-none` as conflicting with
+ * `focus-visible:outline-2 … outline-accent`, so both survive and the later
+ * one in the stylesheet wins. The same trap took `w-full` versus `w-auto`
+ * earlier in this file.
+ *
+ * So the variant picks which set applies instead of trying to subtract from
+ * one - nothing is left to a merge that has no opinion. */
+export const comboboxInputVariants = cva('', {
   variants: {
     size: {
       sm: 'h-8 text-xs',
       md: 'h-9',
       lg: 'h-10 text-base',
     },
-    /* Inside `ComboboxChips` the container is the field, so the input drops
-     * its own border, background and ring - a bordered box inside a bordered
-     * box reads as two controls stacked. It also shrinks to the width of what
-     * has been typed rather than claiming a line of its own, which is what
-     * lets it sit beside the last chip. */
     bare: {
-      /* `w-auto` is load-bearing: `fieldClasses` opens with `w-full`, and
-       * `tailwind-merge` does not treat that as conflicting with `min-w-24`
-       * or `flex-1` - different groups - so without it the input keeps the
-       * full width and wraps onto its own line below the chips. */
-      true: 'h-7 w-auto min-w-24 flex-1 border-0 bg-transparent px-1 outline-none hover:border-0 focus-visible:outline-none',
-      false: '',
+      true: 'h-7 w-auto min-w-24 flex-1 bg-transparent px-1 text-sm text-text placeholder:text-faint outline-none',
+      false: fieldClasses,
     },
   },
   defaultVariants: { size: 'md', bare: false },
@@ -113,9 +119,17 @@ export const ComboboxStatus = Base.Status
  * input stranded underneath. The input sits on the same line as the last
  * chip and takes the rest of the width, so a half-filled field still looks
  * like a field. */
-export function ComboboxChips({ className, ...props }: Base.Chips.Props) {
+export function ComboboxChips({
+  ref,
+  className,
+  ...props
+}: Base.Chips.Props & { ref?: Ref<HTMLDivElement> }) {
   return (
     <Base.Chips
+      // Taken out of `...props` and passed on deliberately: a product needs a
+      // handle on this box to anchor the list to it, because the input inside
+      // is only as wide as what has been typed.
+      ref={ref}
       className={cn(
         fieldClasses,
         'flex min-h-9 flex-wrap items-center gap-1 py-1',
