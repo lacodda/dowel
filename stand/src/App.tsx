@@ -383,7 +383,14 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   return (
     <div className="mb-4">
       <div className="mb-2 text-2xs uppercase tracking-caption text-faint">{label}</div>
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-line bg-raise p-4">
+      {/* `items-end`, not `items-center`.
+        *
+        * A row mixes controls of different heights - a bare Input beside a
+        * Field, which carries a label above and a hint below. Centred, their
+        * boxes float at different heights and the row reads as misaligned;
+        * aligned to the bottom, the controls themselves line up and the label
+        * simply sits above its own. That is what a form does. */}
+      <div className="flex flex-wrap items-end gap-2 rounded-lg border border-line bg-raise p-4">
         {children}
       </div>
     </div>
@@ -1546,7 +1553,10 @@ function ComboboxSection() {
                 ))
               }
             </ComboboxValue>
-            <ComboboxInput placeholder="Fruit" aria-label="Fruits" />
+            {/* `bare` because the chips container is the field here: the
+                input drops its own border and sits on the same line as the
+                last chip. */}
+            <ComboboxInput bare placeholder="Fruit" aria-label="Fruits" />
           </ComboboxChips>
           <ComboboxPopup>
             <ComboboxEmpty>Nothing matches</ComboboxEmpty>

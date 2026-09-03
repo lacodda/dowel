@@ -43,8 +43,21 @@ export const comboboxInputVariants = cva([fieldClasses], {
       md: 'h-9',
       lg: 'h-10 text-base',
     },
+    /* Inside `ComboboxChips` the container is the field, so the input drops
+     * its own border, background and ring - a bordered box inside a bordered
+     * box reads as two controls stacked. It also shrinks to the width of what
+     * has been typed rather than claiming a line of its own, which is what
+     * lets it sit beside the last chip. */
+    bare: {
+      /* `w-auto` is load-bearing: `fieldClasses` opens with `w-full`, and
+       * `tailwind-merge` does not treat that as conflicting with `min-w-24`
+       * or `flex-1` - different groups - so without it the input keeps the
+       * full width and wraps onto its own line below the chips. */
+      true: 'h-7 w-auto min-w-24 flex-1 border-0 bg-transparent px-1 outline-none hover:border-0 focus-visible:outline-none',
+      false: '',
+    },
   },
-  defaultVariants: { size: 'md' },
+  defaultVariants: { size: 'md', bare: false },
 })
 
 /** The list, and a row in it, are Select's - imported rather than copied.
@@ -92,8 +105,27 @@ export const ComboboxItemIndicator = Base.ItemIndicator
 export const ComboboxStatus = Base.Status
 
 /** The container the chips sit in. Its children are plain nodes, not a render
- * function - the chosen values are mapped by `ComboboxValue` inside it. */
-export const ComboboxChips = Base.Chips
+ * function - the chosen values are mapped by `ComboboxValue` inside it.
+ *
+ * It wears the field's clothes and lays the chips out in a row that wraps,
+ * which is the whole difference between a control and a list: unstyled, the
+ * chips stack one per line and the box grows into a column of pills with the
+ * input stranded underneath. The input sits on the same line as the last
+ * chip and takes the rest of the width, so a half-filled field still looks
+ * like a field. */
+export function ComboboxChips({ className, ...props }: Base.Chips.Props) {
+  return (
+    <Base.Chips
+      className={cn(
+        fieldClasses,
+        'flex min-h-9 flex-wrap items-center gap-1 py-1',
+        'focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-accent',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
 
 /** The current value, as a render function of it. This is what turns a
  * `multiple` value into one chip per entry. */
@@ -105,9 +137,17 @@ export interface ComboboxInputProps
   extends Omit<Base.Input.Props, 'size'>,
     VariantProps<typeof comboboxInputVariants> {}
 
-/** Where the query is typed. A real `<input role="combobox">`. */
-export function ComboboxInput({ size, className, ...props }: ComboboxInputProps) {
-  return <Base.Input className={cn(comboboxInputVariants({ size }), className)} {...props} />
+/** Where the query is typed. A real `<input role="combobox">`.
+ *
+ * Inside `ComboboxChips` it drops its own border and background: the
+ * container is the field there, and a bordered input inside a bordered box
+ * reads as two controls. */
+export function ComboboxInput({ size, bare, className, ...props }: ComboboxInputProps) {
+  // `bare` is pulled out and handed to `cva`. Left in `...props` it would be
+  // spread onto the `<input>` as an unknown attribute and change nothing -
+  // which is exactly what it did: the variant existed, the prop was passed,
+  // and the class list came out without a trace of either.
+  return <Base.Input className={cn(comboboxInputVariants({ size, bare }), className)} {...props} />
 }
 
 const iconButtonClasses = cn(

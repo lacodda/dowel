@@ -72,7 +72,11 @@ export const selectItemVariants = cva([
   // Base UI marks the item under the pointer or the keyboard the same way,
   // so one rule covers both and they cannot disagree.
   'data-[highlighted]:bg-soft data-[highlighted]:text-text',
-  'data-[selected]:text-text',
+  // What is already chosen has to be visible in the list, and colour alone
+  // will not do it: `text-text` on an item that is already `text-text` says
+  // nothing. The tick below is the state; this is the emphasis that goes with
+  // it, so the row reads as chosen at a glance and not only under the eye.
+  'data-[selected]:font-medium data-[selected]:text-accent',
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
   '[&_svg]:size-3.5 [&_svg]:shrink-0',
 ])
@@ -88,8 +92,15 @@ export const Select = Base.Root
  * the value, not a node - passing a node pins the trigger to that node
  * forever and the selection never appears, so the placeholder goes in
  * `placeholder`. And what it shows is the raw value, `plum` rather than
- * `Plum`, unless the root is given an `items` map to look the label up in. */
-export const SelectValue = Base.Value
+ * `Plum`, unless the root is given an `items` map to look the label up in.
+ *
+ * It truncates, and that matters most for `multiple`: nine chosen fruits are
+ * one long string, and without this the trigger either grows into a paragraph
+ * or spills its text past its own border. One line, an ellipsis, and the full
+ * set is still in the list where the ticks are. */
+export function SelectValue({ className, ...props }: Base.Value.Props) {
+  return <Base.Value className={cn('min-w-0 flex-1 truncate text-left', className)} {...props} />
+}
 
 /** The chevron, or whatever the product puts there. Marked decorative by Base
  * UI, since the button is already named by its value. */
@@ -160,9 +171,39 @@ export function SelectPopup({
   )
 }
 
-/** An option. */
-export function SelectItem({ className, ...props }: Base.Item.Props) {
-  return <Base.Item className={cn(selectItemVariants(), className)} {...props} />
+/** An option, with the tick that says it is the chosen one.
+ *
+ * The indicator is built in rather than left to the caller. The item already
+ * reserves the room for it (`pr-7`), and a dropdown that does not show what is
+ * currently selected is the commonest complaint about a styled select: it
+ * opens, and the reader has to remember what they picked last time. Passing
+ * `indicator={false}` turns it off for a list where the choice is obvious
+ * some other way. */
+export function SelectItem({
+  indicator = true,
+  className,
+  children,
+  ...props
+}: Base.Item.Props & { indicator?: boolean }) {
+  return (
+    <Base.Item className={cn(selectItemVariants(), className)} {...props}>
+      {children}
+      {indicator && (
+        <Base.ItemIndicator className="absolute right-2 flex text-accent">
+          <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden>
+            <path
+              d="M3.5 8.5l3 3 6-6.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Base.ItemIndicator>
+      )}
+    </Base.Item>
+  )
 }
 
 /** The caption above a group. */

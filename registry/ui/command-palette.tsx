@@ -112,8 +112,25 @@ export function CommandPalettePopup({
       />
       <Base.Positioner
         className="[z-index:var(--z-palette)]"
-        // Anchored to the viewport rather than to a trigger: a palette has no
-        // trigger to point at, and the one it does have is a keystroke.
+        /* The anchor is a point at the top of the viewport, given explicitly.
+         *
+         * A positioner places a popup against an anchor and hides itself with
+         * an inline `opacity: 0` until it has measured one. A palette has no
+         * trigger to point at - it is opened by a keystroke - so without this
+         * the measure never resolves: the popup sits in the DOM at the right
+         * size, fully transparent, rendering nothing and reporting no error.
+         * Found by reading the computed style off the positioner rather than
+         * the popup, which was opaque the whole time.
+         *
+         * A zero-height rectangle a fifth of the way down puts the palette
+         * where the eye already is rather than dead centre. */
+        anchor={{
+          getBoundingClientRect: () => {
+            const width = typeof window === 'undefined' ? 0 : window.innerWidth
+            const top = typeof window === 'undefined' ? 0 : window.innerHeight * 0.18
+            return new DOMRect(width / 2, top, 0, 0)
+          },
+        }}
         positionMethod="fixed"
         side="bottom"
         align="center"

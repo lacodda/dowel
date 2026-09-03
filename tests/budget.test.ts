@@ -53,6 +53,35 @@ describe('what a primitive weighs', () => {
    * below asks for, and the reason has to say why splitting it would be
    * worse than the size. */
   const RAISED: Record<string, { ceiling: number; because: string }> = {
+    /* The three that grew when a live run found what they were not doing.
+     *
+     * Each gained one thing a reader had asked for and none of them can be
+     * split around it: Select shows a tick beside what is already chosen and
+     * truncates a long multiple value, Combobox lays its chips out as a field
+     * rather than a column, and the palette carries the anchor that makes it
+     * visible at all. Two to four per cent over, and the alternative would be
+     * a component that does not answer the complaint. */
+    select: {
+      ceiling: 4608,
+      because:
+        'The tick that shows which option is already chosen, and the truncation that ' +
+        'keeps a multiple value on one line. Both belong to the item and the value; ' +
+        'neither is a component of its own.',
+    },
+    combobox: {
+      ceiling: 4608,
+      because:
+        'The chips container is the field when it is used - a row that wraps, with the ' +
+        'input on the same line as the last chip. Splitting it would leave a container ' +
+        'nobody can use without reassembling it.',
+    },
+    'command-palette': {
+      ceiling: 4608,
+      because:
+        'The explicit viewport anchor. A palette has no trigger to point at, and without ' +
+        'it the positioner never resolves and the popup renders fully transparent - ' +
+        'present, sized, and invisible.',
+    },
     calendar: {
       ceiling: 8192,
       because:

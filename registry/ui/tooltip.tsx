@@ -148,10 +148,19 @@ export function TooltipArrow({ className, ...props }: Base.Arrow.Props) {
     <Base.Arrow
       className={cn(
         'h-1.5 w-1.5 rotate-45 border border-line bg-raise',
-        'data-[side=bottom]:-top-[3px]',
-        'data-[side=top]:-bottom-[3px]',
-        'data-[side=left]:-right-[3px]',
-        'data-[side=right]:-left-[3px]',
+        /* Two of the four borders are dropped per side, which Popover has done
+         * all along and this did not.
+         *
+         * A square rotated 45 degrees shows two of its edges outside the
+         * popup: the pair facing the trigger, which is the notch, and the
+         * pair behind it, which is a stray line hanging off the far side. It
+         * reads as a second arrow pointing the wrong way - and it is small
+         * enough that it looked like a rendering artefact rather than a rule
+         * nobody wrote. */
+        'data-[side=bottom]:-top-[3px] data-[side=bottom]:border-r-0 data-[side=bottom]:border-b-0',
+        'data-[side=top]:-bottom-[3px] data-[side=top]:border-t-0 data-[side=top]:border-l-0',
+        'data-[side=left]:-right-[3px] data-[side=left]:border-b-0 data-[side=left]:border-l-0',
+        'data-[side=right]:-left-[3px] data-[side=right]:border-r-0 data-[side=right]:border-t-0',
         className,
       )}
       {...props}
