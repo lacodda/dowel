@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.20.0] - 2026-09-03
+
+### Features
+- Five components for the harder half of a form
+
 ## [0.19.1] - 2026-09-03
 
 ### Bug Fixes
