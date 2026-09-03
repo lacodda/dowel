@@ -5,6 +5,17 @@ import { useStoredState } from './use-stored-state'
 import { Alert } from '../../registry/ui/alert'
 import { Badge } from '../../registry/ui/badge'
 import { Banner } from '../../registry/ui/banner'
+import { TagInput } from '../../registry/ui/tag-input'
+import { FileDrop, type FileRejection } from '../../registry/ui/file-drop'
+import { ColorField } from '../../registry/ui/color-field'
+import {
+  ActionBar,
+  ActionBarButton,
+  ActionBarGroup,
+  ActionBarSeparator,
+  ActionBarSpacer,
+} from '../../registry/ui/action-bar'
+import { SaveState, type SaveStatus } from '../../registry/ui/save-state'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
 import {
@@ -261,6 +272,11 @@ const sections = [
   { id: 'toast', title: 'Toast', docs: '/dowel/components/toast/', render: () => <ToastSection /> },
   { id: 'alert', title: 'Alert', docs: '/dowel/components/alert/', render: () => <AlertSection /> },
   { id: 'banner', title: 'Banner', docs: '/dowel/components/banner/', render: () => <BannerSection /> },
+  { id: 'tag-input', title: 'TagInput', docs: '/dowel/components/tag-input/', render: () => <TagInputSection /> },
+  { id: 'file-drop', title: 'FileDrop', docs: '/dowel/components/file-drop/', render: () => <FileDropSection /> },
+  { id: 'color-field', title: 'ColorField', docs: '/dowel/components/color-field/', render: () => <ColorFieldSection /> },
+  { id: 'action-bar', title: 'ActionBar', docs: '/dowel/components/action-bar/', render: () => <ActionBarSection /> },
+  { id: 'save-state', title: 'SaveState', docs: '/dowel/components/save-state/', render: () => <SaveStateSection /> },
 ]
 
 /** The version this stand was built from, injected by Vite out of the package
@@ -1977,6 +1993,256 @@ function BannerSection() {
             <Banner tone="bad">The backup has not run for nine days.</Banner>
           </div>
         </div>
+      </Row>
+    </>
+  )
+}
+
+function TagInputSection() {
+  const [tags, setTags] = useState<string[]>(['documentation', 'registry'])
+  const [few, setFew] = useState<string[]>([])
+
+  return (
+    <>
+      <Row label="type a word, press Enter">
+        <TagInput
+          value={tags}
+          onValueChange={setTags}
+          aria-label="Tags"
+          placeholder="Add a tag"
+          removeLabel={(tag) => `Remove ${tag}`}
+          className="w-80"
+        />
+      </Row>
+
+      <Row label="capped, and saying so">
+        <TagInput
+          value={few}
+          onValueChange={setFew}
+          max={3}
+          aria-label="Up to three"
+          placeholder={few.length < 3 ? 'Add a tag' : undefined}
+          removeLabel={(tag) => `Remove ${tag}`}
+          className="w-80"
+        >
+          <span className="px-1 text-2xs text-faint tabular-nums">{few.length}/3</span>
+        </TagInput>
+      </Row>
+
+      <Row label="sizes">
+        <TagInput
+          size="sm"
+          value={['small']}
+          onValueChange={() => {}}
+          aria-label="Small"
+          removeLabel={(tag) => `Remove ${tag}`}
+          className="w-56"
+        />
+        <TagInput
+          size="lg"
+          value={['large']}
+          onValueChange={() => {}}
+          aria-label="Large"
+          removeLabel={(tag) => `Remove ${tag}`}
+          className="w-56"
+        />
+      </Row>
+    </>
+  )
+}
+
+function FileDropSection() {
+  const [taken, setTaken] = useState<string[]>([])
+  const [refused, setRefused] = useState<FileRejection[]>([])
+
+  return (
+    <>
+      <Row label="drag files onto it, or press it">
+        <div className="w-full">
+          <FileDrop
+            aria-label="Attachments"
+            multiple
+            onFiles={(files) => setTaken(files.map((file) => file.name))}
+            className="w-full"
+          >
+            <span className="text-sm text-dim">
+              Drop files here, or <span className="text-accent underline">choose them</span>
+            </span>
+          </FileDrop>
+          {taken.length > 0 && (
+            <ul className="m-0 mt-2 list-none p-0 text-xs text-dim">
+              {taken.map((name) => (
+                <li key={name} className="font-mono">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </Row>
+
+      <Row label="filtered, and saying what it refused">
+        <div className="w-full">
+          <FileDrop
+            aria-label="Images only, under 1 KB"
+            accept="image/*"
+            maxSize={1024}
+            multiple
+            onFiles={() => setRefused([])}
+            onReject={setRefused}
+            className="w-full"
+          >
+            <span className="text-sm text-dim">Images, under 1 KB</span>
+          </FileDrop>
+          {refused.length > 0 && (
+            <ul className="m-0 mt-2 list-none p-0 text-xs text-bad">
+              {refused.map((rejection) => (
+                <li key={rejection.file.name}>
+                  {rejection.file.name} - {rejection.reason === 'type' ? 'not an image' : 'too large'}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </Row>
+
+      <Row label="disabled">
+        <FileDrop aria-label="Closed" disabled onFiles={() => {}} className="w-full">
+          <span className="text-sm text-dim">Not taking files right now</span>
+        </FileDrop>
+      </Row>
+    </>
+  )
+}
+
+function ColorFieldSection() {
+  const [token, setToken] = useState('kilna')
+  const [anything, setAnything] = useState(lineProducts[7]!.accent)
+
+  return (
+    <>
+      <Row label="the vocabulary a product already speaks">
+        <div className="flex flex-col gap-2">
+          <ColorField value={token} onValueChange={setToken} aria-label="Colour" />
+          <span className="text-xs text-dim">
+            chosen: <code className="font-mono text-text">{token}</code>
+          </span>
+        </div>
+      </Row>
+
+      <Row label="or a colour the reader picked">
+        <div className="flex flex-col gap-2">
+          <ColorField
+            value={anything}
+            onValueChange={setAnything}
+            allowCustom
+            customLabel="Custom"
+            aria-label="Any colour"
+          />
+          <span className="text-xs text-dim">
+            chosen: <code className="font-mono text-text">{anything}</code>
+          </span>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function ActionBarSection() {
+  return (
+    <>
+      <Row label="at the foot of a form">
+        <div className="w-full rounded-md border border-line">
+          <div className="p-4 text-sm text-dim">A form, and its actions below it.</div>
+          <ActionBar
+            position="static"
+            aria-label="Form actions"
+            className="border-t border-line px-4 py-3"
+          >
+            <ActionBarButton render={<Button variant="primary">Save</Button>} />
+            <ActionBarButton render={<Button variant="ghost">Cancel</Button>} />
+            <ActionBarSpacer />
+            <ActionBarButton render={<Button variant="danger">Delete</Button>} />
+          </ActionBar>
+        </div>
+      </Row>
+
+      <Row label="groups, separated">
+        <div className="w-full rounded-md border border-line px-4 py-3">
+          <ActionBar aria-label="Editor">
+            <ActionBarGroup>
+              <ActionBarButton
+                render={
+                  <Button variant="ghost" size="sm">
+                    Bold
+                  </Button>
+                }
+              />
+              <ActionBarButton
+                render={
+                  <Button variant="ghost" size="sm">
+                    Italic
+                  </Button>
+                }
+              />
+            </ActionBarGroup>
+            <ActionBarSeparator />
+            <ActionBarGroup>
+              <ActionBarButton
+                render={
+                  <Button variant="ghost" size="sm">
+                    Link
+                  </Button>
+                }
+              />
+              <ActionBarButton
+                render={
+                  <Button variant="ghost" size="sm">
+                    Quote
+                  </Button>
+                }
+              />
+            </ActionBarGroup>
+          </ActionBar>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function SaveStateSection() {
+  const [status, setStatus] = useState<SaveStatus>('idle')
+
+  return (
+    <>
+      <Row label="what a form without a Save button says">
+        <div className="flex items-center gap-3">
+          <Input aria-label="Title" defaultValue="A field that saves itself" className="w-64" />
+          <SaveState status={status} savingLabel="Saving..." savedLabel="Saved" />
+        </div>
+      </Row>
+
+      <Row label="the three states">
+        <div className="flex items-center gap-4">
+          <SaveState status="saving" savingLabel="Saving..." savedLabel="Saved" />
+          <SaveState status="saved" savingLabel="Saving..." savedLabel="Saved" />
+          <span className="rounded border border-dashed border-line px-2 py-1">
+            <SaveState status="idle" savingLabel="Saving..." savedLabel="Saved" />
+          </span>
+        </div>
+      </Row>
+
+      <Row label="watch it run">
+        <Button
+          variant="soft"
+          onClick={() => {
+            setStatus('saving')
+            setTimeout(() => setStatus('saved'), 900)
+            setTimeout(() => setStatus('idle'), 2900)
+          }}
+        >
+          Save something
+        </Button>
       </Row>
     </>
   )

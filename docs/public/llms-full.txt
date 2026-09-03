@@ -1,4 +1,4 @@
-# dowel 0.19.1
+# dowel 0.20.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,8 +23,8 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.19.1.** The theme and its scales, an accent for each of the fourteen
-products of the line, and forty primitives — each with a page of its own on
+**v0.20.0.** The theme and its scales, an accent for each of the fourteen
+products of the line, and forty-five primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -343,7 +343,7 @@ drawn in all fourteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Forty of them.
+A single component: Button, Dialog, Select. Forty-five of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -410,6 +410,56 @@ exists here at all rather than a folder of components in one application.
 
 *dowel* is a woodworking dowel: the hidden peg that joins two pieces so the seam
 does not show. The system is meant to be invisible while it works.
+
+---
+
+# ActionBar
+
+Source: https://lacodda.github.io/dowel/components/action-bar
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#action-bar
+
+At the foot of a form, and as groups of editor actions.
+
+## Notes
+
+**It is a toolbar, and that is the whole point.** Built on Base UI's Toolbar,
+so the bar is one tab stop and the arrow keys move between its buttons. Without
+that, a reader tabbing out of the last field lands in a queue of five buttons
+instead of on Save — which is exactly where an action bar sits.
+
+```tsx
+<ActionBar position="bottom" aria-label={t('form-actions')}>
+  <ActionBarButton render={<Button variant="primary">{t('save')}</Button>} />
+  <ActionBarButton render={<Button variant="ghost">{t('cancel')}</Button>} />
+  <ActionBarSpacer />
+  <ActionBarButton render={<Button variant="danger">{t('delete')}</Button>} />
+</ActionBar>
+```
+
+**The buttons stay yours.** `ActionBarButton` takes your element through
+`render` and composes with it, so a `Button` keeps its variants and gains the
+toolbar's keyboard handling. This draws the strip; it does not decide what is
+in it.
+
+**`position` is why it exists.** A long form whose Save button is a thousand
+pixels below the field being edited has a Save button the reader has to go
+looking for. `bottom` and `top` stick; `static` is a strip in the flow of the
+page.
+
+**The seam faces the content.** Stuck at the bottom the rule is on top of the
+bar, at the top the other way about — a bar that drew both would read as a box.
+A static bar draws neither, because there is nothing to separate it from.
+
+**Name it when a page has more than one.** "Formatting" and "Bulk actions" are
+different toolbars, and a screen reader announcing "toolbar" twice tells the
+reader nothing about which one they are in.
+
+**Stacking comes from the theme.** A stuck bar uses `--z-sticky` rather than a
+number invented here, so it agrees with every overlay in the set instead of
+fighting one.
 
 ---
 
@@ -993,6 +1043,60 @@ also open the row it was on.
 | `count` | `number` | | Shown after the label |
 | `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
 | `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |
+
+---
+
+# ColorField
+
+Source: https://lacodda.github.io/dowel/components/color-field
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#color-field
+
+The line's palette, and a colour of the reader's own.
+
+## Notes
+
+**This is for the product's data, not for its appearance.** A tag's colour, a
+project's colour, a calendar's colour — things stored beside a name. It is not
+how a reader repaints the interface: the theme decides that, from one accent,
+and a field that let anyone override it would undo the argument the whole
+system rests on.
+
+```tsx
+<ColorField
+  value={tag.color}
+  onValueChange={(color) => save({ ...tag, color })}
+  aria-label={t('colour')}
+  swatchLabel={(name) => t(`colour.${name}`)}
+/>
+```
+
+**The palette comes first, and it reports a name.** The swatches are the
+line's fourteen accents plus the four semantic tokens, so a chosen value is
+`kilna` or `good` — a word from the vocabulary the product already speaks. A
+name keeps meaning the right thing when the theme changes underneath it; a hex
+captured at the moment of choosing would not.
+
+**Free hex is opt-in, through `allowCustom`.** It does not contradict the rule
+against raw colours: that rule is about a component hardcoding its own
+appearance, while a colour a reader picked for their own tag is data — the
+same kind of thing as the tag's name.
+
+**A typed colour commits only once it is one.** Half of `#3fa9` is not a
+colour, and pushing every keystroke up would either reject the reader
+mid-word or repaint the product with something they were passing through. The
+box holds a draft; `value` moves when the draft is a colour.
+
+**The swatches are real radios in a `radiogroup`.** That is what makes the
+arrow keys walk the palette, what makes the choice announce itself, and what
+keeps the whole palette one tab stop — eighteen buttons would put eighteen
+stops between it and the next field.
+
+**`swatchLabel` is yours.** Without it the swatches are named by their token,
+which is right for a developer and wrong for a reader: `lime` is not a word
+your product necessarily uses.
 
 ---
 
@@ -2088,6 +2192,62 @@ anything reading the page aloud. `labelHidden` takes it off the screen with
 
 ---
 
+# FileDrop
+
+Source: https://lacodda.github.io/dowel/components/file-drop
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#file-drop
+
+Taking files, filtering them, and closed.
+
+## Notes
+
+**It takes files. It does not upload them.** Where they go, with which
+credentials, retried how, resumed or not — that is your transport, and a
+primitive that owned it would be wrong for every product whose upload does not
+look like the one it guessed. This is the same boundary
+[Field](/dowel/components/field/) draws around validation: the component knows
+the shape of the interaction, you know what the interaction means.
+
+```tsx
+<FileDrop
+  accept="image/*"
+  maxSize={5 * 1024 * 1024}
+  multiple
+  onFiles={(files) => upload(files)}
+  onReject={(rejections) => toast(explain(rejections))}
+  aria-label={t('attachments')}
+>
+  {t('drop-or-choose')}
+</FileDrop>
+```
+
+**There is a real `<input type="file">` underneath**, hidden with `sr-only`
+rather than `display: none`. That is not fussiness: hidden the other way it is
+unfocusable, the label stops reaching it, and the field becomes mouse-only. The
+native input is also what the operating system's picker attaches to and what a
+screen reader announces as a file field.
+
+**Rejected files are reported, not swallowed.** A file dropped and silently
+ignored looks like a broken page. `onReject` hands back each file with a
+reason — `type`, `size` or `count` — and you turn that into a sentence, in your
+own language.
+
+**Two browser defaults are handled**, and both are invisible until they are
+not. `dragover` is prevented, without which the browser navigates to the
+dropped file and the form the reader was filling in is simply gone. And the
+input's value is cleared after each change, without which choosing the same
+file twice in a row fires nothing the second time.
+
+**The lit state counts enters and leaves rather than toggling.** `dragleave`
+fires when the pointer crosses onto a *child* of the zone, so a zone that
+toggled on it flickers as the pointer moves over its own text — the commonest
+defect in hand-written drop zones.
+
+---
+
 # Input
 
 Source: https://lacodda.github.io/dowel/components/input
@@ -2760,6 +2920,61 @@ being controls.
 
 ---
 
+# SaveState
+
+Source: https://lacodda.github.io/dowel/components/save-state
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#save-state
+
+Beside a field, the three states, and running.
+
+## Notes
+
+**A form without a Save button still has to say what it did.** Otherwise the
+reader is left guessing whether their edit survived, and the usual answer to
+that guess is pressing Ctrl+S at a page that has no such thing.
+
+```tsx
+const status = useSaveStatus(mutation.isPending, mutation.isError)
+
+<SaveState
+  status={status}
+  savingLabel={t('save.saving')}
+  savedLabel={t('save.saved')}
+/>
+```
+
+**The tick decays.** One that never leaves stops meaning "just now" and becomes
+furniture — part of the layout the reader stops seeing, which is the opposite
+of what an indicator is for. `linger` controls how long it stays.
+
+**Only a real save earns one.** The hook watches the falling edge of the
+mutation, so mounting beside one that is already idle shows nothing. Without
+that, arriving at a page would flash a tick for a save that happened before the
+reader got there.
+
+**A failure is not a save.** Pass `isError` and the tick is skipped: the
+failure is already being announced by a toast or an error on the field, and
+saying "saved" underneath that is worse than saying nothing at all.
+
+**It holds its width when idle.** The line sits next to a field; if it grew and
+shrank with its own text, the layout would twitch on every save. It goes
+transparent rather than away.
+
+**One live region, announced politely.** The ring is drawn from
+[Spinner](/dowel/components/spinner/)'s variants rather than by using Spinner,
+which carries its own `role="status"` — nesting live regions gives a screen
+reader two announcements for one event. And `polite` rather than `assertive`,
+because interrupting someone mid-sentence to say a field saved is how people
+learn to turn a screen reader's verbosity down.
+
+**The words are yours.** A primitive with a string of its own cannot be
+translated.
+
+---
+
 # SearchField
 
 Source: https://lacodda.github.io/dowel/components/search-field
@@ -3231,6 +3446,60 @@ the meaning is genuinely in the context, and then name it:
 | `onCheckedChange` | `(checked) => void` | | |
 | `disabled`, `readOnly`, `required` | `boolean` | `false` | |
 | `name` | `string` | | For a form |
+
+---
+
+# TagInput
+
+Source: https://lacodda.github.io/dowel/components/tag-input
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tag-input
+
+Typed, capped, and in three sizes.
+
+## Notes
+
+**The difference from `Combobox multiple` is where the values come from.** A
+combobox chooses from a collection that exists; this makes values that do not
+exist until someone types them — labels, keywords, recipients. If the set is
+known in advance, reach for the combobox: it can filter, and this cannot.
+
+```tsx
+<TagInput
+  value={tags}
+  onValueChange={setTags}
+  aria-label={t('tags')}
+  removeLabel={(tag) => t('remove', { tag })}
+/>
+```
+
+**Blur commits what was typed.** A word left in the box when the reader presses
+Save is a word they believe they entered, and losing it silently is the single
+commonest complaint about fields of this shape. Enter commits too, but nobody
+reliably presses it before reaching for the mouse.
+
+**Backspace on an empty box removes the last tag.** A list built by typing
+should be unbuildable by typing; without this the only way back is the mouse.
+While there is text in the box, Backspace belongs to the text.
+
+**Enter is only intercepted when there is something to commit.** Otherwise it
+belongs to the form around the field — swallowing it unconditionally breaks
+submitting by keyboard, which is how a form is finished without a mouse.
+
+**It does not validate.** What makes a tag acceptable — its length, its
+charset, whether it must already exist — is your rule, and a component that
+guessed would be wrong in both directions. Refuse a value by not putting it in
+`value`; the field is controlled, so nothing appears that you did not accept.
+
+**Duplicates are refused and whitespace is trimmed**, because a tag list is a
+set and `"  docs  "` is the same tag as `"docs"`. Enter on a blank box does
+nothing rather than adding a tag nobody can see.
+
+**`removeLabel` is yours, and required** — the same rule as [Chip](/dowel/components/chip/),
+for the same reason: a primitive with a string of its own ships in English to
+every reader who does not read English.
 
 ---
 

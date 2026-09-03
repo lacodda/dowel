@@ -5,7 +5,7 @@
   "title": "Duration-field",
   "description": "The alternative is what products keep building: two number boxes labelled \"hours\" and \"minutes\", which means two tab stops, two validations, and a reader who has to divide 90 minutes in their head before typing. Here they write `1h 30m`, or `90m`, or `1.5h`, and it means the same thing.",
   "dependencies": [
-    "dowel-ui@^0.19.1"
+    "dowel-ui@^0.20.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/input.json"

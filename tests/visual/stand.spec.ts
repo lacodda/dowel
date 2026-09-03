@@ -58,6 +58,11 @@ const SECTIONS = [
   'toast',
   'alert',
   'banner',
+  'tag-input',
+  'file-drop',
+  'color-field',
+  'action-bar',
+  'save-state',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

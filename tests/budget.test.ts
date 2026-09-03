@@ -127,6 +127,10 @@ describe('what a primitive drags in', () => {
    */
   const ALLOWED: Record<string, string[]> = {
     alert: ['class-variance-authority'],
+    // The strip is Base UI's Toolbar - `role="toolbar"` and the arrow keys
+    // that make a bar one tab stop. Writing that by hand is how an action bar
+    // ends up as five tab stops between the last field and Save.
+    'action-bar': ['@base-ui/react', 'class-variance-authority'],
     badge: ['class-variance-authority'],
     // Its own clothes and nothing else. A banner is a strip with a slot at
     // each end - importing Alert's `cva` would tie a message about the whole
@@ -135,6 +139,10 @@ describe('what a primitive drags in', () => {
     banner: ['class-variance-authority'],
     button: ['@base-ui/react', 'class-variance-authority'],
     chip: ['class-variance-authority'],
+    // The palette is the line's own accents, which come from `dowel-ui` and
+    // are therefore free; the free-entry box wears Input's field clothes so a
+    // colour field and a text field are not two different controls.
+    'color-field': ['input'],
     // A Select you can type in, and it says so in its imports: the field
     // clothes from Input, the popup and row clothes from Select. Only the
     // input, the chips and the empty state are its own.
@@ -205,6 +213,19 @@ describe('what a primitive drags in', () => {
     // No clothes at all: a hook and two predicates, so it drags in nothing.
     shortcut: [],
     spinner: ['class-variance-authority'],
+    // Nothing of its own: a native file input, a drag counter, and the
+    // filters. Everything hard about uploading is the product's transport,
+    // which this deliberately does not own.
+    'file-drop': [],
+    // Draws the ring from Spinner's variants rather than using Spinner, which
+    // carries its own live region - so the cost is the import, not a second
+    // announcement for one save.
+    'save-state': ['spinner'],
+    // Chip for the tags and Input's field clothes for the box around them.
+    // The behaviour - commit, dedupe, Backspace - is its own, because "create
+    // a value that does not exist yet" is a decision about the product's data
+    // rather than about the widget.
+    'tag-input': ['class-variance-authority', 'chip', 'input'],
     // No clothes at all: a row of marks, its keyboard, and the state that is
     // the point - not judged yet.
     'rating-scale': [],

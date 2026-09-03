@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.19.1 - the theme, the scales, an accent per product, forty components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
+**Status:** v0.20.0 - the theme, the scales, an accent per product, forty-five components - overlays, menus, the command palette and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -98,7 +98,7 @@ snapshot the cross-references point into the same snapshot, so a component and
 the sibling it reuses are the pair that shipped together. See
 [installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
 
-Forty of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Forty-five of them so far. The everyday ones - Button, Input, Textarea, Panel,
 Badge, Chip, Kbd, Spinner, Truncate and Copyable; Field and the three controls
 that answer a question - Checkbox, RadioGroup and Switch; five for a number or
 a judgement - NumberField, Slider, RatingScale, DurationField and

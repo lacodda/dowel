@@ -7,7 +7,7 @@
   "dependencies": [
     "@base-ui/react",
     "class-variance-authority",
-    "dowel-ui@^0.19.1"
+    "dowel-ui@^0.20.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/input.json",
