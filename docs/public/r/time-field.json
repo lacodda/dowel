@@ -5,7 +5,7 @@
   "title": "Time-field",
   "description": "No donor for this one: neither product of the line had a time field, so this is written from the same shape as DurationField, and for the same reason. Anything a person plausibly types is accepted - `9`, `9:30`, `930`, `9.30`, `9pm`, `21:30` - and what comes back is always `HH:MM`.",
   "dependencies": [
-    "dowel-ui@^0.18.1"
+    "dowel-ui@^0.18.2"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/input.json"

@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.18.2] - 2026-09-03
+
+### Bug Fixes
+- Let a component turn off the focus ring, and dress the palette
+
 ## [0.18.1] - 2026-09-03
 
 ### Bug Fixes

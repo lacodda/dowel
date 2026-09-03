@@ -17,7 +17,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.18.1.** The theme and its scales, an accent for each of the fourteen
+**v0.18.2.** The theme and its scales, an accent for each of the fourteen
 products of the line, and forty primitives. Components install from the
 registry with `npx shadcn add`, singly or as a
 [set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also

@@ -6,7 +6,7 @@
   "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.18.1"
+    "dowel-ui@^0.18.2"
   ],
   "registryDependencies": [],
   "files": [

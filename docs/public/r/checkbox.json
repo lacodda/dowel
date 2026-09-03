@@ -6,7 +6,7 @@
   "description": "The interesting part is the words. A checkbox on its own is a nine-pixel target that says nothing; wired to a label it is the whole row, and the row is what a finger and a pointer both aim at. So the label is part of the component rather than something a caller remembers to add - the commonest bug in a hand-rolled checkbox is a `<label>` that is next to the input instead of tied to it, which looks identical and does nothing.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.18.1"
+    "dowel-ui@^0.18.2"
   ],
   "registryDependencies": [],
   "files": [
