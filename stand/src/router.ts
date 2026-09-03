@@ -17,10 +17,38 @@ import { useCallback, useEffect, useState } from 'react'
 /** Where the stand is mounted. Vite substitutes it at build time. */
 const BASE = import.meta.env.BASE_URL
 
+/**
+ * Where a deep link is put when the server could not serve it.
+ *
+ * GitHub Pages has one 404 page for the whole site and it belongs to the
+ * documentation, so `/dowel/stand/button` reaches the docs' "page not found"
+ * rather than the stand. That page hands the route back here through session
+ * storage and sends the browser to the stand's root; this reads it, puts the
+ * real URL in the address bar, and forgets it.
+ *
+ * The result is that a reloaded or shared deep link lands on the component it
+ * names, with the URL it was given.
+ */
+function claimRedirect(): void {
+  if (typeof window === 'undefined') return
+  let handed: string | null
+  try {
+    handed = window.sessionStorage.getItem('dowel.stand.redirect')
+    if (handed) window.sessionStorage.removeItem('dowel.stand.redirect')
+  } catch {
+    // Storage can throw rather than return null; a deep link that cannot be
+    // restored is a front page, not a crash.
+    return
+  }
+  if (!handed || !handed.startsWith(BASE)) return
+  window.history.replaceState(null, '', handed)
+}
+
 /** The part of the path that names a component: `/dowel/stand/button` is
  * `button`, and the root is an empty string. */
 function readPath(): string {
   if (typeof window === 'undefined') return ''
+  claimRedirect()
   const { pathname } = window.location
   const rest = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname.replace(/^\//, '')
   return rest.replace(/\/+$/, '')

@@ -1,5 +1,5 @@
-import { readFileSync, writeFileSync } from 'node:fs'
-import { defineConfig, type Plugin } from 'vite'
+import { readFileSync } from 'node:fs'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -11,29 +11,25 @@ import tailwindcss from '@tailwindcss/vite'
 const pkg = new URL('../packages/dowel/package.json', import.meta.url)
 const version = JSON.parse(readFileSync(pkg, 'utf8')).version
 
-/**
- * GitHub Pages serves static files and knows nothing about the stand's routes:
- * a reload on `/dowel/stand/button` looks for a file of that name and answers
- * 404. Pages does, however, serve `404.html` for every miss - so shipping the
- * built `index.html` under that name hands the miss back to the router, and
- * the deep link resolves. This is the standard trick, and the reason the stand
- * can have real URLs instead of anchors.
+/*
+ * There is no `404.html` here on purpose.
+ *
+ * Writing the built index to `stand/dist/404.html` is the standard trick for a
+ * client-routed app on Pages, and here it does nothing: Pages serves the 404
+ * at the *site* root for every miss on the site, and this stand is published
+ * under a documentation site that owns that page. A stand-local copy is never
+ * consulted - the deep link came back as the docs' "page not found", which
+ * looks like a bad link rather than a server that has not been told about
+ * client routes.
+ *
+ * The handoff lives in `tools/build-404.mjs`, which teaches the site's one 404
+ * page to give a stand path back to the stand.
  */
-function pagesDeepLinks(): Plugin {
-  return {
-    name: 'stand-pages-deep-links',
-    apply: 'build',
-    closeBundle() {
-      const dir = new URL('./dist/', import.meta.url)
-      writeFileSync(new URL('404.html', dir), readFileSync(new URL('index.html', dir)))
-    },
-  }
-}
 
 export default defineConfig({
   // Served under the project page alongside the documentation.
   base: '/dowel/stand/',
-  plugins: [react(), tailwindcss(), pagesDeepLinks()],
+  plugins: [react(), tailwindcss()],
   define: {
     __DOWEL_VERSION__: JSON.stringify(version),
   },

@@ -46,6 +46,11 @@ jobs:
         run: pnpm --filter dowel-stand build
       - name: Put the stand under the docs
         run: cp -r stand/dist docs/dist/stand
+      # Pages serves one 404 for the whole site and it is the documentation's,
+      # so the stand's client-side routes reach it rather than the stand. This
+      # teaches that page to hand a stand path back to the stand.
+      - name: Teach the 404 about the stand's routes
+        run: node tools/build-404.mjs
       - uses: actions/upload-pages-artifact@v5
         with:
           path: docs/dist
