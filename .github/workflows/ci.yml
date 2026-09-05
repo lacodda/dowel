@@ -47,6 +47,12 @@ jobs:
     # on Linux. Pinning a platform is what makes the baselines mean something.
     # The container is the image the baselines are recorded in, so the
     # rendering matches down to the anti-aliasing.
+    #
+    # This tag and `@playwright/test` in package.json move together, and the
+    # dependency is pinned without a caret for that reason: a minor bump of the
+    # package asks for a browser revision the image does not carry, and all 91
+    # snapshots fail with "Executable doesn't exist" rather than a diff. Raising
+    # the pair is its own change, because a new image re-renders every baseline.
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.62.1-noble
