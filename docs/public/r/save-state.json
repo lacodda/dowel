@@ -5,7 +5,7 @@
   "title": "Save-state",
   "description": "The quiet line beside a field that saves itself: \"saving…\", then a tick that fades. It exists because a form without a Save button has to say what it did anyway - otherwise the reader is left guessing whether their edit survived, and the usual answer to that guess is to press Ctrl+S at a page that has no such thing.",
   "dependencies": [
-    "dowel-ui@^0.20.1"
+    "dowel-ui@^0.20.2"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/spinner.json"

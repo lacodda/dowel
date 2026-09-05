@@ -5,7 +5,7 @@
   "title": "File-drop",
   "description": "A place to put files: drag them onto it, or press it and pick them. It takes files and hands them over - it does not upload them. Where they go, with which credentials, retried how - that is the product's transport, and a primitive that owned it would be wrong for every product whose upload does not look like the one it guessed.",
   "dependencies": [
-    "dowel-ui@^0.20.1"
+    "dowel-ui@^0.20.2"
   ],
   "registryDependencies": [],
   "files": [

@@ -5,7 +5,7 @@
   "title": "Rating-scale",
   "description": "Generalised from kilna, where it is how a work is scored on each of its axes. The shape is a row of marks rather than stars: stars carry a meaning of their own - a review, a public verdict - and this is as often \"how hard was this\" or \"how finished is it\" as it is \"how good\".",
   "dependencies": [
-    "dowel-ui@^0.20.1"
+    "dowel-ui@^0.20.2"
   ],
   "registryDependencies": [],
   "files": [

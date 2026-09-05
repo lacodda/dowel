@@ -6,7 +6,7 @@
   "description": "Free text turned into a list: type a word, press Enter, it becomes a chip.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.20.1"
+    "dowel-ui@^0.20.2"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/chip.json",
