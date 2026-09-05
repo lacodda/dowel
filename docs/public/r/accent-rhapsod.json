@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-rhapsod",
+  "type": "registry:file",
+  "title": "rhapsod accent",
+  "description": "field green #6CB14E - the colour of the rhapsod mark (rh). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/rhapsod.css",
+      "target": "~/dowel/accents/rhapsod.css",
+      "type": "registry:file",
+      "content": "/*\n * rhapsod - field green #6CB14E, the colour of its mark (rh).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #6CB14E;\n}\n"
+    }
+  ]
+}

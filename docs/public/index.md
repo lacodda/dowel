@@ -17,7 +17,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.20.2.** The theme and its scales, an accent for each of the fourteen
+**v0.20.3.** The theme and its scales, an accent for each of the fourteen
 products of the line, and forty-five primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the

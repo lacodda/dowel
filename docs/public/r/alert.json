@@ -6,7 +6,7 @@
   "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.20.2"
+    "dowel-ui@^0.20.3"
   ],
   "registryDependencies": [],
   "files": [

@@ -5,7 +5,7 @@
   "title": "Calendar",
   "description": "The sums live next door in `calendar-math`, which has no React in it; this is the grid that draws them and the keyboard that moves around it.",
   "dependencies": [
-    "dowel-ui@^0.20.2"
+    "dowel-ui@^0.20.3"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/calendar-math.json"

@@ -5,7 +5,7 @@
   "title": "Date-picker",
   "description": "The trigger is a button rather than a text input, and that is the decision worth stating. A typable date field has to answer \"what does `03/04/26` mean\" in a locale it cannot be sure of, and it answers wrong for half the world; a button showing the date spelled out has no such question. Where typing genuinely matters - a birth date, forty years back - the calendar is the wrong control anyway and a product should reach for a plain field.",
   "dependencies": [
-    "dowel-ui@^0.20.2"
+    "dowel-ui@^0.20.3"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/calendar.json",

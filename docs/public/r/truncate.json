@@ -5,7 +5,7 @@
   "title": "Truncate",
   "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
   "dependencies": [
-    "dowel-ui@^0.20.2"
+    "dowel-ui@^0.20.3"
   ],
   "registryDependencies": [],
   "files": [

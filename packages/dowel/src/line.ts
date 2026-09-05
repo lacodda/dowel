@@ -39,6 +39,22 @@ export const lineProducts: readonly LineProduct[] = [
   { name: 'dowel', code: 'dw', accent: '#E8862D', colorName: 'signal amber' },
   { name: 'lyrn', code: 'ln', accent: '#6D7BF2', colorName: 'indigo' },
   { name: 'austeris', code: 'au', accent: '#C25BD9', colorName: 'orchid' },
+  { name: 'rhapsod', code: 'rh', accent: '#6CB14E', colorName: 'field green' },
+  { name: 'hilvan', code: 'hv', accent: '#D64550', colorName: 'crimson' },
+  /*
+   * The last three marks are two-colour: the registry's palette of single hues
+   * ran out at hilvan, and a product now owns either one hue or a pair drawn as
+   * one diagonal gradient.
+   *
+   * The theme takes the first colour of the pair and nothing else. A gradient
+   * is a property of the mark — the tile, the code, the banner rule — and an
+   * accent is a flat colour a button is filled with, a focus ring is drawn in
+   * and a link is set in. Carrying the pair into the vocabulary would make
+   * every one of those a gradient, which is not what the pair is for.
+   */
+  { name: 'scheda', code: 'sc', accent: '#D9704A', colorName: 'terracotta (paired with sea)' },
+  { name: 'furca', code: 'fr', accent: '#D9704A', colorName: 'terracotta (paired with olive)' },
+  { name: 'rigger', code: 'rr', accent: '#8A62F0', colorName: 'iris (paired with lagoon)' },
 ]
 
 /** The product with this name, or `undefined`. */
