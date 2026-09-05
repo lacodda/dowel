@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.20.2] - 2026-09-05
+
+### Bug Fixes
+- Keep the scrollbar thumb catchable, and gate the rules
+
 ## [0.20.1] - 2026-09-03
 
 ### Bug Fixes
