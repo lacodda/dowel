@@ -12,6 +12,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 ## Concepts
 
 - [Anti-patterns](https://lacodda.github.io/dowel/concepts/anti-patterns.md): The mistakes that actually get made against this system, each with what happens and what to do instead.
+- [Scrollbars](https://lacodda.github.io/dowel/concepts/scrollbars.md): Why every product of the line draws overlay scrollbars, and what the theme does about it.
 - [Vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary.md): The words dowel uses for its own parts, each defined once, so a page can use one without explaining it again.
 
 ## Components

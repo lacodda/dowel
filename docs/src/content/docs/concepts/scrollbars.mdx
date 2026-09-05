@@ -1,0 +1,77 @@
+---
+title: Scrollbars
+description: Why every product of the line draws overlay scrollbars, and what the theme does about it.
+---
+
+The theme replaces the browser's scrollbar everywhere, in one place, for every
+product. Importing it is the whole of the setup — there is no component to add
+and no class to remember.
+
+## What an overlay scrollbar is
+
+A scrollbar drawn **over** the content rather than beside it. The name matters
+because the distinction is not decorative: an overlay bar takes no space in
+layout, and a classic one takes a strip of it.
+
+That strip is the problem. It appears when a document becomes one line too tall
+and goes away when a filter removes a row, and the content shifts sideways by
+its width each time. In a list that loads, a panel that filters, a page that
+grows as you type, the layout twitches — and nothing on screen explains why.
+
+The second problem is milder and more constant: a default bar is a piece of
+someone else's chrome sitting in the middle of a product, full width, with step
+arrows at the ends that nobody has used in twenty years.
+
+## What the theme does
+
+```css
+@import 'dowel-ui/theme.css';
+```
+
+From that import every scrollable element in the product gets:
+
+- **`scrollbar-width: thin` with a transparent track.** The standard property,
+  which Firefox honours.
+- **A `::-webkit-scrollbar` rule set.** What Chromium, Safari and the desktop
+  WebViews actually lay out — the standard property alone leaves them drawing
+  the default.
+- **A thumb painted from `line-2`**, and `dim` under the pointer. Both are
+  vocabulary, so a product that tints its neutrals differently gets a bar that
+  matches without saying anything.
+- **No step arrows**, and no painted track or corner.
+
+Two details in the thumb are worth knowing about, because they look arbitrary
+and are not:
+
+```css
+*::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  background-clip: content-box;
+  min-height: 2.5rem;
+}
+```
+
+The transparent border, clipped away from the background, makes the *visible*
+thumb narrower than the strip while the whole strip stays a hit target — a
+10-pixel bar that reads as a 4-pixel line and is still easy to grab. Drop the
+`background-clip` and the border is painted instead: the inset disappears and
+the bar is fat again.
+
+The floor on the height exists because the thumb is drawn proportional to how
+much of the document fits on screen. On a very long one it collapses to a few
+pixels: visible, but not something a pointer can catch.
+
+## What is deliberately not here
+
+**No setting.** A scrollbar is chrome, and the products of the line do not offer
+their chrome as a preference.
+
+**No component.** There is nothing to import, because the rules are on `*` — a
+scrollable area a product writes itself gets them without asking.
+
+**No test that measures layout.** It would be a comfortable one to write and it
+would prove nothing: a headless browser overlays its scrollbars whatever the
+stylesheet says, so measuring `offsetWidth - clientWidth` reads zero for a
+classic bar as well. The gate asserts what the stylesheet *says* instead, which
+is the part under this system's control, and the appearance is checked by eye
+in the real browser and the real WebView.

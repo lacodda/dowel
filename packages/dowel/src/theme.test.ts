@@ -194,3 +194,63 @@ describe('base layer', () => {
     expect(blockBody(':focus-visible')).toContain('var(--accent)')
   })
 })
+
+/*
+ * Scrollbars.
+ *
+ * These are asserted against the stylesheet rather than a rendered page on
+ * purpose. A headless browser overlays its scrollbars whatever the stylesheet
+ * says, so `offsetWidth - clientWidth` reads zero for a classic bar too — a
+ * layout measurement would pass on a stylesheet that reserves a gutter, which
+ * is worse than no check at all. What the rules say is the thing that is
+ * actually under our control, so that is what is checked.
+ */
+describe('scrollbars', () => {
+  it('asks for the thin standard bar with a transparent track', () => {
+    // The standard property is what Firefox honours; the -webkit rules below
+    // are what Chromium and the WebViews lay out. Both are needed, and a
+    // stylesheet with only one of them looks right in exactly one browser.
+    const rule = blockBody('* {')
+    expect(rule, 'the standard scrollbar property is missing').toContain('scrollbar-width: thin')
+    expect(rule, 'the standard track is painted rather than left alone').toContain('transparent')
+  })
+
+  it('paints the thumb from a token, never a literal colour', () => {
+    // The bar is chrome, and chrome in this system comes from the vocabulary:
+    // a product that changes its neutral tint gets a matching bar for free.
+    const thumb = blockBody('*::-webkit-scrollbar-thumb {')
+    expect(thumb).toContain('var(--')
+    expect(thumb, 'the thumb hardcodes a colour').not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+
+  it('leaves the track and the corner unpainted', () => {
+    // An overlay bar is drawn over the content. A painted track is a gutter
+    // with a colour, which is the classic bar with extra steps.
+    expect(blockBody('*::-webkit-scrollbar-track {')).toContain('transparent')
+    expect(blockBody('*::-webkit-scrollbar-corner {')).toContain('transparent')
+  })
+
+  it('removes the step arrows', () => {
+    // The one part of a classic scrollbar nobody uses, and Chromium draws it
+    // by default.
+    expect(blockBody('*::-webkit-scrollbar-button {')).toContain('display: none')
+  })
+
+  it('insets the thumb without shrinking what can be grabbed', () => {
+    // A transparent border clipped away from the background makes the visible
+    // thumb narrower than the strip while the whole strip stays a hit target.
+    // Without the clip the border is painted and the inset does nothing.
+    const thumb = blockBody('*::-webkit-scrollbar-thumb {')
+    expect(thumb).toMatch(/border:\s*\d+px solid transparent/)
+    expect(thumb, 'the transparent border is painted, so it insets nothing').toMatch(
+      /background-clip:\s*(content|padding)-box/,
+    )
+  })
+
+  it('gives the thumb a floor so it cannot become a hairline', () => {
+    // On a very long document the thumb is proportional to the viewport and
+    // collapses to a few pixels — visible, but not something a pointer can
+    // catch.
+    expect(blockBody('*::-webkit-scrollbar-thumb {')).toContain('min-height')
+  })
+})

@@ -481,6 +481,11 @@ body {
   border-radius: 999px;
   background: var(--line-2);
   background-clip: content-box;
+  /* The thumb is drawn proportional to how much of the document fits on
+   * screen, so a long one collapses it to a few pixels: still visible, no
+   * longer catchable by a pointer. This is the floor below which it stops
+   * being a control. */
+  min-height: 2.5rem;
 }
 
 *::-webkit-scrollbar-thumb:hover {
