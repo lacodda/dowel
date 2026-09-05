@@ -2,10 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.20.3] - 2026-09-05
+
+### Features
+- Add the five products founded since the list was written
+
 ## [0.20.2] - 2026-09-05
 
 ### Bug Fixes
 - Keep the scrollbar thumb catchable, and gate the rules
+
+### CI
+- Pin Playwright to the version its container carries
+
+### Documentation
+- Add the changelog for v0.20.2
 
 ## [0.20.1] - 2026-09-03
 
