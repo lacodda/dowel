@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.22.0] - 2026-09-09
+
+### Bug Fixes
+- Show the tree as a tree, and stop promising an inspector
+
+### Features
+- A long list, a deep one, and the facts beside them
+
 ## [0.21.0] - 2026-09-09
 
 ### Bug Fixes
@@ -12,6 +20,10 @@ All notable changes to this project are documented in this file.
 
 ### Features
 - A table, its pages, and the two ways a cell is written
+
+### Testing
+- Photograph the six components the table brought
+- Record the baselines for the six new components
 
 ## [0.20.3] - 2026-09-05
 

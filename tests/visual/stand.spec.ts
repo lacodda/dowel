@@ -69,6 +69,10 @@ const SECTIONS = [
   'page-size',
   'number-format',
   'relative-time',
+  'virtual-list',
+  'tree-rows',
+  'tree-view',
+  'key-value',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {
