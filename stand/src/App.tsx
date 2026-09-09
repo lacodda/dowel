@@ -2656,14 +2656,21 @@ function NumberFormatSection() {
         </div>
       </Row>
 
-      <Row label="the figures line up, which only shows in a column">
+      <Row label="the figures line up - in a font whose digits differ in width">
         {/* The rows are 1s against 8s on purpose: those are the two digits
           * whose proportional widths differ most, and a column of mixed
           * numbers hides the effect by averaging it out.
           *
           * `w-fit` matters as much. Inside a stretched column both variants
           * end up the same width and the demonstration shows nothing - which
-          * is what the first version of this section did. */}
+          * is what the first version of this section did.
+          *
+          * The two columns look identical wherever the rendering font has
+          * uniform digits anyway - the CI container is one such place, and its
+          * baseline photograph shows no difference. That is the font, not the
+          * component: `tabular-nums` asks, and a font that has nothing to
+          * change changes nothing. The rule still earns its place, because the
+          * fonts a product actually ships to are the other kind. */}
         <div className="flex gap-8">
           {[
             ['tabular', 'tabular-nums'],
