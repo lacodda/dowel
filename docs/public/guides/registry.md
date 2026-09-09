@@ -81,7 +81,7 @@ makes: no upstream reaches in, and no upstream merges for you either.
 
 ## Reading the registry
 
-The catalogue lists every item served — the theme, the fourteen product
+The catalogue lists every item served — the theme, the nineteen product
 accents, every component, and the sets:
 
 - [`/r/registry.json`](https://lacodda.github.io/dowel/r/registry.json) — served alongside the docs

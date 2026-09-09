@@ -1,4 +1,4 @@
-# dowel 0.20.3
+# dowel 0.21.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,7 +23,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.20.3.** The theme and its scales, an accent for each of the fourteen
+**v0.21.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, and fifty-one primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
@@ -564,7 +564,7 @@ of marks. `--accent-base`, one declaration.
 Everything accent-shaped is mixed from it. A product of the line imports its
 accent file (`dowel-ui/accents/kilna.css`); anything else sets the value
 directly. See [the accents](/dowel/reference/accents/), where the same screen is
-drawn in all fourteen.
+drawn in all nineteen.
 
 ## Primitive
 
@@ -630,7 +630,7 @@ what the components are, not only a build step.
 
 ## The line
 
-The fourteen products these tokens are shared by — the reason a design system
+The nineteen products these tokens are shared by — the reason a design system
 exists here at all rather than a folder of components in one application.
 
 *dowel* is a woodworking dowel: the hidden peg that joins two pieces so the seam
@@ -1299,7 +1299,7 @@ system rests on.
 ```
 
 **The palette comes first, and it reports a name.** The swatches are the
-line's fourteen accents plus the four semantic tokens, so a chosen value is
+line's nineteen accents plus the four semantic tokens, so a chosen value is
 `kilna` or `good` — a word from the vocabulary the product already speaks. A
 name keeps meaning the right thing when the theme changes underneath it; a hex
 captured at the moment of choosing would not.
@@ -4632,7 +4632,7 @@ Five axe rules are off, and each is off because jsdom cannot evaluate it rather
 than because it was inconvenient:
 
 - `color-contrast` — jsdom resolves no colour. Contrast is computed against the
-  real tokens instead, for both themes and all fourteen accents.
+  real tokens instead, for both themes and all nineteen accents.
 - `region`, `page-has-heading-one`, `landmark-one-main`, `html-has-lang` — a
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
@@ -5170,7 +5170,7 @@ makes: no upstream reaches in, and no upstream merges for you either.
 
 ## Reading the registry
 
-The catalogue lists every item served — the theme, the fourteen product
+The catalogue lists every item served — the theme, the nineteen product
 accents, every component, and the sets:
 
 - [`/r/registry.json`](https://lacodda.github.io/dowel/r/registry.json) — served alongside the docs

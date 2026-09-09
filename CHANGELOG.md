@@ -2,10 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.21.0] - 2026-09-09
+
+### Bug Fixes
+- Two demonstrations that showed nothing
+
+### Documentation
+- The rules of the line, each with a name and a gate
+
+### Features
+- A table, its pages, and the two ways a cell is written
+
 ## [0.20.3] - 2026-09-05
+
+### Documentation
+- Add the changelog for v0.20.3
 
 ### Features
 - Add the five products founded since the list was written
+
+### Testing
+- Record the palette with five more products in it
 
 ## [0.20.2] - 2026-09-05
 

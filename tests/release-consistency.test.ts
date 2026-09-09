@@ -299,6 +299,62 @@ describe('the docs do not miscount the primitives', () => {
   })
 })
 
+describe('the docs do not miscount the products of the line', () => {
+  it('states the number of accents there are, wherever it states one', () => {
+    /* Third verse of the same defect, and it went unnoticed for four days:
+     * five products were founded and given accents in v0.20.2, and six pages
+     * went on saying "fourteen" while the registry served nineteen.
+     *
+     * The count that matters is the one the registry publishes, so it is read
+     * from `line.ts` rather than from a number kept in step by hand.
+     *
+     * The ADR is deliberately not checked. `docs/adr/0003` says fourteen
+     * because there were fourteen when it was decided; a record of a decision
+     * is not a claim about today, and rewriting it would be the opposite of
+     * what an ADR is for. */
+    const WORDS: Record<number, string> = {
+      12: 'twelve', 13: 'thirteen', 14: 'fourteen', 15: 'fifteen',
+      16: 'sixteen', 17: 'seventeen', 18: 'eighteen', 19: 'nineteen',
+      20: 'twenty', 21: 'twenty-one', 22: 'twenty-two', 23: 'twenty-three',
+      24: 'twenty-four', 25: 'twenty-five',
+    }
+
+    const count = [...read('packages/dowel/src/line.ts').matchAll(/\{ name: '/g)].length
+    const expectedWord = WORDS[count]
+    expect(expectedWord, `no word for ${count} products - extend the table`).toBeDefined()
+
+    /* A number-word immediately before "products", "accents" or "of them" is a
+     * count of these. Past tense is left alone: the anti-patterns page says
+     * what was true before the derivation was fixed. */
+    const pattern = /\b([a-z]+(?:-[a-z]+)?)\s+(?:products|accents|product accents)\b/gi
+    const known = new Set(Object.values(WORDS))
+
+    const pages = [
+      'README.md',
+      'docs/src/content/docs/index.mdx',
+      'docs/src/content/docs/concepts/vocabulary.mdx',
+      'docs/src/content/docs/guides/gates.mdx',
+      'docs/src/content/docs/guides/registry.mdx',
+      'docs/src/content/docs/components/color-field.mdx',
+    ]
+
+    for (const path of pages) {
+      const text = read(path)
+      for (const match of text.matchAll(pattern)) {
+        const word = match[1]!.toLowerCase()
+        if (!known.has(word)) continue
+        // "twelve of the line's fourteen products" is a fact about a measurement,
+        // not a count - the number being checked is the one right before the noun.
+        if (/\bof the\b[^.]*$/.test(text.slice(Math.max(0, match.index - 40), match.index))) continue
+        expect(
+          word,
+          `\`${path}\` says "${match[0]}" and there are ${count}`,
+        ).toBe(expectedWord)
+      }
+    }
+  })
+})
+
 describe('the docs show what the theme has', () => {
   it('documents every colour token the theme declares', () => {
     const theme = read('packages/dowel/src/theme.css')
