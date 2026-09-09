@@ -2772,7 +2772,7 @@ const manyRows = Array.from({ length: 100_000 }, (_, index) => ({
 function VirtualListSection() {
   return (
     <>
-      <Row label="a hundred thousand rows - scroll it, and count the nodes in the inspector">
+      <Row label="a hundred thousand rows, and about a dozen of them in the DOM at a time">
         <VirtualList
           rows={manyRows}
           rowHeight={32}
@@ -2850,12 +2850,19 @@ const tree: TreeNode[] = [
 
 function TreeViewSection() {
   const [selected, setSelected] = useState('button')
+  /* Open to begin with, and that is not decoration: closed, the stand shows a
+   * list of four folders and none of what the component is - the indent, the
+   * cursor, the selected row, the levels a reader is told about. A picture of
+   * a tree should be a picture of a tree. */
+  const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set(['src', 'ui', 'docs']))
 
   return (
     <>
       <Row label="tab into it once, then arrows - right opens, left gets you back out">
         <TreeView
           nodes={tree}
+          open={open}
+          onOpenChange={setOpen}
           selected={selected}
           onSelect={setSelected}
           label="Files"
@@ -2863,9 +2870,10 @@ function TreeViewSection() {
         />
       </Row>
 
-      <Row label="an empty folder still opens - that is a fact about the folder">
+      <Row label="an empty folder still opens, and shows nothing - a fact about the folder">
         <TreeView
           nodes={[{ id: 'drafts', label: 'drafts', empty: true }]}
+          open={new Set(['drafts'])}
           label="Empty folder"
           className="w-72 rounded-md border border-line p-1"
         />
