@@ -85,6 +85,15 @@ describe('what a primitive weighs', () => {
         'Combobox row" and the component wore none, so the rows inherited the popup ' +
         'font and stood a third taller than every other list in the set.',
     },
+    'tree-view': {
+      ceiling: 4352,
+      because:
+        'The keyboard and the rows it moves through, which cannot be separated: the ' +
+        'handler works on the flattened list the same function renders, and a tree ' +
+        'whose arrows live elsewhere is a tree that can disagree with what is drawn. ' +
+        'The split the gate asked for was made in the other direction - `tree-rows` ' +
+        'holds the sums with no React in them, and took 650 bytes with it.',
+    },
     table: {
       ceiling: 4608,
       because:
@@ -272,6 +281,19 @@ describe('what a primitive drags in', () => {
     // The same: `Intl.RelativeTimeFormat` writes the phrase, which is the
     // whole reason there is no date library here.
     'relative-time': [],
+    // The window arithmetic and the box that scrolls. No virtualisation
+    // library: `react-window` and its kin solve variable heights, horizontal
+    // windows and grids, and a design system's long lists are all a column of
+    // rows of one height.
+    'virtual-list': [],
+    // Which rows a tree shows, with no React in them - the same split
+    // `table-sort` is. A product windowing a large tree imports this alone.
+    'tree-rows': [],
+    // The clothes and the keyboard; the sums are next door.
+    'tree-view': ['tree-rows'],
+    // A `<dl>` and two layouts, and the layouts need different markup - which
+    // is the whole reason the pair is a component rather than two divs.
+    'key-value': ['class-variance-authority'],
   }
 
   /** What the file imports: bare module specifiers minus React and the

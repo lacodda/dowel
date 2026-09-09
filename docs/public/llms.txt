@@ -42,6 +42,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [FileDrop](https://lacodda.github.io/dowel/components/file-drop.md): A place to put files: drag them onto it, or press it and pick them.
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
 - [Kbd](https://lacodda.github.io/dowel/components/kbd.md): A key, as printed in a menu or a hint.
+- [KeyValue](https://lacodda.github.io/dowel/components/key-value.md): A list of facts - a name and what it is - in the element that says which belongs to which.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
 - [NumberField](https://lacodda.github.io/dowel/components/number-field.md): A number, its stepper, and what an empty box actually means.
 - [NumberFormat](https://lacodda.github.io/dowel/components/number-format.md): A number written the way the reader's language writes numbers, with figures that line up in a column.
@@ -68,7 +69,10 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [TimeField](https://lacodda.github.io/dowel/components/time-field.md): A time of day, typed the way people say it - loose going in, one spelling stored.
 - [Toast](https://lacodda.github.io/dowel/components/toast.md): Something that just happened, said briefly and then gone.
 - [Tooltip](https://lacodda.github.io/dowel/components/tooltip.md): A short visual label for a control with no room for one - on hover and on focus, and never the only place the words appear.
+- [tree-rows](https://lacodda.github.io/dowel/components/tree-rows.md): Which rows a tree shows, with no React in it - the sums a TreeView draws.
+- [TreeView](https://lacodda.github.io/dowel/components/tree-view.md): Folders that open, one tab stop, and the arrow keys a hand-rolled tree leaves out.
 - [Truncate](https://lacodda.github.io/dowel/components/truncate.md): Text that does not fit, cut with an ellipsis and still readable in full.
+- [VirtualList](https://lacodda.github.io/dowel/components/virtual-list.md): A hundred thousand rows that puts a screenful in the DOM, and keeps the scrollbar honest.
 
 ## Guides
 

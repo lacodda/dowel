@@ -33,6 +33,10 @@ import { Pagination, pageRange } from '../../registry/ui/pagination'
 import { PageSize } from '../../registry/ui/page-size'
 import { NumberFormat } from '../../registry/ui/number-format'
 import { RelativeTime } from '../../registry/ui/relative-time'
+import { VirtualList } from '../../registry/ui/virtual-list'
+import { TreeView } from '../../registry/ui/tree-view'
+import { visibleRows, type TreeNode } from '../../registry/ui/tree-rows'
+import { KeyValue, KeyValueRow } from '../../registry/ui/key-value'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
 import {
@@ -339,6 +343,31 @@ const sections = [
     title: 'RelativeTime',
     docs: '/dowel/components/relative-time/',
     render: () => <RelativeTimeSection />,
+  },
+  {
+    id: 'virtual-list',
+    title: 'VirtualList',
+    docs: '/dowel/components/virtual-list/',
+    render: () => <VirtualListSection />,
+  },
+  {
+    id: 'tree-rows',
+    title: 'tree-rows',
+    kind: 'utility',
+    docs: '/dowel/components/tree-rows/',
+    render: () => <TreeRowsSection />,
+  },
+  {
+    id: 'tree-view',
+    title: 'TreeView',
+    docs: '/dowel/components/tree-view/',
+    render: () => <TreeViewSection />,
+  },
+  {
+    id: 'key-value',
+    title: 'KeyValue',
+    docs: '/dowel/components/key-value/',
+    render: () => <KeyValueSection />,
   },
 ]
 
@@ -2728,6 +2757,184 @@ function RelativeTimeSection() {
           />
         </div>
       </Row>
+    </>
+  )
+}
+
+
+/* A hundred thousand rows, built once. The number is the point of the
+ * component, so the stand shows the real thing rather than a polite hundred. */
+const manyRows = Array.from({ length: 100_000 }, (_, index) => ({
+  id: index,
+  name: `Row ${index + 1}`,
+}))
+
+function VirtualListSection() {
+  return (
+    <>
+      <Row label="a hundred thousand rows - scroll it, and count the nodes in the inspector">
+        <VirtualList
+          rows={manyRows}
+          rowHeight={32}
+          rowKey={(row) => row.id}
+          label="A hundred thousand rows"
+          className="h-64 w-full rounded-md border border-line"
+        >
+          {(row, index) => (
+            <div className="flex h-full items-center justify-between border-b border-line px-3">
+              <span>{row.name}</span>
+              <NumberFormat value={index} className="text-xs text-dim" />
+            </div>
+          )}
+        </VirtualList>
+      </Row>
+
+      <Row label="the same list, taller rows - the height is given, never measured">
+        <VirtualList
+          rows={manyRows}
+          rowHeight={56}
+          rowKey={(row) => row.id}
+          label="Taller rows"
+          className="h-64 w-full rounded-md border border-line"
+        >
+          {(row) => (
+            <div className="flex h-full flex-col justify-center border-b border-line px-3">
+              <span>{row.name}</span>
+              <span className="text-xs text-dim">a second line, to fill the height</span>
+            </div>
+          )}
+        </VirtualList>
+      </Row>
+
+      <Row label="nothing at all, which is a list of zero rows and not a broken one">
+        <VirtualList
+          rows={[]}
+          rowHeight={32}
+          rowKey={(row: { id: number }) => row.id}
+          label="Empty"
+          className="h-24 w-full rounded-md border border-line"
+        >
+          {() => null}
+        </VirtualList>
+      </Row>
+    </>
+  )
+}
+
+const tree: TreeNode[] = [
+  {
+    id: 'src',
+    label: 'src',
+    children: [
+      { id: 'app', label: 'App.tsx' },
+      {
+        id: 'ui',
+        label: 'ui',
+        children: [
+          { id: 'button', label: 'Button.tsx' },
+          { id: 'input', label: 'Input.tsx' },
+          { id: 'table', label: 'Table.tsx' },
+        ],
+      },
+      { id: 'styles', label: 'styles.css' },
+    ],
+  },
+  {
+    id: 'docs',
+    label: 'docs',
+    children: [{ id: 'readme', label: 'README.md' }],
+  },
+  { id: 'drafts', label: 'drafts', empty: true },
+  { id: 'license', label: 'LICENSE' },
+]
+
+function TreeViewSection() {
+  const [selected, setSelected] = useState('button')
+
+  return (
+    <>
+      <Row label="tab into it once, then arrows - right opens, left gets you back out">
+        <TreeView
+          nodes={tree}
+          selected={selected}
+          onSelect={setSelected}
+          label="Files"
+          className="w-72 rounded-md border border-line p-1"
+        />
+      </Row>
+
+      <Row label="an empty folder still opens - that is a fact about the folder">
+        <TreeView
+          nodes={[{ id: 'drafts', label: 'drafts', empty: true }]}
+          label="Empty folder"
+          className="w-72 rounded-md border border-line p-1"
+        />
+      </Row>
+    </>
+  )
+}
+
+function KeyValueSection() {
+  return (
+    <>
+      <Row label="names in a column, values beside them - for a panel of properties">
+        <KeyValue className="w-80">
+          <KeyValueRow label="Title">Harbour lights</KeyValueRow>
+          <KeyValueRow label="Owner">Ines</KeyValueRow>
+          <KeyValueRow label="Words">
+            <NumberFormat value={4120} />
+          </KeyValueRow>
+          <KeyValueRow label="Updated">
+            <RelativeTime value="2026-09-09T09:40:00Z" now={standNow} />
+          </KeyValueRow>
+          <KeyValueRow label="Status">
+            <Badge variant="info">In review</Badge>
+          </KeyValueRow>
+        </KeyValue>
+      </Row>
+
+      <Row label="name above value - for a card, and for a column too narrow to pair">
+        <KeyValue layout="stacked" className="w-48">
+          <KeyValueRow label="Title">Harbour lights</KeyValueRow>
+          <KeyValueRow label="Owner">Ines</KeyValueRow>
+          <KeyValueRow label="Words">
+            <NumberFormat value={4120} />
+          </KeyValueRow>
+        </KeyValue>
+      </Row>
+    </>
+  )
+}
+
+function TreeRowsSection() {
+  /* The same tree, flattened twice: the sums that decide what a TreeView draws
+   * and what a VirtualList would have to window. Shown as text, because there
+   * is no markup here - the module is the arithmetic. */
+  const closed = visibleRows(tree, new Set())
+  const open = visibleRows(tree, new Set(['src', 'ui', 'docs']))
+
+  return (
+    <>
+      {[
+        ['closed', closed],
+        ["open: src, ui, docs", open],
+      ].map(([label, rows]) => (
+        <Row key={label as string} label={`${label} - ${(rows as unknown[]).length} rows`}>
+          <div className="flex flex-col gap-1 font-mono text-xs">
+            {(rows as ReturnType<typeof visibleRows>).map(({ node, depth, parent }) => (
+              <div key={node.id} className="flex items-baseline gap-2">
+                <span className="text-dim" style={{ paddingLeft: `${depth * 12}px` }}>
+                  {String(node.label)}
+                </span>
+                <span className="text-faint">
+                  depth {depth}
+                  {parent ? ` · in ${parent}` : ' · at the root'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Row>
+      ))}
     </>
   )
 }

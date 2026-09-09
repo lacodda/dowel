@@ -1,0 +1,61 @@
+# KeyValue
+
+Source: https://lacodda.github.io/dowel/components/key-value
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#key-value
+
+A panel of properties, and the same facts stacked for a card.
+
+## Notes
+
+**The markup is the whole point.** Every product builds this out of two
+`<div>`s in a flex row, and it reads to a screen reader as four unrelated
+pieces of text — "Created", "2 hours ago", "Owner", "Ines" — with nothing
+saying which value belongs to which name. A `<dl>` says it for free.
+
+```tsx
+<KeyValue>
+  <KeyValueRow label="Owner">Ines</KeyValueRow>
+  <KeyValueRow label="Words"><NumberFormat value={4120} /></KeyValueRow>
+  <KeyValueRow label="Updated"><RelativeTime value={row.updated} /></KeyValueRow>
+</KeyValue>
+```
+
+**Two layouts, because the same list sits in two places.** `rows` puts names in
+a column of their own with values beside them — for a panel of properties,
+where the eye scans the names. `stacked` puts the name above the value — for a
+card, and for a column too narrow to pair without wrapping into a ladder.
+
+**They need different markup, which is why the row reads the layout from
+context rather than taking a prop of its own.** In `rows` the `<dt>` and `<dd>`
+go straight into the grid, so every value lines up in one column; wrap each
+pair and each pair becomes its own box, with the values landing at a different
+place on every line. In `stacked` each pair *must* be wrapped, or the column
+gap falls between a name and its value as readily as between pairs, and six
+facts read as twelve loose lines.
+
+Both are valid: a `<dl>` allows `dt`/`dd` as direct children, and allows one
+`<div>` per pair. It allows nothing else between them — which is why the pair
+is a component rather than something the caller assembles.
+
+**A value is a node, not a string.** Half the values in a real panel are a
+[Badge](/dowel/components/badge/), a
+[RelativeTime](/dowel/components/relative-time/) or a link.
+
+## Props
+
+### `KeyValue`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `layout` | `rows \| stacked` | `rows` | Names beside, or names above |
+
+### `KeyValueRow`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | The name of the fact |
+| `children` | `ReactNode` | | What it is |
+| `className` | `string` | | Dresses the pair when stacked, the term in rows |

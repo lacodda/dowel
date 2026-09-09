@@ -24,7 +24,7 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.21.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and fifty-one primitives — each with a page of its own on
+products of the line, and fifty-five primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -568,7 +568,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Fifty-one of them.
+A single component: Button, Dialog, Select. Fifty-five of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -2540,6 +2540,70 @@ as symbols on every platform.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `keys` | `string[]` | | A shortcut, in order. Without it, the children are the key |
+
+---
+
+# KeyValue
+
+Source: https://lacodda.github.io/dowel/components/key-value
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#key-value
+
+A panel of properties, and the same facts stacked for a card.
+
+## Notes
+
+**The markup is the whole point.** Every product builds this out of two
+`<div>`s in a flex row, and it reads to a screen reader as four unrelated
+pieces of text — "Created", "2 hours ago", "Owner", "Ines" — with nothing
+saying which value belongs to which name. A `<dl>` says it for free.
+
+```tsx
+<KeyValue>
+  <KeyValueRow label="Owner">Ines</KeyValueRow>
+  <KeyValueRow label="Words"><NumberFormat value={4120} /></KeyValueRow>
+  <KeyValueRow label="Updated"><RelativeTime value={row.updated} /></KeyValueRow>
+</KeyValue>
+```
+
+**Two layouts, because the same list sits in two places.** `rows` puts names in
+a column of their own with values beside them — for a panel of properties,
+where the eye scans the names. `stacked` puts the name above the value — for a
+card, and for a column too narrow to pair without wrapping into a ladder.
+
+**They need different markup, which is why the row reads the layout from
+context rather than taking a prop of its own.** In `rows` the `<dt>` and `<dd>`
+go straight into the grid, so every value lines up in one column; wrap each
+pair and each pair becomes its own box, with the values landing at a different
+place on every line. In `stacked` each pair *must* be wrapped, or the column
+gap falls between a name and its value as readily as between pairs, and six
+facts read as twelve loose lines.
+
+Both are valid: a `<dl>` allows `dt`/`dd` as direct children, and allows one
+`<div>` per pair. It allows nothing else between them — which is why the pair
+is a component rather than something the caller assembles.
+
+**A value is a node, not a string.** Half the values in a real panel are a
+[Badge](/dowel/components/badge/), a
+[RelativeTime](/dowel/components/relative-time/) or a link.
+
+## Props
+
+### `KeyValue`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `layout` | `rows \| stacked` | `rows` | Names beside, or names above |
+
+### `KeyValueRow`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | The name of the fact |
+| `children` | `ReactNode` | | What it is |
+| `className` | `string` | | Dresses the pair when stacked, the term in rows |
 
 ---
 
@@ -4568,6 +4632,136 @@ anywhere in it.
 
 ---
 
+# tree-rows
+
+Source: https://lacodda.github.io/dowel/components/tree-rows
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tree-rows
+
+The same tree flattened, closed and open.
+
+## Notes
+
+**Split out of [TreeView](/dowel/components/tree-view/)** for the reason
+[table-sort](/dowel/components/table-sort/) and
+[calendar-math](/dowel/components/calendar-math/) were split out of theirs:
+these are the sums, and the component is the thing that draws them.
+
+**Flattening is what makes the keyboard simple.** Down is the next row of this
+list and Up the previous, and neither has to know about nesting. A recursive
+walk at every keystroke would ask the same question — what is visually next —
+and answer it differently at each depth.
+
+```ts
+const rows = visibleRows(nodes, open)
+// [{ node, depth: 0, parent: undefined }, { node, depth: 1, parent: 'src' }, …]
+```
+
+**`parent` is what Left uses.** Getting out of a deep folder in one press
+rather than walking back up through every sibling needs to know which branch a
+row is inside — and that is a fact about the flattened list, not about the
+node.
+
+**It is also the answer to "how many rows is this tree"**, which is what a
+product needs before putting a tree inside a
+[VirtualList](/dowel/components/virtual-list/): the window has to be computed
+from the visible rows, and those depend on what is open.
+
+**An empty folder is a folder.** `children: []` says nothing — absence of
+children is what a leaf looks like — so `empty` marks a folder that opens and
+shows nothing, and `isBranch` counts it as one.
+
+## API
+
+| | Type | |
+| --- | --- | --- |
+| `visibleRows` | `(nodes, open, depth?, parent?) => TreeRow[]` | The rows, in the order the eye travels |
+| `isBranch` | `(node) => boolean` | Something that opens, even if empty |
+| `TreeNode` | `{ id, label, children?, empty? }` | |
+| `TreeRow` | `{ node, depth, parent? }` | |
+
+---
+
+# TreeView
+
+Source: https://lacodda.github.io/dowel/components/tree-view
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tree-view
+
+A file tree with a selection, and a folder with nothing in it.
+
+## Notes
+
+**A tree is one control with a cursor in it**, not a nest of lists with click
+handlers. That difference is the whole component, and it shows in two places
+that are invisible until someone uses a keyboard.
+
+**One tab stop, not one per node.** A tree of four hundred files with a
+`tabIndex` on each is four hundred stops between the sidebar and the editor.
+The container is what the keyboard reaches, and the arrows move a cursor inside
+it — the arrangement [RadioGroup](/dowel/components/radio-group/) has, for the
+same reason.
+
+**Right and Left do different things depending on where you are:**
+
+| Key | On a closed folder | On an open folder | On a leaf |
+| --- | --- | --- | --- |
+| `→` | opens it | steps into the first child | nothing |
+| `←` | jumps to the parent | closes it | jumps to the parent |
+
+The parent jump is the part hand-rolled trees leave out, and it is the one that
+matters most: without it the only way back out of a deep folder is through
+every sibling below it.
+
+```tsx
+<TreeView
+  nodes={nodes}
+  selected={openFile}
+  onSelect={setOpenFile}
+  label="Files"
+/>
+```
+
+**The cursor and the selection are different things.** The cursor is where the
+keyboard is; the selection is the file being edited. A reader walks the tree
+with arrows without opening anything until Enter — so the cursor starts on the
+selected row rather than at the top, which is halfway up a long sidebar.
+
+**An empty folder is a folder.** `children: []` is not enough to say so —
+absence of children is what a leaf looks like — so an empty folder is marked
+with `empty`, opens, and shows nothing.
+
+**The nodes are given, not discovered.** A tree that loads its children when a
+folder opens is a different component with a different problem: a spinner per
+node, a request per open, an error state inside a row.
+
+**The sums live next door**, in
+[tree-rows](/dowel/components/tree-rows/), with no React in them — the same
+split [table-sort](/dowel/components/table-sort/) is. `visibleRows` is also the
+answer to "how many rows is this tree", which is what a product needs to put a
+tree inside a [VirtualList](/dowel/components/virtual-list/).
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `nodes` | `readonly TreeNode[]` | | `{ id, label, children?, empty? }` |
+| `open` | `ReadonlySet<string>` | | Uncontrolled if omitted |
+| `onOpenChange` | `(open: Set<string>) => void` | | |
+| `selected` | `string` | | The chosen row, not the cursor |
+| `onSelect` | `(id: string) => void` | | Fired on a leaf |
+| `label` | `string` | | Required. What a reader calls the tree |
+
+`TreeNode` and `visibleRows` come from
+[tree-rows](/dowel/components/tree-rows/), which the registry installs
+alongside.
+
+---
+
 # Truncate
 
 Source: https://lacodda.github.io/dowel/components/truncate
@@ -4603,6 +4797,93 @@ be noise.
 | `children` | `string` | | Must be a string, so it can go in the `title` |
 | `lines` | `number` | `1` | Cut after this many |
 | `title` | `string` | the text | Pass `""` to silence the tooltip |
+
+---
+
+# VirtualList
+
+Source: https://lacodda.github.io/dowel/components/virtual-list
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#virtual-list
+
+A hundred thousand rows, taller rows, and none at all.
+
+## Notes
+
+**Why it exists.** The browser is fine with long lists until it is not: a
+hundred thousand `<div>`s is a layout the machine recomputes on every change,
+and the page stops responding while it does. What is drawn instead is the
+window the reader can see, held in place by a tall spacer so the scrollbar
+still says how much there is.
+
+```tsx
+<VirtualList
+  rows={rows}
+  rowHeight={32}
+  rowKey={(row) => row.id}
+  label="Works"
+  className="h-64"
+>
+  {(row, index) => <Line row={row} index={index} />}
+</VirtualList>
+```
+
+**No virtualisation library.** `react-window`, `react-virtuoso` and
+`@tanstack/react-virtual` all solve the general problem — variable heights
+measured at runtime, horizontal windows, grids — and the general problem is not
+the one a design system has: every long list in a product is a column of rows
+of one height. That case is `windowFor`, and it is small enough to read.
+
+**`rowHeight` is given, never measured**, and variable heights are deliberately
+not supported. Measuring means rendering to find out, which means a second
+pass, a cache, and a scrollbar that changes length as the reader travels. A
+product that needs that needs a library rather than a bigger version of this.
+
+**The arithmetic is exported**, and that is not tidiness. A window computed
+inside an effect can only be tested by a browser, and jsdom gives every element
+a height of zero — a test would assert against a list that believes it is
+invisible and pass whatever the code did. As a plain function the rules are
+checkable: given a scroll offset and a height, these rows are drawn.
+
+```ts
+windowFor({ count: 100_000, rowHeight: 32, viewportHeight: 400, scrollTop: 0 })
+// → { start: 0, end: 17, totalHeight: 3_200_000, offsetTop: 0 }
+```
+
+**`overscan` is not decoration.** The scroll event arrives after the pixels, so
+without extra rows beyond each edge a fast scroll paints blank where nothing
+has been drawn yet.
+
+**`rowKey` is required.** Without it React keys by index, and a list that is
+sorted or filtered reuses the wrong DOM node — the row moves but the input
+inside it keeps the text that was typed into a different row.
+
+**It announces its real size.** `aria-setsize` and `aria-posinset` on each row,
+because the rows in the DOM are a screenful: counted from those, a reader would
+say "3 of 20" in a list of a hundred thousand. Not `aria-rowcount` /
+`aria-rowindex`, which look like the right names and belong to `grid`, `table`
+and `treegrid` — on a list they are unsupported.
+
+**The viewport is watched, not measured once.** A list inside a panel that
+opens, a window the reader resizes, a font that loads late — all change the
+height after mount, and a list that measured once draws the wrong number of
+rows until something scrolls it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `rows` | `readonly Row[]` | | |
+| `rowHeight` | `number` | | Fixed. Every row is this tall |
+| `children` | `(row, index) => ReactNode` | | |
+| `rowKey` | `(row, index) => string \| number` | | Required. Stable identity |
+| `overscan` | `number` | `3` | Extra rows drawn beyond each edge |
+| `label` | `string` | | Required. What a reader calls the list |
+
+`windowFor({ count, rowHeight, viewportHeight, scrollTop, overscan? })` returns
+`{ start, end, totalHeight, offsetTop }` — for a product windowing its own rows.
 
 ---
 

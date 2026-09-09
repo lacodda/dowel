@@ -1,0 +1,49 @@
+# tree-rows
+
+Source: https://lacodda.github.io/dowel/components/tree-rows
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tree-rows
+
+The same tree flattened, closed and open.
+
+## Notes
+
+**Split out of [TreeView](/dowel/components/tree-view/)** for the reason
+[table-sort](/dowel/components/table-sort/) and
+[calendar-math](/dowel/components/calendar-math/) were split out of theirs:
+these are the sums, and the component is the thing that draws them.
+
+**Flattening is what makes the keyboard simple.** Down is the next row of this
+list and Up the previous, and neither has to know about nesting. A recursive
+walk at every keystroke would ask the same question — what is visually next —
+and answer it differently at each depth.
+
+```ts
+const rows = visibleRows(nodes, open)
+// [{ node, depth: 0, parent: undefined }, { node, depth: 1, parent: 'src' }, …]
+```
+
+**`parent` is what Left uses.** Getting out of a deep folder in one press
+rather than walking back up through every sibling needs to know which branch a
+row is inside — and that is a fact about the flattened list, not about the
+node.
+
+**It is also the answer to "how many rows is this tree"**, which is what a
+product needs before putting a tree inside a
+[VirtualList](/dowel/components/virtual-list/): the window has to be computed
+from the visible rows, and those depend on what is open.
+
+**An empty folder is a folder.** `children: []` says nothing — absence of
+children is what a leaf looks like — so `empty` marks a folder that opens and
+shows nothing, and `isBranch` counts it as one.
+
+## API
+
+| | Type | |
+| --- | --- | --- |
+| `visibleRows` | `(nodes, open, depth?, parent?) => TreeRow[]` | The rows, in the order the eye travels |
+| `isBranch` | `(node) => boolean` | Something that opens, even if empty |
+| `TreeNode` | `{ id, label, children?, empty? }` | |
+| `TreeRow` | `{ node, depth, parent? }` | |
