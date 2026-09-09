@@ -63,6 +63,12 @@ const SECTIONS = [
   'color-field',
   'action-bar',
   'save-state',
+  'table-sort',
+  'table',
+  'pagination',
+  'page-size',
+  'number-format',
+  'relative-time',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {
