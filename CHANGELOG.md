@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.23.0] - 2026-09-09
+
+### Bug Fixes
+- Stripe the unknown bar, because a full one reads as done
+
+### Features
+- The screens between asking for data and showing it
+
 ## [0.22.0] - 2026-09-09
 
 ### Bug Fixes
@@ -9,6 +17,9 @@ All notable changes to this project are documented in this file.
 
 ### Features
 - A long list, a deep one, and the facts beside them
+
+### Testing
+- Photograph the four components the lists brought
 
 ## [0.21.0] - 2026-09-09
 
