@@ -37,6 +37,11 @@ import { VirtualList } from '../../registry/ui/virtual-list'
 import { TreeView } from '../../registry/ui/tree-view'
 import { visibleRows, type TreeNode } from '../../registry/ui/tree-rows'
 import { KeyValue, KeyValueRow } from '../../registry/ui/key-value'
+import { Skeleton, SkeletonGrid, SkeletonList, SkeletonText } from '../../registry/ui/skeleton'
+import { EmptyState } from '../../registry/ui/empty-state'
+import { Progress } from '../../registry/ui/progress'
+import { ErrorBoundary } from '../../registry/ui/error-boundary'
+import { QueryState } from '../../registry/ui/query-state'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
 import {
@@ -368,6 +373,36 @@ const sections = [
     title: 'KeyValue',
     docs: '/dowel/components/key-value/',
     render: () => <KeyValueSection />,
+  },
+  {
+    id: 'skeleton',
+    title: 'Skeleton',
+    docs: '/dowel/components/skeleton/',
+    render: () => <SkeletonSection />,
+  },
+  {
+    id: 'empty-state',
+    title: 'EmptyState',
+    docs: '/dowel/components/empty-state/',
+    render: () => <EmptyStateSection />,
+  },
+  {
+    id: 'progress',
+    title: 'Progress',
+    docs: '/dowel/components/progress/',
+    render: () => <ProgressSection />,
+  },
+  {
+    id: 'query-state',
+    title: 'QueryState',
+    docs: '/dowel/components/query-state/',
+    render: () => <QueryStateSection />,
+  },
+  {
+    id: 'error-boundary',
+    title: 'ErrorBoundary',
+    docs: '/dowel/components/error-boundary/',
+    render: () => <ErrorBoundarySection />,
   },
 ]
 
@@ -2943,6 +2978,187 @@ function TreeRowsSection() {
           </div>
         </Row>
       ))}
+    </>
+  )
+}
+
+
+function SkeletonSection() {
+  return (
+    <>
+      <Row label="a paragraph - ragged widths, so it reads as text and not as a loading bar">
+        <SkeletonText lines={4} className="w-96" />
+      </Row>
+
+      <Row label="a list, which is what most screens are waiting for">
+        <SkeletonList rows={4} className="w-96 rounded-md border border-line" />
+      </Row>
+
+      <Row label="a grid: the cells and the columns are the caller's, and so is their shape">
+        <SkeletonGrid cells={8} columns={4} className="w-96" />
+        <SkeletonGrid cells={3} columns={3} cellClassName="aspect-video" className="w-64" />
+      </Row>
+
+      <Row label="one block, sized by the thing it stands in for">
+        <Skeleton className="h-9 w-40" />
+        <Skeleton className="size-9 rounded-full" />
+        <Skeleton className="h-24 w-64" />
+      </Row>
+    </>
+  )
+}
+
+function EmptyStateSection() {
+  return (
+    <>
+      <Row label="nothing here yet, and the one thing worth doing about it">
+        <EmptyState
+          className="w-96"
+          title="No works yet"
+          body="Everything you start will show up here."
+          action={<Button variant="primary">New work</Button>}
+        />
+      </Row>
+
+      <Row label="plenty here, none of it matching - the way out is a wider filter">
+        <EmptyState
+          className="w-96"
+          variant="filtered"
+          title="Nothing matches"
+          body="Three filters are on. Clearing the tier would show 42 works."
+          action={<Button variant="ghost">Clear filters</Button>}
+        />
+      </Row>
+
+      <Row label="nothing is missing - something failed, and the way out is to retry">
+        <EmptyState
+          className="w-96"
+          variant="error"
+          title="Could not load"
+          body="The server did not answer."
+          action={<Button variant="ghost">Try again</Button>}
+        />
+      </Row>
+    </>
+  )
+}
+
+function ProgressSection() {
+  const [value, setValue] = useState(35)
+
+  return (
+    <>
+      <Row label="a known fraction - the number is shown because there is one">
+        <div className="w-96">
+          <Progress value={value} label="Uploading">
+            Uploading
+          </Progress>
+        </div>
+        <Button variant="ghost" size="sm" onClick={() => setValue((v) => Math.min(100, v + 15))}>
+          Advance
+        </Button>
+        <Button variant="ghost" size="sm" onClick={() => setValue(35)}>
+          Reset
+        </Button>
+      </Row>
+
+      <Row label="not known - it says so, rather than creeping to 90% and waiting">
+        <div className="w-96">
+          <Progress label="Working">Working</Progress>
+        </div>
+      </Row>
+
+      <Row label="the tones, and the thin size for a bar under something else">
+        <div className="flex w-96 flex-col gap-3">
+          <Progress value={70} tone="good" size="sm" label="Good" />
+          <Progress value={45} tone="warn" size="sm" label="Warn" />
+          <Progress value={20} tone="bad" size="sm" label="Bad" />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function QueryStateSection() {
+  const [state, setState] = useState<'pending' | 'error' | 'empty' | 'ready'>('pending')
+
+  return (
+    <>
+      <Row label="the same ladder every list writes - press through it">
+        <div className="flex gap-2">
+          {(['pending', 'error', 'empty', 'ready'] as const).map((next) => (
+            <Button
+              key={next}
+              variant={state === next ? 'primary' : 'ghost'}
+              size="sm"
+              onClick={() => setState(next)}
+            >
+              {next}
+            </Button>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="pending, then failed, then nothing found, then the content">
+        <div className="w-96 rounded-md border border-line p-2">
+          <QueryState
+            pending={state === 'pending'}
+            error={state === 'error' ? { message: 'The server did not answer.' } : null}
+            empty={state === 'empty'}
+            errorLabels={{ title: 'Could not load' }}
+            emptyState={<EmptyState title="No works yet" body="Everything you start shows here." />}
+          >
+            <KeyValue>
+              <KeyValueRow label="Title">Harbour lights</KeyValueRow>
+              <KeyValueRow label="Owner">Ines</KeyValueRow>
+              <KeyValueRow label="Words">
+                <NumberFormat value={4120} />
+              </KeyValueRow>
+            </KeyValue>
+          </QueryState>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+const boundaryLabels = {
+  title: 'Something went wrong',
+  body: 'This part of the screen could not be drawn.',
+  details: 'Details',
+  retry: 'Try again',
+}
+
+function Thrower({ failing }: { failing: boolean }) {
+  if (failing) throw new Error('A component below this one threw while rendering.')
+  return <p className="text-sm text-dim">Nothing is wrong here.</p>
+}
+
+function ErrorBoundarySection() {
+  const [failing, setFailing] = useState(false)
+  /* The key is what clears a caught error. Bumping it is what a router does on
+   * navigation - and without it the screen would stay crashed after the cause
+   * is gone. */
+  const [attempt, setAttempt] = useState(0)
+
+  return (
+    <>
+      <Row label="break it, then let it recover - retry inside, or a changed key from outside">
+        <Button variant="ghost" size="sm" onClick={() => setFailing((f) => !f)}>
+          {failing ? 'Stop throwing' : 'Throw'}
+        </Button>
+        <Button variant="ghost" size="sm" onClick={() => setAttempt((a) => a + 1)}>
+          Change the reset key
+        </Button>
+      </Row>
+
+      <Row label="the default screen: the message is kept, folded, for whoever files it">
+        <div className="w-full">
+          <ErrorBoundary labels={boundaryLabels} resetKey={attempt}>
+            <Thrower failing={failing} />
+          </ErrorBoundary>
+        </div>
+      </Row>
     </>
   )
 }

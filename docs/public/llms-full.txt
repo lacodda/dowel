@@ -24,7 +24,7 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.22.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and fifty-five primitives — each with a page of its own on
+products of the line, and sixty primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -568,7 +568,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Fifty-five of them.
+A single component: Button, Dialog, Select. Sixty of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -2350,6 +2350,138 @@ product that has to read or write the same spellings elsewhere.
 
 ---
 
+# EmptyState
+
+Source: https://lacodda.github.io/dowel/components/empty-state
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#empty-state
+
+Nothing yet, nothing matching, and nothing loaded.
+
+## Notes
+
+**Three kinds of nothing**, and a product that draws the same panel for all
+three tells the reader the wrong thing twice:
+
+| | What happened | The way out |
+| --- | --- | --- |
+| `empty` | Nothing here yet, and that is normal | Create the first one |
+| `filtered` | Plenty here, none of it matching | Widen the filter |
+| `error` | It could not be fetched | Try again |
+
+They differ in what the reader should do next — which is what an empty screen
+is for — so they are a variant rather than three components.
+
+```tsx
+<EmptyState
+  title="No works yet"
+  body="Everything you start will show up here."
+  action={<Button variant="primary">New work</Button>}
+/>
+```
+
+**`action` is the point.** An empty screen with no way out is a dead end. It is
+optional in the type because a small panel can borrow the way out from its
+surroundings — but a full-page empty state without one is a bug the reader
+cannot report.
+
+**The error variant is not dashed.** A dashed border reads as a placeholder for
+something that belongs there, and a failure is not that; it takes a solid,
+tinted panel and says the title in the failure colour.
+
+**The mark is a watermark, not a logo.** It is the line's hexagon in the
+current text colour rather than a product's accent — a full-strength mark in an
+empty panel shouts. It is inlined so it costs no request and can take the
+theme's colour, and it is `aria-hidden`, because it says nothing a reader
+needs. Pass `mark` to put a product's own illustration there instead.
+
+**Where it is used automatically:**
+[QueryState](/dowel/components/query-state/) draws it for a failure, and
+[ErrorBoundary](/dowel/components/error-boundary/) for a crash.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `empty \| filtered \| error` | `empty` | Which kind of nothing |
+| `title` | `ReactNode` | | What is not here |
+| `body` | `ReactNode` | | Why, or what to do |
+| `action` | `ReactNode` | | The one thing worth doing |
+| `mark` | `ReactNode` | | A product's own illustration |
+
+`EmptyMark`, `FilteredMark` and `ErrorMark` are exported for a product
+composing its own panel.
+
+---
+
+# ErrorBoundary
+
+Source: https://lacodda.github.io/dowel/components/error-boundary
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#error-boundary
+
+Break it, then recover - by retrying inside, or by changing the key from outside.
+
+## Notes
+
+**What it catches is narrower than products expect.** It catches errors **thrown
+while rendering**, below itself. It does not catch:
+
+- a failed fetch — that is a value a component receives and shows, which is
+  [QueryState](/dowel/components/query-state/);
+- an error in an event handler — nothing catches those but the handler;
+- anything thrown after the render, in a timer or a promise.
+
+So this is the last line: something that should never have thrown did, and the
+alternative is a white page with the product's name at the top.
+
+```tsx
+<ErrorBoundary
+  resetKey={route}
+  onError={report}
+  labels={{ title: 'Something went wrong', body: '…', details: 'Details', retry: 'Try again' }}
+>
+  <Screen />
+</ErrorBoundary>
+```
+
+**A class component, and the only one in the set.** Not a style choice: React
+gives no hook for catching a render error, and `componentDidCatch` exists
+nowhere else.
+
+**`resetKey` is what un-crashes it.** Without one, a boundary that has caught
+once stays caught — the reader navigates away from the broken screen and the
+crash follows them, because nothing told the boundary the reason had gone. Pass
+the route.
+
+It clears on a *changed* key rather than on any re-render: resetting whenever
+the parent renders re-runs the throwing child at once, and the screen flickers
+between the crash and the fallback for as long as the cause is there.
+
+**The message is kept, and folded away.** The reader cannot fix it, but the
+reader is who files it — and a screen that hides the one string worth quoting
+turns a bug report into a guess. It sits inside a closed `<details>`, because
+it is evidence rather than an instruction.
+
+**`labels` is required.** They are the only text here, and English inside a
+primitive is text no product can translate.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | What is being guarded |
+| `labels` | `{ title, body, details, retry }` | | Required |
+| `resetKey` | `unknown` | | Change it to clear the error |
+| `fallback` | `(error, reset) => ReactNode` | | Draw your own screen |
+| `onError` | `(error, info) => void` | | Somewhere to send it |
+
+---
+
 # Field
 
 Source: https://lacodda.github.io/dowel/components/field
@@ -3282,6 +3414,142 @@ anywhere in it.
 
 ---
 
+# Progress
+
+Source: https://lacodda.github.io/dowel/components/progress
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#progress
+
+A known fraction, an unknown one, and the tones.
+
+## Notes
+
+**Two states, and collapsing them is the defect this exists to prevent:**
+
+- **determinate** — the fraction is known, the bar fills to it, and the reader
+  can tell how long is left.
+- **indeterminate** — something is happening and nobody knows how much is left.
+  The bar says exactly that, by pulsing rather than filling.
+
+Collapsing them means picking a number that is not true. A bar that creeps to
+90% and waits there is the commonest version, and it is a lie the reader learns
+to distrust — after which no progress bar in the product means anything.
+`value={undefined}` is the honest answer, and it is the default.
+
+```tsx
+<Progress value={done / total * 100} label="Uploading">Uploading</Progress>
+<Progress label="Working">Working</Progress>   {/* no number claimed */}
+```
+
+**No percentage is shown when there is no percentage.** "0%" for an unknown
+amount is the same lie as the bar that creeps.
+
+**The indeterminate bar pulses** rather than travelling, and that is a
+deliberate limit: a travelling band would need a `@keyframes` in the theme, and
+a name in the theme is a contract the line carries forever — for one animation
+Tailwind's own utility already expresses.
+[Skeleton](/dowel/components/skeleton/) pulses for the same reason and reads as
+the same thing. Under `prefers-reduced-motion` the theme stops it, and what is
+left is a filled track that still claims no fraction.
+
+**`label` is required.** A bar with no name is announced as a percentage of
+nothing, and the word belongs to the product.
+
+**Not a [Spinner](/dowel/components/spinner/).** A spinner says "working" in a
+corner; this says "working, and here is the shape of it" across a width. Where
+the shape of what is coming is known,
+[Skeleton](/dowel/components/skeleton/) says more than either.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `number \| null` | | Leave out when not known — a state, not a gap |
+| `max` | `number` | `100` | |
+| `size` | `sm \| md` | `md` | |
+| `tone` | `accent \| good \| warn \| bad` | `accent` | |
+| `label` | `string` | | Required. What is progressing |
+| `children` | `ReactNode` | | A visible label beside the bar |
+
+---
+
+# QueryState
+
+Source: https://lacodda.github.io/dowel/components/query-state
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#query-state
+
+Pending, failed, empty and ready - press through them.
+
+## Notes
+
+**Every list writes this ladder**, and writes it slightly differently each
+time. What differs is never deliberate: one screen forgets the empty case,
+another shows a spinner where the shape was known, a third prints the raw error
+object. This is that ladder, once.
+
+**It takes values, not a query.** `useQuery` hands back `isPending` and
+`error`, and those are ordinary values — so this asks for them rather than for
+the query result, and works the same with TanStack Query, with SWR, with a
+reducer, or with two `useState` calls:
+
+```tsx
+const works = useQuery({ queryKey, queryFn })
+
+<QueryState
+  pending={works.isPending}
+  error={works.error}
+  empty={works.data?.length === 0}
+  errorLabels={{ title: 'Could not load' }}
+  emptyState={<EmptyState title="No works yet" />}
+>
+  <Works rows={works.data} />
+</QueryState>
+```
+
+Taking the result object would put a library in the registry — and therefore in
+every product that installs this primitive — to save one line at the call site.
+
+**The order of the cases is the component**, and it is the part that goes wrong
+by hand:
+
+1. **pending**, because a refetch that already has data should not blank the
+   screen it is refreshing — the caller decides that by passing `pending` only
+   when there is nothing to show;
+2. **error**, because an error with stale data is still an error, and "nothing
+   found" for a request that failed is a lie;
+3. **empty**, which is the only one that cannot be known until something has
+   arrived.
+
+**`aria-busy` is on the region**, said once — which is why the
+[Skeletons](/dowel/components/skeleton/) inside are `aria-hidden`.
+
+**`empty` is computed by the caller**, because only the caller knows whether
+empty means `[]`, `null`, or a count of zero.
+
+**What it does not do:** fetch, retry or cache. Those belong to whatever owns
+the data, and a component that guessed at them would be wrong for the product
+that owns them differently. A crash while rendering is
+[ErrorBoundary](/dowel/components/error-boundary/), not this.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `pending` | `boolean` | `false` | Nothing has arrived yet |
+| `error` | `{ message } \| string \| null` | `null` | Anything with a message |
+| `empty` | `boolean` | `false` | Something arrived, and it was nothing |
+| `skeleton` | `ReactNode` | `<SkeletonList />` | What stands in while pending |
+| `emptyState` | `ReactNode` | | Shown when nothing came back |
+| `errorState` | `(message) => ReactNode` | | Draw the failure yourself |
+| `errorLabels` | `{ title, body? }` | | Words for the default failure screen |
+
+---
+
 # RadioGroup
 
 Source: https://lacodda.github.io/dowel/components/radio-group
@@ -3849,6 +4117,67 @@ Whether the event landed on something that owns its own keys — an `<input>`, a
 binds it with this hook, and
 [`CommandPalette`](/dowel/components/command-palette/) is opened with it: the
 palette has no trigger to point at, and the one it does have is a keystroke.
+
+---
+
+# Skeleton
+
+Source: https://lacodda.github.io/dowel/components/skeleton
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#skeleton
+
+A paragraph, a list, two grids, and single blocks.
+
+## Notes
+
+**The rule it is built on:**
+
+> A skeleton of the wrong shape is worse than no skeleton.
+
+It promises something the content does not keep, and the promise is paid for in
+a jump: the page settles, the scrollbar appears, and whatever the reader was
+about to click has moved. Measured rather than assumed — the line's own
+calendar drew four short lines where a six-row month grid was about to land,
+and the skeleton was itself the jump it existed to prevent.
+
+So the useful part is not `<Skeleton />` — that is four lines anyone can write
+— but the shapes. They are what a call site reaches for, and what keeps the
+placeholder honest.
+
+```tsx
+{isPending ? <SkeletonList rows={6} /> : <Works rows={works} />}
+```
+
+**A spinner is the right answer when the shape is not known.** A skeleton
+claims to know; if it does not, say less rather than more. See
+[Spinner](/dowel/components/spinner/), and
+[Progress](/dowel/components/progress/) for the unknown-fraction case.
+
+**The widths vary, and that is deliberate.** A stack of equal bars reads as a
+loading indicator; ragged ones read as text. They rotate through a fixed set
+rather than being random, because a placeholder that changes between renders
+flickers — and a placeholder is on screen exactly when things are re-rendering.
+
+**Everything here is `aria-hidden`.** The loading fact belongs to the region
+and is said once, by whatever owns it —
+[QueryState](/dowel/components/query-state/) does it with `aria-busy`.
+Announcing a dozen empty boxes as content would be noise on top of a fact the
+reader already has.
+
+**A count of zero draws one.** `rows={works.length}` before anything arrives is
+zero, and an empty box where a placeholder belongs is the jump the component
+exists to prevent.
+
+## Parts
+
+| | |
+| --- | --- |
+| `Skeleton` | One block. Size it with `className` |
+| `SkeletonText` | `lines` (default 3). Ragged widths, short last line |
+| `SkeletonList` | `rows` (default 5), `secondary` (default true) |
+| `SkeletonGrid` | `cells`, `columns`, `cellClassName` |
 
 ---
 

@@ -38,6 +38,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Dialog](https://lacodda.github.io/dowel/components/dialog.md): A question the reader has to answer before anything else continues.
 - [Drawer](https://lacodda.github.io/dowel/components/drawer.md): A modal panel that slides in from an edge - a filter sheet, a detail pane, a form too long to centre.
 - [DurationField](https://lacodda.github.io/dowel/components/duration-field.md): A length of time, typed the way people say it - loose going in, one spelling coming out.
+- [EmptyState](https://lacodda.github.io/dowel/components/empty-state.md): What a screen says when there is nothing on it - and the three kinds of nothing that need different answers.
+- [ErrorBoundary](https://lacodda.github.io/dowel/components/error-boundary.md): The screen that appears instead of a crash - and the narrow thing it actually catches.
 - [Field](https://lacodda.github.io/dowel/components/field.md): The label, the control, and what the form has to say about it - wired together rather than merely stacked.
 - [FileDrop](https://lacodda.github.io/dowel/components/file-drop.md): A place to put files: drag them onto it, or press it and pick them.
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
@@ -52,6 +54,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [PasswordField](https://lacodda.github.io/dowel/components/password-field.md): A password, and the button that shows it - which starts off, always.
 - [Popover](https://lacodda.github.io/dowel/components/popover.md): A panel anchored to the control that opened it - positioned, not centred, and not modal.
 - [PreviewCard](https://lacodda.github.io/dowel/components/preview-card.md): The card that appears when a link is hovered - a shortcut for people who can see it, never the only place the information lives.
+- [Progress](https://lacodda.github.io/dowel/components/progress.md): How far along something is - and the honest answer when nobody knows.
+- [QueryState](https://lacodda.github.io/dowel/components/query-state.md): The three screens between asking for data and showing it, in the order that is right.
 - [RadioGroup](https://lacodda.github.io/dowel/components/radio-group.md): One of a few, all of them visible - the group is the control, not the button.
 - [RatingScale](https://lacodda.github.io/dowel/components/rating-scale.md): A judgement on a short scale, and the absence of one - because not judged yet is a state, not a zero.
 - [RelativeTime](https://lacodda.github.io/dowel/components/relative-time.md): A phrase like "3 minutes ago" in the reader's own language, over a date they can still read.
@@ -59,6 +63,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
 - [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
+- [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.

@@ -1,0 +1,66 @@
+---
+title: EmptyState
+description: What a screen says when there is nothing on it - and the three kinds of nothing that need different answers.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/empty-state.json
+```
+
+<Stand component="empty-state" caption="Nothing yet, nothing matching, and nothing loaded." />
+
+## Notes
+
+**Three kinds of nothing**, and a product that draws the same panel for all
+three tells the reader the wrong thing twice:
+
+| | What happened | The way out |
+| --- | --- | --- |
+| `empty` | Nothing here yet, and that is normal | Create the first one |
+| `filtered` | Plenty here, none of it matching | Widen the filter |
+| `error` | It could not be fetched | Try again |
+
+They differ in what the reader should do next — which is what an empty screen
+is for — so they are a variant rather than three components.
+
+```tsx
+<EmptyState
+  title="No works yet"
+  body="Everything you start will show up here."
+  action={<Button variant="primary">New work</Button>}
+/>
+```
+
+**`action` is the point.** An empty screen with no way out is a dead end. It is
+optional in the type because a small panel can borrow the way out from its
+surroundings — but a full-page empty state without one is a bug the reader
+cannot report.
+
+**The error variant is not dashed.** A dashed border reads as a placeholder for
+something that belongs there, and a failure is not that; it takes a solid,
+tinted panel and says the title in the failure colour.
+
+**The mark is a watermark, not a logo.** It is the line's hexagon in the
+current text colour rather than a product's accent — a full-strength mark in an
+empty panel shouts. It is inlined so it costs no request and can take the
+theme's colour, and it is `aria-hidden`, because it says nothing a reader
+needs. Pass `mark` to put a product's own illustration there instead.
+
+**Where it is used automatically:**
+[QueryState](/dowel/components/query-state/) draws it for a failure, and
+[ErrorBoundary](/dowel/components/error-boundary/) for a crash.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `empty \| filtered \| error` | `empty` | Which kind of nothing |
+| `title` | `ReactNode` | | What is not here |
+| `body` | `ReactNode` | | Why, or what to do |
+| `action` | `ReactNode` | | The one thing worth doing |
+| `mark` | `ReactNode` | | A product's own illustration |
+
+`EmptyMark`, `FilteredMark` and `ErrorMark` are exported for a product
+composing its own panel.

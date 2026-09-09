@@ -294,6 +294,23 @@ describe('what a primitive drags in', () => {
     // A `<dl>` and two layouts, and the layouts need different markup - which
     // is the whole reason the pair is a component rather than two divs.
     'key-value': ['class-variance-authority'],
+    // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
+    // shape is a few divs with the right widths.
+    skeleton: [],
+    // Its own clothes and its own marks, inlined so they cost no request and
+    // can take the theme's colour.
+    'empty-state': ['class-variance-authority'],
+    // Base UI carries the role, the announcement and the clamping; what is
+    // here is the clothes and the rule about which of the two states is drawn.
+    progress: ['@base-ui/react', 'class-variance-authority'],
+    // The ladder, drawn with the two screens it steps through: a placeholder
+    // while pending, and an empty state when it failed. Writing either again
+    // here would be a second version of the same screen.
+    'query-state': ['empty-state', 'skeleton'],
+    // The crash screen is an EmptyState in its error variant, with Button's
+    // retry - the alternative was a hand-drawn button, which is exactly the
+    // drift the set exists to prevent.
+    'error-boundary': ['button', 'empty-state'],
   }
 
   /** What the file imports: bare module specifiers minus React and the

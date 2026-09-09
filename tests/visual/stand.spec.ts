@@ -73,6 +73,11 @@ const SECTIONS = [
   'tree-rows',
   'tree-view',
   'key-value',
+  'skeleton',
+  'empty-state',
+  'progress',
+  'query-state',
+  'error-boundary',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

@@ -1,0 +1,66 @@
+---
+title: ErrorBoundary
+description: The screen that appears instead of a crash - and the narrow thing it actually catches.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/error-boundary.json
+```
+
+<Stand component="error-boundary" caption="Break it, then recover - by retrying inside, or by changing the key from outside." />
+
+## Notes
+
+**What it catches is narrower than products expect.** It catches errors **thrown
+while rendering**, below itself. It does not catch:
+
+- a failed fetch — that is a value a component receives and shows, which is
+  [QueryState](/dowel/components/query-state/);
+- an error in an event handler — nothing catches those but the handler;
+- anything thrown after the render, in a timer or a promise.
+
+So this is the last line: something that should never have thrown did, and the
+alternative is a white page with the product's name at the top.
+
+```tsx
+<ErrorBoundary
+  resetKey={route}
+  onError={report}
+  labels={{ title: 'Something went wrong', body: '…', details: 'Details', retry: 'Try again' }}
+>
+  <Screen />
+</ErrorBoundary>
+```
+
+**A class component, and the only one in the set.** Not a style choice: React
+gives no hook for catching a render error, and `componentDidCatch` exists
+nowhere else.
+
+**`resetKey` is what un-crashes it.** Without one, a boundary that has caught
+once stays caught — the reader navigates away from the broken screen and the
+crash follows them, because nothing told the boundary the reason had gone. Pass
+the route.
+
+It clears on a *changed* key rather than on any re-render: resetting whenever
+the parent renders re-runs the throwing child at once, and the screen flickers
+between the crash and the fallback for as long as the cause is there.
+
+**The message is kept, and folded away.** The reader cannot fix it, but the
+reader is who files it — and a screen that hides the one string worth quoting
+turns a bug report into a guess. It sits inside a closed `<details>`, because
+it is evidence rather than an instruction.
+
+**`labels` is required.** They are the only text here, and English inside a
+primitive is text no product can translate.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | What is being guarded |
+| `labels` | `{ title, body, details, retry }` | | Required |
+| `resetKey` | `unknown` | | Change it to clear the error |
+| `fallback` | `(error, reset) => ReactNode` | | Draw your own screen |
+| `onError` | `(error, info) => void` | | Somewhere to send it |

@@ -18,7 +18,7 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.22.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and fifty-five primitives — each with a page of its own on
+products of the line, and sixty primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a

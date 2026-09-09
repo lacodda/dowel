@@ -1,0 +1,58 @@
+# Progress
+
+Source: https://lacodda.github.io/dowel/components/progress
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#progress
+
+A known fraction, an unknown one, and the tones.
+
+## Notes
+
+**Two states, and collapsing them is the defect this exists to prevent:**
+
+- **determinate** — the fraction is known, the bar fills to it, and the reader
+  can tell how long is left.
+- **indeterminate** — something is happening and nobody knows how much is left.
+  The bar says exactly that, by pulsing rather than filling.
+
+Collapsing them means picking a number that is not true. A bar that creeps to
+90% and waits there is the commonest version, and it is a lie the reader learns
+to distrust — after which no progress bar in the product means anything.
+`value={undefined}` is the honest answer, and it is the default.
+
+```tsx
+<Progress value={done / total * 100} label="Uploading">Uploading</Progress>
+<Progress label="Working">Working</Progress>   {/* no number claimed */}
+```
+
+**No percentage is shown when there is no percentage.** "0%" for an unknown
+amount is the same lie as the bar that creeps.
+
+**The indeterminate bar pulses** rather than travelling, and that is a
+deliberate limit: a travelling band would need a `@keyframes` in the theme, and
+a name in the theme is a contract the line carries forever — for one animation
+Tailwind's own utility already expresses.
+[Skeleton](/dowel/components/skeleton/) pulses for the same reason and reads as
+the same thing. Under `prefers-reduced-motion` the theme stops it, and what is
+left is a filled track that still claims no fraction.
+
+**`label` is required.** A bar with no name is announced as a percentage of
+nothing, and the word belongs to the product.
+
+**Not a [Spinner](/dowel/components/spinner/).** A spinner says "working" in a
+corner; this says "working, and here is the shape of it" across a width. Where
+the shape of what is coming is known,
+[Skeleton](/dowel/components/skeleton/) says more than either.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `number \| null` | | Leave out when not known — a state, not a gap |
+| `max` | `number` | `100` | |
+| `size` | `sm \| md` | `md` | |
+| `tone` | `accent \| good \| warn \| bad` | `accent` | |
+| `label` | `string` | | Required. What is progressing |
+| `children` | `ReactNode` | | A visible label beside the bar |
