@@ -54,6 +54,21 @@ const fillVariants = cva('h-full rounded-full transition-[width] duration-base',
   defaultVariants: { tone: 'accent' },
 })
 
+/* The stripes take their colour from `currentColor`, so the tone arrives as a
+ * text colour rather than a background - the same four names, said the other
+ * way round. */
+const stripeVariants = cva('h-full w-full rounded-full opacity-40', {
+  variants: {
+    tone: {
+      accent: 'text-accent',
+      good: 'text-good',
+      warn: 'text-warn',
+      bad: 'text-bad',
+    },
+  },
+  defaultVariants: { tone: 'accent' },
+})
+
 export interface ProgressProps
   extends Omit<Base.Root.Props, 'className' | 'value'>,
     VariantProps<typeof progressVariants> {
@@ -102,19 +117,27 @@ export function Progress({
 
       <Base.Track className={cn(progressVariants({ size, tone }))}>
         {indeterminate ? (
-          /* The whole track, pulsing, rather than a bar at some fraction.
+          /* Stripes across the whole track, not a filled bar.
            *
-           * `animate-pulse` rather than a travelling band of its own: a band
-           * needs a `@keyframes` in the theme, and a name in the theme is a
-           * contract the line then carries forever - for one animation that
-           * Tailwind's own utility already expresses. Skeleton pulses for the
-           * same reason and reads as the same thing: something is happening
-           * and its extent is not known.
+           * A full-width fill was the first version and it was wrong in the
+           * one way that matters: measured on the stand, it drew 384px of a
+           * 384px track - a reader glancing at it sees "done", which is the
+           * opposite of what the state means. Pulsing did not rescue it, and
+           * under `prefers-reduced-motion` the pulse stops and a solid,
+           * complete-looking bar is all that remains.
            *
-           * It is also what `prefers-reduced-motion` already covers, since the
-           * theme turns Tailwind's animations off there; what remains is a
-           * filled track, which still does not claim a fraction. */
-          <div className={cn(fillVariants({ tone }), 'w-full animate-pulse opacity-60')} />
+           * Stripes cannot be read as a fraction at all: there is no edge to
+           * take for a boundary. They are drawn with a gradient rather than a
+           * `@keyframes` of their own, because a name in the theme is a
+           * contract the line carries forever - and this needs no animation to
+           * say what it says. */
+          <div
+            className={cn(stripeVariants({ tone }))}
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(45deg, currentColor 0 6px, transparent 6px 12px)',
+            }}
+          />
         ) : (
           <Base.Indicator className={cn(fillVariants({ tone }))} />
         )}

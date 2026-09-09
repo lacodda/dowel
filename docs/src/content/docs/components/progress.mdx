@@ -33,13 +33,17 @@ to distrust — after which no progress bar in the product means anything.
 **No percentage is shown when there is no percentage.** "0%" for an unknown
 amount is the same lie as the bar that creeps.
 
-**The indeterminate bar pulses** rather than travelling, and that is a
-deliberate limit: a travelling band would need a `@keyframes` in the theme, and
-a name in the theme is a contract the line carries forever — for one animation
-Tailwind's own utility already expresses.
-[Skeleton](/dowel/components/skeleton/) pulses for the same reason and reads as
-the same thing. Under `prefers-reduced-motion` the theme stops it, and what is
-left is a filled track that still claims no fraction.
+**The indeterminate bar is striped, not filled.** A full-width fill was the
+first drawing of it and was wrong in the way that matters: measured on the
+stand it painted 384px of a 384px track, and a reader glancing at that sees
+"done" — the opposite of the state. Pulsing did not rescue it, and under
+`prefers-reduced-motion` the pulse stops and a complete-looking bar is all that
+is left.
+
+Stripes cannot be read as a fraction at all: there is no edge to mistake for a
+boundary. They are a gradient rather than an animation of their own, because a
+`@keyframes` name in the theme is a contract the line carries forever — and
+this needs no movement to say what it says.
 
 **`label` is required.** A bar with no name is announced as a percentage of
 nothing, and the word belongs to the product.

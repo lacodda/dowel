@@ -57,14 +57,22 @@ describe('when it is not known', () => {
     expect(screen.queryByText(/%/)).toBeNull()
   })
 
-  it('draws something that moves rather than a bar at zero', () => {
+  it('draws stripes, which cannot be read as a fraction at all', () => {
+    /* The first version filled the whole track and pulsed. Measured on the
+     * stand it drew 384px of a 384px track - a reader glancing at it sees
+     * "done", the opposite of what the state means, and under
+     * `prefers-reduced-motion` the pulse stops and only the full bar is left.
+     *
+     * Stripes have no edge to mistake for a boundary. */
     const { container } = render(<Progress label="Working" />)
-    expect(container.querySelector('.animate-pulse')).not.toBeNull()
+    const striped = container.querySelector('[style*="repeating-linear-gradient"]')
+    expect(striped).not.toBeNull()
+    expect(striped?.className).not.toContain('bg-accent')
   })
 
-  it('draws no pulse when the fraction is known', () => {
+  it('draws a plain fill when the fraction is known', () => {
     const { container } = render(<Progress value={40} label="Uploading" />)
-    expect(container.querySelector('.animate-pulse')).toBeNull()
+    expect(container.querySelector('[style*="repeating-linear-gradient"]')).toBeNull()
   })
 })
 
