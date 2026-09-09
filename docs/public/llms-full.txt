@@ -24,7 +24,7 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.20.3.** The theme and its scales, an accent for each of the fourteen
-products of the line, and forty-five primitives — each with a page of its own on
+products of the line, and fifty-one primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -568,7 +568,7 @@ drawn in all fourteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Forty-five of them.
+A single component: Button, Dialog, Select. Fifty-one of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -2701,6 +2701,211 @@ an invitation to click sixty times.
 
 ---
 
+# NumberFormat
+
+Source: https://lacodda.github.io/dowel/components/number-format
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#number-format
+
+The same number in four languages, money and percentages, and a column with and without tabular figures.
+
+## Notes
+
+**The separators are the reader's.** A thousand is `1,000` here, `1 000` there
+and `1.000` somewhere else — and the last one is the same string another reader
+would read as one. `Intl` knows this and a product does not have to.
+
+**The figures line up.** `tabular-nums` gives every digit the same width, so a
+column of numbers has its digits above each other and the eye can compare
+lengths without reading. Without it a proportional font gives `1` less room
+than `8`, the column ripples, and the only way to tell 9,999 from 10,000 is to
+count.
+
+This is the part that gets left out, because it looks fine on the one number a
+developer tries it on and only fails in a column — which is exactly where
+numbers live. Having it in a component is how it stops being remembered.
+
+```tsx
+<NumberFormat value={1234567} />
+<NumberFormat value={1299.5} style="currency" currency="USD" />
+<NumberFormat value={0.427} style="percent" maximumFractionDigits={1} />
+<NumberFormat value={1200000} notation="compact" />   {/* 1.2M */}
+```
+
+**No locale is defaulted.** `undefined` means the reader's own, which is what a
+product almost always wants. Passing `'en-US'` to be safe is how a German
+reader is shown American separators for the life of the product.
+
+**`Intl`'s options, not a second vocabulary.** Currency, percentages and units
+take the same options object, so those are not three more components. What
+`Intl` does not decide is compactness: `1.2M` is a choice about how much
+precision the reader is owed, and it is the caller's, in `notation`.
+
+**`style` means `Intl`'s style here**, not a CSS object — the two collide on
+the name, and the formatting one wins. Inline styles are given up in exchange,
+which costs nothing: appearance is the theme's business and `className` is
+still there.
+
+**`value` is a `number`, not `number | null`.** A row with no value shows
+whatever the product says absence looks like — a dash, a word, an empty cell —
+and that is a decision about the data, not about formatting. See
+[table-sort](/dowel/components/table-sort/) for the same distinction in the
+ordering.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `number` | | Required |
+| `locale` | `string \| string[]` | the reader's | |
+| …`Intl.NumberFormatOptions` | | | `style`, `currency`, `notation`, `maximumFractionDigits`, … |
+| `className` | `string` | | Merged; `tabular-nums` stays |
+
+`formatNumber(value, locale?, options?)` gives the string alone, for a `title`,
+an `aria-label` or a CSV.
+
+---
+
+# PageSize
+
+Source: https://lacodda.github.io/dowel/components/page-size
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#page-size
+
+The default choices, and a product's own.
+
+## Notes
+
+**Its own component rather than part of
+[Pagination](/dowel/components/pagination/).** The two usually sit together and
+are needed apart often enough to be separate: a list that scrolls for ever
+wants "how many to load at a time" and no page buttons, and a table with a
+fixed page size wants the buttons and no choice.
+
+```tsx
+<PageSize
+  pageSize={pageSize}
+  onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
+  label="Rows per page"
+>
+  Rows per page
+</PageSize>
+```
+
+**A [Select](/dowel/components/select/), never a native one.** It is the
+control most likely to reintroduce a `<select>`, since it is three numbers in a
+box and looks like the case where it would not matter. The line's rule has no
+exception for small controls, and this is the one that tests it.
+
+**It hands back a `number`, not the text of one.** The trigger's value is a
+string, because that is what a Select carries; a caller receiving `"50"` would
+put it in `OFFSET n * pageSize` and get string concatenation.
+
+**`label` is required and separate from `children`.** The first names the
+control for a screen reader; the second is the visible text beside it, for when
+there is room. A control that has only the visible one is unnamed the moment
+the layout drops it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `pageSize` | `number` | | |
+| `options` | `number[]` | `[10, 25, 50, 100]` | |
+| `onPageSizeChange` | `(size: number) => void` | | Receives a number |
+| `label` | `string` | | Required. Names the control |
+| `children` | `ReactNode` | | The visible label, when there is room |
+
+---
+
+# Pagination
+
+Source: https://lacodda.github.io/dowel/components/pagination
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#pagination
+
+Paging a long list, a short one, and a wider neighbourhood.
+
+## Notes
+
+**It does not fetch, and it does not slice.** It is told the page and the total
+and it says which page was asked for — because whether paging means an `OFFSET`
+or an `Array.prototype.slice` is the product's business, and a component that
+guesses gets it wrong for the other one.
+
+```tsx
+const [page, setPage] = useState(1)
+const [pageSize, setPageSize] = useState(25)
+const [from, to] = pageRange(page, pageSize, total)
+
+<span>{from}-{to} of {total}</span>
+<Pagination
+  page={page}
+  pageSize={pageSize}
+  total={total}
+  onPageChange={setPage}
+  labels={{ region: 'Pages', previous: 'Previous', next: 'Next', page: (n) => `Page ${n}` }}
+/>
+```
+
+**The row keeps a steady width.** This is the part that takes the arithmetic.
+A window of a fixed number of *pages* looks right in the middle and comes up
+short at the ends, where one of the gaps is not needed — the row loses a place,
+and the "next" button moves under the pointer as you use it. So the run of
+pages is grown to whatever fills the row, given how many gaps it has.
+
+**A gap never stands for a single page.** `1 … 3` hides only page 2, which the
+row had room for. Near an end the run slides onto the edge instead — and it
+slides rather than dropping the page, because leaving it out silently is worse
+than the gap: the row would say 1 is followed by 3 and give no sign that
+anything was missing.
+
+**The gap is not a button and not hidden either.** Drawn as a disabled button
+it would give a keyboard stops that lead nowhere; hidden from a screen reader
+it would announce a jump from 2 to 40 with no reason for it.
+
+**The current page is announced.** `aria-current="page"`, not colour alone —
+and not `aria-selected`, which belongs to a listbox.
+
+**`labels` is required.** These are the only words the control has, and a
+default here would be English shipped inside a primitive. `page` takes the
+number, because "Page 3" is a sentence only the product's language can build.
+
+**How many rows to a page is [PageSize](/dowel/components/page-size/)**, next
+door. The two usually sit together and are needed apart often enough to be
+separate: a list that scrolls for ever wants "how many to load at a time" and
+no page buttons, and a table with a fixed page size wants the buttons and no
+choice.
+
+## Props
+
+### `Pagination`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `page` | `number` | | Clamped into range rather than drawing a hole |
+| `pageSize` | `number` | | |
+| `total` | `number` | | Rows, not pages |
+| `onPageChange` | `(page) => void` | | |
+| `around` | `number` | `1` | Pages either side of the current one |
+| `labels` | `PaginationLabels` | | Required. `region`, `previous`, `next`, `page(n)` |
+
+### The arithmetic
+
+| | Type | |
+| --- | --- | --- |
+| `pageCount` | `(total, pageSize) => number` | At least 1 — "page 1 of 0" reads as broken |
+| `pageRange` | `(page, pageSize, total) => [from, to]` | `to` clamped, so the last page says what it holds |
+| `pageWindow` | `(page, pages, around?) => PageStep[]` | `number \| 'gap'` |
+
+---
+
 # Panel
 
 Source: https://lacodda.github.io/dowel/components/panel
@@ -3142,6 +3347,71 @@ being controls.
 | `label` | `string` | | Required. What is being judged |
 | `emptyLabel` | `string` | | Required. Heard in place of a number |
 | `disabled` | `boolean` | `false` | |
+
+---
+
+# RelativeTime
+
+Source: https://lacodda.github.io/dowel/components/relative-time
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#relative-time
+
+Six intervals, four languages, and the difference `numeric` makes.
+
+## Notes
+
+**The rule this is built on:**
+
+> A relative time is a convenience, never the only copy of the fact.
+
+"Last week" is quicker to read than a date and useless the moment the reader
+needs to say when something actually happened — and they cannot get it back,
+because the page has thrown it away. So the element is a `<time>` with the
+exact moment in `dateTime` and the real date in `title`: hovering shows it,
+machines can read it, and nothing is lost by showing the phrase.
+
+```tsx
+<RelativeTime value={row.updated} />
+<RelativeTime value={row.updated} numeric="always" />  {/* "1 day ago", not "yesterday" */}
+```
+
+**`Intl.RelativeTimeFormat` writes the phrase**, which is the whole reason
+there is no date library here. "yesterday", "3 недели назад", "in 2 months" —
+the plural rules and the special words for the nearest units are the part a
+hand-written version gets wrong first, and it gets it wrong only in the
+languages its author does not read.
+
+What `Intl` does not decide is *which* unit to use: it is told "3" and "weeks".
+Choosing between them is `relativeParts`, and it is the only arithmetic here.
+
+**It rounds towards zero.** Rounding to nearest is the tempting alternative and
+says "in 1 hour" 31 minutes before the meeting; truncating never claims more
+time has passed than has.
+
+**It does not update itself.** A component that re-renders every second to keep
+"2 minutes ago" honest costs a timer per instance — a table of fifty rows is
+fifty timers — to correct a number nobody is watching change. A product that
+needs it re-renders the list on its own schedule, which is what `now` is for;
+it also keeps tests off the clock.
+
+**A date that is not a date renders as nothing.** "Invalid Date" is a string no
+reader can act on and which looks like a value; an empty `<time>` with no
+`dateTime` says the same to a machine.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `Date \| number \| string` | | Whatever the data already holds |
+| `now` | `Date \| number` | read once at mount | What counts as now. Given, every row measures from the same moment |
+| `locale` | `string \| string[]` | the reader's | |
+| `numeric` | `'auto' \| 'always'` | `'auto'` | `auto` gives "yesterday" where the language has the word |
+| `titleOptions` | `Intl.DateTimeFormatOptions` | medium date, short time | How the exact moment is written |
+
+`formatRelative(value, now?, locale?, options?)` gives the phrase alone, and
+`relativeParts(value, now?)` the count and unit behind it.
 
 ---
 
@@ -3671,6 +3941,181 @@ the meaning is genuinely in the context, and then name it:
 | `onCheckedChange` | `(checked) => void` | | |
 | `disabled`, `readOnly`, `required` | `boolean` | `false` | |
 | `name` | `string` | | For a form |
+
+---
+
+# Table
+
+Source: https://lacodda.github.io/dowel/components/table
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#table
+
+Sortable, dense, with a sticky heading, and empty.
+
+## Notes
+
+**Parts rather than a `columns` prop.** A `<DataTable columns={…} rows={…} />`
+is quicker to write for the first table and then owns every cell in the product
+forever. The moment one column needs a [Badge](/dowel/components/badge/),
+another a link, and a third the row's own [Menu](/dowel/components/menu/), the
+prop grows a `render` for each — at which point it is JSX with extra steps,
+spelt in a shape only this component understands.
+
+So the parts are the ones HTML already has, dressed. What is bought by having
+them here rather than in the product is that every table of the line has the
+same row height, the same heading, the same hairline, and the same behaviour
+when a column is sorted.
+
+```tsx
+const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
+
+<TableScroll>
+  <Table>
+    <TableHead sticky>
+      <TableRow>
+        <TableSortHeader column="title" sort={sort} onSortChange={(c) => setSort(toggleSort(sort, c))}>
+          Title
+        </TableSortHeader>
+        <TableHeader numeric>Words</TableHeader>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {sortRows(rows, sort, read).map((row) => (
+        <TableRow key={row.id} selected={row.id === picked}>
+          <TableCell>{row.title}</TableCell>
+          <TableCell numeric><NumberFormat value={row.words} /></TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableScroll>
+```
+
+**The sorting arithmetic is next door.** It lives in
+[table-sort](/dowel/components/table-sort/) with no React in it, which is what
+lets a product sort on the server and still get the same order — including the
+rule that absence sorts last in both directions.
+
+**`TableSortHeader` puts a real `<button>` in the cell.** Not an `onClick` on
+the `<th>`: the cell is not focusable, gets no keyboard, and announces nothing.
+This is the part a hand-rolled table almost always gets wrong, and it is
+invisible to everyone who reorders with a mouse.
+
+**`TableScroll` is not decoration.** `overflow` on a `<table>` does nothing, so
+the wrapper is the only place a scrollbar can live — and the only thing a
+sticky heading can stick inside. The scrollbar it gets is the theme's overlay
+one, which takes no room in the layout.
+
+**`sticky` is off by default.** A sticky heading needs a container with a
+height; switched on by default it would silently do nothing in the common case
+— a table that scrolls with the page — and look broken in the other. When it is
+on, the heading takes its own background: transparent, it would have the rows
+sliding visibly beneath its text.
+
+**`numeric` on a cell** right-aligns it and sets tabular figures. It is a prop
+rather than a class the caller adds because a column of numbers that is not
+aligned is the commonest defect in a table, and the one nobody files a bug
+about. For the number itself, [NumberFormat](/dowel/components/number-format/).
+
+**`TableEmpty` spans the whole width.** A row rather than a block below the
+table, so the heading stays where it is and the table does not change shape
+between having rows and not; `colSpan` is required, because without it the
+message sits under the first column.
+
+## Parts
+
+| | |
+| --- | --- |
+| `TableScroll` | The scroll container. Where the scrollbar and the sticky heading live |
+| `Table` | `density`: `base` (default) or `dense` |
+| `TableHead` | `sticky`: keep the heading in view while the body scrolls |
+| `TableBody` | |
+| `TableRow` | `selected`: the row picked out. Announced, not only coloured |
+| `TableHeader` | A plain heading. `numeric` |
+| `TableSortHeader` | `column`, `sort`, `onSortChange`, `numeric` |
+| `TableCell` | `numeric`: right-aligned, tabular figures |
+| `TableEmpty` | `colSpan` required |
+
+---
+
+# table-sort
+
+Source: https://lacodda.github.io/dowel/components/table-sort
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#table-sort
+
+The same six rows sorted by score, ascending and descending.
+
+## Notes
+
+**The rule this exists for.**
+
+> Absence sorts last, whichever way the column points.
+
+A row with no value in this column is not the smallest — it is unknown, and the
+two are different facts. Rank absence with the rest and flip the sign, and a
+descending sort floats every empty row to the top: the reader asks for the
+highest score and is handed the rows that have none.
+
+This is measured rather than assumed. It is what the first version of the
+line's own catalogue did, and the fix is the shape here, where presence is
+settled *before* the direction is applied. It is the same fact
+[RatingScale](/dowel/components/rating-scale/) is built on: not judged yet is a
+state, not a zero.
+
+```ts
+import { sortRows, toggleSort, type Sort } from './table-sort'
+
+const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
+const ordered = sortRows(rows, sort, (row, column) => row[column], {
+  tiebreak: (row) => row.id,
+})
+```
+
+**No React in it**, which is what makes it a file of its own — the same split
+[calendar-math](/dowel/components/calendar-math/) is. A product that sorts on
+the server, in a worker, or before the data reaches a component imports this
+and never [Table](/dowel/components/table/).
+
+**No table library.** The obvious choice is TanStack Table, and it would be the
+first dependency a product has to install beyond Base UI. What it offers is a
+model of columns, pages and sorting state; what the line's one real table
+needed was the rule above, which the model does not have.
+
+**`NaN` counts as absent too**, and that is not tidiness. Subtraction with it
+returns `NaN`, which `sort` reads as "these two are equal" — so a row whose
+number is not a number takes whatever place the input happened to give it, and
+the order changes when the same data is fetched again.
+
+**The tiebreaker does not reverse with the column.** That is what makes it a
+tiebreaker rather than a second sort: rows that tie must not swap places when
+the arrow flips, or the one thing that is supposed to be stable is the thing
+that moves on every click.
+
+**`aria-sort` goes on the sorted column only.** `ariaSort` returns `undefined`
+for the others, which removes the attribute — `aria-sort="none"` everywhere is
+valid and gets announced by some screen readers on every cell, which turns a
+table into a recital.
+
+## API
+
+| | Type | |
+| --- | --- | --- |
+| `sortRows` | `(rows, sort, accessor, options?) => Row[]` | A new array; the input is not touched |
+| `toggleSort` | `(sort, column) => Sort` | A different column starts ascending, rather than inheriting |
+| `ariaSort` | `(sort, column) => 'ascending' \| 'descending' \| undefined` | For the `<th>` |
+| `isAbsent` | `(value) => boolean` | `null`, `undefined` and `NaN` — not `0`, `''` or `false` |
+
+### `sortRows` options
+
+| Option | Type | |
+| --- | --- | --- |
+| `tiebreak` | `(row) => SortValue` | What decides rows that compare equal. Pass the row's id |
+| `locale` | `string` | Passed to `Intl.Collator`, so `ä` sorts where the reader expects |
 
 ---
 

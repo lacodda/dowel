@@ -85,6 +85,16 @@ describe('what a primitive weighs', () => {
         'Combobox row" and the component wore none, so the rows inherited the popup ' +
         'font and stood a third taller than every other list in the set.',
     },
+    table: {
+      ceiling: 4608,
+      because:
+        'Nine parts of one table - the scroll container, the table, the head, the body, ' +
+        'the row, the plain heading, the sorting heading, the cell and the empty state - ' +
+        'and none of them can be used without the others: a cell outside a row renders ' +
+        'nothing. The split the gate was asking for was already made, in the other ' +
+        'direction: the arithmetic is `table-sort`, with no React in it, which is what a ' +
+        'product sorting on the server imports instead of any of this.',
+    },
     calendar: {
       ceiling: 8192,
       because:
@@ -241,6 +251,27 @@ describe('what a primitive drags in', () => {
     toast: ['@base-ui/react', 'class-variance-authority'],
     tooltip: ['@base-ui/react', 'class-variance-authority'],
     truncate: [],
+    // The sums a column is ordered by, with no React in them - the same split
+    // `calendar-math` is. Nothing at all: `Intl.Collator` is the platform's.
+    'table-sort': [],
+    // The clothes, and the arithmetic next door. No table library: TanStack
+    // Table would be the first dependency a product has to install beyond
+    // Base UI, and what it offers is a model of columns and pages that the
+    // line's one real table did not need - the rule it did need, absence
+    // sorting last, the model does not have.
+    table: ['class-variance-authority', 'table-sort'],
+    // Button, and nothing else: the row of pages and the two arrows.
+    pagination: ['button'],
+    // A Select, which is the control most likely to reintroduce a native
+    // `<select>` - three numbers in a box looks like the case where it would
+    // not matter.
+    'page-size': ['select'],
+    // `Intl` and a class. The formatting a product would otherwise reach for a
+    // library to do is in the platform.
+    'number-format': [],
+    // The same: `Intl.RelativeTimeFormat` writes the phrase, which is the
+    // whole reason there is no date library here.
+    'relative-time': [],
   }
 
   /** What the file imports: bare module specifiers minus React and the
@@ -312,7 +343,17 @@ describe('a primitive has no words of its own', () => {
    * is - nothing reads it aloud, no product translates it, and it is the
    * component's job to pick a sane one. What is still caught for these props
    * is nothing, so the list stays short and each entry has to earn its place. */
-  const NOT_A_WORD = new Set(['role'])
+  const NOT_A_WORD = new Set([
+    'role',
+    /* `numeric` is `Intl.RelativeTimeFormat`'s own vocabulary: `'auto'` asks
+     * for "yesterday" where the language has a word for it, `'always'` for "1
+     * day ago". Nothing announces the value, no product translates it, and the
+     * phrase it produces is in the reader's language either way - the whole
+     * point of formatting through `Intl`. Leaving the prop required would make
+     * every caller pick a spelling of a decision the component should have an
+     * opinion about. */
+    'numeric',
+  ])
 
   /** String defaults in a destructured props list: `label = 'Copy'`. */
   function stringDefaults(source: string): string[] {

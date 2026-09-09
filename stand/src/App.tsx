@@ -17,6 +17,22 @@ import {
   ActionBarSpacer,
 } from '../../registry/ui/action-bar'
 import { SaveState, type SaveStatus } from '../../registry/ui/save-state'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableEmpty,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableScroll,
+  TableSortHeader,
+} from '../../registry/ui/table'
+import { sortRows, toggleSort, type Sort, type SortValue } from '../../registry/ui/table-sort'
+import { Pagination, pageRange } from '../../registry/ui/pagination'
+import { PageSize } from '../../registry/ui/page-size'
+import { NumberFormat } from '../../registry/ui/number-format'
+import { RelativeTime } from '../../registry/ui/relative-time'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
 import {
@@ -292,6 +308,38 @@ const sections = [
   { id: 'color-field', title: 'ColorField', docs: '/dowel/components/color-field/', render: () => <ColorFieldSection /> },
   { id: 'action-bar', title: 'ActionBar', docs: '/dowel/components/action-bar/', render: () => <ActionBarSection /> },
   { id: 'save-state', title: 'SaveState', docs: '/dowel/components/save-state/', render: () => <SaveStateSection /> },
+  {
+    id: 'table-sort',
+    title: 'table-sort',
+    kind: 'utility',
+    docs: '/dowel/components/table-sort/',
+    render: () => <TableSortSection />,
+  },
+  { id: 'table', title: 'Table', docs: '/dowel/components/table/', render: () => <TableSection /> },
+  {
+    id: 'pagination',
+    title: 'Pagination',
+    docs: '/dowel/components/pagination/',
+    render: () => <PaginationSection />,
+  },
+  {
+    id: 'page-size',
+    title: 'PageSize',
+    docs: '/dowel/components/page-size/',
+    render: () => <PageSizeSection />,
+  },
+  {
+    id: 'number-format',
+    title: 'NumberFormat',
+    docs: '/dowel/components/number-format/',
+    render: () => <NumberFormatSection />,
+  },
+  {
+    id: 'relative-time',
+    title: 'RelativeTime',
+    docs: '/dowel/components/relative-time/',
+    render: () => <RelativeTimeSection />,
+  },
 ]
 
 /** The version this stand was built from, injected by Vite out of the package
@@ -2300,6 +2348,371 @@ function SaveStateSection() {
         >
           Save something
         </Button>
+      </Row>
+    </>
+  )
+}
+
+/* The demo data for the table sections. Invented people doing invented work:
+ * a stand is public, and the line's rule is that nothing of the owner's ever
+ * reaches a fixture. The gaps are the point - two rows with no score and one
+ * with no reviewer, which is what the sorting is here to show. */
+interface Work {
+  id: string
+  title: string
+  owner: string
+  score: number | null
+  words: number
+  updated: string
+}
+
+const works: Work[] = [
+  { id: 'w1', title: 'Harbour lights', owner: 'Ines', score: 8, words: 4120, updated: '2026-09-09T09:40:00Z' },
+  { id: 'w2', title: 'The quiet mile', owner: 'Ravi', score: null, words: 990, updated: '2026-09-08T17:05:00Z' },
+  { id: 'w3', title: 'Ash and after', owner: 'Ines', score: 10, words: 12040, updated: '2026-09-02T11:20:00Z' },
+  { id: 'w4', title: 'Nine of cups', owner: 'Tomas', score: 3, words: 640, updated: '2026-08-30T08:00:00Z' },
+  { id: 'w5', title: 'Undertow', owner: 'Ravi', score: null, words: 7300, updated: '2026-08-11T21:15:00Z' },
+  { id: 'w6', title: 'Ember street', owner: 'Kit', score: 6, words: 2280, updated: '2026-06-19T13:30:00Z' },
+]
+
+const readWork = (row: Work, column: string): SortValue => row[column as keyof Work]
+
+/* A fixed moment, so the relative phrases on the stand do not drift as the
+ * page is left open - and so the visual snapshots do not change every run. */
+const standNow = new Date('2026-09-09T12:00:00Z')
+
+function TableSortSection() {
+  /* The rule, shown rather than described: the same rows, the same column,
+   * both directions - and the two with no score stay at the bottom of each. */
+  const rows = works.map((work) => `${work.title} ${work.score ?? '—'}`)
+  const ascending = sortRows(works, { column: 'score', direction: 'asc' }, readWork).map(
+    (work) => `${work.title}: ${work.score ?? '—'}`,
+  )
+  const descending = sortRows(works, { column: 'score', direction: 'desc' }, readWork).map(
+    (work) => `${work.title}: ${work.score ?? '—'}`,
+  )
+
+  return (
+    <>
+      <Row label="no markup - the same six rows, sorted by score both ways">
+        <div className="flex flex-wrap gap-8">
+          {[
+            ['ascending', ascending],
+            ['descending', descending],
+          ].map(([label, list]) => (
+            <div key={label as string} className="flex flex-col gap-1">
+              <div className="text-2xs uppercase tracking-caption text-faint">{label}</div>
+              {(list as string[]).map((line) => (
+                <div key={line} className="font-mono text-xs text-dim">
+                  {line}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </Row>
+      <Row label="the two with no score are last in both - that is the whole rule">
+        <p className="max-w-prose text-xs text-dim">
+          Rank absence with the rest and flip the sign, and a descending sort floats every empty
+          row to the top: the reader asks for the highest score and is handed the rows that have
+          none. {rows.length} rows, two of them unjudged.
+        </p>
+      </Row>
+    </>
+  )
+}
+
+function TableSection() {
+  const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
+  const [picked, setPicked] = useState<string>('w3')
+  const sorted = sortRows(works, sort, readWork, { tiebreak: (work) => work.id })
+
+  return (
+    <>
+      <Row label="click a heading to reorder - the unjudged rows stay last either way">
+        <TableScroll className="w-full">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableSortHeader
+                  column="title"
+                  sort={sort}
+                  onSortChange={(column) => setSort(toggleSort(sort, column))}
+                >
+                  Title
+                </TableSortHeader>
+                <TableSortHeader
+                  column="owner"
+                  sort={sort}
+                  onSortChange={(column) => setSort(toggleSort(sort, column))}
+                >
+                  Owner
+                </TableSortHeader>
+                <TableSortHeader
+                  column="score"
+                  numeric
+                  sort={sort}
+                  onSortChange={(column) => setSort(toggleSort(sort, column))}
+                >
+                  Score
+                </TableSortHeader>
+                <TableSortHeader
+                  column="words"
+                  numeric
+                  sort={sort}
+                  onSortChange={(column) => setSort(toggleSort(sort, column))}
+                >
+                  Words
+                </TableSortHeader>
+                <TableHeader>Updated</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sorted.map((work) => (
+                <TableRow
+                  key={work.id}
+                  selected={work.id === picked}
+                  onClick={() => setPicked(work.id)}
+                  className="cursor-pointer"
+                >
+                  <TableCell>{work.title}</TableCell>
+                  <TableCell>{work.owner}</TableCell>
+                  <TableCell numeric>
+                    {work.score === null ? (
+                      <span className="text-faint">—</span>
+                    ) : (
+                      <NumberFormat value={work.score} />
+                    )}
+                  </TableCell>
+                  <TableCell numeric>
+                    <NumberFormat value={work.words} />
+                  </TableCell>
+                  <TableCell>
+                    <RelativeTime value={work.updated} now={standNow} className="text-dim" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableScroll>
+      </Row>
+
+      <Row label="dense, for a table that is scanned rather than read">
+        <TableScroll className="w-full">
+          <Table density="dense">
+            <TableHead>
+              <TableRow>
+                <TableHeader>Title</TableHeader>
+                <TableHeader numeric>Words</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {works.slice(0, 4).map((work) => (
+                <TableRow key={work.id}>
+                  <TableCell>{work.title}</TableCell>
+                  <TableCell numeric>
+                    <NumberFormat value={work.words} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableScroll>
+      </Row>
+
+      <Row label="a sticky heading, and the empty state that keeps it in place">
+        <div className="h-48 w-64 overflow-y-auto rounded-md border border-line">
+          <Table density="dense">
+            <TableHead sticky>
+              <TableRow>
+                <TableHeader>Title</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {[...works, ...works].map((work, index) => (
+                <TableRow key={`${work.id}-${index}`}>
+                  <TableCell>{work.title}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="w-64">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeader>Title</TableHeader>
+                <TableHeader numeric>Words</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableEmpty colSpan={2}>Nothing here yet</TableEmpty>
+            </TableBody>
+          </Table>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+const paginationLabels = {
+  region: 'Pages',
+  previous: 'Previous page',
+  next: 'Next page',
+  page: (page: number) => `Page ${page}`,
+}
+
+function PaginationSection() {
+  const [page, setPage] = useState(1)
+  const pageSize = 25
+  const total = 973
+  const [from, to] = pageRange(page, pageSize, total)
+
+  return (
+    <>
+      <Row label="page through it - the row keeps its width wherever you are">
+        <div className="flex w-full flex-wrap items-center justify-between gap-4">
+          <span className="text-xs text-dim tabular-nums">
+            {from}-{to} of <NumberFormat value={total} />
+          </span>
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={total}
+            onPageChange={setPage}
+            labels={paginationLabels}
+          />
+        </div>
+      </Row>
+
+      <Row label="a short list draws every page, and a wider neighbourhood is a prop">
+        <Pagination
+          page={2}
+          pageSize={10}
+          total={40}
+          onPageChange={() => {}}
+          labels={paginationLabels}
+        />
+        <Pagination
+          page={20}
+          pageSize={10}
+          total={400}
+          around={2}
+          onPageChange={() => {}}
+          labels={paginationLabels}
+        />
+      </Row>
+    </>
+  )
+}
+
+function PageSizeSection() {
+  const [pageSize, setPageSize] = useState(25)
+
+  return (
+    <>
+      <Row label="a Select, never a native one - and it hands back a number">
+        <PageSize pageSize={pageSize} onPageSizeChange={setPageSize} label="Rows per page">
+          Rows per page
+        </PageSize>
+      </Row>
+      <Row label="the choices are the product's">
+        <PageSize
+          pageSize={200}
+          options={[50, 200, 1000]}
+          onPageSizeChange={() => {}}
+          label="Rows to load"
+        >
+          Load at a time
+        </PageSize>
+      </Row>
+    </>
+  )
+}
+
+function NumberFormatSection() {
+  return (
+    <>
+      <Row label="the separators are the reader's - same number, four languages">
+        <div className="flex flex-col gap-1">
+          {['en-US', 'de-DE', 'fr-FR', 'ru-RU'].map((locale) => (
+            <div key={locale} className="flex items-baseline gap-3 font-mono text-xs">
+              <span className="w-12 text-faint">{locale}</span>
+              <NumberFormat value={1234567.89} locale={locale} maximumFractionDigits={2} />
+            </div>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="money, percentages and a compact number - one component, Intl's options">
+        <div className="flex flex-col gap-1 font-mono text-xs">
+          <NumberFormat value={1299.5} locale="en-US" style="currency" currency="USD" />
+          <NumberFormat value={0.427} locale="en-US" style="percent" maximumFractionDigits={1} />
+          <NumberFormat value={1200000} locale="en-US" notation="compact" />
+          <NumberFormat value={42} locale="en-US" style="unit" unit="megabyte" />
+        </div>
+      </Row>
+
+      <Row label="the figures line up, which only shows in a column">
+        <div className="flex gap-8">
+          <div className="flex flex-col text-right">
+            <span className="mb-1 text-2xs uppercase tracking-caption text-faint">tabular</span>
+            {[9999, 10000, 111111, 8].map((value) => (
+              <NumberFormat key={value} value={value} locale="en-US" className="text-sm" />
+            ))}
+          </div>
+          <div className="flex flex-col text-right">
+            <span className="mb-1 text-2xs uppercase tracking-caption text-faint">
+              proportional
+            </span>
+            {[9999, 10000, 111111, 8].map((value) => (
+              <span key={value} className="text-sm [font-variant-numeric:proportional-nums]">
+                {value.toLocaleString('en-US')}
+              </span>
+            ))}
+          </div>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function RelativeTimeSection() {
+  const at = (seconds: number) => new Date(standNow.getTime() - seconds * 1000)
+
+  return (
+    <>
+      <Row label="hover any of them - the exact date is still there, in the title">
+        <div className="flex flex-col gap-1 text-sm">
+          {[30, 60 * 8, 60 * 60 * 5, 60 * 60 * 24, 60 * 60 * 24 * 9, 60 * 60 * 24 * 200].map(
+            (seconds) => (
+              <RelativeTime key={seconds} value={at(seconds)} now={standNow} />
+            ),
+          )}
+        </div>
+      </Row>
+
+      <Row label="the phrase is the reader's language, including its special words">
+        <div className="flex flex-col gap-1">
+          {['en-US', 'de-DE', 'fr-FR', 'ru-RU'].map((locale) => (
+            <div key={locale} className="flex items-baseline gap-3 text-xs">
+              <span className="w-12 font-mono text-faint">{locale}</span>
+              <RelativeTime value={at(60 * 60 * 24)} now={standNow} locale={locale} />
+            </div>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="'always', for a column where every row should read the same way">
+        <div className="flex gap-8 text-sm">
+          <RelativeTime value={at(60 * 60 * 24)} now={standNow} locale="en-US" />
+          <RelativeTime value={at(60 * 60 * 24)} now={standNow} locale="en-US" numeric="always" />
+          <RelativeTime
+            value={new Date(standNow.getTime() + 60 * 60 * 26 * 1000)}
+            now={standNow}
+            locale="en-US"
+          />
+        </div>
       </Row>
     </>
   )

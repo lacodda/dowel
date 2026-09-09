@@ -44,12 +44,16 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Kbd](https://lacodda.github.io/dowel/components/kbd.md): A key, as printed in a menu or a hint.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
 - [NumberField](https://lacodda.github.io/dowel/components/number-field.md): A number, its stepper, and what an empty box actually means.
+- [NumberFormat](https://lacodda.github.io/dowel/components/number-format.md): A number written the way the reader's language writes numbers, with figures that line up in a column.
+- [PageSize](https://lacodda.github.io/dowel/components/page-size.md): How many rows to a page - a Select, never a native one, handing back a number.
+- [Pagination](https://lacodda.github.io/dowel/components/pagination.md): Paging through a list, in a row that keeps its width wherever the reader is.
 - [Panel](https://lacodda.github.io/dowel/components/panel.md): The raised surface everything else sits on.
 - [PasswordField](https://lacodda.github.io/dowel/components/password-field.md): A password, and the button that shows it - which starts off, always.
 - [Popover](https://lacodda.github.io/dowel/components/popover.md): A panel anchored to the control that opened it - positioned, not centred, and not modal.
 - [PreviewCard](https://lacodda.github.io/dowel/components/preview-card.md): The card that appears when a link is hovered - a shortcut for people who can see it, never the only place the information lives.
 - [RadioGroup](https://lacodda.github.io/dowel/components/radio-group.md): One of a few, all of them visible - the group is the control, not the button.
 - [RatingScale](https://lacodda.github.io/dowel/components/rating-scale.md): A judgement on a short scale, and the absence of one - because not judged yet is a state, not a zero.
+- [RelativeTime](https://lacodda.github.io/dowel/components/relative-time.md): A phrase like "3 minutes ago" in the reader's own language, over a date they can still read.
 - [SaveState](https://lacodda.github.io/dowel/components/save-state.md): The quiet line beside a field that saves itself: saving, then a tick that fades.
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
@@ -57,6 +61,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.
+- [Table](https://lacodda.github.io/dowel/components/table.md): A table of rows and the heading that reorders them - parts you compose, not a columns prop.
+- [table-sort](https://lacodda.github.io/dowel/components/table-sort.md): How a column is ordered, with no React in it - and the one rule a two-line sort gets wrong.
 - [TagInput](https://lacodda.github.io/dowel/components/tag-input.md): Free text turned into a list: type a word, press Enter, it becomes a chip.
 - [Textarea](https://lacodda.github.io/dowel/components/textarea.md): A multi-line field that can grow with what is typed into it.
 - [TimeField](https://lacodda.github.io/dowel/components/time-field.md): A time of day, typed the way people say it - loose going in, one spelling stored.

@@ -1,0 +1,54 @@
+---
+title: PageSize
+description: How many rows to a page - a Select, never a native one, handing back a number.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/page-size.json
+```
+
+<Stand component="page-size" caption="The default choices, and a product's own." />
+
+## Notes
+
+**Its own component rather than part of
+[Pagination](/dowel/components/pagination/).** The two usually sit together and
+are needed apart often enough to be separate: a list that scrolls for ever
+wants "how many to load at a time" and no page buttons, and a table with a
+fixed page size wants the buttons and no choice.
+
+```tsx
+<PageSize
+  pageSize={pageSize}
+  onPageSizeChange={(size) => { setPageSize(size); setPage(1) }}
+  label="Rows per page"
+>
+  Rows per page
+</PageSize>
+```
+
+**A [Select](/dowel/components/select/), never a native one.** It is the
+control most likely to reintroduce a `<select>`, since it is three numbers in a
+box and looks like the case where it would not matter. The line's rule has no
+exception for small controls, and this is the one that tests it.
+
+**It hands back a `number`, not the text of one.** The trigger's value is a
+string, because that is what a Select carries; a caller receiving `"50"` would
+put it in `OFFSET n * pageSize` and get string concatenation.
+
+**`label` is required and separate from `children`.** The first names the
+control for a screen reader; the second is the visible text beside it, for when
+there is room. A control that has only the visible one is unnamed the moment
+the layout drops it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `pageSize` | `number` | | |
+| `options` | `number[]` | `[10, 25, 50, 100]` | |
+| `onPageSizeChange` | `(size: number) => void` | | Receives a number |
+| `label` | `string` | | Required. Names the control |
+| `children` | `ReactNode` | | The visible label, when there is room |

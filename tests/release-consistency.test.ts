@@ -261,7 +261,10 @@ describe('the docs do not miscount the primitives', () => {
       36: 'thirty-six', 37: 'thirty-seven', 38: 'thirty-eight', 39: 'thirty-nine',
       40: 'forty', 41: 'forty-one', 42: 'forty-two', 43: 'forty-three',
       44: 'forty-four', 45: 'forty-five', 46: 'forty-six', 47: 'forty-seven',
-      48: 'forty-eight', 49: 'forty-nine', 50: 'fifty',
+      48: 'forty-eight', 49: 'forty-nine', 50: 'fifty', 51: 'fifty-one',
+      52: 'fifty-two', 53: 'fifty-three', 54: 'fifty-four', 55: 'fifty-five',
+      56: 'fifty-six', 57: 'fifty-seven', 58: 'fifty-eight', 59: 'fifty-nine',
+      60: 'sixty',
     }
 
     const count = readdirSync(resolve(root, 'registry/ui')).filter(

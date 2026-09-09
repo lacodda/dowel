@@ -1,0 +1,81 @@
+# Pagination
+
+Source: https://lacodda.github.io/dowel/components/pagination
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#pagination
+
+Paging a long list, a short one, and a wider neighbourhood.
+
+## Notes
+
+**It does not fetch, and it does not slice.** It is told the page and the total
+and it says which page was asked for — because whether paging means an `OFFSET`
+or an `Array.prototype.slice` is the product's business, and a component that
+guesses gets it wrong for the other one.
+
+```tsx
+const [page, setPage] = useState(1)
+const [pageSize, setPageSize] = useState(25)
+const [from, to] = pageRange(page, pageSize, total)
+
+<span>{from}-{to} of {total}</span>
+<Pagination
+  page={page}
+  pageSize={pageSize}
+  total={total}
+  onPageChange={setPage}
+  labels={{ region: 'Pages', previous: 'Previous', next: 'Next', page: (n) => `Page ${n}` }}
+/>
+```
+
+**The row keeps a steady width.** This is the part that takes the arithmetic.
+A window of a fixed number of *pages* looks right in the middle and comes up
+short at the ends, where one of the gaps is not needed — the row loses a place,
+and the "next" button moves under the pointer as you use it. So the run of
+pages is grown to whatever fills the row, given how many gaps it has.
+
+**A gap never stands for a single page.** `1 … 3` hides only page 2, which the
+row had room for. Near an end the run slides onto the edge instead — and it
+slides rather than dropping the page, because leaving it out silently is worse
+than the gap: the row would say 1 is followed by 3 and give no sign that
+anything was missing.
+
+**The gap is not a button and not hidden either.** Drawn as a disabled button
+it would give a keyboard stops that lead nowhere; hidden from a screen reader
+it would announce a jump from 2 to 40 with no reason for it.
+
+**The current page is announced.** `aria-current="page"`, not colour alone —
+and not `aria-selected`, which belongs to a listbox.
+
+**`labels` is required.** These are the only words the control has, and a
+default here would be English shipped inside a primitive. `page` takes the
+number, because "Page 3" is a sentence only the product's language can build.
+
+**How many rows to a page is [PageSize](/dowel/components/page-size/)**, next
+door. The two usually sit together and are needed apart often enough to be
+separate: a list that scrolls for ever wants "how many to load at a time" and
+no page buttons, and a table with a fixed page size wants the buttons and no
+choice.
+
+## Props
+
+### `Pagination`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `page` | `number` | | Clamped into range rather than drawing a hole |
+| `pageSize` | `number` | | |
+| `total` | `number` | | Rows, not pages |
+| `onPageChange` | `(page) => void` | | |
+| `around` | `number` | `1` | Pages either side of the current one |
+| `labels` | `PaginationLabels` | | Required. `region`, `previous`, `next`, `page(n)` |
+
+### The arithmetic
+
+| | Type | |
+| --- | --- | --- |
+| `pageCount` | `(total, pageSize) => number` | At least 1 — "page 1 of 0" reads as broken |
+| `pageRange` | `(page, pageSize, total) => [from, to]` | `to` clamped, so the last page says what it holds |
+| `pageWindow` | `(page, pages, around?) => PageStep[]` | `number \| 'gap'` |
