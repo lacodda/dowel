@@ -2520,7 +2520,7 @@ function TableSection() {
         </TableScroll>
       </Row>
 
-      <Row label="a sticky heading, and the empty state that keeps it in place">
+      <Row label="a sticky heading - scroll the box, the heading stays">
         <div className="h-48 w-64 overflow-y-auto rounded-md border border-line">
           <Table density="dense">
             <TableHead sticky>
@@ -2537,7 +2537,10 @@ function TableSection() {
             </TableBody>
           </Table>
         </div>
-        <div className="w-64">
+      </Row>
+
+      <Row label="empty - the message spans every column and the heading stays put">
+        <div className="w-full rounded-md border border-line">
           <Table>
             <TableHead>
               <TableRow>
@@ -2654,23 +2657,27 @@ function NumberFormatSection() {
       </Row>
 
       <Row label="the figures line up, which only shows in a column">
+        {/* The rows are 1s against 8s on purpose: those are the two digits
+          * whose proportional widths differ most, and a column of mixed
+          * numbers hides the effect by averaging it out.
+          *
+          * `w-fit` matters as much. Inside a stretched column both variants
+          * end up the same width and the demonstration shows nothing - which
+          * is what the first version of this section did. */}
         <div className="flex gap-8">
-          <div className="flex flex-col text-right">
-            <span className="mb-1 text-2xs uppercase tracking-caption text-faint">tabular</span>
-            {[9999, 10000, 111111, 8].map((value) => (
-              <NumberFormat key={value} value={value} locale="en-US" className="text-sm" />
-            ))}
-          </div>
-          <div className="flex flex-col text-right">
-            <span className="mb-1 text-2xs uppercase tracking-caption text-faint">
-              proportional
-            </span>
-            {[9999, 10000, 111111, 8].map((value) => (
-              <span key={value} className="text-sm [font-variant-numeric:proportional-nums]">
-                {value.toLocaleString('en-US')}
-              </span>
-            ))}
-          </div>
+          {[
+            ['tabular', 'tabular-nums'],
+            ['proportional', '[font-variant-numeric:proportional-nums]'],
+          ].map(([label, variant]) => (
+            <div key={label} className="flex w-fit flex-col items-end">
+              <span className="mb-1 text-2xs uppercase tracking-caption text-faint">{label}</span>
+              {[1111, 8888, 1818, 8181].map((value) => (
+                <span key={value} className={cn('text-sm', variant)}>
+                  {value}
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
       </Row>
     </>
