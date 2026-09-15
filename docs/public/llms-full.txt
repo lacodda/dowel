@@ -1,4 +1,4 @@
-# dowel 0.23.0
+# dowel 0.24.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,8 +23,9 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.23.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and seventy primitives — each with a page of its own on
+**v0.24.0.** The theme and its scales, an accent for each of the nineteen
+products of the line, and seventy primitives — the last six of them charts —
+each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a

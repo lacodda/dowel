@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tree-rows",
+  "type": "registry:ui",
+  "title": "Tree-rows",
+  "description": "Split out of the TreeView for the reason `table-sort` and `calendar-math` were split out of their components: these are the sums, and the component is the thing that draws them. A product that windows a large tree needs to know how many rows it has before rendering any of them - that is this file, and it never touches the DOM.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/tree-rows.tsx",
+      "target": "@ui/tree-rows.tsx",
+      "type": "registry:ui",
+      "content": "import type { ReactNode } from 'react'\n\n/*\n * What a tree shows, with no React in it.\n *\n * Split out of the TreeView for the reason `table-sort` and `calendar-math`\n * were split out of their components: these are the sums, and the component is\n * the thing that draws them. A product that windows a large tree needs to know\n * how many rows it has before rendering any of them - that is this file, and\n * it never touches the DOM.\n */\n\nexport interface TreeNode {\n  /** Stable identity. Not the label: two folders can hold a file of the same\n   * name, and keying by label collapses them into one. */\n  id: string\n  label: ReactNode\n  /** Absent or empty means a leaf. An empty array is deliberately *not* an\n   * empty folder - a folder with nothing in it still opens, and saying so\n   * needs a real value rather than the absence of one. */\n  children?: TreeNode[]\n  /** An empty folder: opens, and shows nothing. */\n  empty?: boolean\n}\n\n/** One visible row: the node, how deep it sits, and the branch it belongs to. */\nexport interface TreeRow {\n  node: TreeNode\n  depth: number\n  /** The id of the folder this row is inside, if any. What Left uses to get\n   * out of a deep branch in one press. */\n  parent?: string\n}\n\n/** The rows a tree shows, in the order the eye and the keyboard travel.\n *\n * Flattening is what makes the keyboard simple: Down is the next row of this\n * list, Up the previous, and neither has to know about nesting. A recursive\n * walk at every keystroke would ask the same question - what is visually next\n * - and answer it differently at each depth.\n *\n * It is also the answer to \"how many rows is this tree\", which is what a\n * product needs to put a tree inside a VirtualList. */\nexport function visibleRows(\n  nodes: readonly TreeNode[],\n  open: ReadonlySet<string>,\n  depth = 0,\n  parent?: string,\n): TreeRow[] {\n  const rows: TreeRow[] = []\n  for (const node of nodes) {\n    rows.push({ node, depth, parent })\n    if (node.children?.length && open.has(node.id)) {\n      rows.push(...visibleRows(node.children, open, depth + 1, node.id))\n    }\n  }\n  return rows\n}\n\n/** Whether this node is a folder - something that opens, even if empty. */\nexport function isBranch(node: TreeNode): boolean {\n  return Boolean(node.empty) || Boolean(node.children?.length)\n}\n"
+    }
+  ]
+}

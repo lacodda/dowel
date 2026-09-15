@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.24.0] - 2026-09-15
+
+### Bug Fixes
+- Cap the workers, so the gate reports the code and not the load
+
+### Features
+- The colours a chart is drawn in, and the gate that holds them
+- One figure, and what it is a figure of
+- The shape of a history, beside the number it belongs to
+- A bar divided into stretches, with something standing along it
+- A year of days, where a cell has four meanings
+- Columns over a baseline, with the plot height stated
+- A level between the readings, with a hole drawn as a hole
+
 ## [0.23.0] - 2026-09-09
 
 ### Bug Fixes
@@ -9,6 +23,9 @@ All notable changes to this project are documented in this file.
 
 ### Features
 - The screens between asking for data and showing it
+
+### Testing
+- Photograph the five screens between asking and showing
 
 ## [0.22.0] - 2026-09-09
 
