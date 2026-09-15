@@ -316,6 +316,9 @@ describe('what a primitive drags in', () => {
     // The legend reads the grid's own cell variants, so the swatches cannot
     // drift from the squares they explain.
     'activity-legend': ['activity-heatmap', 'activity-weeks'],
+    // Columns and the rule they are read against. The arithmetic is two
+    // divisions, so there is nothing next door to split out.
+    'bar-chart': ['class-variance-authority'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],

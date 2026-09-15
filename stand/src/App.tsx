@@ -44,6 +44,7 @@ import { markerAt, place } from '../../registry/ui/track-segments'
 import { ActivityHeatmap } from '../../registry/ui/activity-heatmap'
 import { ActivityLegend } from '../../registry/ui/activity-legend'
 import { stepFor, weeks } from '../../registry/ui/activity-weeks'
+import { Baseline, BarChart, ChartFrame } from '../../registry/ui/bar-chart'
 import { Skeleton, SkeletonGrid, SkeletonList, SkeletonText } from '../../registry/ui/skeleton'
 import { EmptyState } from '../../registry/ui/empty-state'
 import { Progress } from '../../registry/ui/progress'
@@ -424,6 +425,12 @@ const sections = [
     title: 'ActivityLegend',
     docs: '/dowel/components/activity-legend/',
     render: () => <ActivityLegendSection />,
+  },
+  {
+    id: 'bar-chart',
+    title: 'BarChart',
+    docs: '/dowel/components/bar-chart/',
+    render: () => <BarChartSection />,
   },
   {
     id: 'skeleton',
@@ -3111,6 +3118,105 @@ function ActivityWeeksSection() {
           <div>stepFor(28800, 28800) = {stepFor(28_800, 28_800)}</div>
           <div className="text-faint">a day with no entry never reaches this function at all</div>
         </div>
+      </Row>
+    </>
+  )
+}
+
+/* Twelve weeks: a working rhythm, a fortnight off in the middle drawn as a
+ * gap rather than a short week, and one week that was recorded as zero. */
+const twelveWeeks = [
+  { key: 'w1', hours: 38.5 },
+  { key: 'w2', hours: 41 },
+  { key: 'w3', hours: 36 },
+  { key: 'w4', hours: 42.5 },
+  { key: 'w5', hours: 12 },
+  { key: 'w6', hours: null },
+  { key: 'w7', hours: null },
+  { key: 'w8', hours: 0 },
+  { key: 'w9', hours: 34 },
+  { key: 'w10', hours: 39.5 },
+  { key: 'w11', hours: 0.3 },
+  { key: 'w12', hours: 40 },
+] as const
+
+/* Day of month alone: twelve columns in a 28rem panel leave about 30px each,
+ * and "Aug 17" truncates to "Aug ..." - a label that says less than nothing.
+ * The month belongs in the title beside the chart. */
+const weekLabels = ['1', '8', '15', '22', '29', '6', '13', '20', '27', '3', '10', '17']
+
+function weekBars(tone?: 'accent' | 'muted') {
+  return twelveWeeks.map((week, index) => ({
+    key: week.key,
+    value: week.hours,
+    label: weekLabels[index]!,
+    tone,
+    title:
+      week.hours === null
+        ? `${weekLabels[index]} · nothing recorded`
+        : `${weekLabels[index]} · ${week.hours}h`,
+  }))
+}
+
+const weekCeiling = 45
+const weekMedian = 38.5
+
+function BarChartSection() {
+  const picked = weekBars('muted').map((bar, index) =>
+    index === 11 ? { ...bar, tone: 'accent' as const } : bar,
+  )
+
+  return (
+    <>
+      <Row label="twelve weeks - two of them with nothing recorded, one recorded as zero, one of twenty minutes">
+        <Panel className="w-[28rem] p-5">
+          <ChartFrame gutter={false}>
+            <BarChart bars={weekBars()} max={weekCeiling} label="Twelve weeks of work" />
+          </ChartFrame>
+        </Panel>
+      </Row>
+
+      <Row label="with the median named - a chart without its baseline invites the reader to invent one">
+        <Panel className="w-[28rem] p-5">
+          <ChartFrame>
+            <BarChart bars={weekBars()} max={weekCeiling} label="Twelve weeks of work, median 38.5h" />
+            <Baseline value={weekMedian} max={weekCeiling}>
+              median 38.5h
+            </Baseline>
+          </ChartFrame>
+        </Panel>
+      </Row>
+
+      <Row label="emphasis - one column is the story, the rest are the field it stands in">
+        <Panel className="w-[28rem] p-5">
+          <ChartFrame gutter={false}>
+            <BarChart bars={picked} max={weekCeiling} label="Twelve weeks, this week picked out" />
+          </ChartFrame>
+        </Panel>
+      </Row>
+
+      <Row label="sm, for a chart that sits beside something else">
+        <Panel className="w-80 p-4">
+          <BarChart bars={weekBars().slice(6)} max={weekCeiling} size="sm" label="Six weeks of work" />
+        </Panel>
+      </Row>
+
+      <Row label="a quiet stretch against the stated ceiling, and the same weeks scaled to themselves">
+        <Panel className="flex w-80 flex-col gap-3 p-4">
+          {/* The demonstration only works on a stretch whose own tallest week
+              is well below the ceiling. The first draft of this row sliced the
+              last six weeks - which include the tallest of all twelve - so the
+              two charts differed by 11% of a 72px plot: eight pixels, and the
+              row proved nothing. */}
+          <BarChart bars={weekBars().slice(4, 9)} max={weekCeiling} size="sm" label="Five quiet weeks, against the same ceiling as the chart above" />
+          <span className="text-xs text-dim">
+            <code>max=45</code> - read against the other charts, these weeks are short
+          </span>
+          <BarChart bars={weekBars().slice(4, 9)} size="sm" label="The same five weeks, scaled to themselves" />
+          <span className="text-xs text-dim">
+            no <code>max</code> - the same weeks now fill the plot, and nothing says they were quiet
+          </span>
+        </Panel>
       </Row>
     </>
   )

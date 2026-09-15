@@ -25,6 +25,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Alert](https://lacodda.github.io/dowel/components/alert.md): A condition that is still true, about the thing it sits beside.
 - [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
+- [BarChart](https://lacodda.github.io/dowel/components/bar-chart.md): Columns over a baseline - one period, one bar - with the plot height stated in pixels.
 - [Button](https://lacodda.github.io/dowel/components/button.md): The five buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
 - [Calendar](https://lacodda.github.io/dowel/components/calendar.md): A month of days, built on Intl rather than on a date library - and a value that is a string, never a Date.
 - [calendar-math](https://lacodda.github.io/dowel/components/calendar-math.md): The date arithmetic under the Calendar, importable on its own - strings in, strings out, no Date and no library.

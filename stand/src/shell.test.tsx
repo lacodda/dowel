@@ -37,10 +37,23 @@ describe('the showcase', () => {
     )
   })
 
-  it('has no accessibility violations on the front page', async () => {
-    const { unmount } = await expectNoA11yViolations(<App />)
-    unmount()
-  })
+  /* Longer than the default five seconds, and the number is not a guess: this
+   * renders the whole stand - sixty-eight sections of live components - and
+   * runs axe over all of it. On its own the file takes about twenty seconds,
+   * and under the suite's parallelism this one test crosses five. Raising the
+   * ceiling here rather than everywhere keeps the default honest: every other
+   * test in the repo really should finish inside it, and one that starts
+   * failing is telling the truth about itself. */
+  const WHOLE_STAND = 30_000
+
+  it(
+    'has no accessibility violations on the front page',
+    async () => {
+      const { unmount } = await expectNoA11yViolations(<App />)
+      unmount()
+    },
+    WHOLE_STAND,
+  )
 
   it('names the navigation, so it is not just one more list of links', () => {
     render(<App />)
@@ -74,17 +87,22 @@ describe('the showcase', () => {
     expect(screen.getByRole('heading', { level: 1, name: /every component/i })).toBeDefined()
   })
 
-  it('walks to a component from the keyboard alone', async () => {
-    const user = userEvent.setup()
-    render(<App />)
+  it(
+    'walks to a component from the keyboard alone',
+    async () => {
+      const user = userEvent.setup()
+      render(<App />)
 
-    const nav = screen.getByRole('navigation', { name: /components/i })
-    const link = within(nav).getByRole('link', { name: 'Badge' })
-    link.focus()
-    await user.keyboard('{Enter}')
+      const nav = screen.getByRole('navigation', { name: /components/i })
+      const link = within(nav).getByRole('link', { name: 'Badge' })
+      link.focus()
+      await user.keyboard('{Enter}')
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Badge' })).toBeDefined()
-  })
+      expect(screen.getByRole('heading', { level: 1, name: 'Badge' })).toBeDefined()
+    },
+    // The same whole-stand render, and then a navigation on top of it.
+    WHOLE_STAND,
+  )
 
   it('shows the brand mark from the asset rather than a copy of it', () => {
     /* It was drawn by hand here once and was the wrong sign: an empty outline
