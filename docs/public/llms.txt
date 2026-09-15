@@ -65,6 +65,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
 - [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
+- [Sparkline](https://lacodda.github.io/dowel/components/sparkline.md): The shape of a history, small enough to sit beside the number it belongs to.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
 - [StatTile](https://lacodda.github.io/dowel/components/stat-tile.md): One figure and what it is a figure of, in the element that ties them together.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.

@@ -298,6 +298,10 @@ describe('what a primitive drags in', () => {
     // the dependency here for the reason the donor proves: its tone classes
     // were joined by hand, without a space, and neither one applied.
     'stat-tile': ['class-variance-authority'],
+    // A path and a dot. The variants carry the two sizes, and each states its
+    // geometry and its classes together - the donor kept them apart and every
+    // call site had to repeat itself.
+    sparkline: ['class-variance-authority'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],
