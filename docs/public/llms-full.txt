@@ -6150,6 +6150,69 @@ that product happened to pin white.
 <span class="bg-warn text-on-warn">3</span>
 ```
 
+## Charts
+
+Series identity. Assigned 1..8 in order and never cycled: a ninth series folds into an *other*, or the chart becomes small multiples.
+
+- `--series-1`
+- `--series-2`
+- `--series-3`
+- `--series-4`
+- `--series-5`
+- `--series-6`
+- `--series-7`
+- `--series-8`
+
+These are the second thing in the vocabulary that does not follow the product
+accent, and for a reason worth stating: a series belongs to the *data*, not to
+the product showing it. A palette derived from `--accent-base` would paint the
+same series differently in kilna and in kasl-server, and colour would stop
+being a way to recognise it.
+
+Deriving them was measured before it was rejected. Rotating the hue off the
+accent by fixed angles put the best candidate ΔE 12.1 from the product's own
+accent, with adjacent pairs at 9.8 and 46 of 152 colours outside sRGB; the
+fixed palette does better on both counts.
+
+The cost is the other side of the same coin, and it is not hidden: 13 of the
+line's 19 accents sit within ΔE 8 of some slot. A chart shows one accent, so
+this survives — but it is exactly why **identity is carried by the legend and by
+direct labels, never by hue on its own.** Two or more series always have a
+legend; four or fewer are also labelled where they sit.
+
+The order is not a display order. It is what holds adjacent slots apart under
+protanopia and deuteranopia — the worst adjacent pair is ΔE 8.4 — so re-sorting
+these for looks breaks a gate that exists for readers who cannot tell red from
+green.
+
+Slot 8 is the line's own value rather than the one the doctrine's reference
+palette states. That red sat ΔE 1.9 from `--bad`: a series close enough to a
+verdict to be read as one. It cost nothing to move — the worst adjacent pair is
+unchanged — and `series.test.ts` now keeps every slot clear of every status.
+
+Magnitude rather than identity: one hue, running away from the ground as the value grows. A heatmap cell reads this.
+
+- `--scale-100`
+- `--scale-200`
+- `--scale-300`
+- `--scale-400`
+- `--scale-500`
+- `--scale-600`
+- `--scale-700`
+
+The lightest step is allowed to recede toward the surface, because *near zero*
+should. For an ordered-but-discrete scale — tiers, funnel stages — start at
+`scale-300` instead, where the contrast still holds.
+
+The chart's own furniture, quieter than `line`: a gridline that competes with the data is drawn wrong.
+
+- `--chart-grid`
+- `--chart-axis`
+
+Some series sit below 3:1 against the surface. That is allowed only because the
+relief ships with them — visible values, or the table view — never as a fill
+left to speak for itself.
+
 ## Themes
 
 Dark is the default: the bare root element is the dark theme. Light arrives two

@@ -57,6 +57,38 @@ export const colorTokens = [
   'info-soft',
 ] as const
 
+/** Series colours, for charts: identity, assigned 1..8 in order and never
+ * cycled. Alone in this vocabulary alongside the status hues, they do not
+ * follow the product accent - a series belongs to the data, not to the
+ * product drawing it. The order is load-bearing: it is what keeps adjacent
+ * pairs apart under colour-blind simulation, so these are not re-sorted. */
+export const seriesTokens = [
+  'series-1',
+  'series-2',
+  'series-3',
+  'series-4',
+  'series-5',
+  'series-6',
+  'series-7',
+  'series-8',
+] as const
+
+/** Magnitude: one hue from light to dark, for heatmap cells and anything else
+ * that encodes "how much" rather than "which". */
+export const scaleTokens = [
+  'scale-100',
+  'scale-200',
+  'scale-300',
+  'scale-400',
+  'scale-500',
+  'scale-600',
+  'scale-700',
+] as const
+
+/** A chart's own furniture, quieter than `line` because a gridline that
+ * competes with the data is drawn wrong. */
+export const chartTokens = ['chart-grid', 'chart-axis'] as const
+
 /** Tokens a product overrides to make the theme its own: the accent from the
  * brand-line registry, and how much of it bleeds into the greys. */
 export const themeParameters = [
@@ -134,6 +166,9 @@ export const layerTokens = [
  * cannot be added and quietly missed by half of them. */
 export const allTokens = [
   ...colorTokens,
+  ...seriesTokens,
+  ...scaleTokens,
+  ...chartTokens,
   ...themeParameters,
   ...elevationTokens,
   ...radiusTokens,

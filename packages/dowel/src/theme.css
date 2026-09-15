@@ -80,6 +80,65 @@
   --bad-soft: color-mix(in oklab, var(--bad) 14%, transparent);
   --info-soft: color-mix(in oklab, var(--info) 15%, transparent);
 
+  /* Series colours, for charts.
+   *
+   * Like the status hues and unlike everything else here, these do NOT follow
+   * the product accent - and that is the whole decision. A series is a
+   * property of the data, not of the product showing it; a palette derived
+   * from the accent would paint the same series differently in kilna and in
+   * kasl-server, which is the one thing a series colour must never do.
+   *
+   * Deriving them from the accent was measured, not guessed: rotating the hue
+   * by fixed angles put the best candidate at Delta-E 12.1 from the product's
+   * own accent with adjacent pairs at 9.8, and threw 46 of 152 colours outside
+   * sRGB. The fixed palette does better on both counts.
+   *
+   * The cost of fixing them is stated plainly: 13 of the line's 19 accents sit
+   * within Delta-E 8 of some slot (lyrid 2.7, atlas 3.1, turnout 3.2). A chart
+   * shows one accent, so this is survivable - but it is exactly why identity is
+   * carried by the legend and by direct labels, never by hue on its own. The
+   * components of this block enforce that; it is not advice.
+   *
+   * Assigned in order, 1..8, and never cycled: a ninth series folds into
+   * "other", or the chart becomes small multiples. The order is the
+   * colour-blind-safety mechanism - the worst adjacent pair is Delta-E 8.4
+   * under simulated protanopia - so re-ordering these breaks a gate.
+   *
+   * Slot 8 is the line's own value rather than the reference palette's. The
+   * reference red sat Delta-E 1.9 from `--bad`, which would have let a series
+   * impersonate a status; this one clears every status by 15 and costs
+   * nothing, the worst adjacent pair being unchanged.
+   *
+   * Some slots sit below 3:1 against the surface. That is allowed only because
+   * the relief ships with them: visible values, or the table view.
+   */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #a3215a;
+
+  /* Magnitude rather than identity: one hue, light to dark. A heatmap cell
+   * reads this. The lightest step is allowed to recede toward the surface,
+   * because "near zero" should; an ordered-but-discrete scale (tiers, funnel
+   * stages) starts at 300 instead, where the contrast still holds. */
+  --scale-100: #0d366b;
+  --scale-200: #184f95;
+  --scale-300: #256abf;
+  --scale-400: #2a78d6;
+  --scale-500: #3987e5;
+  --scale-600: #5598e7;
+  --scale-700: #86b6ef;
+
+  /* The chart's own furniture. A gridline that competes with the data is drawn
+   * wrong, so it is quieter than `--line`; the axis is the one that may be
+   * seen. */
+  --chart-grid: rgb(255 255 255 / 0.06);
+  --chart-axis: rgb(255 255 255 / 0.14);
+
   /* Elevation, three steps. The products had one shadow and used it for
    * everything that leaves the flow - a toast, a dropdown and a modal all
    * floated by the same amount, so a modal never felt further away than the
@@ -143,6 +202,29 @@
     --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
     --info-soft: color-mix(in oklab, var(--info) 11%, transparent);
 
+    /* Series and scale, stepped for the light surface - the same eight hues
+     * chosen again against this ground, not the dark values lightened. The dark
+     * block says why these do not follow the product accent. */
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --series-4: #eda100;
+    --series-5: #e87ba4;
+    --series-6: #008300;
+    --series-7: #4a3aa7;
+    --series-8: #85284d;
+
+    --scale-100: #cde2fb;
+    --scale-200: #9ec5f4;
+    --scale-300: #6da7ec;
+    --scale-400: #3987e5;
+    --scale-500: #2a78d6;
+    --scale-600: #1c5cab;
+    --scale-700: #104281;
+
+    --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);
+    --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);
+
     --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
     --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
     --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);
@@ -181,6 +263,29 @@
   --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
   --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
   --info-soft: color-mix(in oklab, var(--info) 11%, transparent);
+
+  /* Series and scale, stepped for the light surface - the same eight hues
+   * chosen again against this ground, not the dark values lightened. The dark
+   * block says why these do not follow the product accent. */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #85284d;
+
+  --scale-100: #cde2fb;
+  --scale-200: #9ec5f4;
+  --scale-300: #6da7ec;
+  --scale-400: #3987e5;
+  --scale-500: #2a78d6;
+  --scale-600: #1c5cab;
+  --scale-700: #104281;
+
+  --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);
+  --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);
 
   --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
   --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
@@ -274,6 +379,28 @@
   --color-bad-soft: var(--bad-soft);
   --color-info: var(--info);
   --color-info-soft: var(--info-soft);
+
+  /* Charts. `bg-series-3`, `fill-series-3`, `stroke-scale-500` - the same
+   * utilities the rest of the vocabulary gets, so a chart is written in
+   * tokens like everything else and `dowel/no-raw-color` can hold it to
+   * that. */
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-series-3: var(--series-3);
+  --color-series-4: var(--series-4);
+  --color-series-5: var(--series-5);
+  --color-series-6: var(--series-6);
+  --color-series-7: var(--series-7);
+  --color-series-8: var(--series-8);
+  --color-scale-100: var(--scale-100);
+  --color-scale-200: var(--scale-200);
+  --color-scale-300: var(--scale-300);
+  --color-scale-400: var(--scale-400);
+  --color-scale-500: var(--scale-500);
+  --color-scale-600: var(--scale-600);
+  --color-scale-700: var(--scale-700);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
 
   /* Kept because they are not palette choices: a hairline is `transparent`,
    * an SVG follows `currentColor`, and pure black and white are what an

@@ -89,14 +89,58 @@ const radius = Object.fromEntries(
   ['xs', 'sm', 'md', 'lg', 'xl', '2xl'].map((step) => [step, dimension(`radius-${step}`)]),
 )
 
+/*
+ * Series and scale are the exception to the rule above: they are the only
+ * colours here with fixed values. A series does not follow the product accent
+ * - it belongs to the data, not to the product - so unlike `--accent` or
+ * `--soft` it *does* have a value a design tool can draw, and a chart mocked
+ * up outside the code should use these rather than eyeballed neighbours.
+ *
+ * They differ between the themes, and both are given: the light column is the
+ * same eight hues chosen again for the light ground, not the dark ones
+ * lightened, so neither can be computed from the other.
+ */
+const darkOnly = css.slice(0, css.indexOf('@media (prefers-color-scheme: light)'))
+const lightOnly = css.slice(css.indexOf(':root.light'))
+
+/** The literal colour a given block states. Unlike `declared`, which reads the
+ * first declaration in the file and therefore always the dark theme. */
+function statedIn(block, name) {
+  const match = block.match(new RegExp(`--${name}:\\s*(#[0-9a-f]{6});`, 'i'))
+  if (!match) throw new Error(`the theme no longer states a colour for \`--${name}\` in this theme`)
+  return { $value: match[1] }
+}
+
+const byTheme = (names) => ({
+  dark: Object.fromEntries(names.map((name) => [name, statedIn(darkOnly, name)])),
+  light: Object.fromEntries(names.map((name) => [name, statedIn(lightOnly, name)])),
+})
+
+const seriesNames = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `series-${n}`)
+const scaleNames = [100, 200, 300, 400, 500, 600, 700].map((n) => `scale-${n}`)
+
 const tokens = {
   $description:
-    'The dowel token vocabulary: the scales every product of the lacodda line is drawn on. Colours are omitted - they are derived per product from its own accent.',
+    'The dowel token vocabulary: the scales every product of the lacodda line is drawn on. Most colours are omitted - they are derived per product from its own accent - except the chart series and the magnitude scale, which are fixed for the whole line.',
 
   radius: {
     $type: 'dimension',
     $description: 'Corner radius. `md` is the control radius: inputs, buttons, list rows.',
     ...radius,
+  },
+
+  series: {
+    $type: 'color',
+    $description:
+      'Chart series, assigned 1..8 in order and never cycled. Alone among the colours here they do not follow the product accent: a series belongs to the data. The order is what keeps adjacent slots apart under colour blindness, so it is not a display order.',
+    ...byTheme(seriesNames),
+  },
+
+  scale: {
+    $type: 'color',
+    $description:
+      'Magnitude: one hue, running away from the ground as the value grows. Heatmap cells read this. For an ordered-but-discrete scale start at 300, where contrast still holds.',
+    ...byTheme(scaleNames),
   },
 
   typography: {
