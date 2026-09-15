@@ -302,6 +302,12 @@ describe('what a primitive drags in', () => {
     // geometry and its classes together - the donor kept them apart and every
     // call site had to repeat itself.
     sparkline: ['class-variance-authority'],
+    // Percentages and a floor, with no React in them - the same split as
+    // `table-sort` and `tree-rows`. A product labelling its own segments wants
+    // the numbers without importing a component to get them.
+    'track-segments': [],
+    // The bar, its tones, and the sums next door.
+    track: ['class-variance-authority', 'track-segments'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],

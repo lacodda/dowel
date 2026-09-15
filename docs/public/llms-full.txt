@@ -24,7 +24,7 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.23.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and sixty-two primitives — each with a page of its own on
+products of the line, and sixty-four primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -568,7 +568,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Sixty-two of them.
+A single component: Button, Dialog, Select. Sixty-four of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -5122,6 +5122,228 @@ sit above them.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+---
+
+# Track
+
+Source: https://lacodda.github.io/dowel/components/track
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#track
+
+A working day as spans, and a set of tiers with a score standing among them.
+
+## Notes
+
+**Two products had written this independently** and arrived at the same
+construction — a rounded track, segments positioned absolutely by percent, a
+floor under the segment width so a short one does not vanish — differing only
+in what a segment meant. One drew the tiers of a rubric with the score standing
+among them; the other drew a working day as alternating work and breaks.
+
+Each knew something the other did not. The tiers had the marker and the
+three-state reading of a band — passed, standing in, still ahead. The day had
+the minimum width, and the difference between an empty track and an unknown
+one. So it is one component with two shapes:
+
+**spans** — stretches of a whole, each meaning something in its own right. Work
+and breaks, phases, occupancy. Gaps are the track showing through, and a gap in
+the data has to look different from a boundary between two stretches, which is
+why `divided` is off here.
+
+```tsx
+<Track
+  segments={bands.map((band, i) => ({
+    key: String(i),
+    start: band.from,
+    end: band.to,
+    tone: band.paused ? 'idle' : 'accent',
+    label: band.label,
+  }))}
+  from={dayStart}
+  to={dayEnd}
+  label="Worked 7h 15m, one break of 45m"
+/>
+```
+
+**thresholds** — a scale cut into bands, with a position on it. The point is
+not the bands but where you stand among them: *nearly a clip* is what the
+reader wants, and a badge naming the band cannot say it. Here the bands touch,
+so `divided` draws a hairline of the ground between them.
+
+```tsx
+<Track
+  segments={tiers.map((tier, i) => ({
+    key: tier.key,
+    start: tier.min,
+    end: tiers[i + 1]?.min ?? 100,
+    tone: score >= tier.min ? (standingIn(tier) ? 'accent' : 'past') : 'idle',
+    label: `${tier.label} · ${tier.min}+`,
+  }))}
+  from={0}
+  to={100}
+  marker={score}
+  label={`Score ${score}, in ${current.label}`}
+  divided
+/>
+<TrackScale>
+  {tiers.map((tier) => <span key={tier.key}>{tier.label}</span>)}
+</TrackScale>
+```
+
+**A sliver is widened to something visible, and the rest of the bar gives way
+for it.** A twelve-second break in an eight-hour day is 0.04% of the track —
+real, measured, and rounding to no pixels at all. The floor draws it at 0.6%
+and pushes what follows along; the debt that creates is paid back by the
+segments wide enough to afford it, so the bar still ends exactly at its own
+edge. A widened segment says so in `widened`, so a caller can label it *under a
+minute* rather than a duration the bar is no longer drawing to scale.
+
+The obvious way to do this is wrong, and it was the first thing tried here:
+capping each sliver at *where the next segment starts* protects against
+overlap, and also means a segment touching its neighbour can never grow at all.
+Both shapes this component exists for are contiguous — work, break, work; one
+tier after another — so the floor did nothing for either of them, and only a
+look at the stand showed it.
+
+**The scale is stated, not inferred.** `from` and `to` are what the two donors
+disagreed about, and both were right: a working day is read against itself — an
+eight-hour day drawn across a third of the width wastes the space where the
+breaks are — while tiers are read against the whole 0–100 scale, where the
+distance to the next one is the distance you have to close. The marker rides
+the same bounds, so a tier at 78 and a score of 78 land in the same place.
+
+**A marker outside the track is absent, not pinned to the edge.** Clamped, it
+would say *here, at the very end*, which is a different statement from *not on
+this track at all*.
+
+**The track owns its geometry in its own box**, never a percentage of a
+parent's. That is the failure that cost a consumer a patch release: a
+percentage-height chart inside a flex row resolved every bar to zero, the graph
+came out empty, and neither the tests nor the API check could see it — the
+owner found it by looking.
+
+**The height is a variant, not a fixed value.** It is `sm` in one donor and
+`md` in the other because the bar carries different weight on the two screens.
+
+**`label` is required**, because the segments announce nothing: their `title`
+is a hover affordance, and a screen reader is given the bar as one image. Say
+what the whole bar says.
+
+## Props
+
+### Track
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `segments` | `TrackSegment[]` | | `key`, `start`, `end`, and optionally `tone` and `label` |
+| `label` | `string` | | Required — what the whole bar says |
+| `from` | `number` | earliest segment | What the left edge stands for |
+| `to` | `number` | latest segment | What the right edge stands for |
+| `marker` | `number` | | Where the position stands, on the same scale |
+| `divided` | `boolean` | `false` | A hairline between touching segments |
+| `minWidth` | `number` | `0.6` | The floor under a segment; `0` draws everything to scale |
+| `size` | `sm` `md` | `md` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### Segment tones
+
+| Tone | |
+| --- | --- |
+| `accent` | The subject: work done, the band you are standing in |
+| `past` | Behind you — dimmed, so the current band carries the eye |
+| `idle` | Ahead, or not the subject: a break, a band not yet reached |
+| `good` `warn` `bad` | A stretch that is itself a state rather than a quantity |
+
+### `track-segments`
+
+The arithmetic, importable without React: `place(segments, { from, to, minWidth })`
+returns `{ left, width, widened }` per segment, and `markerAt(value, from, to)`
+returns a percentage or `null`.
+
+---
+
+# track-segments
+
+Source: https://lacodda.github.io/dowel/components/track-segments
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#track-segments
+
+The numbers, printed rather than drawn: a sliver widened to the floor, and two slivers that must not overlap.
+
+## Notes
+
+Split out of [Track](/components/track/) for the reason
+[table-sort](/components/table-sort/) and [tree-rows](/components/tree-rows/)
+were split out of theirs: these are the sums, and the component is the thing
+that draws them. A product labelling its own segments, or testing its own
+domain arithmetic, should not import a component to get at the numbers.
+
+What lives here is only the geometry. Turning a day of work into segments, or a
+set of tiers into them, is the product's own arithmetic and stays with the
+product — this knows about spans and percentages and nothing else.
+
+```ts
+import { place, markerAt } from '@/components/ui/track-segments'
+
+place(
+  [{ start: 0, end: 180 }, { start: 180, end: 225 }],
+  { from: 0, to: 480 },
+)
+// [{ left: 0, width: 37.5, widened: false }, { left: 37.5, width: 9.375, widened: false }]
+```
+
+**The floor is the point.** A ten-second pause in an eight-hour day is 0.03% of
+the track: real, measured, and rounding to no pixels at all. `place` widens it
+to `MIN_SEGMENT_WIDTH` and says so in `widened`, so a caller can label it
+*under a minute* rather than a duration the bar is no longer drawing to scale.
+
+**Widening is a layout pass, not a per-segment decision.** A widened segment
+pushes what follows along, and the room it borrows is paid back at the end by
+the segments wide enough to afford it — never by another sliver, which would
+undo the widening. The bar ends where it began: exactly at 100%.
+
+```ts
+place([{ start: 0, end: 239 }, { start: 239, end: 239.2 }, { start: 239.2, end: 480 }], { from: 0, to: 480 })
+// the sliver is drawn at 0.6%, its neighbours give up 0.28% each, the bar ends at 100
+```
+
+The first version capped each sliver at *where the next segment starts*
+instead. That cannot overlap, and it also means a segment touching its
+neighbour never grows — which is every segment in both of the shapes this
+exists for. A sliver with empty track after it is a different case and costs
+nobody anything: it grows into room nobody was using.
+
+When nothing can pay — every segment already at or under the floor — the floor
+loses rather than the track. A bar running off its own end is worse than
+slivers too thin to see.
+
+**`markerAt` returns `null` rather than clamping.** A marker pinned to the edge
+says *here, at the very end*, which is a different statement from *not on this
+track at all*.
+
+**Bounds are stated rather than inferred**, because the two readings differ and
+both are wanted: a working day is read against itself, while a set of tiers is
+read against the whole 0–100 scale. Omit them and the segments supply their
+own extremes.
+
+## API
+
+| Export | |
+| --- | --- |
+| `place(segments, options?)` | `SegmentInput[]` → `Placed[]` — `{ left, width, widened }` in percent |
+| `markerAt(value, from, to)` | A percentage, or `null` when it falls outside |
+| `MIN_SEGMENT_WIDTH` | `0.6` — the floor, in percent |
+
+| Option | Type | Default | |
+| --- | --- | --- | --- |
+| `from` | `number` | earliest start | What the left edge stands for |
+| `to` | `number` | latest end | What the right edge stands for |
+| `minWidth` | `number` | `MIN_SEGMENT_WIDTH` | `0` draws everything exactly to scale |
 
 ---
 

@@ -76,6 +76,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [TimeField](https://lacodda.github.io/dowel/components/time-field.md): A time of day, typed the way people say it - loose going in, one spelling stored.
 - [Toast](https://lacodda.github.io/dowel/components/toast.md): Something that just happened, said briefly and then gone.
 - [Tooltip](https://lacodda.github.io/dowel/components/tooltip.md): A short visual label for a control with no room for one - on hover and on focus, and never the only place the words appear.
+- [Track](https://lacodda.github.io/dowel/components/track.md): A bar divided into stretches, with something standing somewhere along it.
+- [track-segments](https://lacodda.github.io/dowel/components/track-segments.md): The arithmetic behind Track - spans into percentages, with a floor under the short ones - and no React in it.
 - [tree-rows](https://lacodda.github.io/dowel/components/tree-rows.md): Which rows a tree shows, with no React in it - the sums a TreeView draws.
 - [TreeView](https://lacodda.github.io/dowel/components/tree-view.md): Folders that open, one tab stop, and the arrow keys a hand-rolled tree leaves out.
 - [Truncate](https://lacodda.github.io/dowel/components/truncate.md): Text that does not fit, cut with an ellipsis and still readable in full.
