@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { scaleTokens, seriesTokens } from './index'
+import { heatTokens, scaleTokens, seriesTokens } from './index'
 
 /*
  * The series palette, checked by computation rather than by eye.
@@ -84,6 +84,18 @@ function deltaE(a: Rgb, b: Rgb): number {
   const [l1, a1, b1] = linearToOklab(a)
   const [l2, a2, b2] = linearToOklab(b)
   return Math.hypot(l1 - l2, a1 - a2, b1 - b2) * 100
+}
+
+/** WCAG relative luminance, for the one question heat asks that the others do
+ * not: whether a fill can be told from the cell behind it. */
+function luminance([r, g, b]: Rgb): number {
+  const clamp = (c: number) => Math.max(0, Math.min(1, c))
+  return 0.2126 * clamp(r) + 0.7152 * clamp(g) + 0.0722 * clamp(b)
+}
+
+function contrast(a: Rgb, b: Rgb): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x) as [number, number]
+  return (hi + 0.05) / (lo + 0.05)
 }
 
 /** The worse of protanopia and deuteranopia for a pair. */
@@ -179,6 +191,80 @@ describe('series palette', () => {
       return (Math.atan2(b, a) * 180) / Math.PI
     }
     for (const name of seriesTokens) {
+      const dark = statedColor(darkBlock, name)
+      const light = statedColor(lightBlock, name)
+      const apart = Math.abs(((hue(dark) - hue(light) + 540) % 360) - 180)
+      expect(apart, `\`--${name}\` is ${dark} in the dark theme and ${light} in the light one`).toBeLessThan(40)
+    }
+  })
+})
+
+describe('heat, the five steps of a grid of cells', () => {
+  /* The ground a heat cell is actually drawn on: the empty square, which is
+   * `bg-soft` over the page. Written as the composite rather than as the
+   * translucent token, because contrast is a question about what reaches the
+   * eye. */
+  const emptyCell = { dark: '#231e1e', light: '#f3f1f2' } as const
+
+  it.each(themes)('%s states every heat step', (_theme, block) => {
+    for (const name of heatTokens) expect(statedColor(block, name)).toMatch(/^#[0-9a-f]{6}$/i)
+  })
+
+  it.each(themes)('%s steps monotonically', (_theme, block) => {
+    const steps = heatTokens.map((name) => linearToOklab(hexToLinear(statedColor(block, name)))[0])
+    const rising = steps.every((l, i) => i === 0 || l > steps[i - 1]!)
+    const falling = steps.every((l, i) => i === 0 || l < steps[i - 1]!)
+    expect(
+      rising || falling,
+      `heat turns back on itself: ${steps.map((l) => l.toFixed(2)).join(' -> ')}`,
+    ).toBe(true)
+  })
+
+  it.each(themes)('%s keeps its steps far enough apart to be counted', (_theme, block) => {
+    /* Ordinal, not sequential: these five are matched against a legend, so a
+     * reader has to tell step 3 from step 4 without them side by side. This is
+     * the check that rules out slicing `--scale-*`, whose steps sit 0.047
+     * apart - fine for a continuous ramp, too close to count. */
+    const steps = heatTokens.map((name) => linearToOklab(hexToLinear(statedColor(block, name)))[0])
+    for (let i = 0; i + 1 < steps.length; i++) {
+      const gap = Math.abs(steps[i + 1]! - steps[i]!)
+      expect(gap, `heat ${i + 1} and ${i + 2} differ by ${gap.toFixed(3)} in lightness`).toBeGreaterThanOrEqual(0.06)
+    }
+  })
+
+  it.each(themes)('%s keeps the faintest step distinct from an empty cell', (theme, block) => {
+    /* The defect this ramp exists to prevent, and the reason it is not derived
+     * from the accent: a heatmap cell means more than a number. Nothing
+     * recorded, a day still running and a day outside the data are all real
+     * answers, and if the faintest value looks like the empty square, the grid
+     * says somebody worked nothing on a day nobody reported.
+     *
+     * Derived from the product accent - which is how the first consumer built
+     * it - this sat at 1.29:1 for kilna and 1.49:1 for kasl-server. */
+    const faintest = hexToLinear(statedColor(block, heatTokens[0]!))
+    const ground = hexToLinear(emptyCell[theme as 'dark' | 'light'])
+    const ratio = contrast(faintest, ground)
+    expect(
+      ratio,
+      `\`--heat-1\` sits ${ratio.toFixed(2)}:1 from an empty cell: a value that faint reads as no value`,
+    ).toBeGreaterThanOrEqual(2)
+  })
+
+  it.each(themes)('%s runs away from its own ground as the value grows', (theme, block) => {
+    const first = linearToOklab(hexToLinear(statedColor(block, heatTokens[0]!)))[0]
+    const last = linearToOklab(hexToLinear(statedColor(block, heatTokens.at(-1)!)))[0]
+    expect(
+      theme === 'dark' ? last > first : last < first,
+      `the ${theme} heat ramp runs ${first.toFixed(2)} -> ${last.toFixed(2)}`,
+    ).toBe(true)
+  })
+
+  it('gives a step the same meaning in both themes', () => {
+    const hue = (hex: string) => {
+      const [, a, b] = linearToOklab(hexToLinear(hex))
+      return (Math.atan2(b, a) * 180) / Math.PI
+    }
+    for (const name of heatTokens) {
       const dark = statedColor(darkBlock, name)
       const light = statedColor(lightBlock, name)
       const apart = Math.abs(((hue(dark) - hue(light) + 540) % 360) - 180)

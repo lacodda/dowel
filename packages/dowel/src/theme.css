@@ -139,6 +139,36 @@
   --chart-grid: rgb(255 255 255 / 0.06);
   --chart-axis: rgb(255 255 255 / 0.14);
 
+  /* Heat, for a grid of cells where colour is the only thing carrying the
+   * value - a year of activity, a month of a team's hours.
+   *
+   * Five discrete steps rather than the seven of `--scale-*`, and a separate
+   * set rather than a slice of them, because the two answer different
+   * questions. `--scale-*` is sequential: a continuous magnitude, where the
+   * lightest step means "near zero" and may recede toward the surface.
+   * Heat is ordinal: five shades a reader tells apart at a glance and matches
+   * against a legend, which needs wider gaps between them (no slice of
+   * `--scale-*` clears the 0.06 lightness step - they sit 0.047 apart) and a
+   * bottom step that stays distinct from an empty cell.
+   *
+   * That last one is the whole point. A heatmap cell has more meanings than a
+   * number: nothing recorded, a day still running, a day outside the data, and
+   * a value. If the faintest value looks like the empty cell, the grid says
+   * somebody did nothing on a day nobody reported - and `--heat-1` clears the
+   * empty square by 2.1:1 so it cannot.
+   *
+   * Fixed, like the series and unlike almost everything else here. Derived
+   * from the accent - as the first consumer did - the faintest step sat 1.3:1
+   * from the empty cell for half the line, and pinning lightness instead ran
+   * out of sRGB: the darkest accents cannot reach the top of the ramp at their
+   * own chroma.
+   */
+  --heat-1: #28528e;
+  --heat-2: #3a65a3;
+  --heat-3: #4d78b7;
+  --heat-4: #608ccd;
+  --heat-5: #73a0e2;
+
   /* Elevation, three steps. The products had one shadow and used it for
    * everything that leaves the flow - a toast, a dropdown and a modal all
    * floated by the same amount, so a modal never felt further away than the
@@ -225,6 +255,15 @@
     --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);
     --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);
 
+    /* The same five steps chosen again for the light ground, running the other
+     * way: here "more" is darker. See the dark block for why heat is its own
+     * ramp and not a slice of `--scale-*`. */
+    --heat-1: #84a8fd;
+    --heat-2: #7193e7;
+    --heat-3: #5e7fd1;
+    --heat-4: #4c6cbb;
+    --heat-5: #3b58a6;
+
     --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
     --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
     --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);
@@ -286,6 +325,15 @@
 
   --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);
   --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);
+
+  /* The same five steps chosen again for the light ground, running the other
+   * way: here "more" is darker. See the dark block for why heat is its own
+   * ramp and not a slice of `--scale-*`. */
+  --heat-1: #84a8fd;
+  --heat-2: #7193e7;
+  --heat-3: #5e7fd1;
+  --heat-4: #4c6cbb;
+  --heat-5: #3b58a6;
 
   --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
   --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
@@ -401,6 +449,11 @@
   --color-scale-700: var(--scale-700);
   --color-chart-grid: var(--chart-grid);
   --color-chart-axis: var(--chart-axis);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
+  --color-heat-5: var(--heat-5);
 
   /* Kept because they are not palette choices: a hairline is `transparent`,
    * an SVG follows `currentColor`, and pure black and white are what an

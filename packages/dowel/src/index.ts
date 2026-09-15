@@ -89,6 +89,13 @@ export const scaleTokens = [
  * competes with the data is drawn wrong. */
 export const chartTokens = ['chart-grid', 'chart-axis'] as const
 
+/** Heat: five discrete steps for a grid of cells where colour carries the
+ * value. Ordinal rather than sequential - told apart at a glance and matched
+ * against a legend - which is why these are their own ramp and not five of
+ * `scaleTokens`. The faintest step stays distinct from an empty cell, or the
+ * grid claims a day was worked at zero when nobody reported it. */
+export const heatTokens = ['heat-1', 'heat-2', 'heat-3', 'heat-4', 'heat-5'] as const
+
 /** Tokens a product overrides to make the theme its own: the accent from the
  * brand-line registry, and how much of it bleeds into the greys. */
 export const themeParameters = [
@@ -169,6 +176,7 @@ export const allTokens = [
   ...seriesTokens,
   ...scaleTokens,
   ...chartTokens,
+  ...heatTokens,
   ...themeParameters,
   ...elevationTokens,
   ...radiusTokens,

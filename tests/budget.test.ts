@@ -308,6 +308,14 @@ describe('what a primitive drags in', () => {
     'track-segments': [],
     // The bar, its tones, and the sums next door.
     track: ['class-variance-authority', 'track-segments'],
+    // Weeks, four kinds of cell and the five steps - no React, so a product
+    // drawing this in a terminal takes the arithmetic alone.
+    'activity-weeks': [],
+    // The grid: the cell variants and the weeks beside it.
+    'activity-heatmap': ['class-variance-authority', 'activity-weeks'],
+    // The legend reads the grid's own cell variants, so the swatches cannot
+    // drift from the squares they explain.
+    'activity-legend': ['activity-heatmap', 'activity-weeks'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],

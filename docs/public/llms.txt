@@ -19,6 +19,9 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 ## Components
 
 - [ActionBar](https://lacodda.github.io/dowel/components/action-bar.md): The strip of actions that belongs to what is on screen, sticky when it needs to be.
+- [ActivityHeatmap](https://lacodda.github.io/dowel/components/activity-heatmap.md): A year of activity, one square per day - where a cell has four meanings and only one of them is a number.
+- [ActivityLegend](https://lacodda.github.io/dowel/components/activity-legend.md): What the shades of an activity grid mean - including what its darkest square stands for.
+- [activity-weeks](https://lacodda.github.io/dowel/components/activity-weeks.md): Laying a run of dates out in weeks, with the four meanings of a cell - and no React in it.
 - [Alert](https://lacodda.github.io/dowel/components/alert.md): A condition that is still true, about the thing it sits beside.
 - [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.

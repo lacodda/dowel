@@ -24,7 +24,7 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.23.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and sixty-four primitives — each with a page of its own on
+products of the line, and sixty-seven primitives — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -568,7 +568,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Sixty-four of them.
+A single component: Button, Dialog, Select. Sixty-seven of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -685,6 +685,236 @@ reader nothing about which one they are in.
 **Stacking comes from the theme.** A stuck bar uses `--z-sticky` rather than a
 number invented here, so it agrees with every overlay in the set instead of
 fighting one.
+
+---
+
+# ActivityHeatmap
+
+Source: https://lacodda.github.io/dowel/components/activity-heatmap
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#activity-heatmap
+
+A quarter and a year, with the four kinds of square and the legend that names them.
+
+## Notes
+
+**A cell has four meanings and only one of them is a number.** Nothing
+recorded, a value, something still under way, and a date outside the range
+asked for are four different facts. A grid that paints the first as the palest
+shade of the second tells the reader somebody did nothing on a day nobody
+reported — a claim invented by the drawing, not present in the data.
+
+| Kind | Drawn as | |
+| --- | --- | --- |
+| `value` | a fill from `--heat-1` … `--heat-5` | the only one that is a number |
+| `none` | the bare empty square | no entry for this date; **not** zero |
+| `partial` | outlined, dashed | under way, no total yet — any fill would be a figure nobody gave |
+| `outside` | faintest of all | padding that makes a column seven tall; the caller never asked about it |
+
+```tsx
+<ActivityHeatmap
+  entries={days.map((day) => ({ date: day.date, value: day.seconds }))}
+  from={year.from}
+  to={year.to}
+  busiest={year.busiest}
+  label={`A year of work, busiest day ${duration(year.busiest)}`}
+  describe={(cell) =>
+    cell.kind === 'value'
+      ? `${cell.date}: ${duration(cell.value!)}`
+      : `${cell.date}: nothing recorded`
+  }
+/>
+```
+
+**The legend is not decoration.** The scale is relative — the darkest square is
+the busiest day in *this* grid, not a standard — so the grid has to say what
+its own ceiling is. Without that, five shades read as an absolute measure of a
+full day, which this component has no opinion about.
+
+**`busiest` is what makes two grids comparable.** Left out, each grid scales to
+itself, and a quiet month and a heavy one both get a darkest square. State it
+and the shades mean the same thing across both.
+
+**A measured zero is not an absent day.** Zero measured is an answer, and it
+takes the faintest step; a date with no entry takes none. Only the caller knows
+which is which, and they say so by sending an entry or not.
+
+**`weekStartsOn` is stated, not guessed.** It decides which row a date lands
+on, and a component cannot see the locale that would answer it. Monday by
+default, Sunday-first numbering like `Date#getUTCDay`.
+
+**Dates are labels, never moments.** Everything here is walked in UTC: parsed
+at local midnight, a date in a zone ahead of UTC lands on the previous day, and
+every square would carry a date it is not.
+
+**There are no weekday names in here.** A weekday label is a word in a language
+this cannot pick, so `weekdayLabel` is the caller's, and without it the column
+is not drawn at all rather than drawn in English.
+
+**Colour is never the only channel.** `describe` turns each cell into a
+sentence that becomes its hover title, because a grid of five shades says
+nothing to a screen reader and little to anyone who does not separate five
+blues.
+
+## Props
+
+### ActivityHeatmap
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `entries` | `{ date, value }[]` | | `value: null` means under way |
+| `from` `to` | `string` | | The range, `YYYY-MM-DD` |
+| `label` | `string` | | Required — what the grid as a whole is |
+| `describe` | `(cell) => string` | | Required — what one square says |
+| `busiest` | `number` | largest value present | The ceiling the shades measure against |
+| `weekStartsOn` | `0`–`6` | `1` | Sunday-first numbering |
+| `weekdayLabel` | `(weekday) => ReactNode` | | Omit and the row labels are not drawn |
+| `size` | `sm` `md` | `md` | `sm` when a year has to fit |
+
+### ActivityLegend
+
+| Prop | Type | |
+| --- | --- | --- |
+| `less` `more` | `ReactNode` | The words at each end of the ramp |
+| `busiest` | `ReactNode` | What the darkest square stands for |
+| `none` `partial` | `ReactNode` | Named only when the data can produce them |
+
+### `activity-weeks`
+
+The arithmetic, importable without React: `weeks(entries, options)` returns
+columns of seven `Cell`s, `stepFor(value, busiest)` the step a figure lands on,
+`datesBetween`, `isWeekend` and `weekdayRows` the calendar helpers.
+
+---
+
+# ActivityLegend
+
+Source: https://lacodda.github.io/dowel/components/activity-legend
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#activity-legend
+
+The five steps, the relative ceiling named, and the meanings that are not numbers.
+
+## Notes
+
+**Its own component because the scale is relative.** The darkest square of an
+[ActivityHeatmap](/components/activity-heatmap/) is the busiest day in *that*
+grid, not a standard. A legend that does not say so lets five shades read as an
+absolute measure of a full day — something the grid has no opinion about.
+
+```tsx
+<ActivityLegend
+  less="Less"
+  more="More"
+  busiest={`busiest ${duration(year.busiest)}`}
+  none="Nothing recorded"
+  partial="Still open"
+/>
+```
+
+**The swatches come from the grid's own variants**, so they cannot drift from
+the squares they explain. That is the whole reason this imports from
+ActivityHeatmap rather than repeating the five fills.
+
+**The meanings that are not numbers are named only when the caller has them.**
+A grid whose data can never be under way should not carry a legend entry
+promising it can. Pass `none` and `partial` when the grid produces them, leave
+them out when it does not.
+
+**All the words are the caller's.** *Less* and *more* are English here only
+because this page is; the component has no strings of its own.
+
+**One legend, several grids.** A screen showing a quarter beside a year needs
+one explanation, not two — which is also why it is not drawn inside the grid.
+
+## Props
+
+| Prop | Type | |
+| --- | --- | --- |
+| `less` `more` | `ReactNode` | The words at each end of the ramp |
+| `busiest` | `ReactNode` | What the darkest square stands for — the relative scale, named |
+| `none` | `ReactNode` | The empty square: no entry for that date |
+| `partial` | `ReactNode` | The outlined square: under way, no total yet |
+| `className` | `string` | Merged so the caller wins a conflict |
+
+---
+
+# activity-weeks
+
+Source: https://lacodda.github.io/dowel/components/activity-weeks
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#activity-weeks
+
+The numbers, printed rather than drawn: four kinds of cell, and where a value lands on the scale.
+
+## Notes
+
+Split out of [ActivityHeatmap](/components/activity-heatmap/) for the reason
+[track-segments](/components/track-segments/) is split out of Track: a product
+drawing this somewhere other than the DOM needs the arithmetic, not a
+component. One consumer of the line draws it in a terminal.
+
+**The rule everything rests on: a cell has four meanings and only one of them
+is a number.** `none` is a date with no entry — not zero. `value` has a figure
+and a step. `partial` is under way, with no total yet. `outside` is padding
+that makes a column seven tall, for dates the caller never asked about.
+
+```ts
+import { weeks, stepFor } from '@/components/ui/activity-weeks'
+
+weeks(
+  [{ date: '2026-09-07', value: 8 }, { date: '2026-09-09', value: null }],
+  { from: '2026-09-07', to: '2026-09-13', busiest: 10 },
+)
+// one column of seven: a value, a gap, an entry under way, four more gaps
+```
+
+**Dates are labels, never moments.** Every walk is in UTC. Parsed at local
+midnight instead, a date in a zone *ahead* of UTC lands on the previous day
+once it is read back — in Berlin the run from `2026-09-07` starts at
+`2026-09-06`, and every cell carries a date it is not. On a machine *behind*
+UTC the offset cancels and the bug is invisible, which is why the check for it
+reads the source rather than running a date through it.
+
+**A step has a floor of 1.** Any value at all is a value: a twenty-minute day
+rounded to nothing would join the empty squares, and the grid would be denying
+a day that was reported.
+
+**A ceiling of zero means two different things**, so it is read two ways. A
+grid whose only values are zero has a zero ceiling by arithmetic — every day
+measured, every day empty — and those days take the faintest step. A real
+figure against a *stated* ceiling of zero means the ceiling is wrong, and the
+figure is drawn at full strength rather than hidden.
+
+**`busiest` is shared, not per column.** Scaled to itself, a quiet stretch and
+a heavy one each get their own darkest square, which is the one thing a heatmap
+is for.
+
+**`weekStartsOn` decides which row a date lands on**, so it is stated. There is
+no locale here to guess it from.
+
+## API
+
+| Export | |
+| --- | --- |
+| `weeks(entries, options)` | Columns of seven `Cell`s, time running left to right |
+| `stepFor(value, busiest)` | Which of the five steps a figure lands on, 1-5 |
+| `datesBetween(from, to)` | Every date inclusive, as `YYYY-MM-DD` |
+| `isWeekend(date)` | Saturday or Sunday — never "a day off" |
+| `weekdayRows(weekStartsOn)` | The weekday of each row, in drawing order |
+| `STEPS` | `5` — the number of shades a legend can be counted against |
+
+| Option | Type | Default | |
+| --- | --- | --- | --- |
+| `from` `to` | `string` | | The range, `YYYY-MM-DD` |
+| `weekStartsOn` | `0`–`6` | `1` | Sunday-first numbering |
+| `busiest` | `number` | largest value present | The shared ceiling |
 
 ---
 
@@ -6585,6 +6815,29 @@ Magnitude rather than identity: one hue, running away from the ground as the val
 The lightest step is allowed to recede toward the surface, because *near zero*
 should. For an ordered-but-discrete scale — tiers, funnel stages — start at
 `scale-300` instead, where the contrast still holds.
+
+Heat: five discrete steps for a grid of cells where colour is the only thing carrying the value.
+
+- `--heat-1`
+- `--heat-2`
+- `--heat-3`
+- `--heat-4`
+- `--heat-5`
+
+Five rather than the scale's seven, and a separate ramp rather than a slice of
+it, because the two answer different questions. `scale-*` is **sequential** — a
+continuous magnitude, read as *more* and *less*. Heat is **ordinal**: five
+shades a reader tells apart at a glance and counts against a legend, which
+needs wider gaps between them. No five of `scale-*` clear the 0.06 lightness
+step; they sit 0.047 apart, which is fine for a smooth ramp and too close to
+count.
+
+`heat-1` clears an empty cell by 2.1:1, and that is the number the ramp was
+built around. A heatmap cell means more than a number — nothing recorded, still
+under way, outside the range — and if the faintest value looks like the empty
+square, the grid says somebody did nothing on a day nobody reported. Derived
+from the product accent, as the first consumer built it, that distance was
+1.3:1 for half the line.
 
 The chart's own furniture, quieter than `line`: a gridline that competes with the data is drawn wrong.
 
