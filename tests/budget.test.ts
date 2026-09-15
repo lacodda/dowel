@@ -319,6 +319,11 @@ describe('what a primitive drags in', () => {
     // Columns and the rule they are read against. The arithmetic is two
     // divisions, so there is nothing next door to split out.
     'bar-chart': ['class-variance-authority'],
+    // Bounds, runs and round-number ticks - no React, so a product labelling
+    // its own points takes the numbers alone.
+    'line-scale': [],
+    // The plot, its ticks and the line across it.
+    'line-chart': ['class-variance-authority', 'line-scale'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],

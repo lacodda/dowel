@@ -49,6 +49,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
 - [Kbd](https://lacodda.github.io/dowel/components/kbd.md): A key, as printed in a menu or a hint.
 - [KeyValue](https://lacodda.github.io/dowel/components/key-value.md): A list of facts - a name and what it is - in the element that says which belongs to which.
+- [LineChart](https://lacodda.github.io/dowel/components/line-chart.md): A quantity over time, where it continues between the readings - with a hole drawn as a hole.
+- [line-scale](https://lacodda.github.io/dowel/components/line-scale.md): Bounds, runs and round-number ticks for a line - the arithmetic, with no React in it.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
 - [NumberField](https://lacodda.github.io/dowel/components/number-field.md): A number, its stepper, and what an empty box actually means.
 - [NumberFormat](https://lacodda.github.io/dowel/components/number-format.md): A number written the way the reader's language writes numbers, with figures that line up in a column.

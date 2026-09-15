@@ -1,0 +1,59 @@
+---
+title: line-scale
+description: Bounds, runs and round-number ticks for a line - the arithmetic, with no React in it.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/line-scale.json
+```
+
+<Stand component="line-scale" caption="The numbers, printed rather than drawn: a series with a hole in it, and the ticks a range asks for." />
+
+## Notes
+
+Split out of [LineChart](/components/line-chart/) like
+[track-segments](/components/track-segments/) and
+[activity-weeks](/components/activity-weeks/): a product labelling its own
+points, or checking its own domain sums, should not import a component to get
+at the numbers.
+
+```ts
+import { boundsOf, runs, ticksFor } from '@/components/ui/line-scale'
+
+const bounds = boundsOf(points, { min: 0 })
+runs(points, bounds)      // the drawable stretches, split at every hole
+ticksFor(bounds, 4)       // [0, 10, 20, 30] for a range of 0..37
+```
+
+**`runs` breaks the series at every hole**, and that is the whole point.
+Interpolating across invents a reading nobody took; dropping the point closes
+the gap and shifts every later reading left, so the axis stops matching the
+data. Breaking leaves the gap visible and moves nothing. A run of one point
+survives: it has no line, but it is a measurement.
+
+**`boundsOf` does not force the floor to zero.** A line's subject is change,
+and a balance between 4,900 and 5,100 flattens on a zero-based axis. State
+`min: 0` for a count, where zero is the truth rather than a flattening. A flat
+series gets a band around its value instead of a range of zero to divide by.
+
+**`ticksFor` answers "what reads as a round number", not "how do I cut this
+range into four".** The step is the nearest 1, 2, 5 or 10 above what the range
+needs, and the ticks are its multiples inside the range — so a range of 0 to 37
+gives 0, 10, 20, 30 rather than 9.25 and its friends. Decimals are trimmed to
+what the step makes real, or a tick reads `0.30000000000000004`.
+
+**Values are clamped into the plot, but a point keeps its own reading**, so a
+label beside it can say the real figure even where the line sits on the
+ceiling.
+
+## API
+
+| Export | |
+| --- | --- |
+| `boundsOf(points, stated?)` | The box to draw against, or `null` when nothing was measured |
+| `runs(points, bounds)` | The drawable stretches, split at every hole |
+| `pathOf(run)` | One stretch as an SVG path, in percentages |
+| `ticksFor(bounds, wanted?)` | Round-number ticks inside the range |
+| `yOf(value, bounds)` | A percentage from the top, or `null` outside the plot |
