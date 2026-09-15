@@ -1,0 +1,90 @@
+# StatTile
+
+Source: https://lacodda.github.io/dowel/components/stat-tile
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#stat-tile
+
+A row of figures under a heading, with and without the movement beneath them.
+
+## Notes
+
+**It exists because the first consumer had written it twice.** Once on the
+personal page, once on the team one — and the two copies had already drifted.
+One had grown a warning tone the other lacked, and in it the tone classes were
+joined without a space:
+
+```tsx
+// The donor, and the defect waiting in it
+className={`mt-1 font-mono text-lg tabular ${accent ? 'text-accent-2' : ''}${warn ? 'text-warn' : ''}`}
+```
+
+A figure that was both accented and warning would have emitted
+`text-accent-2text-warn` and been styled by neither. Nothing had gone wrong on
+screen, because those two flags were simply never passed together — which is
+the kind of defect that waits for the day they are.
+
+**A `<dl>`, for the reason [KeyValue](/components/key-value/) is one.** Two
+loose `<div>`s read as two unrelated pieces of text, and nothing says the
+number belongs to the label.
+
+```tsx
+<StatRow>
+  <StatTile label="Worked" value={duration(worked)} tone="accent" />
+  <StatTile label="Paused" value={duration(paused)} />
+  <StatTile label="Silent" value={String(silent)} tone="warn" />
+</StatRow>
+```
+
+**The delta is a second line, not a colour on the number.** A figure that turns
+red is a figure whose colour has to be explained, and the explanation is never
+on the screen. `+40m vs last week` explains itself.
+
+Its tone is stated rather than read off the sign, because the sign does not
+know what the figure means: for *time to first response* a fall is the good
+news.
+
+```tsx
+<StatTile
+  label="Time to answer"
+  value="2m 10s"
+  delta="-30s vs last week"
+  deltaTone="good"
+/>
+```
+
+**An absent delta draws nothing, and a zero delta draws.** A blank second line
+reads as "unchanged", which is a claim about data the caller never made; `0`
+means the figure was measured and did not move. That is why the component tests
+`undefined` and `null` by name rather than reaching for a truthiness guard —
+`{delta && …}` swallows the one falsy value that means something.
+
+**Values are set in tabular figures**, so a column of tiles lines up and a
+live number redrawn every few seconds does not shuffle the row sideways.
+
+**The row wraps rather than gridding.** How many figures there are is decided
+at runtime — the donor hides two of its five until there is something to say —
+and a grid with a fixed column count leaves a hole where a hidden tile was.
+`items-baseline` is the part that is easy to miss: without it a tile carrying a
+delta stands taller than its neighbours, and the numbers stop sharing a line.
+
+## Props
+
+### StatTile
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | What the figure is |
+| `value` | `ReactNode` | | The figure, already formatted |
+| `tone` | `default` `accent` `warn` `bad` | `default` | How the value itself reads |
+| `delta` | `ReactNode` | | Which way it moved, in the caller's words |
+| `deltaTone` | `default` `good` `bad` | `default` | Whether that movement is good news |
+| `size` | `md` `lg` | `md` | `lg` for a figure that leads a page |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### StatRow
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `className` | `string` | | Merged so the caller wins a conflict |

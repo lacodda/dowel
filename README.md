@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.23.0 - the theme, the scales, an accent per product, sixty components - overlays, menus, the command palette, the table, a hundred thousand rows, the screens between asking for data and showing it, and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
+**Status:** v0.23.0 - the theme, the scales, an accent per product, sixty-one components - overlays, menus, the command palette, the table, a hundred thousand rows, the screens between asking for data and showing it, and the three ways of saying something happened - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -98,7 +98,7 @@ snapshot the cross-references point into the same snapshot, so a component and
 the sibling it reuses are the pair that shipped together. See
 [installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
 
-Sixty of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Sixty-one of them so far. The everyday ones - Button, Input, Textarea, Panel,
 Badge, Chip, Kbd, Spinner, Truncate and Copyable; Field and the three controls
 that answer a question - Checkbox, RadioGroup and Switch; five for a number or
 a judgement - NumberField, Slider, RatingScale, DurationField and
@@ -112,8 +112,9 @@ them; three for saying that something happened - Toast, Alert and Banner; six
 for showing rows of data - Table, Pagination, PageSize, NumberFormat,
 RelativeTime and the `table-sort` with no React in it; four for a long list or
 a deep one - VirtualList, TreeView with the `tree-rows` under it, and KeyValue;
-and five for the screens between asking for data and showing it: Skeleton,
-EmptyState, Progress, QueryState and ErrorBoundary.
+StatTile, for one figure and what it is a figure of; and five for the screens
+between asking for data and showing it: Skeleton, EmptyState, Progress,
+QueryState and ErrorBoundary.
 
 Those last three are the ones products keep confusing, so each page names all
 four options: a **toast** goes away, an **alert** is still true after a reload,

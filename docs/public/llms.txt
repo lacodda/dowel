@@ -66,6 +66,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
+- [StatTile](https://lacodda.github.io/dowel/components/stat-tile.md): One figure and what it is a figure of, in the element that ties them together.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.
 - [Table](https://lacodda.github.io/dowel/components/table.md): A table of rows and the heading that reorders them - parts you compose, not a columns prop.
 - [table-sort](https://lacodda.github.io/dowel/components/table-sort.md): How a column is ordered, with no React in it - and the one rule a two-line sort gets wrong.

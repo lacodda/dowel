@@ -294,6 +294,10 @@ describe('what a primitive drags in', () => {
     // A `<dl>` and two layouts, and the layouts need different markup - which
     // is the whole reason the pair is a component rather than two divs.
     'key-value': ['class-variance-authority'],
+    // A `<dl>` again, and the tones a figure reads in. The variants are worth
+    // the dependency here for the reason the donor proves: its tone classes
+    // were joined by hand, without a space, and neither one applied.
+    'stat-tile': ['class-variance-authority'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],
