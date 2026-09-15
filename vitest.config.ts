@@ -30,5 +30,13 @@ export default defineConfig({
     ],
     // `dowel-ui` is what a copied component imports; here it is the source.
     alias: { 'dowel-ui': new URL('./packages/dowel/src/index.ts', import.meta.url).pathname },
+    // A ceiling on workers, because the default is one per core and every one
+    // of them carries its own jsdom and its own axe. On a sixteen-core machine
+    // that starved the axe checks until they hit the five-second timeout, and
+    // the suite went red without a single component being wrong - a gate that
+    // reports the load on the machine rather than the state of the code. Four
+    // also finishes sooner than sixteen (81s against 146s): past this point
+    // the workers are competing for the same cores, not using more of them.
+    maxWorkers: 4,
   },
 })
