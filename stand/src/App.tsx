@@ -3160,6 +3160,20 @@ const twelveWeeks = [
  * The month belongs in the title beside the chart. */
 const weekLabels = ['1', '8', '15', '22', '29', '6', '13', '20', '27', '3', '10', '17']
 
+/* A holiday fortnight: real hours, all of them far under a full week. Their
+ * own tallest is 9h, a fifth of the 45h ceiling, so the two scalings of it are
+ * plainly different rather than technically different. */
+const quiet = [4, 6.5, 2, 9, 5.5, 7]
+
+function quietWeeks() {
+  return quiet.map((hours, index) => ({
+    key: `q${index}`,
+    value: hours,
+    label: String(index * 7 + 1),
+    title: `week ${index + 1} · ${hours}h`,
+  }))
+}
+
 function weekBars(tone?: 'accent' | 'muted') {
   return twelveWeeks.map((week, index) => ({
     key: week.key,
@@ -3318,16 +3332,17 @@ function BarChartSection() {
 
       <Row label="a quiet stretch against the stated ceiling, and the same weeks scaled to themselves">
         <Panel className="flex w-80 flex-col gap-3 p-4">
-          {/* The demonstration only works on a stretch whose own tallest week
-              is well below the ceiling. The first draft of this row sliced the
-              last six weeks - which include the tallest of all twelve - so the
-              two charts differed by 11% of a 72px plot: eight pixels, and the
-              row proved nothing. */}
-          <BarChart bars={weekBars().slice(4, 9)} max={weekCeiling} size="sm" label="Five quiet weeks, against the same ceiling as the chart above" />
+          {/* Its own data, and it has to be. The point only lands when the
+              stretch's own tallest week is far below the ceiling, and no slice
+              of the twelve above qualifies - the quietest run still reaches
+              76% of 45, which on a 72px plot is a difference of seventeen
+              pixels. Two earlier drafts of this row sliced the twelve and
+              proved nothing. */}
+          <BarChart bars={quietWeeks()} max={weekCeiling} size="sm" label="A quiet fortnight, against the same ceiling as the charts above" />
           <span className="text-xs text-dim">
-            <code>max=45</code> - read against the other charts, these weeks are short
+            <code>max=45</code> - read against the other charts, this fortnight was short
           </span>
-          <BarChart bars={weekBars().slice(4, 9)} size="sm" label="The same five weeks, scaled to themselves" />
+          <BarChart bars={quietWeeks()} size="sm" label="The same fortnight, scaled to itself" />
           <span className="text-xs text-dim">
             no <code>max</code> - the same weeks now fill the plot, and nothing says they were quiet
           </span>
