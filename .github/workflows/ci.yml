@@ -50,12 +50,17 @@ jobs:
     #
     # This tag and `@playwright/test` in package.json move together, and the
     # dependency is pinned without a caret for that reason: a minor bump of the
-    # package asks for a browser revision the image does not carry, and all 91
-    # snapshots fail with "Executable doesn't exist" rather than a diff. Raising
+    # package asks for a browser revision the image does not carry, and every
+    # snapshot fails with "Executable doesn't exist" rather than a diff. Raising
     # the pair is its own change, because a new image re-renders every baseline.
+    #
+    # It happened exactly as written during v0.24: the stack update took the
+    # package to 1.63.0 and left the image at 1.62.1, and all 140 of them failed
+    # that way. The note was right; what was missing was anything that enforces
+    # it, which `tests/toolchain.test.ts` now does.
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
