@@ -2842,9 +2842,15 @@ emphasis on top of that.
 
 **It stacks below `@3xl`, on its own width rather than the viewport's.** Two
 columns each too narrow to hold a line of text answer nothing: every line wraps
-into three and the comparison is worse than one column would have been. The
-breakpoint is a container query because a diff in a side panel is narrow on a
-wide screen.
+into three and the comparison is worse than one column would have been. So the
+pair stacks — the *after* line directly under the *before* one, each with its
+own marker and number — and the header keeps both names on one line with an
+arrow between them. The breakpoint is a container query because a diff in a
+side panel is narrow on a wide screen.
+
+*Stacks*, never hides. This drew the after side with `hidden` for a while,
+under a comment that said "stacked": a narrow reader saw a line marked `~` as
+rewritten and nothing to compare it with, on a screen that looked finished.
 
 **The summary is yours.** The component counts; your product says it in words,
 because a count is a plural and a plural belongs to a language this does not

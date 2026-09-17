@@ -28,11 +28,18 @@ import { countChanges, diffLines, rows, type DiffRow } from './diff-lines'
  * wrapped line on the left keeps its partner beside it instead of pushing the
  * two texts out of step.
  *
- * Stacked below a certain width, because two columns each too narrow to hold a
- * line of text answer nothing - every line wraps into three and the comparison
- * is worse than one column would have been. The breakpoint is on the component
- * rather than the viewport (`@container`), since a diff in a side panel is
- * narrow on a wide screen.
+ * Below a certain width the pair stacks - the "after" line under the "before"
+ * one - because two columns each too narrow to hold a line of text answer
+ * nothing: every line wraps into three and the comparison is worse than one
+ * column would have been. The breakpoint is on the component rather than the
+ * viewport (`@container`), since a diff in a side panel is narrow on a wide
+ * screen.
+ *
+ * STACKS, not hides. This drew `hidden @3xl:flex` on the after side for a
+ * while, under a comment that said "stacked" - so a narrow reader saw a line
+ * marked `~` as rewritten and nothing to compare it with, on a screen that
+ * looked finished. Every test passed: they count cells in the DOM, and jsdom
+ * does not resolve a container query. Half a comparison is worse than none.
  *
  * Colour is never the message. A changed line carries a marker glyph in the
  * gutter - `+`, `-`, `~` - so the comparison reads without hue, in a
@@ -116,12 +123,17 @@ export function DiffView({
       <div className="overflow-hidden rounded-lg border border-line">
         {/*
          * The headers sit outside the scroller, in the same two tracks, so
-         * they stay put while the text moves under them. `grid-cols-1` until
-         * the container is wide enough for two columns of prose.
+         * they stay put while the text moves under them.
+         *
+         * In one column they sit side by side instead of stacking, with an
+         * arrow between them: stacked, they would be two labels separated by
+         * the whole of the left-hand text, which labels nothing. Both are
+         * always drawn - a comparison that names one of its two sides is one
+         * the reader has to guess at.
          */}
-        <div className="group grid grid-cols-1 border-b border-line bg-softer text-2xs font-medium text-dim @3xl:grid-cols-2">
-          <span className="flex items-center gap-2 px-3 py-1">
-            <span className="grow truncate">{beforeLabel}</span>
+        <div className="group flex items-center gap-2 border-b border-line bg-softer px-3 py-1 text-2xs font-medium text-dim @3xl:grid @3xl:grid-cols-2 @3xl:gap-0 @3xl:px-0 @3xl:py-0">
+          <span className="flex min-w-0 items-center gap-2 @3xl:grow @3xl:px-3 @3xl:py-1">
+            <span className="truncate @3xl:grow">{beforeLabel}</span>
             {copyLabel !== undefined && (
               <CopyButton
                 value={before}
@@ -131,12 +143,13 @@ export function DiffView({
               />
             )}
           </span>
-          {/* Hidden while stacked: with one column the two headers would sit
-            * one above the other with all of the left-hand text between them,
-            * which labels nothing. Each row carries its own side marker there
-            * instead. */}
-          <span className="hidden items-center gap-2 border-l border-line px-3 py-1 @3xl:flex">
-            <span className="grow truncate">{afterLabel}</span>
+          {/* Only while the two labels share a line. In two columns the tracks
+            * say which is which. */}
+          <span className="shrink-0 text-faint @3xl:hidden" aria-hidden>
+            {'\u2192'}
+          </span>
+          <span className="flex min-w-0 items-center gap-2 @3xl:border-l @3xl:border-line @3xl:px-3 @3xl:py-1">
+            <span className="truncate @3xl:grow">{afterLabel}</span>
             {copyLabel !== undefined && (
               <CopyButton
                 value={after}
@@ -226,7 +239,23 @@ function Side({
         // runs the full height of the text rather than stopping at the last
         // row of a short column. Gone while stacked, where there is no second
         // column for it to divide.
-        side === 'after' && 'hidden @3xl:flex @3xl:border-l @3xl:border-line',
+        /*
+         * On the right in two columns; UNDER its partner in one.
+         *
+         * Never hidden, and that is the whole note. This read `hidden
+         * @3xl:flex` for a while, under a comment saying the comparison
+         * "stacks" - it did not stack, it dropped the after side entirely, so
+         * a narrow reader saw a line marked `~` and nothing to compare it
+         * with. A screen that looks finished and withholds half the answer is
+         * worse than one that admits it has no room.
+         *
+         * Stacking needs no rule of its own: the cells are already siblings of
+         * a grid that is one column until `@3xl`, so they fall under each
+         * other by themselves. What the narrow layout does need is the rule
+         * BETWEEN the pair, which is a top border there and a left border in
+         * two columns.
+         */
+        side === 'after' && 'border-t border-line @3xl:border-t-0 @3xl:border-l',
         changed && (side === 'before' ? 'bg-bad-soft text-bad' : 'bg-good-soft text-good'),
       )}
     >

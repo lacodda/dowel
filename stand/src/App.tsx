@@ -4156,7 +4156,7 @@ function DiffViewSection() {
         </div>
       </Row>
 
-      <Row label="the same comparison in a side panel - stacked, because two narrow columns answer nothing">
+      <Row label="the same comparison in a side panel - the after line under the before one, never dropped">
         <div className="w-[22rem]">
           <DiffView
             before={draftBefore}

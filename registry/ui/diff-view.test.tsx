@@ -35,6 +35,45 @@ describe('DiffView', () => {
     expect(text[1]).toContain('x')
   })
 
+  it('never takes the after side out of the layout', () => {
+    /*
+     * The defect this exists for was invisible to every other test here and to
+     * jsdom entirely: the after cell carried `hidden @3xl:flex`, under a
+     * comment saying the comparison "stacks". It did not stack - it dropped
+     * the after side, so a narrow reader saw a line marked `~` as rewritten
+     * and nothing to compare it with, on a screen that looked finished.
+     *
+     * jsdom does not resolve a container query, so no assertion about computed
+     * style can see this. What can be checked is the class list: a bare
+     * `hidden` (rather than `@3xl:hidden`, which only hides while wide) means
+     * something is removed at the narrow end, and at the narrow end both sides
+     * are exactly what the reader needs.
+     */
+    const { container } = render(
+      <DiffView before={'a\nold'} after={'a\nnew'} beforeLabel="v1" afterLabel="v2" />,
+    )
+    for (const cell of container.querySelectorAll('.overflow-auto .grid > *')) {
+      expect(
+        cell.className,
+        'a side is hidden at the narrow end; a comparison with one side is worse than none',
+      ).not.toMatch(/(^|\s)hidden(\s|$)/)
+    }
+  })
+
+  it('names both sides at every width', () => {
+    // Same failure one level up: the after label was hidden while stacked, so
+    // the reader could not tell which text was which.
+    const { container } = render(
+      <DiffView before="a" after="b" beforeLabel="Draft 3" afterLabel="Draft 4" />,
+    )
+    const header = container.querySelector('.border-b') as HTMLElement
+    for (const span of header.querySelectorAll('span')) {
+      expect(span.className).not.toMatch(/(^|\s)hidden(\s|$)/)
+    }
+    expect(header.textContent).toContain('Draft 3')
+    expect(header.textContent).toContain('Draft 4')
+  })
+
   it('keeps exactly one scrolling region, so the sides cannot drift apart', () => {
     /*
      * This test exists because the component was first written with a scroller
