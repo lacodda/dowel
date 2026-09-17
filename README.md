@@ -2,9 +2,13 @@
   <img src="https://raw.githubusercontent.com/lacodda/dowel/main/assets/banner.svg" width="720" alt="dowel">
 </p>
 
-# dowel
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry.
 
-The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry.
+<p align="center">
+  <a href="https://www.npmjs.com/package/dowel-ui"><img src="https://img.shields.io/npm/v/dowel-ui?style=flat-square" alt="npm"></a>
+  <a href="https://github.com/lacodda/dowel/actions"><img src="https://img.shields.io/github/actions/workflow/status/lacodda/dowel/ci.yml?style=flat-square" alt="CI"></a>
+  <a href="https://github.com/lacodda/dowel/blob/main/LICENSE"><img src="https://img.shields.io/github/license/lacodda/dowel?style=flat-square" alt="License"></a>
+</p>
 
 A dowel is the hidden peg that joins two boards so the seam does not show. That is what this does for the products of the line: they look made by one hand, and nobody sees the joint.
 
@@ -107,8 +111,7 @@ every dowel component targets:
 }
 ```
 
-**Copy in what the screen needs.**
-
+> Copy in what the screen needs.
 ```console
 $ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
 ```
@@ -181,4 +184,4 @@ same sources the site is built from:
 
 ## License
 
-MIT
+MIT (c) [Kirill Lakhtachev](https://lacodda.com)
