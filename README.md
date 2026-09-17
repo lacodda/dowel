@@ -11,8 +11,6 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.25.0 - the theme, the scales, an accent per product, seventy-six components - overlays, menus, the command palette, the table, a hundred thousand rows, the screens between asking for data and showing it, the three ways of saying something happened, charts, and now text and code: rendered markdown through one stylesheet, a code block whose highlighter is yours, a comparison whose two columns stay in step, and a JSON document read rather than parsed by eye - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
-
 ## The theme
 
 One import, and a product has the vocabulary of the line:
@@ -32,58 +30,21 @@ npm install dowel-ui
 }
 ```
 
-That single line moves the accent and both of its partners, the accent's soft fill, the focus ring, the scrollbars, and the tint in the greys. Set nothing at all and you get dowel's own amber.
+That single line moves the accent and both of its partners, the accent's soft
+fill, the focus ring, the scrollbars and the tint in the greys. **The accent is
+derived, not configured**: a product states one hue and the theme works out the
+rest, including what colour text has to be to sit on top of it - checked
+against WCAG AA in CI, in both themes. Dark is the default; light arrives with
+the reader's system preference.
 
-Dark is the default; light arrives with the reader's system preference, or pinned with a class:
+With Tailwind 4 the tokens are utilities, and the stock palette is dropped
+deliberately, so a stray `bg-zinc-800` does not compile. If a colour is worth
+using, it is worth a name in the vocabulary - a convention the package also
+ships as a lint rule.
 
-```html
-<html>                <!-- follows the operating system -->
-<html class="light">  <!-- pinned light -->
-<html class="dark">   <!-- pinned dark -->
-```
-
-With Tailwind 4 the tokens are utilities, because the theme declares them in a `@theme` block:
-
-```html
-<div class="bg-raise text-text border border-line">
-  <button class="bg-accent text-on-accent">Save</button>
-</div>
-```
-
-The stock palette is dropped deliberately, so a stray `bg-zinc-800` does not compile. If a colour is worth using, it is worth a name in the vocabulary.
-
-### What makes it different
-
-- **The accent is derived, not configured.** A product states one hue and the theme works out the rest, including what colour text has to be to sit on top of it. A light accent takes dark glyphs, a dark one white - checked against every colour in the line rather than left to each product to get right.
-- **The greys belong to the product.** They carry a trace of its hue, so the chrome of one product is not the chrome of another with a different button colour.
-- **Contrast is a test, not an intention.** Every accent of the line is measured against WCAG AA in CI, in both themes, as a fill and as text.
-- **The scales were read, not invented.** Radius, type, elevation and stacking order come from what the line's products already draw, so existing code fits them - and the places where those products disagreed with themselves are settled rather than preserved.
-
-The same vocabulary also ships as [DTCG](https://www.designtokens.org/tr/2025.10/format/) JSON at `dowel-ui/tokens.json`, generated from the stylesheet so the two cannot drift.
-
-A product of the line states one thing about its appearance - which product it is:
-
-```css
-@import 'dowel-ui/theme.css';
-@import 'dowel-ui/accents/kilna.css';
-```
-
-Text a product does not write by hand - rendered markdown, a description from a CMS, a model's reply - is the one thing a component cannot style, because the tags arrive already made. That is a second stylesheet, imported the same way and applied with one class:
-
-```css
-@import 'dowel-ui/prose.css';
-```
-
-```tsx
-<div className="prose" dangerouslySetInnerHTML={{ __html: sanitised }} />
-```
-
-Or copy the files in instead of depending on the package:
-
-```bash
-npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
-npx shadcn@latest add https://lacodda.github.io/dowel/r/prose.json
-```
+Full vocabulary, shown rather than tabulated:
+**[colours](https://lacodda.github.io/dowel/reference/tokens/)** and
+**[the scales](https://lacodda.github.io/dowel/reference/scales/)**.
 
 ## Primitives
 
@@ -92,122 +53,26 @@ your code:
 
 ```bash
 npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
+npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json   # or a whole set
 ```
 
-Or the set a product usually starts from, in one command - `app`, `forms` and
-`feedback` are three sets read off what the line's products converged on:
+Seventy-six primitives so far - the everyday controls, forms, overlays built on
+[Base UI](https://base-ui.com), menus and selection, the command palette,
+tables and long lists, charts, the screens between asking for data and showing
+it, and markdown, code and diffs. Each is written in the vocabulary - no raw
+colours, no `dark:` utilities - and runs its own gate before it ships: axe, the
+keyboard, a dependency budget and a picture in both themes.
 
-```bash
-npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
-```
-
-A set carries no files of its own: it resolves into the same per-component
-installs you could have typed, so nothing of it survives in your project and
-there is no membership to leave. Each minor of the registry is also served
-frozen at `r/v0.25/…`, for an install that has to be repeatable - inside a
-snapshot the cross-references point into the same snapshot, so a component and
-the sibling it reuses are the pair that shipped together. See
-[installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
-
-Seventy-six of them so far. The everyday ones - Button, Input, Textarea, Panel,
-Badge, Chip, Kbd, Spinner, Truncate and Copyable; Field and the three controls
-that answer a question - Checkbox, RadioGroup and Switch; five for a number or
-a judgement - NumberField, Slider, RatingScale, DurationField and
-PasswordField; the harder half of a form - TagInput, FileDrop, ColorField,
-ActionBar and SaveState; five for a date or a time - Calendar, DatePicker,
-DateRangePicker, TimeField and the `calendar-math` under them; the six that
-float above the page - Dialog, ConfirmDialog, Drawer, Popover, PreviewCard and
-Tooltip; four for choosing something - Menu, ContextMenu, Select and Combobox;
-three for finding it - SearchField, CommandPalette and the `useShortcut` behind
-them; three for saying that something happened - Toast, Alert and Banner; six
-for showing rows of data - Table, Pagination, PageSize, NumberFormat,
-RelativeTime and the `table-sort` with no React in it; four for a long list or
-a deep one - VirtualList, TreeView with the `tree-rows` under it, and KeyValue;
-StatTile, for one figure and what it is a figure of, with Sparkline for the
-shape of its history, and Track with its `track-segments` for a bar divided
-into stretches; ActivityHeatmap with its legend and its `activity-weeks`, for a
-year of days; BarChart for a period at a time, LineChart with its `line-scale` for a level
-between the readings; and five for the screens
-between asking for data and showing it: Skeleton, EmptyState, Progress,
-QueryState and ErrorBoundary. And six for text and code: the `prose`
-stylesheet for markdown a product did not write by hand, CodeBlock with
-CopyButton beside it, DiffView with the `diff-lines` that keeps its two
-columns in step, and JsonViewer over its `json-rows`.
-
-Those last three are the ones products keep confusing, so each page names all
-four options: a **toast** goes away, an **alert** is still true after a reload,
-a **banner** is true on every screen, and anything that needs an answer is a
-**dialog**.
-
-The palette is a Combobox rather than a Dialog with a field in it, which is
-Base UI's own arrangement: put the input inside the popup and the popup becomes
-a dialog on its own, with the input still the combobox that owns the list. So
-the filtering, the highlight and the arrow keys are the ones Combobox already
-has - there is no second implementation of any of it.
-
-`Select` is the one the line's oldest rule is about. It renders
-`<button role="combobox">` and no native `<select>` at all - the browser draws
-that popup in the operating system's own chrome, where no stylesheet reaches
-it, and on a screen of the product's own controls it reads as a foreign object.
-`multiple` is a prop on Select and on Combobox rather than a component of its
-own.
-
-The overlays are built on [Base UI](https://base-ui.com), which supplies the
-part that is genuinely hard and invisible when it works: the focus trap, the
-return of focus to whatever opened the thing, `Escape`, the scroll lock, and
-the `aria-labelledby` that names a popup by its own title. Choosing between
-them is the harder question, and [a guide](https://lacodda.github.io/dowel/guides/overlays/) covers it.
-
-Each is written in the vocabulary - no raw colours, no `dark:` utilities - so
-the same component is correct in both themes and in every product's accent.
-Every one of them is on [the stand](https://lacodda.github.io/dowel/stand/), live - change the theme and the accent and watch what follows.
-
-That convention is a lint rule, and it ships with the package:
-
-```js
-// eslint.config.js
-import dowel from 'dowel-ui/eslint'
-
-export default [...dowel.configs.recommended]
-```
-
-Two rules come with it. One reports a hex, an `rgb()`, a stock Tailwind colour,
-`bg-white` and any `dark:` utility, in the file that wrote one. The other
-forbids the native `<select>`, whose popup the browser draws in the operating
-system's own chrome where no CSS reaches it - see [the guide](https://lacodda.github.io/dowel/guides/linting/).
-
-Every primitive also runs a gate of its own before it ships: axe over the
-rendered DOM in every variant, the keyboard over every interactive one, a
-declared budget for what it may import, a picture of it in both themes compared
-against a baseline, and a check that it carries no word of its own to translate
-- [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/).
-
-Full vocabulary, shown rather than tabulated: **[colours](https://lacodda.github.io/dowel/reference/tokens/)** in both themes, **[the scales](https://lacodda.github.io/dowel/reference/scales/)** - radius, type, motion, elevation and stacking order - and **[the accents](https://lacodda.github.io/dowel/reference/accents/)**, where the same screen is drawn in every colour of the line.
+The full catalogue, live: **[the stand](https://lacodda.github.io/dowel/stand/)**.
+One page per component: **[components](https://lacodda.github.io/dowel/components/button/)**.
+Installing, sets and frozen versions: **[the registry guide](https://lacodda.github.io/dowel/guides/registry/)**.
 
 ## Moving an existing project over
 
 A product arriving at dowel almost never arrives from nothing - it arrives from
-stock shadcn/ui, whose theme names colours by their role in a page
-(`--background`, `--muted-foreground`) where dowel names them by what they are
-on a screen. The package ships the tools for that crossing:
-
-```console
-$ npx dowel check              # what is not on the dowel vocabulary yet
-$ npx dowel codemod --write    # rewrite the names that can be rewritten
-$ npx dowel doctor             # whether the installation itself is wired right
-$ npx dowel diff dialog        # what you changed since you copied it in
-```
-
-`check`, `doctor` and `diff` only read; `codemod` writes, and only when asked
-twice. Everything reads the catalogue inside the installed package, so none of
-it needs the network.
-
-Two things are deliberately never rewritten, and the tools say so rather than
-guessing: a colour, because which token it was reaching for is a decision; and
-`--accent`, because it is the one name both vocabularies use for opposite
-things - stock's hover fill and dowel's product hue. The first run of `check`
-against dowel's own stand reported twenty-four violations that were all correct
-code, which is exactly how that rule was learned - see
+stock shadcn/ui, whose theme names colours by their role in a page where dowel
+names them by what they are on a screen. Four commands read a project, rewrite
+the names that can be rewritten, and say what is left for a person to decide:
 [the migration guide](https://lacodda.github.io/dowel/guides/migration/).
 
 ## A day in the life
@@ -281,19 +146,14 @@ fixed: the hand-written theme pinned dark ink on the accent for both themes,
 which was right on gold and wrong on the darkened gold the light theme uses,
 where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 
-## Roadmap
+## Status
 
-Development goes in versions; each one is a single coherent theme, and ends in a release.
+The theme, the scales, an accent per product, and seventy-six primitives are
+in daily use across two products of the line. Every component installs from a
+versioned registry and passes its own gate - axe, the keyboard, a dependency
+budget and a picture in both themes - before it ships.
 
-| | Delivers |
-| --- | --- |
-| **0.1 - 0.3** | The vocabulary: colours and modes, scales and motion, the accents of the line |
-| **0.4 - 0.7** | The primitive pipeline, the base components, the first consumer, the quality gates |
-| **0.8 - 0.11** | Overlays, menus and selection, the command palette, feedback |
-| **0.12 - 0.15** | The registry as a product, AI-readiness, migration tooling, the second consumer |
-| **0.16 - 0.24** | Forms, data and charts |
-| **0.25 - 0.33** | Frame and navigation, blocks, resilience and docs |
-| **1.0** | Four web products of the line on dowel; the token vocabulary and the registry format frozen |
+Released versions and what landed in each: [CHANGELOG](https://github.com/lacodda/dowel/blob/main/CHANGELOG.md).
 
 ## Documentation
 
