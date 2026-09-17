@@ -196,6 +196,49 @@ describe('every component is four files', () => {
     expect(existsSync(resolve(root, `registry/ui/${name}.test.tsx`))).toBe(true)
   })
 
+  /*
+   * Every component that renders anything runs axe.
+   *
+   * The rule existed and nothing held it: four primitives written in v0.25 all
+   * skipped the accessibility gate, and the suite stayed green - which is the
+   * same silence the gate itself exists to break. A rule kept by memory is a
+   * rule that lapses on the day somebody is in a hurry.
+   *
+   * The exceptions are the modules with no React in them - `diff-lines`,
+   * `tree-rows`, `table-sort` and their kind. They produce numbers, not DOM,
+   * and there is nothing for axe to look at.
+   */
+  const rendersDom = (name: string) => {
+    const source = readFileSync(resolve(root, `registry/ui/${name}.tsx`), 'utf8')
+    return /return \(\s*</.test(source) || /=> </.test(source) || /<[A-Za-z][^>]*\/>/.test(source)
+  }
+
+  /* Written before this gate was, and not retrofitted here: adding axe to a
+   * component is a change to that component's test, which belongs with a
+   * version that touches it. Named rather than silently skipped, so the debt
+   * is visible and the list only ever shrinks. */
+  const WITHOUT_AXE_YET = new Set(['error-boundary', 'number-format', 'page-size', 'relative-time'])
+
+  it.each(components)('%s runs the accessibility gate', (name) => {
+    if (!rendersDom(name) || WITHOUT_AXE_YET.has(name)) return
+    const test = readFileSync(resolve(root, `registry/ui/${name}.test.tsx`), 'utf8')
+    expect(
+      test,
+      `\`${name}\` renders DOM and never runs axe; add \`expectNoA11yViolations\``,
+    ).toContain('expectNoA11yViolations')
+  })
+
+  it('names no component in the axe exemption list that already has it', () => {
+    // The list is a debt, so it must not quietly hold a name that is paid off.
+    for (const name of WITHOUT_AXE_YET) {
+      const test = readFileSync(resolve(root, `registry/ui/${name}.test.tsx`), 'utf8')
+      expect(
+        test.includes('expectNoA11yViolations'),
+        `\`${name}\` runs axe now; take it out of the exemption list`,
+      ).toBe(false)
+    }
+  })
+
   it.each(components)('%s has a page on the stand', (name) => {
     expect(existsSync(resolve(root, `docs/src/content/docs/components/${name}.mdx`))).toBe(true)
   })

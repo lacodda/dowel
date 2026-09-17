@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { JsonViewer } from './json-viewer'
 
 /*
@@ -248,5 +249,14 @@ describe('JsonViewer', () => {
     )
     expect(container.innerHTML).not.toMatch(/\bdark:/)
     expect(container.innerHTML).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+
+  it('has no accessibility violations', async () => {
+    // The ARIA tree pattern is the whole point of this component, so the gate
+    // that reads roles and states is the one most worth running on it.
+    const { unmount } = await expectNoA11yViolations(
+      <JsonViewer value={{ a: { b: 1 }, xs: [1, 2], n: null }} label="Payload" />,
+    )
+    unmount()
   })
 })

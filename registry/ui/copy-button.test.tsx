@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { CopyButton } from './copy-button'
 
 /*
@@ -113,5 +114,13 @@ describe('CopyButton', () => {
     const { container } = render(<CopyButton value="x" label="Copy" copiedLabel="Copied" />)
     expect(container.innerHTML).not.toMatch(/\bdark:/)
     expect(container.innerHTML).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+
+  it('has no accessibility violations', async () => {
+    clipboard(() => Promise.resolve())
+    const { unmount } = await expectNoA11yViolations(
+      <CopyButton value="x" label="Copy" copiedLabel="Copied" />,
+    )
+    unmount()
   })
 })

@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { CodeBlock } from './code-block'
 
 const KINDS = [
@@ -286,5 +287,19 @@ describe('CodeBlock', () => {
     const html = container.innerHTML
     expect(html).not.toMatch(/\bdark:/)
     expect(html).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+
+  it('has no accessibility violations', async () => {
+    const { unmount } = await expectNoA11yViolations(
+      <CodeBlock
+        code={'const x = 1\nconst y = 2'}
+        caption="a.ts"
+        numbered
+        highlight={[2]}
+        copyLabel="Copy"
+        copiedLabel="Copied"
+      />,
+    )
+    unmount()
   })
 })

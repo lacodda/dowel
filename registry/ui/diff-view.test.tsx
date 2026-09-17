@@ -2,6 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { expectNoA11yViolations } from '../../tests/a11y'
 import { DiffView } from './diff-view'
 
 /*
@@ -276,5 +277,20 @@ describe('DiffView', () => {
     )
     expect(container.innerHTML).not.toMatch(/\bdark:/)
     expect(container.innerHTML).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+
+  it('has no accessibility violations', async () => {
+    const { unmount } = await expectNoA11yViolations(
+      <DiffView
+        before={'a\nold\nc'}
+        after={'a\nnew\nc\nd'}
+        beforeLabel="Draft 3"
+        afterLabel="Draft 4"
+        summary={({ added, removed }) => `${added} in, ${removed} out`}
+        copyLabel={(side) => `Copy ${side}`}
+        copiedLabel="Copied"
+      />,
+    )
+    unmount()
   })
 })
