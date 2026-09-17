@@ -68,10 +68,21 @@ A product of the line states one thing about its appearance - which product it i
 @import 'dowel-ui/accents/kilna.css';
 ```
 
+Text a product does not write by hand - rendered markdown, a description from a CMS, a model's reply - is the one thing a component cannot style, because the tags arrive already made. That is a second stylesheet, imported the same way and applied with one class:
+
+```css
+@import 'dowel-ui/prose.css';
+```
+
+```tsx
+<div className="prose" dangerouslySetInnerHTML={{ __html: sanitised }} />
+```
+
 Or copy the files in instead of depending on the package:
 
 ```bash
 npx shadcn@latest add https://lacodda.github.io/dowel/r/theme.json
+npx shadcn@latest add https://lacodda.github.io/dowel/r/prose.json
 ```
 
 ## Primitives
@@ -93,7 +104,7 @@ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json
 A set carries no files of its own: it resolves into the same per-component
 installs you could have typed, so nothing of it survives in your project and
 there is no membership to leave. Each minor of the registry is also served
-frozen at `r/v0.14/…`, for an install that has to be repeatable - inside a
+frozen at `r/v0.25/…`, for an install that has to be repeatable - inside a
 snapshot the cross-references point into the same snapshot, so a component and
 the sibling it reuses are the pair that shipped together. See
 [installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
