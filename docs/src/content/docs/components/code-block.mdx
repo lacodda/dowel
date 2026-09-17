@@ -57,10 +57,11 @@ and do not travel, so fold them into the nearest of these. The colours are the
 series palette: `if` should not be magenta in one product and cobalt in
 another.
 
-They are measured as *text*. Every slot clears 4.5:1 against this component's
-own surface in both themes — which is why they are not the series palette,
-whose light values sink to 1.90:1 at this size. A filled bar can be pale; a
-12px glyph cannot.
+They are measured as *text*, against the hardest surface a block sits on
+(`soft` over `raise`) rather than the typical one — `soft` is translucent and
+so has no single surface. Every slot clears 4.5:1 in both themes, which is why
+they are not the series palette, whose light values sink to 1.90:1 at this
+size. A filled bar can be pale; a 12px glyph cannot.
 
 **The line numbers are not selectable.** Select a numbered block, paste, and a
 gutter drawn without `user-select: none` arrives with its number welded to the

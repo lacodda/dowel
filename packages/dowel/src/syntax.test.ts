@@ -98,22 +98,38 @@ function statedColor(block: string, token: string): string {
 }
 
 /*
- * The surface code is drawn on, per theme, resolved to an opaque colour.
+ * The surface code is drawn on - the WORST one, not the typical one.
  *
- * Both CodeBlock and `.prose pre` put code on `--soft` over `--bg`, and
- * `--soft` is translucent - a contrast ratio cannot be computed against it
- * directly. These are that composite, and they are written down rather than
- * computed because `--bg` itself depends on the product's accent through
- * `--neutral-tint`: there is no single value for it.
+ * Both CodeBlock and `.prose pre` put code on `--soft`, which is translucent:
+ * it has no colour of its own, it lifts whatever is behind it. So there is no
+ * single surface, and the first version of this file wrote one down anyway -
+ * `--soft` over `--bg` - and measured against that. It passed, and a live run
+ * on the stand found `--syntax-comment` at 4.0:1, because the stand puts the
+ * block inside a `--raise` panel and the real composite came out at
+ * `rgb(48,44,45)` rather than the assumed `rgb(27,27,31)`.
  *
- * The tint moves the ground by a few percent of one hue at 6% strength, which
- * is far smaller than the margin every slot clears the threshold by. Checked
- * against the extremes of the line's accents when the palette was chosen: the
- * worst slot moved by 0.14 of a contrast point.
+ * The lesson is not that the numbers were wrong - they were right for the
+ * surface named. It is that naming one surface turns an unknown into a
+ * constant and then measures the constant. So these are `--soft` over
+ * `--raise`: the lightest ground a product legitimately puts a block on, and
+ * therefore the hardest case. A slot that clears this clears everywhere.
+ *
+ * Still written down rather than computed, because `--raise` depends on the
+ * product's accent through `--neutral-tint`, so there is no one value to
+ * compute. These are the composite MEASURED in a browser on the stand -
+ * `rgb(48,44,45)` dark - rounded up, with headroom for an accent that tints
+ * `--raise` further than dowel's own amber does.
+ *
+ * Rounded UP rather than to the measurement, and that is the second half of
+ * the lesson. The first correction here moved the surface to a computed
+ * `#2b282a`, which was still darker than what the browser actually drew, and
+ * `--syntax-comment` came out at 4.49:1 on the real screen while the gate read
+ * 4.75 and passed. A gate that is optimistic by a hair fails the same way as
+ * one that is optimistic by a lot; it just takes longer to notice.
  */
 const surfaces = {
-  dark: { block: darkBlock, surface: '#1b1b1f' },
-  light: { block: lightBlock, surface: '#eff0f1' },
+  dark: { block: darkBlock, surface: '#363231' },
+  light: { block: lightBlock, surface: '#faf9f8' },
 } as const
 
 const themes = Object.entries(surfaces) as [keyof typeof surfaces, (typeof surfaces)[keyof typeof surfaces]][]

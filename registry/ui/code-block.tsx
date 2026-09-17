@@ -29,10 +29,10 @@ import { CopyButton } from './copy-button'
  * of a command, where colour adds nothing.
  *
  * The colours are `--syntax-*`, fixed like the series palette: `if` should not
- * be magenta in one product and cobalt in another. They are measured as TEXT -
- * every one clears 4.5:1 on this component's own surface in both themes -
- * which is why they are not the series palette, whose light values sink to
- * 1.90:1 at that size.
+ * be magenta in one product and cobalt in another. They are measured as TEXT,
+ * against the hardest surface a block sits on rather than the typical one -
+ * every one clears 4.5:1 in both themes. That is why they are not the series
+ * palette, whose light values sink to 1.90:1 at this size.
  */
 
 export const codeBlockVariants = cva(

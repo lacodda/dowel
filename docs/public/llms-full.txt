@@ -1684,10 +1684,11 @@ and do not travel, so fold them into the nearest of these. The colours are the
 series palette: `if` should not be magenta in one product and cobalt in
 another.
 
-They are measured as *text*. Every slot clears 4.5:1 against this component's
-own surface in both themes — which is why they are not the series palette,
-whose light values sink to 1.90:1 at this size. A filled bar can be pale; a
-12px glyph cannot.
+They are measured as *text*, against the hardest surface a block sits on
+(`soft` over `raise`) rather than the typical one — `soft` is translucent and
+so has no single surface. Every slot clears 4.5:1 in both themes, which is why
+they are not the series palette, whose light values sink to 1.90:1 at this
+size. A filled bar can be pale; a 12px glyph cannot.
 
 **The line numbers are not selectable.** Select a numbered block, paste, and a
 gutter drawn without `user-select: none` arrives with its number welded to the
@@ -7776,8 +7777,11 @@ another. A highlighter's own theme names fifty kinds; these eight are the ones
 that survive across languages, and anything finer is one grammar's vocabulary.
 
 **They are measured as *text*, which is why they are not the series palette.**
-Every slot clears 4.5:1 against the surface code sits on — `soft` over `bg` —
-in both themes. Reusing `series-*` here was the first plan and failed the same
+Every slot clears 4.5:1 against the *hardest* surface code sits on — `soft`
+over `raise` — in both themes. The hardest rather than the typical one because
+`soft` is translucent and so has no single surface: the first version of the
+gate wrote one down, passed, and a live run found `syntax-comment` at 4.0:1 on
+a block inside a panel. Reusing `series-*` here was the first plan and failed the same
 measurement: five of its eight light values sat under 3:1 and one at 1.90:1. A
 series colour is a filled mark, chosen against a 3:1 threshold; a 12px glyph is
 text. `comment` is the quietest on purpose, being the one kind a reader is
