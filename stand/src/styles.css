@@ -13,6 +13,10 @@
  */
 @import 'tailwindcss';
 @import '../../packages/dowel/src/theme.css';
+/* And the prose stylesheet, imported the way a product imports it - which is
+ * the only way to see whether it works. It is declarations aimed at tags no
+ * component renders, so the stand is where it is actually exercised. */
+@import '../../packages/dowel/src/prose.css';
 
 /*
  * Where the utility classes are written. Tailwind scans the project it is

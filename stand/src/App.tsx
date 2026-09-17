@@ -47,6 +47,12 @@ import { stepFor, weeks } from '../../registry/ui/activity-weeks'
 import { Baseline, BarChart, ChartFrame } from '../../registry/ui/bar-chart'
 import { LineChart } from '../../registry/ui/line-chart'
 import { boundsOf, runs, ticksFor } from '../../registry/ui/line-scale'
+import { CodeBlock } from '../../registry/ui/code-block'
+import { CopyButton } from '../../registry/ui/copy-button'
+import { DiffView } from '../../registry/ui/diff-view'
+import { countChanges, diffLines, rows as diffRows } from '../../registry/ui/diff-lines'
+import { JsonViewer } from '../../registry/ui/json-viewer'
+import { branchPaths, visibleRows as jsonRows } from '../../registry/ui/json-rows'
 import { Skeleton, SkeletonGrid, SkeletonList, SkeletonText } from '../../registry/ui/skeleton'
 import { EmptyState } from '../../registry/ui/empty-state'
 import { Progress } from '../../registry/ui/progress'
@@ -446,6 +452,51 @@ const sections = [
     title: 'LineChart',
     docs: '/dowel/components/line-chart/',
     render: () => <LineChartSection />,
+  },
+  {
+    id: 'prose',
+    title: 'prose',
+    kind: 'utility',
+    docs: '/dowel/components/prose/',
+    render: () => <ProseSection />,
+  },
+  {
+    id: 'code-block',
+    title: 'CodeBlock',
+    docs: '/dowel/components/code-block/',
+    render: () => <CodeBlockSection />,
+  },
+  {
+    id: 'copy-button',
+    title: 'CopyButton',
+    docs: '/dowel/components/copy-button/',
+    render: () => <CopyButtonSection />,
+  },
+  {
+    id: 'diff-lines',
+    title: 'diff-lines',
+    kind: 'utility',
+    docs: '/dowel/components/diff-lines/',
+    render: () => <DiffLinesSection />,
+  },
+  {
+    id: 'diff-view',
+    title: 'DiffView',
+    docs: '/dowel/components/diff-view/',
+    render: () => <DiffViewSection />,
+  },
+  {
+    id: 'json-rows',
+    title: 'json-rows',
+    kind: 'utility',
+    docs: '/dowel/components/json-rows/',
+    render: () => <JsonRowsSection />,
+  },
+  {
+    id: 'json-viewer',
+    title: 'JsonViewer',
+    docs: '/dowel/components/json-viewer/',
+    render: () => <JsonViewerSection />,
   },
   {
     id: 'skeleton',
@@ -3808,6 +3859,460 @@ function TreeRowsSection() {
   )
 }
 
+
+/*
+ * Demo data for the text-and-code block.
+ *
+ * Synthetic throughout, like everything on the stand: a path here that came
+ * off this machine would ship to the docs site.
+ */
+const sampleConfig = `import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// The stand is its own app, not a page of the docs site.
+export default defineConfig({
+  base: '/dowel/stand/',
+  plugins: [react()],
+  build: {
+    outDir: '../docs/public/stand',
+    emptyOutDir: true,
+  },
+})
+`
+
+/* What a highlighter hands back, written out by hand: one array per line, each
+ * a list of `{ text, kind }`. Twelve lines is enough to show all eight kinds
+ * without pretending this file ships a parser. */
+const highlighted = [
+  [
+    { text: 'export', kind: 'keyword' as const },
+    { text: ' ' },
+    { text: 'function', kind: 'keyword' as const },
+    { text: ' ' },
+    { text: 'boundsOf', kind: 'name' as const },
+    { text: '(', kind: 'punctuation' as const },
+    { text: 'points', kind: 'name' as const },
+    { text: ': ', kind: 'punctuation' as const },
+    { text: 'Point', kind: 'type' as const },
+    { text: '[])', kind: 'punctuation' as const },
+    { text: ' {', kind: 'punctuation' as const },
+  ],
+  [
+    { text: '  ' },
+    { text: '// A level is not a sum: the floor is not zero.', kind: 'comment' as const },
+  ],
+  [
+    { text: '  ' },
+    { text: 'const', kind: 'keyword' as const },
+    { text: ' ' },
+    { text: 'seen', kind: 'name' as const },
+    { text: ' = ', kind: 'punctuation' as const },
+    { text: 'points', kind: 'name' as const },
+    { text: '.', kind: 'punctuation' as const },
+    { text: 'filter', kind: 'name' as const },
+    { text: '(', kind: 'punctuation' as const },
+    { text: 'taken', kind: 'name' as const },
+    { text: ')', kind: 'punctuation' as const },
+  ],
+  [
+    { text: '  ' },
+    { text: 'if', kind: 'keyword' as const },
+    { text: ' (', kind: 'punctuation' as const },
+    { text: 'seen', kind: 'name' as const },
+    { text: '.', kind: 'punctuation' as const },
+    { text: 'length', kind: 'name' as const },
+    { text: ' === ', kind: 'punctuation' as const },
+    { text: '0', kind: 'number' as const },
+    { text: ') ', kind: 'punctuation' as const },
+    { text: 'return', kind: 'keyword' as const },
+    { text: ' ' },
+    { text: 'null', kind: 'keyword' as const },
+  ],
+  [],
+  [
+    { text: '  ' },
+    { text: '@measured', kind: 'meta' as const },
+  ],
+  [
+    { text: '  ' },
+    { text: 'return', kind: 'keyword' as const },
+    { text: ' { ', kind: 'punctuation' as const },
+    { text: 'label', kind: 'name' as const },
+    { text: ': ', kind: 'punctuation' as const },
+    { text: "'balance'", kind: 'string' as const },
+    { text: ', ', kind: 'punctuation' as const },
+    { text: 'min', kind: 'name' as const },
+    { text: ': ', kind: 'punctuation' as const },
+    { text: '4900', kind: 'number' as const },
+    { text: ' }', kind: 'punctuation' as const },
+  ],
+  [{ text: '}', kind: 'punctuation' as const }],
+]
+
+/*
+ * Rendered markdown, as HTML rather than as JSX.
+ *
+ * Written as a string and handed to `dangerouslySetInnerHTML` on purpose: the
+ * whole point of `prose.css` is the case where a product does NOT author the
+ * markup - it comes out of `marked`, out of a CMS, out of a model - and JSX
+ * here would be the one shape the stylesheet never has to face.
+ *
+ * Every tag a markdown renderer emits is in it, so a selector that stopped
+ * matching shows up as one element drawn in the browser's default rather than
+ * as nothing at all.
+ */
+const renderedMarkdown = `
+<h1>A quantity over time</h1>
+<p>A <strong>line chart</strong> says the value <em>existed the whole time</em>
+and was sampled - a balance, a price, a temperature. Drawing a sum as a line
+claims readings nobody took. See <a href="#line-chart">LineChart</a>, or the
+<code>boundsOf</code> helper beside it.</p>
+<h2>What a hole means</h2>
+<blockquote>Interpolating across a gap invents a reading; closing it up moves
+every later point. Both are quieter than the truth.</blockquote>
+<ul>
+  <li>A run of one point is still a measurement.</li>
+  <li>The floor is not zero unless the caller says so.
+    <ul><li>For a count, state <code>min: 0</code>.</li></ul>
+  </li>
+</ul>
+<h3>Ticks</h3>
+<ol>
+  <li>Round numbers, not the range cut into equal parts.</li>
+  <li>A range too narrow gets none rather than invented ones.</li>
+</ol>
+<pre><code>const bounds = boundsOf(points, { min: 0 })
+runs(points, bounds)      // the drawable stretches
+ticksFor(bounds, 4)       // [0, 10, 20, 30]</code></pre>
+<table>
+  <thead><tr><th>Token</th><th>What it carries</th></tr></thead>
+  <tbody>
+    <tr><td><code>--series-*</code></td><td>Identity: which line is which</td></tr>
+    <tr><td><code>--heat-*</code></td><td>Magnitude, in five steps</td></tr>
+    <tr><td><code>--syntax-*</code></td><td>The eight kinds in a piece of code</td></tr>
+  </tbody>
+</table>
+<h4>A heading below the scale</h4>
+<p>Press <kbd>Ctrl</kbd> + <kbd>K</kbd> to open the palette. A value that is
+<s>no longer true</s> is struck through, and <mark>this is marked</mark>.</p>
+<hr>
+<dl>
+  <dt>Sequential</dt><dd>A continuous magnitude, read as more and less.</dd>
+  <dt>Ordinal</dt><dd>Steps told apart at a glance and counted against a legend.</dd>
+</dl>
+<p>A footnote hangs here.<sup><a href="#fn1">1</a></sup></p>
+<section class="footnotes"><p id="fn1">1. Smaller and dimmer, because a
+footnote at the weight of the text interrupts the sentence carrying it.</p></section>
+`
+
+function ProseSection() {
+  return (
+    <>
+      <Row label="rendered markdown - every tag a renderer emits, through one class">
+        <div className="rounded-lg border border-line bg-raise p-5">
+          <div className="prose" dangerouslySetInnerHTML={{ __html: renderedMarkdown }} />
+        </div>
+      </Row>
+
+      <Row label="prose-tight in a bubble - the same rules, rhythm compressed, measure given up">
+        <div className="w-[22rem] rounded-lg border border-line bg-raise p-3">
+          <div
+            className="prose prose-tight"
+            dangerouslySetInnerHTML={{
+              __html: `<h2>What changed</h2><p>The floor is <strong>not zero</strong>
+              unless you say so - see <code>bounds</code>.</p>
+              <ul><li>A hole breaks the line.</li><li>Ticks land on round numbers.</li></ul>`,
+            }}
+          />
+        </div>
+      </Row>
+
+      <Row label="the measure - prose is capped in characters, whatever the container gives it">
+        <div className="w-full rounded-lg border border-line bg-raise p-5">
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{
+              __html: `<p>This paragraph sits in a container as wide as the stand,
+              and stops at 68 characters anyway. Prose across a wide window is
+              unreadable: the eye loses the line it is returning from, and the
+              limit is stated in the unit it is actually about.</p>`,
+            }}
+          />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function CodeBlockSection() {
+  return (
+    <>
+      <Row label="a command - no colour at all, which is the default and is usually right">
+        <CodeBlock
+          className="w-[34rem]"
+          code="npx shadcn@latest add https://lacodda.github.io/dowel/r/code-block.json"
+          wrap
+          copyLabel="Copy the command"
+          copiedLabel="Copied"
+        />
+      </Row>
+
+      <Row label="a file: a caption, numbers from where it was lifted, and two lines marked">
+        <CodeBlock
+          className="w-[34rem]"
+          code={sampleConfig}
+          caption="vite.config.ts"
+          numbered
+          firstLine={1}
+          highlight={[4, 5]}
+          copyLabel="Copy the file"
+          copiedLabel="Copied"
+        />
+      </Row>
+
+      <Row label="coloured by a highlighter - the eight kinds, drawn in the syntax tokens">
+        <CodeBlock
+          className="w-[34rem]"
+          code={'export function boundsOf(points: Point[]) {\n  // ...\n}'}
+          tokens={highlighted}
+          caption="line-scale.ts"
+          numbered
+          copyLabel="Copy the source"
+          copiedLabel="Copied"
+        />
+      </Row>
+
+      <Row label="sm, and a long value told to wrap rather than scroll for ever">
+        <CodeBlock
+          className="w-[34rem]"
+          size="sm"
+          wrap
+          caption="the token, which is not really code"
+          code="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vIiwibmFtZSI6IkEgU3RhbmQiLCJpYXQiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        />
+      </Row>
+    </>
+  )
+}
+
+function CopyButtonSection() {
+  const [last, setLast] = useState<string>('nothing yet')
+
+  return (
+    <>
+      <Row label="in the corner of a block - hover the panel, not the button, and Tab reaches it too">
+        <div className="group relative w-[22rem] rounded-md border border-line bg-soft p-3">
+          <p className="pr-8 font-mono text-xs text-dim">
+            a4f19c2e-77b0-4c31-9a2e-1f0b3d5c8e44
+          </p>
+          <CopyButton
+            value="a4f19c2e-77b0-4c31-9a2e-1f0b3d5c8e44"
+            label="Copy the identifier"
+            copiedLabel="Copied"
+            onCopy={(ok) => setLast(ok ? 'the clipboard took it' : 'the clipboard refused')}
+            className="absolute right-2 top-2"
+          />
+        </div>
+      </Row>
+
+      <Row label="what the product is told - a refusal is reported rather than swallowed">
+        <span className="text-xs text-dim">{last}</span>
+      </Row>
+    </>
+  )
+}
+
+/* Two drafts of the same verse: one line rewritten, one inserted, one removed.
+ * Short enough to read at a glance and long enough to show the alignment. */
+const draftBefore = `The wire hums where the road gives out,
+a kettle somewhere, a door.
+Nobody counts the hours here.
+We keep what we can carry.`
+
+const draftAfter = `The wire hums where the road gives out,
+a kettle somewhere, a door ajar.
+The light stays on in the hallway.
+Nobody counts the hours here.
+We keep what we can carry.`
+
+function DiffViewSection() {
+  return (
+    <>
+      <Row label="two drafts - one line rewritten (~), one inserted (+), and the rest standing still">
+        <div className="w-[52rem]">
+          <DiffView
+            before={draftBefore}
+            after={draftAfter}
+            beforeLabel="Draft 3"
+            afterLabel="Draft 4"
+            summary={({ added, removed }) => `${added} lines in, ${removed} out`}
+            copyLabel={(side) => `Copy ${side}`}
+            copiedLabel="Copied"
+          />
+        </div>
+      </Row>
+
+      <Row label="the same comparison in a side panel - stacked, because two narrow columns answer nothing">
+        <div className="w-[22rem]">
+          <DiffView
+            before={draftBefore}
+            after={draftAfter}
+            beforeLabel="Draft 3"
+            afterLabel="Draft 4"
+            size="sm"
+          />
+        </div>
+      </Row>
+
+      <Row label="nothing moved - no markers, no tint, and the summary says so">
+        <div className="w-[52rem]">
+          <DiffView
+            before={draftBefore}
+            after={draftBefore}
+            beforeLabel="Draft 3"
+            afterLabel="Draft 3, again"
+            summary={({ added, removed }) =>
+              added === 0 && removed === 0 ? 'identical' : `${added} in, ${removed} out`
+            }
+          />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function DiffLinesSection() {
+  const changes = diffLines(draftBefore, draftAfter)
+  const paired = diffRows(changes)
+  const counts = countChanges(changes)
+
+  return (
+    <>
+      <Row label="the changes, in order - what the comparison is built from">
+        <div className="w-[52rem] font-mono text-xs leading-relaxed text-dim">
+          {changes.map((change, at) => (
+            <div key={at}>
+              <span className="text-faint">{change.kind.padEnd(8)}</span>
+              {change.text === '' ? '\u00a0' : change.text}
+            </div>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="paired into rows - one object with two sides, which is what keeps two columns in step">
+        <div className="w-[52rem] font-mono text-xs leading-relaxed text-dim">
+          {paired.map((row, at) => (
+            <div key={at}>
+              <span className="text-faint">
+                {String(row.beforeLine ?? '-').padStart(2)} {String(row.afterLine ?? '-').padStart(2)}{' '}
+              </span>
+              <span className={row.before === null ? 'text-faint' : undefined}>
+                {(row.before ?? '(nothing)').slice(0, 22).padEnd(24)}
+              </span>
+              <span className={row.after === null ? 'text-faint' : undefined}>
+                {(row.after ?? '(nothing)').slice(0, 22)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="the counts, for a product that wants the number without the comparison">
+        <span className="font-mono text-xs text-dim">
+          {counts.added} added, {counts.removed} removed
+        </span>
+      </Row>
+    </>
+  )
+}
+
+/* A payload with the shapes a viewer has to survive: a large array nobody
+ * opened, a number that arrived as a string, a present null, an empty object. */
+const payload = {
+  event: 'release.published',
+  version: '0.25.0',
+  retries: 0,
+  'user name': 'a stand',
+  draft: false,
+  published_at: null,
+  meta: {},
+  totals: { primitives: '76', tests: 2361 },
+  assets: Array.from({ length: 1204 }, (_, at) => ({
+    name: `asset-${at}.svg`,
+    bytes: 1024 + at,
+  })),
+}
+
+function JsonViewerSection() {
+  const [touched, setTouched] = useState('nothing yet')
+
+  return (
+    <>
+      <Row label="a payload - what fits arrives open, and a 1204-entry array costs one row until asked">
+        <JsonViewer
+          value={payload}
+          label="A webhook payload"
+          className="max-h-96 w-[34rem]"
+          onActivate={(row) => setTouched(row.path)}
+        />
+      </Row>
+
+      <Row label="the path of the last row touched - what 'copy this path' hangs on">
+        <span className="font-mono text-xs text-dim">{touched}</span>
+      </Row>
+
+      <Row label="a number that arrived as a string, beside a real one, and a present null">
+        <JsonViewer
+          value={{ totals: { primitives: '76', tests: 2361 }, published_at: null }}
+          label="Quoted and unquoted"
+          className="w-[34rem]"
+        />
+      </Row>
+
+      <Row label="nothing but a value - a viewer of one leaf is still a viewer">
+        <JsonViewer value={null} label="A null" className="w-[34rem]" />
+      </Row>
+    </>
+  )
+}
+
+function JsonRowsSection() {
+  const open = branchPaths(payload, { depth: 2 })
+  const rows = jsonRows(payload, open)
+
+  return (
+    <>
+      <Row label="the rows a document flattens into - path, depth, and what it is">
+        <div className="max-h-96 w-[52rem] overflow-auto font-mono text-xs leading-relaxed text-dim">
+          {rows.map((row) => (
+            <div key={row.path}>
+              <span className="text-faint">{String(row.depth)} </span>
+              <span>{row.path.padEnd(28)}</span>
+              <span className="text-faint">{row.kind.padEnd(9)}</span>
+              <span className="text-faint">{row.size === undefined ? '' : `(${row.size})`}</span>
+            </div>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="a key dot notation would break, written so the path still resolves">
+        <div className="w-[52rem] font-mono text-xs text-dim">
+          {jsonRows({ 'user name': 1, 'a.b': 2 }, new Set(['$'])).map((row) => (
+            <div key={row.path}>{row.path}</div>
+          ))}
+        </div>
+      </Row>
+
+      <Row label="how many branches 'expand all' would open, at each bound">
+        <span className="font-mono text-xs text-dim">
+          {[1, 2, 3, 9]
+            .map((depth) => `depth ${depth}: ${branchPaths(payload, { depth }).size}`)
+            .join('  ·  ')}
+        </span>
+      </Row>
+    </>
+  )
+}
 
 function SkeletonSection() {
   return (

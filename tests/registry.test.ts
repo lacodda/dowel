@@ -290,7 +290,26 @@ describe('what the registry is built from', () => {
 })
 
 describe('the presets', () => {
-  const presets = () => items.filter((item) => item.type === 'registry:style' && item.name !== 'theme')
+  /*
+   * A preset is a `registry:style` that carries no files - its whole content is
+   * a list of components to install.
+   *
+   * Identified by that rather than by name. The first version of this said
+   * "every style except `theme`", which was true while the theme was the only
+   * stylesheet here and quietly wrong the moment `prose` arrived: a stylesheet
+   * was then asked to be a set of at least two components, and failed three
+   * checks that did not apply to it. Naming the exceptions makes the gate a
+   * list to maintain; asking what the item *is* does not.
+   */
+  const presets = () => items.filter((item) => item.type === 'registry:style' && !item.files?.length)
+
+  it('the stylesheets are not mistaken for sets', () => {
+    // The other half of the rule above, so the classification cannot quietly
+    // empty itself: a style that DOES carry files is a stylesheet, and there
+    // is at least one.
+    const stylesheets = items.filter((item) => item.type === 'registry:style' && item.files?.length)
+    expect(stylesheets.map((item) => item.name).sort()).toEqual(['prose', 'theme'])
+  })
 
   it('there are some', () => {
     // Guards every check below: `filter` over nothing passes each of them

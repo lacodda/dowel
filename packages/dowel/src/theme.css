@@ -169,6 +169,44 @@
   --heat-4: #608ccd;
   --heat-5: #73a0e2;
 
+  /* Syntax, for code shown inside a product.
+   *
+   * Eight kinds rather than the fifty a highlighter's theme names, because
+   * these are the distinctions that survive across languages: a keyword, a
+   * literal string, a number, a comment, an identifier, a type, punctuation,
+   * and the metadata around the code (a decorator, an attribute, a prompt).
+   * Anything finer is a grammar's own vocabulary and does not travel.
+   *
+   * Fixed, like the series and the heat ramps, and for the same reason: code
+   * is not a property of the product showing it, and `if` should not be
+   * magenta in kilna and cobalt in kasl-server.
+   *
+   * Chosen against the surface code actually sits on - `--soft` over `--bg`,
+   * which is what CodeBlock and `.prose pre` draw - and every slot clears
+   * 4.5:1 AS TEXT in both themes. That threshold, not the 3:1 the series are
+   * held to, is the whole reason these exist separately: the series palette
+   * was measured here first and five of its eight light values sat under 3:1,
+   * one at 1.90:1. A filled bar can be pale; a 12px glyph cannot.
+   *
+   * These are deliberately NOT held to the colour-blind floor the series are.
+   * A series colour is the identity of its mark - lose the hue and the data is
+   * gone. Syntax colour is a second reading of what the text already says in
+   * full: a keyword is a keyword by its spelling, and CodeBlock's default
+   * renders no colour at all and stays readable. `syntax.test.ts` says so in
+   * place, so the omission is not mistaken for an oversight.
+   *
+   * `comment` is the quietest on purpose - it is the one kind a reader is
+   * meant to be able to skip - and still clears the threshold.
+   */
+  --syntax-keyword: #c792ea;
+  --syntax-string: #9ccc65;
+  --syntax-number: #f78c6c;
+  --syntax-comment: #8d8895;
+  --syntax-name: #82aaff;
+  --syntax-type: #4dd0b1;
+  --syntax-punctuation: #c4bfcb;
+  --syntax-meta: #f0a868;
+
   /* Elevation, three steps. The products had one shadow and used it for
    * everything that leaves the flow - a toast, a dropdown and a modal all
    * floated by the same amount, so a modal never felt further away than the
@@ -264,6 +302,19 @@
     --heat-4: #4c6cbb;
     --heat-5: #3b58a6;
 
+    /* The same eight kinds chosen again for the light ground - not the dark
+     * values darkened. Each clears 4.5:1 as text against `--soft` over this
+     * theme's `--bg`; the dark block says why syntax is its own palette and
+     * why it is not held to the colour-blind floor. */
+    --syntax-keyword: #7c3aad;
+    --syntax-string: #276c2b;
+    --syntax-number: #b5451b;
+    --syntax-comment: #6f6b78;
+    --syntax-name: #1a5fb4;
+    --syntax-type: #00695c;
+    --syntax-punctuation: #4a4753;
+    --syntax-meta: #9c4a00;
+
     --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
     --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
     --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);
@@ -334,6 +385,19 @@
   --heat-3: #5e7fd1;
   --heat-4: #4c6cbb;
   --heat-5: #3b58a6;
+
+  /* The same eight kinds chosen again for the light ground - not the dark
+   * values darkened. Each clears 4.5:1 as text against `--soft` over this
+   * theme's `--bg`; the dark block says why syntax is its own palette and
+   * why it is not held to the colour-blind floor. */
+  --syntax-keyword: #7c3aad;
+  --syntax-string: #276c2b;
+  --syntax-number: #b5451b;
+  --syntax-comment: #6f6b78;
+  --syntax-name: #1a5fb4;
+  --syntax-type: #00695c;
+  --syntax-punctuation: #4a4753;
+  --syntax-meta: #9c4a00;
 
   --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
   --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
@@ -454,6 +518,19 @@
   --color-heat-3: var(--heat-3);
   --color-heat-4: var(--heat-4);
   --color-heat-5: var(--heat-5);
+
+  /* Syntax, so a highlighted token is written `text-syntax-keyword` like every
+   * other colour in the system, and `dowel/no-raw-color` can hold it to that.
+   * A highlighter's own stylesheet - which writes hex values into class names
+   * of its own choosing - is what this replaces. */
+  --color-syntax-keyword: var(--syntax-keyword);
+  --color-syntax-string: var(--syntax-string);
+  --color-syntax-number: var(--syntax-number);
+  --color-syntax-comment: var(--syntax-comment);
+  --color-syntax-name: var(--syntax-name);
+  --color-syntax-type: var(--syntax-type);
+  --color-syntax-punctuation: var(--syntax-punctuation);
+  --color-syntax-meta: var(--syntax-meta);
 
   /* Kept because they are not palette choices: a hairline is `transparent`,
    * an SVG follows `currentColor`, and pure black and white are what an

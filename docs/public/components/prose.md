@@ -1,0 +1,101 @@
+# prose
+
+Source: https://lacodda.github.io/dowel/components/prose
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#prose
+
+Rendered markdown with every tag a renderer emits, the tight variant in a bubble, and the measure holding a paragraph at 68 characters in a container far wider.
+
+## Notes
+
+Every other rule in this system is applied by a component, because a component
+owns the element it draws. Rendered markdown is the case where that is
+impossible: your product hands the DOM a string of HTML — from `marked`, from a
+CMS, from a model's reply — and there is no React element to hang a class on.
+The tags arrive already made, and only a descendant selector reaches them.
+
+```css
+@import 'tailwindcss';
+@import './dowel/theme.css';
+@import './dowel/prose.css';
+```
+
+```tsx
+<div className="prose" dangerouslySetInnerHTML={{ __html: sanitised }} />
+```
+
+**Sanitise the HTML before it reaches the DOM.** This stylesheet draws markup;
+it does not make it safe.
+
+**It is not a typography plugin.** `@tailwindcss/typography` answers the same
+question and brings its own answer to a different one — its own type scale, its
+own greys, its own idea of measure. Installed next to this theme that is two
+vocabularies describing the same text, and the one that wins is whichever
+loaded last. Every value here is a token from the theme; there is not a single
+colour or size written down.
+
+**It is for a reading column, not for the interface.** A label, a row, a button
+are styled by the component that draws them. Wrapping a form in `prose` is how
+a screen ends up with two competing ideas of what `text-sm` means.
+
+**The measure is in characters.** Prose across a wide window is unreadable —
+the eye loses the line it is returning from — and `ch` states the limit in the
+terms it is about: characters, at whatever size the text is drawn. 68 is at the
+wide end of the 45–75 the literature agrees on, because these are technical
+texts with code and long identifiers in them. Override `max-width` where your
+container *is* the measure.
+
+**The reading size is one step above the interface.** Chrome is scanned and
+packs tighter the less of it there is; prose is read word by word. Both live
+products had already made this move by hand.
+
+**One bottom margin on everything, and a top margin on headings alone.**
+Margins collapse between siblings, so stating both on every block doubles the
+gap at some joins and not others. A heading belongs to what follows it — sitting
+equidistant between two paragraphs it appears to belong to neither.
+
+**A code block is not a big inline code.** `code` carries a background, a
+radius and padding; inside a `pre` all three are given up, or the block gets a
+second inset panel drawn inside itself. That is exactly what a typography
+plugin's inline rule gets wrong here.
+
+**A table does not set the column's width.** It is `display: block` with its
+own scroll, because a note with a six-column table in it would otherwise push
+every paragraph around it out to the table's width. The cost — a block-level
+table no longer participates in the column's layout — is the right trade for
+text.
+
+**Links are underlined, always.** Colour alone is not a link: a reader who does
+not see the hue gets no signal at all. The underline is offset below the
+descenders, which is the difference between a link and a crossed-out word.
+
+**A blockquote is a rule and dimmed text, not italics.** A quotation is
+frequently a paragraph or more, and a long passage in italic is slower for
+everyone and materially harder for some dyslexic readers.
+
+**Headings stop growing at `h4`.** A document six levels deep has run out of
+sizes long before it runs out of levels; below `h3` they take the body size and
+are set apart by weight and colour instead.
+
+## `prose-tight`
+
+The same rules where there is no room for a reading column — a chat bubble, a
+table cell, a hover card. The rhythm compresses and the measure is given up to
+the container, because in a bubble the container *is* the measure. Nothing else
+changes: the same tags, the same tokens.
+
+```tsx
+<div className="prose prose-tight" dangerouslySetInnerHTML={{ __html: reply }} />
+```
+
+## What it styles
+
+Headings, paragraphs, lists (including task lists), inline code and code
+blocks, links, blockquotes, tables, rules, `strong`, `em`, `s`, `mark`, images,
+`kbd`, definition lists, and the footnotes `remark-gfm` produces.
+
+`kbd` is drawn as a key rather than as code, matching
+[Kbd](/components/kbd/) — so a shortcut looks the same whether a component drew
+it or markdown did.

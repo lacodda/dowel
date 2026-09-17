@@ -6,7 +6,7 @@
   "description": "The shape everyone recognises: weeks as columns, weekdays as rows, time running left to right, and a value carried by how dark a square is. Two products of the line asked for it by name before it existed.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.24.0"
+    "dowel-ui@^0.25.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/activity-weeks.json"

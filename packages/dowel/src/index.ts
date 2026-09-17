@@ -96,6 +96,25 @@ export const chartTokens = ['chart-grid', 'chart-axis'] as const
  * grid claims a day was worked at zero when nobody reported it. */
 export const heatTokens = ['heat-1', 'heat-2', 'heat-3', 'heat-4', 'heat-5'] as const
 
+/** Syntax: the eight kinds of thing in a piece of code that are worth telling
+ * apart in every language. Fixed like the series - `if` should not be magenta
+ * in one product and cobalt in another - but measured against a different
+ * threshold: these are read as text, so every slot clears 4.5:1 against the
+ * surface code sits on, where a series colour only has to clear 3:1 as a
+ * filled mark. They are also the one palette here not held to the
+ * colour-blind floor, because syntax colour restates what the text already
+ * says and CodeBlock's default draws none of it. */
+export const syntaxTokens = [
+  'syntax-keyword',
+  'syntax-string',
+  'syntax-number',
+  'syntax-comment',
+  'syntax-name',
+  'syntax-type',
+  'syntax-punctuation',
+  'syntax-meta',
+] as const
+
 /** Tokens a product overrides to make the theme its own: the accent from the
  * brand-line registry, and how much of it bleeds into the greys. */
 export const themeParameters = [
@@ -177,6 +196,7 @@ export const allTokens = [
   ...scaleTokens,
   ...chartTokens,
   ...heatTokens,
+  ...syntaxTokens,
   ...themeParameters,
   ...elevationTokens,
   ...radiusTokens,
@@ -192,8 +212,23 @@ export type RadiusToken = (typeof radiusTokens)[number]
 export type TypeToken = (typeof typeTokens)[number]
 export type MotionToken = (typeof motionTokens)[number]
 export type LayerToken = (typeof layerTokens)[number]
+/* The chart and code palettes belong in this union as much as the rest, and
+ * were missing from it until v0.25 - `allTokens` listed them while `Token` did
+ * not, so `allTokens.map(token)` could not typecheck. Nothing had tried:
+ * `token()` is called with a literal almost everywhere. */
+export type SeriesToken = (typeof seriesTokens)[number]
+export type ScaleToken = (typeof scaleTokens)[number]
+export type ChartToken = (typeof chartTokens)[number]
+export type HeatToken = (typeof heatTokens)[number]
+export type SyntaxToken = (typeof syntaxTokens)[number]
+
 export type Token =
   | ColorToken
+  | SeriesToken
+  | ScaleToken
+  | ChartToken
+  | HeatToken
+  | SyntaxToken
   | ThemeParameter
   | ElevationToken
   | RadiusToken

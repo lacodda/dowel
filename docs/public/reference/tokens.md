@@ -197,6 +197,40 @@ Some series sit below 3:1 against the surface. That is allowed only because the
 relief ships with them — visible values, or the table view — never as a fill
 left to speak for itself.
 
+Syntax: the eight kinds of thing in a piece of code that are worth telling apart in every language.
+
+- `--syntax-keyword`
+- `--syntax-string`
+- `--syntax-number`
+- `--syntax-comment`
+- `--syntax-name`
+- `--syntax-type`
+- `--syntax-punctuation`
+- `--syntax-meta`
+
+Fixed like the series, and for the same reason: code is not a property of the
+product showing it, and `if` should not be magenta in one product and cobalt in
+another. A highlighter's own theme names fifty kinds; these eight are the ones
+that survive across languages, and anything finer is one grammar's vocabulary.
+
+**They are measured as *text*, which is why they are not the series palette.**
+Every slot clears 4.5:1 against the surface code sits on — `soft` over `bg` —
+in both themes. Reusing `series-*` here was the first plan and failed the same
+measurement: five of its eight light values sat under 3:1 and one at 1.90:1. A
+series colour is a filled mark, chosen against a 3:1 threshold; a 12px glyph is
+text. `comment` is the quietest on purpose, being the one kind a reader is
+meant to be able to skip, and still clears the bar.
+
+**These are the one palette here not held to the colour-blind floor**, and that
+is a decision rather than an oversight — `syntax.test.ts` says so in place. A
+series colour *is* the identity of its mark: lose the hue and the data is gone.
+Syntax colour restates what the text already carries in full — a keyword is a
+keyword by its spelling, a string by the quotes around it — and
+[CodeBlock](/dowel/components/code-block/) renders none of it unless you pass
+tokens. Holding eight hues to ΔE 6 under simulation *and* 4.5:1 as text in both
+themes leaves a set of muddy near-greys, which would cost the readers colour
+helps in order to protect readers who lose nothing when it is absent.
+
 ## Themes
 
 Dark is the default: the bare root element is the dark theme. Light arrives two

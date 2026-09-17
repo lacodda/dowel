@@ -1,0 +1,92 @@
+---
+title: JsonViewer
+description: A JSON value read rather than parsed by eye - folding, typed, and reachable from the keyboard.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/json-viewer.json
+```
+
+<Stand component="json-viewer" caption="A webhook payload with a thousand-entry array in it, a document where a number arrived as a string, and one that is nothing but a null." />
+
+## Notes
+
+What to reach for when a product has to show a response, a settings file, a
+payload — data the reader needs to understand, not edit. The alternative it
+replaces is `JSON.stringify(value, null, 2)` in a `<pre>`, which is fine for
+twenty lines and useless for two hundred: nothing folds, nothing is findable,
+and the shape of the document is somewhere inside the indentation.
+
+```tsx
+<JsonViewer
+  value={payload}
+  label={t('webhook.payload')}
+  onActivate={(row) => copy(row.path)}
+/>
+```
+
+**It opens what it can show, not everything two levels down.** A branch opens
+on arrival when it is within two levels *and* holds at most twenty entries. The
+size half is the half that matters: a 1204-entry array at the top level is
+inside any depth bound worth having, and under depth alone this viewer rendered
+1216 rows before the reader had touched it. `branchPaths(value, { depth, size })`
+in [json-rows](/components/json-rows/) is there when you want different bounds.
+
+**A closed branch says how many it holds**, rather than previewing its
+contents: a preview of the first entries reads as though those are all of them.
+
+**A string is quoted and a number is not**, and that is not decoration. `"1"`
+and `1` are different values, and a number that arrived as a string is the
+commonest bug in any payload. The quotes say so to every reader; the
+[`--syntax-*` colour](/dowel/reference/tokens/) says it faster to those who see
+it. Never the colour alone.
+
+**`null` is drawn as the word.** A key present and null is not a key missing,
+and an empty cell says the second when the data says the first.
+
+**One tab stop, and the arrows move a cursor inside it.** A document of four
+hundred rows with a `tabIndex` on each is four hundred stops between whatever
+is above it and whatever is below — the arrangement a radio group has, and for
+the same reason.
+
+| Key | |
+| --- | --- |
+| <kbd>↓</kbd> <kbd>↑</kbd> | The next and previous visible row |
+| <kbd>→</kbd> | Open a closed branch; step into an open one; nothing on a leaf |
+| <kbd>←</kbd> | Close an open branch; otherwise go to the parent |
+| <kbd>Home</kbd> <kbd>End</kbd> | The first and last row |
+| <kbd>Enter</kbd> <kbd>Space</kbd> | Open or close, and report it |
+
+**<kbd>→</kbd> does nothing on a leaf** rather than falling through to the next
+row, which would make it a second <kbd>↓</kbd> and lose the reader their place
+in the nesting. **<kbd>←</kbd> on a leaf goes to the parent**, which is how a
+reader gets out of a deep branch without walking back up through every sibling.
+Both come from the ARIA tree pattern, and both are what a hand-rolled tree
+leaves out after implementing Up and Down.
+
+**`onActivate` hands back the whole row**, including its `path` — `$.items[3].name`
+— which is what "copy this value" and "copy this path" hang on. Keys that dot
+notation would break are bracketed, so the path resolves: `$["user name"]`, and
+`$["a.b"]` for the single key `a.b`, which written as `$.a.b` would silently
+point at something else.
+
+**It is not [TreeView](/components/tree-view/) with JSON poured in.** A row here
+is a key *and* a value, and TreeView's row is one `ReactNode` label — with JSON
+inside it, nothing can colour the value by type, tell an index from a name, or
+offer the path. What the two genuinely share is the arithmetic of which rows
+are visible, and that is shared:
+[json-rows](/components/json-rows/) is the sibling of
+[tree-rows](/components/tree-rows/).
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `JsonValue` | | Anything `JSON.parse` returns |
+| `label` | `string` | | Required — what a screen reader calls it |
+| `open` | `ReadonlySet<string>` | `branchPaths(value)` | Paths. Uncontrolled if omitted |
+| `onOpenChange` | `(open) => void` | | |
+| `onActivate` | `(row: JsonRow) => void` | | The row, with its path and value |
+| `root` | `string` | `'$'` | For a viewer showing one field of a record |

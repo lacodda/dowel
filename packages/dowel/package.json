@@ -1,6 +1,6 @@
 {
   "name": "dowel-ui",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "description": "The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry.",
   "license": "MIT",
   "type": "module",
@@ -46,6 +46,7 @@
       "import": "./dist/cli/index.js"
     },
     "./theme.css": "./dist/theme.css",
+    "./prose.css": "./dist/prose.css",
     "./tokens.json": "./dist/tokens.json",
     "./registry.json": "./dist/registry.json",
     "./accents/*.css": "./dist/accents/*.css"

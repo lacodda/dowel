@@ -1,0 +1,91 @@
+---
+title: DiffView
+description: Two drafts side by side, with what moved between them shown - and the two columns kept in step, which is the whole point.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/diff-view.json
+```
+
+<Stand component="diff-view" caption="Two drafts of a verse with a line rewritten and another inserted, the same comparison stacked narrow, and one where nothing changed." />
+
+## Notes
+
+The question this answers is *how did this read before, and how does it read
+now* — a version against the one before it, a proposal against what is there, a
+file against what is on disk. Not a code review: there is nothing to stage,
+comment on or accept. It is for looking.
+
+```tsx
+<DiffView
+  before={previous.body}
+  after={current.body}
+  beforeLabel={previous.name}
+  afterLabel={current.name}
+  summary={({ added, removed }) => t('diff.summary', { added, removed })}
+/>
+```
+
+**The alignment is the whole thing, and it is the part that is usually wrong.**
+The obvious way to draw two columns is to filter the change list twice — keep
+everything that is not `added` on the left, everything that is not `removed` on
+the right. Both columns come out individually correct, and they stop lining up
+at the first insertion: from there the reader is comparing line 4 against line
+3 for the rest of the screen, with nothing looking broken. That is the shape
+this was taken from, and the defect it exists to fix.
+
+[diff-lines](/components/diff-lines/) pairs the changes instead, so a row is
+one object with two sides and the columns are the same height by construction
+rather than by two filters happening to agree.
+
+**One scrolling region, not one per column.** The second half of the same
+problem: two scrollers come apart the moment a reader touches one of them,
+which undoes the pairing at the point it matters most. A row is also as tall as
+its taller side, so a wrapped line on the left keeps its partner beside it.
+
+**A rewritten line is one row, not two.** A removal with an insertion right
+behind it is the commonest edit there is; split across two rows with a gap
+opposite each, the reader has to work out that these are the same line. It is
+marked `~` rather than `-` and `+`.
+
+**Colour is never the message.** Every changed line carries a glyph in the
+gutter — `+`, `-`, `~` — so the comparison reads in a greyscale screenshot and
+for the eighth of men who would otherwise see two tinted greys. The tint is
+emphasis on top of that.
+
+**It stacks below `@3xl`, on its own width rather than the viewport's.** Two
+columns each too narrow to hold a line of text answer nothing: every line wraps
+into three and the comparison is worse than one column would have been. The
+breakpoint is a container query because a diff in a side panel is narrow on a
+wide screen.
+
+**The summary is yours.** The component counts; your product says it in words,
+because a count is a plural and a plural belongs to a language this does not
+know. Leave `summary` out and nothing is drawn above the comparison.
+
+**Lines, not words.** The text here is prose someone wrote and revised, and
+prose is revised by the line — a word-level diff of a rewritten paragraph is
+confetti. Where the subject really is word-level, a title or one sentence,
+compare the two strings yourself.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `before` | `string` | | |
+| `after` | `string` | | |
+| `beforeLabel` | `string` | | What the left side is called |
+| `afterLabel` | `string` | | |
+| `summary` | `({ added, removed }) => ReactNode` | | Left out, nothing is drawn |
+| `numbered` | `boolean` | `true` | |
+| `copyLabel` | `(side: string) => string` | | Brings a copy button to each header |
+| `copiedLabel` | `string` | | Announced after a successful copy |
+| `onCopy` | `(ok) => void` | | `false` means the clipboard refused |
+| `size` | `sm` `md` `full` | `md` | 16rem, 28rem, or no ceiling |
+
+`copyLabel` is a function of the side's label rather than a string: two buttons
+on one screen both called "Copy" tell a reader which is which only by where
+they are. Sticking the two together here would invent a phrase in a grammar the
+component does not know.

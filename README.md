@@ -11,7 +11,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
 
-**Status:** v0.24.0 - the theme, the scales, an accent per product, seventy components - overlays, menus, the command palette, the table, a hundred thousand rows, the screens between asking for data and showing it, the three ways of saying something happened, and now charts: a figure and its movement, the shape of a history, a bar of stretches, a year of days, columns over a baseline and a level between the readings - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
+**Status:** v0.25.0 - the theme, the scales, an accent per product, seventy-six components - overlays, menus, the command palette, the table, a hundred thousand rows, the screens between asking for data and showing it, the three ways of saying something happened, charts, and now text and code: rendered markdown through one stylesheet, a code block whose highlighter is yours, a comparison whose two columns stay in step, and a JSON document read rather than parsed by eye - and the gates each one passes: axe, the keyboard, a dependency budget and a picture in both themes. Every component has a page of its own on the stand, which remembers the theme and the accent you left it in. Components install from a versioned registry, the docs are served in the form an agent reads, and `dowel check` tells a project what stands between it and the vocabulary. Two products of the line live on it. See the [roadmap](#roadmap).
 
 ## The theme
 
@@ -98,7 +98,7 @@ snapshot the cross-references point into the same snapshot, so a component and
 the sibling it reuses are the pair that shipped together. See
 [installing from the registry](https://lacodda.github.io/dowel/guides/registry/).
 
-Seventy of them so far. The everyday ones - Button, Input, Textarea, Panel,
+Seventy-six of them so far. The everyday ones - Button, Input, Textarea, Panel,
 Badge, Chip, Kbd, Spinner, Truncate and Copyable; Field and the three controls
 that answer a question - Checkbox, RadioGroup and Switch; five for a number or
 a judgement - NumberField, Slider, RatingScale, DurationField and
@@ -118,7 +118,10 @@ into stretches; ActivityHeatmap with its legend and its `activity-weeks`, for a
 year of days; BarChart for a period at a time, LineChart with its `line-scale` for a level
 between the readings; and five for the screens
 between asking for data and showing it: Skeleton, EmptyState, Progress,
-QueryState and ErrorBoundary.
+QueryState and ErrorBoundary. And six for text and code: the `prose`
+stylesheet for markdown a product did not write by hand, CodeBlock with
+CopyButton beside it, DiffView with the `diff-lines` that keeps its two
+columns in step, and JsonViewer over its `json-rows`.
 
 Those last three are the ones products keep confusing, so each page names all
 four options: a **toast** goes away, an **alert** is still true after a reload,

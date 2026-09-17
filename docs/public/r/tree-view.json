@@ -5,7 +5,7 @@
   "title": "Tree-view",
   "description": "The shape products reach for and then get wrong in the same place every time. A tree is not a nest of lists with click handlers - it is one control with a cursor in it, and the difference is the whole component:\n *   **One tab stop, not one per node.** A tree of four hundred files with a   `tabIndex` on each is four hundred stops between the sidebar and the   editor. The container is what the keyboard reaches, and the arrows move a   cursor inside it - the arrangement a `RadioGroup` has, for the same   reason.",
   "dependencies": [
-    "dowel-ui@^0.24.0"
+    "dowel-ui@^0.25.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/tree-rows.json"

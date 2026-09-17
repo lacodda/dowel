@@ -104,6 +104,38 @@ describe('what a primitive weighs', () => {
         'direction: the arithmetic is `table-sort`, with no React in it, which is what a ' +
         'product sorting on the server imports instead of any of this.',
     },
+    'code-block': {
+      ceiling: 4480,
+      because:
+        'Four per cent over, for the two placements of one button. The copy button ' +
+        'itself is already out - `copy-button` came from exactly this gate, and took ' +
+        '1.9 kB - and the highlighter was never in. What is left is the frame, the ' +
+        'gutter, the marked line, and the branch a live run demanded: a header only ' +
+        'when there is a caption, because the first version gave a caption-less block ' +
+        'a 34px strip holding one invisible button. Splitting that branch out would ' +
+        'be a component whose entire content is where to put something else.',
+    },
+    'diff-view': {
+      ceiling: 5120,
+      because:
+        'Two columns that have to stay in step, which is one problem drawn in two ' +
+        'places: the pairing lives in `diff-lines` (no React, and a product that only ' +
+        'wants the counts imports that alone), and what is left here is the single ' +
+        'scroller holding both tracks, the per-side cell, and the marker glyph that ' +
+        'lets the comparison read without colour. Splitting it would give a column ' +
+        'component that must not be used on its own - two of them scroll apart, which ' +
+        'is the defect this component was written to fix.',
+    },
+    'json-viewer': {
+      ceiling: 4864,
+      because:
+        'The same shape as `tree-view`, and raised for the same reason: the keyboard ' +
+        'works on the flattened list the render walks, so a viewer whose arrows live ' +
+        'elsewhere is one that can disagree with what is drawn. The split the gate asks ' +
+        'for was made in the other direction - `json-rows` holds the flattening, the ' +
+        'paths and the bounded expand-all with no React in them. What is left is the ' +
+        'rows, the ARIA tree, and the leaf drawn as the type it actually is.',
+    },
     calendar: {
       ceiling: 8192,
       because:
@@ -324,6 +356,32 @@ describe('what a primitive drags in', () => {
     'line-scale': [],
     // The plot, its ticks and the line across it.
     'line-chart': ['class-variance-authority', 'line-scale'],
+    // The corner affordance of a block, and nothing else: a clipboard call, a
+    // timer and two inlined icons. It came out of CodeBlock when the size gate
+    // asked whether that was two things - it was, and DiffView wanted the same
+    // button in the same version, which is the second consumer the line's rule
+    // asks for before anything is made shared.
+    'copy-button': [],
+    // The frame around code, with the copy button in its header. No
+    // highlighter, deliberately and at length in the file: a registry
+    // component is copied into a product, so what it imports becomes that
+    // product's dependency for good - and Shiki is a megabyte of grammars
+    // resolved asynchronously. Colour arrives as tokens the product produces.
+    'code-block': ['class-variance-authority', 'copy-button'],
+    // Plain LCS and the pairing of its result into rows, with no React in it -
+    // so a product that only wants to know how much moved takes the numbers.
+    'diff-lines': [],
+    // The two columns and the one scroller that keeps them in step, plus the
+    // copy button in each header.
+    'diff-view': ['class-variance-authority', 'copy-button', 'diff-lines'],
+    // Flattening a value into rows, the paths that name them, and the bounded
+    // walk behind "expand all". No React, like its sibling `tree-rows`.
+    'json-rows': [],
+    // The tree and the keyboard that moves through it - which cannot be
+    // separated, for the reason `tree-view` states: the handler works on the
+    // flattened list the same function renders. The split the size gate would
+    // ask for is already made, in the other direction, as `json-rows`.
+    'json-viewer': ['json-rows'],
     // Boxes that pulse. Nothing at all: the useful part is the shapes, and a
     // shape is a few divs with the right widths.
     skeleton: [],
@@ -445,12 +503,20 @@ describe('a primitive has no words of its own', () => {
     },
   )
 
+  /** Literals that are a data format's own keyword rather than a word in a
+   * language. `null` drawn in a JSON viewer is what the document says, in the
+   * spelling the JSON specification gives it: translating it would misquote
+   * the data. The same argument as `role` above, and the list stays this short
+   * for the same reason - "it is a technical term" is what every untranslated
+   * string claims about itself. */
+  const NOT_A_LANGUAGE = new Set(['null', 'true', 'false'])
+
   /** Text sitting directly in JSX: `<span>Copy</span>`. */
   function literalJsxText(source: string): string[] {
     // Two or more letters between tags, ignoring `{expressions}`.
     return [...source.matchAll(/>\s*([A-Za-z][A-Za-z ,.'!?-]{1,})\s*</g)]
       .map((match) => match[1]!.trim())
-      .filter((text) => text.length > 1)
+      .filter((text) => text.length > 1 && !NOT_A_LANGUAGE.has(text))
   }
 
   it.each(components.map((c) => [c.name, c.source] as const))(

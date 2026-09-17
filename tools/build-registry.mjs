@@ -36,6 +36,7 @@ const homepage = 'https://lacodda.github.io/dowel'
  * whichever endings the publisher's checkout happened to have.
  */
 const theme = readFileSync(resolve(root, 'packages/dowel/src/theme.css'), 'utf8').replace(/\r\n/g, '\n')
+const prose = readFileSync(resolve(root, 'packages/dowel/src/prose.css'), 'utf8').replace(/\r\n/g, '\n')
 
 /** The theme, as a style that starts from nothing.
  *
@@ -68,6 +69,47 @@ const themeItem = {
     'Outside the line, set the colour directly instead:',
     '',
     '    :root { --accent-base: #2f7d6b; }',
+  ].join('\n'),
+}
+
+/** Prose, as its own item rather than as part of the theme.
+ *
+ * A product installs the theme on its first day and needs it on every screen.
+ * It needs prose the day it first renders markdown, and some never do - a
+ * dashboard has no reading column. Folding these declarations into the theme
+ * would put a stylesheet about `blockquote` into products that draw none, and
+ * make the vocabulary harder to read for the sake of saving one import.
+ *
+ * `extends: none` for the reason the theme states it. */
+const proseItem = {
+  $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+  extends: 'none',
+  name: 'prose',
+  type: 'registry:style',
+  title: 'dowel prose',
+  description:
+    'The shape of text a product did not write by hand: rendered markdown, a description from a CMS, a model\'s reply. One class on the container, and the tags inside it - headings, lists, code, tables, quotes - are drawn in the line\'s tokens.',
+  files: [
+    {
+      path: 'dowel/prose.css',
+      target: '~/dowel/prose.css',
+      type: 'registry:file',
+      content: prose,
+    },
+  ],
+  docs: [
+    'Import it after the theme, then put the class on whatever holds the HTML:',
+    '',
+    "    @import './dowel/theme.css';",
+    "    @import './dowel/prose.css';",
+    '',
+    '    <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />',
+    '',
+    '`prose-tight` is the same rules with the rhythm compressed and the measure',
+    'given up - for a chat bubble, a table cell, a hover card.',
+    '',
+    'Sanitise the HTML before it reaches the DOM. This stylesheet draws markup;',
+    'it does not make it safe.',
   ].join('\n'),
 }
 
@@ -369,7 +411,7 @@ const agentsItem = {
   docs: 'Replace `<product>` in the accent import with your own, and add whatever else your project expects of an agent.',
 }
 
-const items = [themeItem, ...accentItems, ...componentItems, ...presetItems, agentsItem]
+const items = [themeItem, proseItem, ...accentItems, ...componentItems, ...presetItems, agentsItem]
 
 /*
  * The registry is served twice.

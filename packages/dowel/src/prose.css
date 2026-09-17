@@ -1,0 +1,448 @@
+/*
+ * dowel prose - the shape of text a product did not write by hand.
+ *
+ * Every other rule in this system is applied by a component, because a
+ * component owns the element it draws. Rendered markdown is the case where
+ * that is impossible: the product hands the DOM a string of HTML - from
+ * `marked`, from a CMS, from a model's reply - and there is no React element
+ * to hang a class on. The tags arrive already made. Only a descendant selector
+ * reaches them.
+ *
+ * kilna proved the shape before this file existed, as thirty `[&_h1]:mt-4`
+ * arbitrary variants inside one `className` string. It works and it is a
+ * paragraph of unreadable text that no second product can share, which is the
+ * whole argument for moving it here.
+ *
+ * Scoped to `.prose`, so nothing leaks: a stylesheet that styled `h2`
+ * globally would reach into every component that happens to render one.
+ *
+ * WHY NOT A TYPOGRAPHY PLUGIN. `@tailwindcss/typography` answers the same
+ * question and brings its own answer to a different one - its own type scale,
+ * its own greys, its own idea of measure. Installing it next to this theme
+ * means two vocabularies describing the same text, and the one that wins is
+ * whichever loaded last. Every value below is a token from `theme.css`; there
+ * is not a single colour or size written down here.
+ *
+ * WHAT THIS IS NOT FOR. Interface text - a label, a row, a button - is styled
+ * by the component that draws it. `.prose` is for a reading column: a note, a
+ * description, an article, a chat reply. Wrapping a form in it is how a screen
+ * ends up with two competing ideas of what `text-sm` means.
+ *
+ * Import after the theme:
+ *
+ *     @import 'tailwindcss';
+ *     @import './dowel/theme.css';
+ *     @import './dowel/prose.css';
+ */
+
+.prose {
+  /*
+   * The reading size is `--text-base`, not the `--text-sm` the interface runs
+   * at, and the two are different on purpose. Chrome is scanned - a label is
+   * recognised rather than read - and it packs tighter the less of it there
+   * is. Prose is read word by word, and 12px of continuous text is where a
+   * reader starts leaning in. The products already knew this and did it by
+   * hand: kilna's rendered markdown sets `text-sm` (12px) against an interface
+   * of 11px, the same one-step lift.
+   */
+  font-size: var(--text-base);
+
+  /*
+   * Line height is set here rather than inherited from the size token, which
+   * carries 20px for 14px text - right for a label, tight for a paragraph.
+   * 1.65 is the ratio the eye returns to the start of the next line with; it
+   * is a ratio rather than a length so a product that scales the size up for a
+   * reading view keeps the proportion.
+   */
+  line-height: 1.65;
+  color: var(--text);
+
+  /*
+   * A measure, not a width. Prose is unreadable across a wide window - the eye
+   * loses the line it is returning from - and `ch` is the unit that says so in
+   * the terms the limit is actually about: characters, at whatever size the
+   * text is drawn. 68 is inside the 45-75 the typographic literature agrees
+   * on, at the wide end because these are technical texts with code and long
+   * identifiers in them.
+   *
+   * A product that has its own column - a chat bubble, a card - overrides
+   * `max-width` and loses nothing else.
+   */
+  max-width: 68ch;
+
+  /*
+   * The shell of a desktop app usually turns selection off, so that dragging
+   * inside a window moves the window. Text someone came to READ has to hand it
+   * back, or the one thing a reader wants to do with a paragraph - take a
+   * sentence out of it - is the thing the app forbids.
+   */
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/*
+ * Vertical rhythm.
+ *
+ * Margins collapse between siblings, so stating both a top and a bottom on
+ * every block would double the gap at some joins and not others depending on
+ * which value was larger. Instead: one bottom margin on everything, and the
+ * top margin belongs to the headings alone, which are the only elements that
+ * need more space above them than below - a heading belongs to what follows
+ * it, and sitting equidistant between two paragraphs it appears to belong to
+ * neither.
+ */
+.prose > * {
+  margin-block: 0 0.75em;
+}
+
+/* The first and last child never push the container open: a rendered note
+ * inside a bordered card would otherwise have a gap at the top that the card's
+ * own padding did not put there. */
+.prose > :first-child {
+  margin-block-start: 0;
+}
+.prose > :last-child {
+  margin-block-end: 0;
+}
+
+/*
+ * Headings.
+ *
+ * The scale is the theme's, stepped down from a document's h1 - and it starts
+ * lower than a web page's would, because prose here is almost always a section
+ * INSIDE a screen that already has a title. An h1 drawn at 21px next to a page
+ * heading of 18px makes the note look like the more important thing on screen.
+ *
+ * `text-wrap: balance` on headings only: it is expensive on long text and
+ * makes a two-line heading break in the middle rather than leaving one word
+ * alone on the second line.
+ */
+.prose :is(h1, h2, h3, h4, h5, h6) {
+  margin-block: 1.6em 0.5em;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  text-wrap: balance;
+  /* A heading that ends up at the top of a scrolled container should not be
+   * flush against its edge. */
+  scroll-margin-block-start: 1rem;
+}
+
+.prose h1 {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+.prose h2 {
+  font-size: var(--text-lg);
+  letter-spacing: var(--tracking-tight);
+}
+.prose h3 {
+  font-size: var(--text-base);
+}
+
+/*
+ * h4 and below stop growing and start differentiating by other means: a
+ * document nested six levels deep has run out of sizes long before it runs out
+ * of levels, and inventing two more steps inside four pixels is the noise the
+ * type scale exists to remove. They are the body size, set apart by weight and
+ * by colour.
+ */
+.prose :is(h4, h5, h6) {
+  font-size: var(--text-base);
+  color: var(--dim);
+}
+
+/* A heading directly after another has nothing between them to separate. */
+.prose :is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6) {
+  margin-block-start: 0.8em;
+}
+
+/*
+ * Lists.
+ *
+ * Tailwind's preflight strips the markers, which is right for the interface -
+ * a menu is a `ul` and must not have bullets - and wrong here, where a list is
+ * a list. They are put back, and `outside` so the marker hangs in the indent
+ * and the text of a wrapped item lines up with itself rather than with the
+ * bullet.
+ */
+.prose :is(ul, ol) {
+  padding-inline-start: 1.5em;
+}
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+/*
+ * `--dim`, not `--faint`, and that was measured rather than chosen.
+ *
+ * A bullet looks like furniture, so the faintest token is the instinct. But
+ * the marker is what says "this is a list" - drop it and an ordered list loses
+ * its numbers, which are content. On the stand it came out at 3.17:1 against
+ * the surface, below the 4.5:1 that anything carrying meaning has to clear,
+ * and it read as a smudge at the size a bullet actually is. `--dim` puts it at
+ * 6.2:1 and still sits back from the text.
+ */
+.prose li::marker {
+  color: var(--dim);
+}
+.prose li {
+  margin-block: 0.25em;
+}
+
+/* A nested list belongs to the item above it, not to the gap after it. */
+.prose li > :is(ul, ol) {
+  margin-block: 0.25em;
+}
+
+/* A task list from markdown: the checkbox replaces the marker, so the bullet
+ * beside it would be a second one saying the same thing. */
+.prose li:has(> input[type='checkbox']:first-child) {
+  list-style: none;
+  margin-inline-start: -1.25em;
+}
+.prose li > input[type='checkbox'] {
+  margin-inline-end: 0.4em;
+  accent-color: var(--accent);
+}
+
+/*
+ * Inline code.
+ *
+ * `0.9em` rather than a token: a monospaced face at the same nominal size as
+ * the text around it looks larger, because its lowercase letters are taller
+ * relative to the em. The correction is proportional to whatever size the
+ * surrounding text happens to be, which a fixed token could not follow.
+ */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background-color: var(--soft);
+  border-radius: var(--radius-xs);
+  padding: 0.15em 0.35em;
+  /* A long identifier in the middle of a sentence must be allowed to break,
+   * or it pushes the whole column wider than its measure. */
+  overflow-wrap: anywhere;
+}
+
+/*
+ * A code block is not a big inline code. The padding, background and radius
+ * belong to the `pre`; the `code` inside it gives them all up, or the block
+ * gets a second inset panel drawn inside itself - which is exactly what
+ * happens when a typography plugin's inline rule is left to apply here.
+ *
+ * `overflow-x: auto` rather than wrapping: a wrapped line of code is a line
+ * that lies about where it ends, and indentation is how code is read.
+ */
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  background-color: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.85rem;
+  overflow-x: auto;
+  /* `tab-size: 2` is the line's own indent; the browser default of 8 turns a
+   * tab-indented file into a horizontal scroll for nothing. */
+  tab-size: 2;
+}
+
+.prose pre code {
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+  font-size: inherit;
+  /* Inside a scrolling block, breaking a long line would defeat the scroll. */
+  overflow-wrap: normal;
+}
+
+/*
+ * Links.
+ *
+ * `--accent-2` rather than `--accent`: on the dark theme the accent is the
+ * product's own colour at full strength, which against body text reads as a
+ * button that failed to draw. The partner shade is the one the products use
+ * for a link, and it is also the one with room to darken on hover.
+ *
+ * Underlined, always. Colour alone is not a link - a reader who does not see
+ * the hue gets no signal at all - and this is the one place in the system
+ * where the rule "meaning never rests on colour" has a standard answer.
+ */
+.prose a {
+  color: var(--accent-2);
+  text-decoration: underline;
+  /* The underline drops below the descenders instead of striking through
+   * them, which is the difference between a link and a crossed-out word. */
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: from-font;
+  overflow-wrap: anywhere;
+}
+
+.prose a:hover {
+  color: var(--accent);
+}
+
+/*
+ * A quotation.
+ *
+ * A rule on the left and dimmed text, rather than italics: a blockquote is
+ * frequently a paragraph or more, and a long passage in italic is slower to
+ * read for everyone and materially harder for some dyslexic readers.
+ */
+.prose blockquote {
+  border-inline-start: 2px solid var(--line-2);
+  padding-inline-start: 0.9em;
+  color: var(--dim);
+}
+
+/*
+ * A table inside prose.
+ *
+ * `display: block` with its own scroll, because the one thing a table must not
+ * do in a reading column is set the column's width: a note with a six-column
+ * table in it would push every paragraph around it out to the table's width.
+ * The cost is stated - a block-level table no longer participates in the
+ * column's own layout - and it is the right trade for text.
+ */
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.prose :is(th, td) {
+  border: 1px solid var(--line);
+  padding: 0.3em 0.55em;
+  text-align: start;
+  vertical-align: top;
+}
+
+.prose th {
+  background-color: var(--soft);
+  font-weight: var(--font-weight-semibold);
+}
+
+/*
+ * A horizontal rule is a section break, so the space around it is the point;
+ * a hairline with a paragraph's gap either side reads as a mistake.
+ */
+.prose hr {
+  border: 0;
+  border-block-start: 1px solid var(--line);
+  margin-block: 2em;
+}
+
+.prose :is(strong, b) {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+}
+
+.prose :is(em, i) {
+  font-style: italic;
+}
+
+.prose :is(s, del) {
+  color: var(--dim);
+}
+
+.prose mark {
+  background-color: var(--accent-soft);
+  color: inherit;
+  border-radius: var(--radius-xs);
+  padding: 0.05em 0.2em;
+}
+
+/*
+ * An image in prose is never wider than the column, and keeps its ratio when
+ * it is constrained. `display: block` because an inline image sits on the text
+ * baseline and leaves a strip of descender space under it that looks like a
+ * broken margin.
+ */
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+/*
+ * `kbd` is drawn as a key rather than as code: a reader who sees `Ctrl` in the
+ * same grey box as a variable name has to work out which it is. This matches
+ * the Kbd primitive, so a key looks the same whether a component drew it or
+ * markdown did.
+ */
+.prose kbd {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background-color: var(--raise);
+  border: 1px solid var(--line-2);
+  border-block-end-width: 2px;
+  border-radius: var(--radius-xs);
+  padding: 0.1em 0.35em;
+  color: var(--dim);
+}
+
+/*
+ * A definition list, which markdown does not produce but a CMS does.
+ */
+.prose dt {
+  font-weight: var(--font-weight-semibold);
+  margin-block-start: 0.75em;
+}
+.prose dd {
+  margin-inline-start: 1.5em;
+  color: var(--dim);
+}
+
+/*
+ * A footnote reference and the notes at the bottom - what `remark-gfm`
+ * produces. Smaller and dimmer, because a footnote that reads at the weight of
+ * the text interrupts the sentence carrying it.
+ */
+.prose sup a {
+  text-decoration: none;
+  font-size: 0.8em;
+}
+.prose .footnotes {
+  font-size: var(--text-sm);
+  color: var(--dim);
+  border-block-start: 1px solid var(--line);
+  margin-block-start: 2em;
+  padding-block-start: 0.75em;
+}
+
+/*
+ * Tight: the same prose in a place that has no room for a reading column - a
+ * chat bubble, a table cell, a hover card. The rhythm compresses and the
+ * measure is given up to the container, because in a bubble the container IS
+ * the measure. Nothing else changes: the same tags, the same tokens.
+ */
+.prose-tight {
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  max-width: none;
+}
+
+.prose-tight > * {
+  margin-block: 0 0.5em;
+}
+
+.prose-tight :is(h1, h2, h3, h4, h5, h6) {
+  margin-block: 1em 0.35em;
+}
+
+.prose-tight :is(h1, h2) {
+  font-size: var(--text-base);
+}
+
+.prose-tight h3 {
+  font-size: var(--text-sm);
+}
+
+.prose-tight hr {
+  margin-block: 1.2em;
+}
