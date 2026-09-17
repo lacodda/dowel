@@ -688,8 +688,12 @@ export function App() {
         </nav>
 
         <main className="min-w-0 flex-1">
+          {/* `data-stand-section` is what the visual gate photographs. A plain
+              `main section` locator matched twice the first time a component
+              drew a section of its own - the prose demo, which renders the
+              `<section class="footnotes">` remark-gfm emits. */}
           {current ? (
-            <section key={current.id}>
+            <section key={current.id} data-stand-section>
               <div className="mb-4 flex items-baseline gap-3">
                 <h1 className="text-xl font-semibold">{current.title}</h1>
                 {/* The other half of the pair: this shows what the component

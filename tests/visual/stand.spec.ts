@@ -129,7 +129,11 @@ for (const theme of ['dark', 'light'] as const) {
       test(`${id} looks the way it looked`, async ({ page }) => {
         await page.goto(`./${id}`)
         await page.waitForLoadState('networkidle')
-        const section = page.locator('main section')
+        // The stand's own section, by its marker rather than by tag: a
+        // component that renders a <section> of its own - rendered markdown
+        // does, for footnotes - makes a plain `main section` match twice, and
+        // the gate fails on ambiguity rather than on anything being wrong.
+        const section = page.locator('main [data-stand-section]')
         await expect(section).toBeVisible()
         await expect(section).toHaveScreenshot(`${id}-${theme}.png`)
       })
