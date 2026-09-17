@@ -2,10 +2,28 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.25.0] - 2026-09-17
+
+### Bug Fixes
+- Measure syntax contrast against the surface the browser draws
+- Photograph the stand's own section, not any section on the page
+- Stack the comparison when narrow, instead of dropping half of it
+- Export every palette the theme fixes, not the two somebody listed
+
+### Documentation
+- Name the prose stylesheet beside the theme, and refresh the snapshot path
+
+### Features
+- Markdown through one stylesheet, and code whose colours are yours
+
+### Testing
+- Photograph the seven new sections, and hold every component to axe
+
 ## [0.24.0] - 2026-09-15
 
 ### Bug Fixes
 - Cap the workers, so the gate reports the code and not the load
+- Move the Playwright image with the package, and check that they do
 
 ### Features
 - The colours a chart is drawn in, and the gate that holds them
@@ -15,6 +33,10 @@ All notable changes to this project are documented in this file.
 - A year of days, where a cell has four meanings
 - Columns over a baseline, with the plot height stated
 - A level between the readings, with a hole drawn as a hole
+
+### Testing
+- Record the ten new stand sections, and fix a row that proved nothing
+- Re-record the bar chart, now that its quiet row says something
 
 ## [0.23.0] - 2026-09-09
 
