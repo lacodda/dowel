@@ -136,3 +136,76 @@ describe('what it leaves out', () => {
     expect(JSON.stringify(tokens)).not.toContain('color-mix')
   })
 })
+
+describe('what it has to keep in', () => {
+  /*
+   * The other half of that rule, and the half that was missing.
+   *
+   * "Colours are omitted except the fixed ones" was enforced in one direction
+   * only: nothing checked that a fixed palette was actually exported. Heat
+   * drifted out of the file from the version that introduced it, and syntax
+   * copied the omission a version later - both of them colours a design tool
+   * can draw, absent from the file design tools read, with every test green.
+   *
+   * Written as a property rather than a list, because a list is what failed:
+   * a palette stated as a literal colour in BOTH themes is fixed by
+   * definition, since nothing about it is derived from the accent. A new one
+   * is exported or fails here.
+   */
+  const withoutComments = theme.replace(/\/\*[\s\S]*?\*\//g, '')
+  const darkBlock = withoutComments.slice(0, withoutComments.indexOf('@media (prefers-color-scheme: light)'))
+  const lightBlock = withoutComments.slice(withoutComments.indexOf(':root.light'))
+
+  /** The parameters a product is meant to replace. They are stated as hex for
+   * exactly that reason, so they are not a palette. */
+  const PARAMETERS = new Set(['accent-base', 'ground', 'ink'])
+
+  /** The four status hues are one group in the export, because they are one
+   * idea - unlike the numbered ramps, their names carry no common prefix. */
+  const STATUS = new Set(['good', 'warn', 'bad', 'info'])
+
+  function fixedPalettes(): Set<string> {
+    const literal = (block: string) =>
+      new Set([...block.matchAll(/--([\w-]+):\s*#[0-9a-f]{3,8};/gi)].map((match) => match[1]!))
+    const dark = literal(darkBlock)
+    const light = literal(lightBlock)
+
+    return new Set(
+      [...dark]
+        .filter((name) => light.has(name) && !PARAMETERS.has(name))
+        // `series-1` and `series-2` are one palette; the group is the prefix.
+        .map((name) => (STATUS.has(name) ? 'status' : name.replace(/-[^-]+$/, '')))
+        .filter((group) => group !== ''),
+    )
+  }
+
+  it('finds the palettes it is meant to be checking', () => {
+    // Guards the two below: an expression that matched nothing would pass them
+    // both while proving nothing at all.
+    const palettes = fixedPalettes()
+    expect(palettes.size).toBeGreaterThanOrEqual(4)
+    expect([...palettes].sort()).toContain('series')
+  })
+
+  it('exports every palette the theme fixes', () => {
+    const exported = new Set(Object.keys(tokens))
+    for (const palette of fixedPalettes()) {
+      expect(
+        exported,
+        `\`--${palette}-*\` is fixed in both themes and missing from tokens.json, which is the file design tools read`,
+      ).toContain(palette)
+    }
+  })
+
+  it('gives each of them both themes, because neither computes from the other', () => {
+    for (const palette of fixedPalettes()) {
+      const group = tokens[palette]
+      expect(group, `\`${palette}\` has no dark values`).toHaveProperty('dark')
+      expect(group, `\`${palette}\` has no light values`).toHaveProperty('light')
+      expect(
+        Object.keys(group.light).length,
+        `\`${palette}\` states a different number of slots in each theme`,
+      ).toBe(Object.keys(group.dark).length)
+    }
+  })
+})

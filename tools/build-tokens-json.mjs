@@ -118,10 +118,21 @@ const byTheme = (names) => ({
 
 const seriesNames = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `series-${n}`)
 const scaleNames = [100, 200, 300, 400, 500, 600, 700].map((n) => `scale-${n}`)
+const heatNames = [1, 2, 3, 4, 5].map((n) => `heat-${n}`)
+const syntaxNames = [
+  'keyword',
+  'string',
+  'number',
+  'comment',
+  'name',
+  'type',
+  'punctuation',
+  'meta',
+].map((kind) => `syntax-${kind}`)
 
 const tokens = {
   $description:
-    'The dowel token vocabulary: the scales every product of the lacodda line is drawn on. Most colours are omitted - they are derived per product from its own accent - except the chart series and the magnitude scale, which are fixed for the whole line.',
+    'The dowel token vocabulary: the scales every product of the lacodda line is drawn on. Most colours are omitted - they are derived per product from its own accent - except the five that are fixed for the whole line: the chart series, the magnitude scale, the status hues, the heat ramp and the syntax colours.',
 
   radius: {
     $type: 'dimension',
@@ -141,6 +152,39 @@ const tokens = {
     $description:
       'Magnitude: one hue, running away from the ground as the value grows. Heatmap cells read this. For an ordered-but-discrete scale start at 300, where contrast still holds.',
     ...byTheme(scaleNames),
+  },
+
+  /*
+   * Heat and syntax belong here by the same rule the two above do - a fixed
+   * value a design tool can draw - and were missing from it. Heat since v0.24,
+   * syntax because it was written in v0.25 and the omission was copied.
+   * "Fixed colours are exported" is the rule; the export was a list.
+   */
+  /*
+   * The status hues, which are fixed for the same reason the series are: a
+   * green that shifted per product would stop meaning "good". Their soft
+   * fills are left out - those are `color-mix` over these, so a tool can
+   * compute one if it wants, and there is no second value to keep in step.
+   */
+  status: {
+    $type: 'color',
+    $description:
+      'Meaning rather than decoration, and the same in every product of the line. Never the only carrier: a badge shows an icon and a word as well, so the message survives a monochrome screen.',
+    ...byTheme(['good', 'warn', 'bad', 'info']),
+  },
+
+  heat: {
+    $type: 'color',
+    $description:
+      'Heat: five ordinal steps for a grid where colour is the only thing carrying the value. Its own ramp rather than a slice of the scale, because the faintest step has to stay distinct from an empty cell.',
+    ...byTheme(heatNames),
+  },
+
+  syntax: {
+    $type: 'color',
+    $description:
+      'The eight kinds in a piece of code worth telling apart in every language. Measured as text against the hardest surface a code block sits on, which is why they are not the series palette.',
+    ...byTheme(syntaxNames),
   },
 
   typography: {
