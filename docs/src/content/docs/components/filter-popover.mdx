@@ -1,0 +1,74 @@
+---
+title: FilterPopover
+description: A funnel in a column header that opens a small panel for narrowing by that column, filled while the filter holds something, with Clear inside.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/filter-popover.json
+```
+
+<Stand component="filter-popover" caption="A heading with a funnel - tick an owner and watch it fill and the rows narrow; Clear puts it down." />
+
+## Notes
+
+A heading carries a funnel, shown when the pointer is over the heading and
+staying on, filled, while that column is narrowing the list. Press it and a
+small panel opens for that column — a text box, a handful of checkboxes —
+with one way to clear it. The shell only: what goes in the panel is yours,
+since a stage is ticked and a title is typed and the popover has no opinion.
+
+```tsx
+<TableHeader className="group">
+  <span className="flex items-center gap-1">
+    Owner
+    <FilterPopover
+      title={t('columns.owner')}
+      label={t('table.filterBy', { column: t('columns.owner') })}
+      active={chosen.length > 0}
+      clearLabel={t('table.clear')}
+      onClear={() => setChosen([])}
+      className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[active]:opacity-100 data-[popup-open]:opacity-100"
+    >
+      {owners.map((owner) => (
+        <Checkbox key={owner} label={owner} checked={chosen.includes(owner)} onCheckedChange={…} />
+      ))}
+    </FilterPopover>
+  </span>
+</TableHeader>
+```
+
+**The funnel says whether the column is narrowing, and that is all it says.**
+A column with a filter on it has to say so from the header, or a table
+narrowed by a funnel opened last week looks like a table with fewer rows in
+it. `active` fills the funnel and sets `data-active` on the trigger.
+
+**Whether it shows at rest is your rule.** A header with five funnels always
+showing is a header nobody can read, but hiding the active one would hide the
+one thing that matters — so the classes above show it on hover, on focus,
+while active, and while open, and `data-active` is there for that rule to key
+off.
+
+**Clear is inside the panel.** Unticking three boxes one by one is the
+failure this exists to prevent, and the panel is where a person is already
+looking. It is disabled while there is nothing to clear.
+
+**The panel reads in sentence case** even under a header set in uppercase: the
+header is scanned, the panel is read.
+
+Built on [Popover](/dowel/components/popover/) and
+[Button](/dowel/components/button/).
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `string` | | Required — the column's name, as the panel's heading |
+| `label` | `string` | | Required — the funnel's name for a screen reader |
+| `active` | `boolean` | | Required — fills the funnel, sets `data-active` |
+| `clearLabel` | `string` | | Required |
+| `onClear` | `() => void` | | Required |
+| `children` | `ReactNode` | | The controls |
+| `className` | `string` | | On the trigger |
+| `align` | `start \| center \| end` | `start` | |

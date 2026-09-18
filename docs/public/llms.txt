@@ -33,6 +33,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Chip](https://lacodda.github.io/dowel/components/chip.md): A badge you can act on: removable, or with a count.
 - [CodeBlock](https://lacodda.github.io/dowel/components/code-block.md): Code shown inside a product - the frame, the gutter, the copy button. The highlighter is deliberately yours.
 - [ColorField](https://lacodda.github.io/dowel/components/color-field.md): Picking a colour for something the product stores: a tag, a project, a calendar.
+- [ColumnResizeHandle](https://lacodda.github.io/dowel/components/column-resize-handle.md): The strip on a header cell's edge that a column is dragged wider or narrower by, and the hook that keeps the widths - double-click resets.
 - [Combobox](https://lacodda.github.io/dowel/components/combobox.md): A Select you can type in - it filters, and it has chips.
 - [CommandPalette](https://lacodda.github.io/dowel/components/command-palette.md): One box that finds anything. dowel supplies the box, the filtering and the keyboard; the product supplies the commands.
 - [ConfirmDialog](https://lacodda.github.io/dowel/components/confirm-dialog.md): The dialog for a choice that cannot be taken back - announced as an alert dialog, and not dismissed by clicking away.
@@ -50,6 +51,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [ErrorBoundary](https://lacodda.github.io/dowel/components/error-boundary.md): The screen that appears instead of a crash - and the narrow thing it actually catches.
 - [Field](https://lacodda.github.io/dowel/components/field.md): The label, the control, and what the form has to say about it - wired together rather than merely stacked.
 - [FileDrop](https://lacodda.github.io/dowel/components/file-drop.md): A place to put files: drag them onto it, or press it and pick them.
+- [FilterPopover](https://lacodda.github.io/dowel/components/filter-popover.md): A funnel in a column header that opens a small panel for narrowing by that column, filled while the filter holds something, with Clear inside.
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
 - [json-rows](https://lacodda.github.io/dowel/components/json-rows.md): A JSON value flattened into rows, with the paths that name them - the arithmetic, with no React in it.
 - [JsonViewer](https://lacodda.github.io/dowel/components/json-viewer.md): A JSON value read rather than parsed by eye - folding, typed, and reachable from the keyboard.
@@ -74,6 +76,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [RadioGroup](https://lacodda.github.io/dowel/components/radio-group.md): One of a few, all of them visible - the group is the control, not the button.
 - [RatingScale](https://lacodda.github.io/dowel/components/rating-scale.md): A judgement on a short scale, and the absence of one - because not judged yet is a state, not a zero.
 - [RelativeTime](https://lacodda.github.io/dowel/components/relative-time.md): A phrase like "3 minutes ago" in the reader's own language, over a date they can still read.
+- [ReorderableList](https://lacodda.github.io/dowel/components/reorderable-list.md): Drag a row of a vertical list up or down to put it somewhere else - or Alt with an arrow - with a line showing where it lands.
 - [SaveState](https://lacodda.github.io/dowel/components/save-state.md): The quiet line beside a field that saves itself: saving, then a tick that fades.
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
 - [SectionNav](https://lacodda.github.io/dowel/components/section-nav.md): The left-hand list of a screen with sections, drawn as the product's own links, and the heading each section opens under.

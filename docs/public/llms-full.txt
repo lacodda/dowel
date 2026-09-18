@@ -24,8 +24,9 @@ the steps it has, what a component will and will not do for you.
 ## Status
 
 **v0.26.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and eighty-one primitives — the last five of them a
-desktop window's own chrome — each with a page of its own on
+products of the line, and eighty-four primitives — the last eight of them a
+desktop window's own chrome and a catalogue table's abilities — each with a
+page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -569,7 +570,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Eighty-one of them.
+A single component: Button, Dialog, Select. Eighty-four of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -1795,6 +1796,111 @@ stops between it and the next field.
 **`swatchLabel` is yours.** Without it the swatches are named by their token,
 which is right for a developer and wrong for a reader: `lime` is not a word
 your product necessarily uses.
+
+---
+
+# ColumnResizeHandle
+
+Source: https://lacodda.github.io/dowel/components/column-resize-handle
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#column-resize-handle
+
+A table whose headings end in a handle - drag one, double-click it to give the column its natural width back.
+
+## Notes
+
+Every heading ends in a thin handle; drag it to make the column wider or
+narrower, and double-click it to give the column its natural width back. Three
+pieces: the handle, `useColumnWidths` that keeps what was dragged, and
+`measureColumns` that reads a header row off the screen. Shown here against
+[Table](/dowel/components/table/), which is where it goes.
+
+```tsx
+const widths = useColumnWidths<'title' | 'owner' | 'words'>({
+  initial: loadWidths,
+  onChange: saveWidths,
+  fallback: (id) => NATURAL[id],
+})
+const header = useRef<HTMLTableRowElement>(null)
+
+<Table className={widths.sized ? 'table-fixed' : undefined}>
+  <colgroup>
+    {columns.map((id) => (
+      <col key={id} style={widths.sized && id !== 'title' ? { width: widths.widthOf(id) } : undefined} />
+    ))}
+  </colgroup>
+  <TableHead>
+    <TableRow ref={header}>
+      {columns.map((id) => (
+        <TableHeader key={id} data-column={id} className="relative">
+          {LABEL[id]}
+          <ColumnResizeHandle
+            label={t('table.resize', { column: LABEL[id] })}
+            hint={t('table.resizeHint')}
+            onStart={() => header.current && widths.measure(measureColumns(header.current))}
+            onResize={(px, done) => widths.resize(id, px, done)}
+            onReset={() => widths.reset(id)}
+          />
+        </TableHeader>
+      ))}
+    </TableRow>
+  </TableHead>
+  …
+</Table>
+```
+
+**The cell is `relative`; the handle is `absolute` on its right edge.** It
+measures its parent's box on the press and reports that width plus the
+distance travelled, so it has no `width` prop to be handed and cannot
+disagree with what is on screen.
+
+**The widths live on `<col>`s, and only once something was sized by hand.**
+Until then the browser lays the table out from its contents as it always did.
+The first drag switches the table to `table-layout: fixed`, and under fixed
+layout every column needs a width or the browser shares the free space equally
+between those without one — which is how a date column ends up as wide as the
+title. So `onStart` measures the header row before the layout goes fixed, the
+hook keeps those natural widths beside the dragged ones, and `widthOf` answers
+from one or the other. Leave the one column meant to take the remaining space
+without a `<col>` width.
+
+**`onResize` reports while dragging and once more with `done`.** The last
+call is the moment to persist; `useColumnWidths` does that for you through
+`onChange`. Widths belong per machine, not to a profile: the pixels that fit
+a title on a laptop are not the pixels that fit it on a monitor.
+
+**Pointer events, not HTML5 drag-and-drop.** A desktop shell that takes file
+drops for itself never lets a `dragstart` reach the page. Pointer capture
+keeps the drag alive when the pointer runs ahead of the cell.
+
+**It is a separator, not a button.** A button per column would be one more
+tab stop for something a keyboard cannot usefully drive. The click after a
+drag is stopped so a sortable heading does not flip its sort every time a
+width is set.
+
+## Props
+
+### `ColumnResizeHandle`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required — names the column for a screen reader |
+| `hint` | `string` | | The tooltip: how to drag, how to reset |
+| `onResize` | `(width, done) => void` | | Required; `done` on release |
+| `onReset` | `() => void` | | Required; on double-click |
+| `onStart` | `() => void` | | On the press, before the first width |
+| `minWidth` | `number` | `56` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `useColumnWidths({ initial, onChange?, fallback?, minWidth? })`
+
+Returns `{ sized, hand, isHandSized(id), widthOf(id), resize(id, width, done?), reset(id), measure(cells) }`.
+
+### `measureColumns(row, attribute = 'data-column')`
+
+The `[id, width]` pairs of a header row's cells that carry the attribute.
 
 ---
 
@@ -3321,6 +3427,80 @@ file twice in a row fires nothing the second time.
 fires when the pointer crosses onto a *child* of the zone, so a zone that
 toggled on it flickers as the pointer moves over its own text — the commonest
 defect in hand-written drop zones.
+
+---
+
+# FilterPopover
+
+Source: https://lacodda.github.io/dowel/components/filter-popover
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#filter-popover
+
+A heading with a funnel - tick an owner and watch it fill and the rows narrow; Clear puts it down.
+
+## Notes
+
+A heading carries a funnel, shown when the pointer is over the heading and
+staying on, filled, while that column is narrowing the list. Press it and a
+small panel opens for that column — a text box, a handful of checkboxes —
+with one way to clear it. The shell only: what goes in the panel is yours,
+since a stage is ticked and a title is typed and the popover has no opinion.
+
+```tsx
+<TableHeader className="group">
+  <span className="flex items-center gap-1">
+    Owner
+    <FilterPopover
+      title={t('columns.owner')}
+      label={t('table.filterBy', { column: t('columns.owner') })}
+      active={chosen.length > 0}
+      clearLabel={t('table.clear')}
+      onClear={() => setChosen([])}
+      className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[active]:opacity-100 data-[popup-open]:opacity-100"
+    >
+      {owners.map((owner) => (
+        <Checkbox key={owner} label={owner} checked={chosen.includes(owner)} onCheckedChange={…} />
+      ))}
+    </FilterPopover>
+  </span>
+</TableHeader>
+```
+
+**The funnel says whether the column is narrowing, and that is all it says.**
+A column with a filter on it has to say so from the header, or a table
+narrowed by a funnel opened last week looks like a table with fewer rows in
+it. `active` fills the funnel and sets `data-active` on the trigger.
+
+**Whether it shows at rest is your rule.** A header with five funnels always
+showing is a header nobody can read, but hiding the active one would hide the
+one thing that matters — so the classes above show it on hover, on focus,
+while active, and while open, and `data-active` is there for that rule to key
+off.
+
+**Clear is inside the panel.** Unticking three boxes one by one is the
+failure this exists to prevent, and the panel is where a person is already
+looking. It is disabled while there is nothing to clear.
+
+**The panel reads in sentence case** even under a header set in uppercase: the
+header is scanned, the panel is read.
+
+Built on [Popover](/dowel/components/popover/) and
+[Button](/dowel/components/button/).
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `string` | | Required — the column's name, as the panel's heading |
+| `label` | `string` | | Required — the funnel's name for a screen reader |
+| `active` | `boolean` | | Required — fills the funnel, sets `data-active` |
+| `clearLabel` | `string` | | Required |
+| `onClear` | `() => void` | | Required |
+| `children` | `ReactNode` | | The controls |
+| `className` | `string` | | On the trigger |
+| `align` | `start \| center \| end` | `start` | |
 
 ---
 
@@ -5049,6 +5229,94 @@ reader can act on and which looks like a value; an empty `<time>` with no
 
 `formatRelative(value, now?, locale?, options?)` gives the phrase alone, and
 `relativeParts(value, now?)` the count and unit behind it.
+
+---
+
+# ReorderableList
+
+Source: https://lacodda.github.io/dowel/components/reorderable-list
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#reorderable-list
+
+A column picker whose rows drag by their grip, with the drop line - or focus a row and press Alt with an arrow.
+
+## Notes
+
+The columns in a column picker, the stops of a dial, the roles of a profile.
+A hook and a grip rather than a list component: the rows are already
+something else's — a menu's items, a form's fields — and a component wrapping
+them would have to reproduce whatever that something else does.
+
+```tsx
+const reorder = useReorder<ColumnId>({ order: columns, onMove })
+
+<div {...reorder.listProps} className="relative">
+  {columns.map((id) => (
+    <MenuCheckboxItem
+      key={id}
+      checked
+      closeOnClick={false}
+      className={cn(reorder.dragging === id && 'opacity-50')}
+      {...reorder.rowProps(id)}
+    >
+      <span className="flex-1">{LABEL[id]}</span>
+      <ReorderGrip {...reorder.gripProps(id)} title={t('columns.moveHint')} />
+    </MenuCheckboxItem>
+  ))}
+  <ReorderIndicator offset={reorder.slotOffset} />
+</div>
+```
+
+**Nothing moves until the pointer is let go.** Live reordering looks better
+for a second and costs a write per crossed row — to a profile, that is a
+request per row — and the row being dragged has already been picked up, so
+the reader is watching the line that says where it lands. `onMove(id, to)` is
+called once per drop, with `to` the index in the list as it will be.
+
+**The line is yours to draw.** The hook reports `slot` and `slotOffset`, the
+insertion point's distance from the top of the element `listProps` is on;
+`ReorderIndicator` draws it there, which is why that element is `relative`.
+No line is drawn for a drop that would change nothing.
+
+**Alt with an arrow moves the focused row.** Plain arrows are how a list is
+walked, and taking them for moving would leave no way to walk it; the
+modifier is the one screen readers and editors already use for "move this
+line". The listener is native, on the row itself, so a menu popup that stops
+arrow keys on the way up cannot swallow it.
+
+**The grip is decorative.** The keyboard path is on the row, so the grip
+carries no role and no label. The click a drop leaves behind is stopped: in a
+menu it would toggle the item that was only meant to be moved.
+
+**Pointer events, not HTML5 drag-and-drop**, for the reason given at
+[ColumnResizeHandle](/dowel/components/column-resize-handle/); the grip takes
+pointer capture so the rows underneath never see the drag.
+
+## Props
+
+### `useReorder({ order, onMove, disabled? })`
+
+| Returns | | |
+| --- | --- | --- |
+| `listProps` | | Spread on the element holding the rows |
+| `dragging` | `K \| null` | The row being dragged |
+| `slot` | `number \| null` | The insertion point, in the order as it is |
+| `slotOffset` | `number \| null` | Its distance from the top of the list, in pixels |
+| `gripProps(id)` | | Spread on the grip |
+| `rowProps(id)` | | Spread on the row: the id and the keyboard path |
+
+### `ReorderGrip`
+
+Any `<span>` attribute; `title` for the hover hint.
+
+### `ReorderIndicator`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `offset` | `number \| null` | | From `slotOffset`; nothing drawn at null |
+| `className` | `string` | | |
 
 ---
 

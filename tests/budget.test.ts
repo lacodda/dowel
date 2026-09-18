@@ -53,6 +53,16 @@ describe('what a primitive weighs', () => {
    * below asks for, and the reason has to say why splitting it would be
    * worse than the size. */
   const RAISED: Record<string, { ceiling: number; because: string }> = {
+    'column-resize-handle': {
+      ceiling: 5120,
+      because:
+        'the handle and the hook that keeps widths travel together: a handle without the arithmetic of hand-set against measured widths is a span that draws a line',
+    },
+    'reorderable-list': {
+      ceiling: 5632,
+      because:
+        'pointer drag, the keyboard path and the drop line are one gesture split three ways; two of them would be a list that reorders by mouse only',
+    },
     /* The three that grew when a live run found what they were not doing.
      *
      * Each gained one thing a reader had asked for and none of them can be
@@ -430,6 +440,16 @@ describe('what a primitive drags in', () => {
     // Its own markup and a `<style>` of eight words for the sweep. No
     // dependency, because it runs before most of the application has loaded.
     splash: [],
+    // A span with pointer events and the hook that keeps widths. No library:
+    // the arithmetic is one addition, and HTML5 drag-and-drop never reaches
+    // the page in a desktop shell that takes file drops for itself.
+    'column-resize-handle': [],
+    // The same reasoning, and the grip is an inlined icon: a hook, a grip
+    // and a line, for rows that belong to something else.
+    'reorderable-list': [],
+    // The panel is Popover's and Clear is Button's, so a funnel's panel
+    // opens and positions the way every other panel in the set does.
+    'filter-popover': ['button', 'popover'],
   }
 
   /** What the file imports: bare module specifiers minus React and the

@@ -1,0 +1,85 @@
+# ReorderableList
+
+Source: https://lacodda.github.io/dowel/components/reorderable-list
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#reorderable-list
+
+A column picker whose rows drag by their grip, with the drop line - or focus a row and press Alt with an arrow.
+
+## Notes
+
+The columns in a column picker, the stops of a dial, the roles of a profile.
+A hook and a grip rather than a list component: the rows are already
+something else's — a menu's items, a form's fields — and a component wrapping
+them would have to reproduce whatever that something else does.
+
+```tsx
+const reorder = useReorder<ColumnId>({ order: columns, onMove })
+
+<div {...reorder.listProps} className="relative">
+  {columns.map((id) => (
+    <MenuCheckboxItem
+      key={id}
+      checked
+      closeOnClick={false}
+      className={cn(reorder.dragging === id && 'opacity-50')}
+      {...reorder.rowProps(id)}
+    >
+      <span className="flex-1">{LABEL[id]}</span>
+      <ReorderGrip {...reorder.gripProps(id)} title={t('columns.moveHint')} />
+    </MenuCheckboxItem>
+  ))}
+  <ReorderIndicator offset={reorder.slotOffset} />
+</div>
+```
+
+**Nothing moves until the pointer is let go.** Live reordering looks better
+for a second and costs a write per crossed row — to a profile, that is a
+request per row — and the row being dragged has already been picked up, so
+the reader is watching the line that says where it lands. `onMove(id, to)` is
+called once per drop, with `to` the index in the list as it will be.
+
+**The line is yours to draw.** The hook reports `slot` and `slotOffset`, the
+insertion point's distance from the top of the element `listProps` is on;
+`ReorderIndicator` draws it there, which is why that element is `relative`.
+No line is drawn for a drop that would change nothing.
+
+**Alt with an arrow moves the focused row.** Plain arrows are how a list is
+walked, and taking them for moving would leave no way to walk it; the
+modifier is the one screen readers and editors already use for "move this
+line". The listener is native, on the row itself, so a menu popup that stops
+arrow keys on the way up cannot swallow it.
+
+**The grip is decorative.** The keyboard path is on the row, so the grip
+carries no role and no label. The click a drop leaves behind is stopped: in a
+menu it would toggle the item that was only meant to be moved.
+
+**Pointer events, not HTML5 drag-and-drop**, for the reason given at
+[ColumnResizeHandle](/dowel/components/column-resize-handle/); the grip takes
+pointer capture so the rows underneath never see the drag.
+
+## Props
+
+### `useReorder({ order, onMove, disabled? })`
+
+| Returns | | |
+| --- | --- | --- |
+| `listProps` | | Spread on the element holding the rows |
+| `dragging` | `K \| null` | The row being dragged |
+| `slot` | `number \| null` | The insertion point, in the order as it is |
+| `slotOffset` | `number \| null` | Its distance from the top of the list, in pixels |
+| `gripProps(id)` | | Spread on the grip |
+| `rowProps(id)` | | Spread on the row: the id and the keyboard path |
+
+### `ReorderGrip`
+
+Any `<span>` attribute; `title` for the hover hint.
+
+### `ReorderIndicator`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `offset` | `number \| null` | | From `slotOffset`; nothing drawn at null |
+| `className` | `string` | | |

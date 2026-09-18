@@ -187,6 +187,9 @@ import { SectionHeading, SectionNav } from '../../registry/ui/section-nav'
 import { NotificationBell } from '../../registry/ui/notification-bell'
 import { ResizeEdges, WindowButtons, useTitleBarGestures } from '../../registry/ui/window-frame'
 import { Splash } from '../../registry/ui/splash'
+import { ColumnResizeHandle, measureColumns, useColumnWidths } from '../../registry/ui/column-resize-handle'
+import { ReorderGrip, ReorderIndicator, useReorder } from '../../registry/ui/reorderable-list'
+import { FilterPopover } from '../../registry/ui/filter-popover'
 
 /*
  * The stand.
@@ -352,6 +355,26 @@ const sections = [
     render: () => <TableSortSection />,
   },
   { id: 'table', title: 'Table', docs: '/dowel/components/table/', render: () => <TableSection /> },
+  /* The catalogue table's three abilities: a column sized by its edge, rows
+   * that drag, and a funnel in a heading. */
+  {
+    id: 'column-resize-handle',
+    title: 'ColumnResizeHandle',
+    docs: '/dowel/components/column-resize-handle/',
+    render: () => <ColumnResizeHandleSection />,
+  },
+  {
+    id: 'reorderable-list',
+    title: 'ReorderableList',
+    docs: '/dowel/components/reorderable-list/',
+    render: () => <ReorderableListSection />,
+  },
+  {
+    id: 'filter-popover',
+    title: 'FilterPopover',
+    docs: '/dowel/components/filter-popover/',
+    render: () => <FilterPopoverSection />,
+  },
   {
     id: 'pagination',
     title: 'Pagination',
@@ -4771,5 +4794,169 @@ function SplashSection() {
         </div>
       </Row>
     </>
+  )
+}
+
+type SizedColumn = 'title' | 'owner' | 'words'
+const sizedColumns: SizedColumn[] = ['title', 'owner', 'words']
+const sizedLabels: Record<SizedColumn, string> = { title: 'Title', owner: 'Owner', words: 'Words' }
+
+function ColumnResizeHandleSection() {
+  const [saved, setSaved] = useState('nothing saved yet')
+  const widths = useColumnWidths<SizedColumn>({
+    initial: {},
+    onChange: (next) => setSaved(Object.keys(next).length ? JSON.stringify(next) : 'back to natural widths'),
+    fallback: () => 120,
+  })
+  const header = useRef<HTMLTableRowElement>(null)
+
+  return (
+    <>
+      <Row label="drag a heading's edge - double-click it to give the column its natural width back">
+        <TableScroll className="w-full">
+          <Table className={widths.sized ? 'table-fixed' : undefined}>
+            <colgroup>
+              {sizedColumns.map((id) => (
+                <col
+                  key={id}
+                  style={widths.sized && id !== 'title' ? { width: widths.widthOf(id) } : undefined}
+                />
+              ))}
+            </colgroup>
+            <TableHead>
+              {/* A plain `<tr>` rather than TableRow: the row is measured by
+                  ref before the layout goes fixed, and TableRow passes none. */}
+              <tr ref={header} className="border-b border-line">
+                {sizedColumns.map((id) => (
+                  <TableHeader key={id} data-column={id} numeric={id === 'words'} className="relative">
+                    {sizedLabels[id]}
+                    <ColumnResizeHandle
+                      label={`Resize the ${sizedLabels[id]} column`}
+                      hint="Drag to resize, double-click to reset"
+                      onStart={() => {
+                        if (header.current) widths.measure(measureColumns<SizedColumn>(header.current))
+                      }}
+                      onResize={(px, done) => widths.resize(id, px, done)}
+                      onReset={() => widths.reset(id)}
+                    />
+                  </TableHeader>
+                ))}
+              </tr>
+            </TableHead>
+            <TableBody>
+              {works.slice(0, 4).map((work) => (
+                <TableRow key={work.id}>
+                  <TableCell className="truncate">{work.title}</TableCell>
+                  <TableCell className="truncate">{work.owner}</TableCell>
+                  <TableCell numeric>
+                    <NumberFormat value={work.words} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableScroll>
+      </Row>
+
+      <Row label="what the hook persists - only when a drag is let go">
+        <span className="font-mono text-xs text-dim">{saved}</span>
+      </Row>
+    </>
+  )
+}
+
+function ReorderableListSection() {
+  const [order, setOrder] = useState(['Title', 'Owner', 'Score', 'Words', 'Updated'])
+  const reorder = useReorder<string>({
+    order,
+    onMove: (id, to) => {
+      const rest = order.filter((entry) => entry !== id)
+      setOrder([...rest.slice(0, to), id, ...rest.slice(to)])
+    },
+  })
+
+  return (
+    <Row label="drag a row by its grip - or focus one and press Alt with an arrow">
+      <div {...reorder.listProps} className="relative w-64 rounded-md border border-line bg-raise p-1">
+        {order.map((id) => (
+          <div
+            key={id}
+            tabIndex={0}
+            {...reorder.rowProps(id)}
+            className={cn(
+              'flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-text',
+              'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
+              reorder.dragging === id && 'opacity-50',
+            )}
+          >
+            <span className="flex-1">{id}</span>
+            <ReorderGrip {...reorder.gripProps(id)} title="Drag to move, or Alt + arrows" />
+          </div>
+        ))}
+        <ReorderIndicator offset={reorder.slotOffset} />
+      </div>
+    </Row>
+  )
+}
+
+const owners = ['Ines', 'Ravi', 'Tomas', 'Kit']
+
+function FilterPopoverSection() {
+  const [chosen, setChosen] = useState<string[]>(['Ines'])
+  const shown = works.filter((work) => chosen.length === 0 || chosen.includes(work.owner))
+
+  return (
+    <Row label="hover the heading for the funnel - it stays, filled, while the column narrows the list">
+      <TableScroll className="w-full">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeader>Title</TableHeader>
+              <TableHeader className="group">
+                <span className="flex items-center gap-1">
+                  Owner
+                  <FilterPopover
+                    title="Owner"
+                    label="Filter by owner"
+                    active={chosen.length > 0}
+                    clearLabel="Clear"
+                    onClear={() => setChosen([])}
+                    className={cn(
+                      'opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
+                      'data-[active]:opacity-100 data-[popup-open]:opacity-100',
+                    )}
+                  >
+                    {owners.map((owner) => (
+                      <Checkbox
+                        key={owner}
+                        checked={chosen.includes(owner)}
+                        onCheckedChange={(checked) =>
+                          setChosen(checked ? [...chosen, owner] : chosen.filter((entry) => entry !== owner))
+                        }
+                      >
+                        {owner}
+                      </Checkbox>
+                    ))}
+                  </FilterPopover>
+                </span>
+              </TableHeader>
+              <TableHeader numeric>Words</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {shown.map((work) => (
+              <TableRow key={work.id}>
+                <TableCell>{work.title}</TableCell>
+                <TableCell>{work.owner}</TableCell>
+                <TableCell numeric>
+                  <NumberFormat value={work.words} />
+                </TableCell>
+              </TableRow>
+            ))}
+            {shown.length === 0 && <TableEmpty colSpan={3}>No works by anyone chosen.</TableEmpty>}
+          </TableBody>
+        </Table>
+      </TableScroll>
+    </Row>
   )
 }
