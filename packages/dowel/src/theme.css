@@ -210,11 +210,20 @@
   /* Elevation, three steps. The products had one shadow and used it for
    * everything that leaves the flow - a toast, a dropdown and a modal all
    * floated by the same amount, so a modal never felt further away than the
-   * menu it covered. `raise` keeps its original value, so nothing shifts under
-   * the products already using it; the other two are the steps either side. */
-  --shadow-lift: 0 2px 8px rgb(0 0 0 / 0.3);
-  --shadow-raise: 0 10px 34px rgb(0 0 0 / 0.45);
-  --shadow-float: 0 24px 60px rgb(0 0 0 / 0.55);
+   * menu it covered. The three are the steps.
+   *
+   * Two layers each, and that is what makes them read as depth on a dark
+   * surface rather than as a stain. One big soft blur at high opacity is what
+   * these were - `0 24px 60px` of 55% black - and against a near-black page
+   * the wide skirt never resolves into shade: it just darkens a ring of
+   * background around the panel, which a pilot photographed and called an ugly
+   * dark contour. Depth is read from the CONTACT shadow, the tight one right
+   * under the edge; the ambient layer only has to hint that there is room
+   * under the thing. So each step is a tight, slightly stronger layer plus a
+   * wider, much weaker one, and the totals come down. */
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 6px rgb(0 0 0 / 0.22);
+  --shadow-raise: 0 2px 4px rgb(0 0 0 / 0.36), 0 8px 20px rgb(0 0 0 / 0.26);
+  --shadow-float: 0 4px 8px rgb(0 0 0 / 0.36), 0 18px 44px rgb(0 0 0 / 0.32);
 }
 
 /*

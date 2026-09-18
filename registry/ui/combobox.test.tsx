@@ -246,7 +246,15 @@ describe('Combobox', () => {
 
     expect(screen.getByRole('combobox').className).toContain('rounded-full')
     await user.click(screen.getByRole('combobox'))
-    const popup = (await screen.findByRole('listbox')).closest('[class*="shadow-float"]')
+    // The popup is the listbox's own box or the one around it, found by the
+    // padding every popup carries - not by its shadow. Reaching for
+    // `shadow-float` tied this assertion, which is about a caller's
+    // `rounded-full` winning a merge, to which elevation a combobox happens to
+    // sit at: the day small popups dropped to `shadow-raise` it stopped
+    // finding anything and failed on `undefined`, having never checked a
+    // shadow on purpose.
+    const list = await screen.findByRole('listbox')
+    const popup = list.closest('[class*="rounded-"]')
     expect(popup?.className).toContain('rounded-full')
   })
 

@@ -40,7 +40,7 @@ import { cn } from 'dowel-ui'
 
 export const tooltipPopupVariants = cva(
   [
-    'rounded-md border border-line bg-raise px-2 py-1 text-xs text-text shadow-float',
+    'rounded-md border border-line bg-raise px-2 py-1 text-xs text-text shadow-raise',
     'select-none',
     // The enter and the leave. `duration-*` reads the token directly because
     // Tailwind's own utility takes a literal number.
