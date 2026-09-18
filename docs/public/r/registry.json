@@ -309,7 +309,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -328,7 +328,7 @@
       "description": "The shape everyone recognises: weeks as columns, weekdays as rows, time running left to right, and a value carried by how dark a square is. Two products of the line asked for it by name before it existed.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/activity-weeks.json"
@@ -348,7 +348,7 @@
       "title": "Activity-legend",
       "description": "Separate from the grid because a caller showing three grids on one screen wants one legend, and because the words in it are the product's.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/activity-heatmap.json",
@@ -386,7 +386,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -405,7 +405,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -424,7 +424,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -443,7 +443,7 @@
       "description": "Bars rather than a line, and the distinction is the data's not the drawing's: a line says the value exists between the points, a column says each period is its own sum. Hours worked in a week is a sum - there is no \"Wednesday afternoon\" reading between two weeks - so it is a column.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -463,7 +463,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -497,7 +497,7 @@
       "title": "Calendar",
       "description": "The sums live next door in `calendar-math`, which has no React in it; this is the grid that draws them and the keyboard that moves around it.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar-math.json"
@@ -518,7 +518,7 @@
       "description": "The interesting part is the words. A checkbox on its own is a nine-pixel target that says nothing; wired to a label it is the whole row, and the row is what a finger and a pointer both aim at. So the label is part of the component rather than something a caller remembers to add - the commonest bug in a hand-rolled checkbox is a `<label>` that is next to the input instead of tied to it, which looks identical and does nothing.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -537,7 +537,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -556,7 +556,7 @@
       "description": "The frame around a piece of code is the same everywhere and is written again in every product: the scroll that must not wrap, the gutter of line numbers that must not be selectable, the copy button, the caption saying which file this is, and the marking of the lines the reader was sent here to look at.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/copy-button.json"
@@ -576,7 +576,7 @@
       "title": "Color-field",
       "description": "Picking a colour for something the product stores: a tag, a project, a calendar. Note what that is *not* - it is not choosing the appearance of the interface. The theme decides that, from one accent, and a field that let a reader repaint the chrome would undo the argument the whole system rests on.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -598,7 +598,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -621,7 +621,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -644,7 +644,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -663,7 +663,7 @@
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -683,7 +683,7 @@
       "title": "Copy-button",
       "description": "Whatever a product shows in a panel - code, a payload, a log, one side of a comparison - somebody eventually wants to take it away, and the button that lets them is written again every time with the same three things missed.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -701,7 +701,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -719,7 +719,7 @@
       "title": "Date-picker",
       "description": "The trigger is a button rather than a text input, and that is the decision worth stating. A typable date field has to answer \"what does `03/04/26` mean\" in a locale it cannot be sure of, and it answers wrong for half the world; a button showing the date spelled out has no such question. Where typing genuinely matters - a birth date, forty years back - the calendar is the wrong control anyway and a product should reach for a plain field.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar.json",
@@ -742,7 +742,7 @@
       "title": "Date-range-picker",
       "description": "The interesting part is the state between them. After the first click there is a start and no end, and that is not an incomplete range to be hidden or a range of one day - it is the normal middle of the interaction, and the calendar has to show it: the first day marked, the days under the pointer shading as the reader moves, the popup staying open. Products that skip it end up with a picker that seems to do nothing until the second click.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar.json",
@@ -767,7 +767,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -802,7 +802,7 @@
       "description": "The question this answers is \"how did this read before, and how does it read now\" - a version against the one before it, a proposal against what is there, a file against what is on disk. Not a code review: there is no staging, no comment, nothing to accept. It is for looking.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/copy-button.json",
@@ -825,7 +825,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -843,7 +843,7 @@
       "title": "Duration-field",
       "description": "The alternative is what products keep building: two number boxes labelled \"hours\" and \"minutes\", which means two tab stops, two validations, and a reader who has to divide 90 minutes in their head before typing. Here they write `1h 30m`, or `90m`, or `1.5h`, and it means the same thing.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -864,7 +864,7 @@
       "description": "Three kinds of nothing, and a product that draws the same panel for all three is telling the reader the wrong thing twice:\n *   **empty** - there is nothing here yet, and that is normal. The panel says   what would be here and offers the one action that makes it appear.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -902,7 +902,7 @@
       "description": "Every form is the same four parts repeated: a name for the control, the control, sometimes a hint, and sometimes an error. Written by hand each time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no screen reader mentions, the error appears in red and is announced by nothing at all. This is that arrangement, once.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -920,7 +920,7 @@
       "title": "File-drop",
       "description": "A place to put files: drag them onto it, or press it and pick them. It takes files and hands them over - it does not upload them. Where they go, with which credentials, retried how - that is the product's transport, and a primitive that owned it would be wrong for every product whose upload does not look like the one it guessed.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -938,7 +938,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -972,7 +972,7 @@
       "title": "Json-viewer",
       "description": "What a product reaches for when it has to show a response, a settings file, a webhook payload - data the reader needs to understand, not edit. The alternative it replaces is `JSON.stringify(value, null, 2)` inside a `<pre>`, which is fine for twenty lines and useless for two hundred: nothing folds, nothing is findable, and the shape of the document is somewhere inside the indentation.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/json-rows.json"
@@ -992,7 +992,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1011,7 +1011,7 @@
       "description": "The shape every product builds out of two `<div>`s in a flex row, and the reason it is worth having once: it is a `<dl>`, and the pairing is what a screen reader announces. Two divs read as four unrelated pieces of text - \"Created\", \"2 hours ago\", \"Owner\", \"Ines\" - and nothing says which value belongs to which name. The right element says it for free.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1030,7 +1030,7 @@
       "description": "The distinction against its neighbours is the data's, not the drawing's. A column says each period is its own sum - hours worked in a week, and there is no Wednesday-afternoon figure between two weeks. A line says the value existed the whole time and was sampled: an account balance, a price, a temperature. Drawing a sum as a line claims readings nobody took; drawing a level as columns throws away the thing being watched.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/line-scale.json"
@@ -1061,6 +1061,24 @@
       ]
     },
     {
+      "name": "marked-text",
+      "type": "registry:ui",
+      "title": "Marked-text",
+      "description": "A textarea cannot colour a word. The way round it is older than React: draw the same text twice, once as marked-up HTML underneath and once as the textarea on top with its own text transparent, so the caret and the selection are the browser's and the colours are ours. The two have to agree on every metric - font, size, line height, padding, wrapping - or the marks slide off the words they mark. So both take ONE class list, given by the caller, and the textarea adds only what makes it invisible.",
+      "dependencies": [
+        "dowel-ui@^0.26.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/marked-text.tsx",
+          "target": "@ui/marked-text.tsx",
+          "type": "registry:ui",
+          "content": "import {\n  useCallback,\n  useMemo,\n  type ChangeEvent,\n  type CSSProperties,\n  type ReactNode,\n  type Ref,\n  type TextareaHTMLAttributes,\n} from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * Text with marks on it - read, or typed into.\n *\n * A textarea cannot colour a word. The way round it is older than React: draw\n * the same text twice, once as marked-up HTML underneath and once as the\n * textarea on top with its own text transparent, so the caret and the\n * selection are the browser's and the colours are ours. The two have to agree\n * on every metric - font, size, line height, padding, wrapping - or the marks\n * slide off the words they mark. So both take ONE class list, given by the\n * caller, and the textarea adds only what makes it invisible.\n *\n * The mirror is also what sizes the box. It sits in the flow and the textarea\n * is stretched over it, which means the field grows with its text without a\n * `scrollHeight` measurement and never scrolls inside itself - the box around\n * it scrolls, and the marks scroll with the words. A trailing space on the\n * last line keeps a final newline from being a line the mirror forgot.\n *\n * Two kinds of mark: a span of characters (a repeated word, a misspelling)\n * and a whole line (a line that is new since the other version). Lines are\n * drawn as blocks rather than separated by newlines so a line mark can paint\n * the full width; a block per line wraps exactly as the textarea's line does,\n * since it is the same text in the same width with the same font.\n */\n\n/** A span of characters, as offsets into the whole text. */\nexport interface Mark {\n  start: number\n  end: number\n  className?: string\n  style?: CSSProperties\n}\n\n/** A whole line. */\nexport interface LineMark {\n  /** Zero-based line index. */\n  line: number\n  className?: string\n}\n\nexport interface MarkedLinesProps {\n  text: string\n  marks?: readonly Mark[]\n  lineMarks?: readonly LineMark[]\n  /** Transparent text: the textarea above shows the letters. */\n  ghost?: boolean\n}\n\n/** One line cut into runs, each run under at most one mark. */\nfunction runs(line: string, offset: number, marks: readonly Mark[]): ReactNode[] {\n  const out: ReactNode[] = []\n  let at = 0\n  for (const mark of marks) {\n    const start = Math.max(mark.start - offset, 0)\n    const end = Math.min(mark.end - offset, line.length)\n    if (end <= at || start >= line.length) continue\n    if (start > at) out.push(line.slice(at, start))\n    out.push(\n      <mark\n        key={offset + start}\n        // `<mark>` for the semantics; the browser's yellow is dropped so the\n        // caller's class is the colour, in whichever tone the mark means.\n        className={cn('rounded-sm bg-transparent text-inherit', mark.className)}\n        style={mark.style}\n      >\n        {line.slice(start, end)}\n      </mark>,\n    )\n    at = end\n  }\n  if (at < line.length) out.push(line.slice(at))\n  return out\n}\n\n/** The marked-up text, line by line. The layer both the readable and the\n * typeable form are made of. */\nexport function MarkedLines({ text, marks = [], lineMarks = [], ghost = false }: MarkedLinesProps) {\n  // Each line with where it starts in the text, so a mark given as an offset\n  // into the whole can be cut to the line it falls on.\n  const lines = useMemo(() => {\n    const out: { line: string; start: number }[] = []\n    let offset = 0\n    for (const line of text.split('\\n')) {\n      out.push({ line, start: offset })\n      offset += line.length + 1\n    }\n    return out\n  }, [text])\n  const byLine = useMemo(() => {\n    const map = new Map<number, string | undefined>()\n    for (const mark of lineMarks) map.set(mark.line, mark.className)\n    return map\n  }, [lineMarks])\n\n  return (\n    <>\n      {lines.map(({ line, start }, index) => {\n        // Only the marks that touch this line, in order; a text has few marks\n        // and few lines, so a filter per line is cheaper than an index.\n        const own = marks.filter((mark) => mark.end > start && mark.start < start + line.length)\n        return (\n          <div\n            key={index}\n            data-line={index}\n            className={cn(\n              'min-h-[1lh] whitespace-pre-wrap [overflow-wrap:anywhere]',\n              ghost && 'text-transparent',\n              byLine.get(index),\n            )}\n          >\n            {/* A blank line still needs its height, and a trailing line needs\n                a character to exist at all. */}\n            {line === '' ? ' ' : runs(line, start, own)}\n            {index === lines.length - 1 && ' '}\n          </div>\n        )\n      })}\n    </>\n  )\n}\n\nexport interface MarkedTextProps extends MarkedLinesProps {\n  className?: string\n}\n\n/** Marked text to read. */\nexport function MarkedText({ className, ...lines }: MarkedTextProps) {\n  return (\n    <div className={cn('select-text', className)}>\n      <MarkedLines {...lines} />\n    </div>\n  )\n}\n\nexport interface MarkedTextareaProps\n  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChange' | 'className'> {\n  ref?: Ref<HTMLTextAreaElement>\n  value: string\n  /** The new value, not the event: the event is the textarea's business. */\n  onChange: (value: string) => void\n  marks?: readonly Mark[]\n  lineMarks?: readonly LineMark[]\n  /** The metrics both layers share: font, size, line height, padding. */\n  className?: string\n}\n\n/** Marked text to type into. */\nexport function MarkedTextarea({\n  value,\n  onChange,\n  marks,\n  lineMarks,\n  className,\n  ref,\n  ...props\n}: MarkedTextareaProps) {\n  const change = useCallback(\n    (event: ChangeEvent<HTMLTextAreaElement>) => onChange(event.target.value),\n    [onChange],\n  )\n\n  return (\n    <div className=\"relative\">\n      <div aria-hidden data-mirror className={cn('pointer-events-none', className)}>\n        <MarkedLines text={value} marks={marks} lineMarks={lineMarks} ghost />\n      </div>\n      <textarea\n        ref={ref}\n        value={value}\n        onChange={change}\n        spellCheck={false}\n        className={cn(\n          // The same metrics, and nothing that would draw: the letters, the\n          // caret and the selection are what this layer is for.\n          'absolute inset-0 h-full w-full resize-none overflow-hidden text-text outline-none',\n          '[overflow-wrap:anywhere] whitespace-pre-wrap',\n          className,\n          // After the caller's classes, on purpose. A background in the\n          // metrics is meant for the box and lands on both layers; on this\n          // one it would paint over every mark. The mirror keeps it, the\n          // field never does.\n          'bg-transparent',\n        )}\n        {...props}\n      />\n    </div>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "menu",
       "type": "registry:ui",
       "title": "Menu",
@@ -1068,7 +1086,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1081,13 +1099,34 @@
       ]
     },
     {
+      "name": "notification-bell",
+      "type": "registry:ui",
+      "title": "Notification-bell",
+      "description": "A bell that is always lit is a bell nobody reads, so the count is the product's decision and this draws it: nothing at zero, the number past that, `9+` past nine. Pressing it does not leave the screen - the last few entries open under it and the whole history is one more click, which is the shape every product converged on once the first one tried a page.",
+      "dependencies": [
+        "dowel-ui@^0.26.0"
+      ],
+      "registryDependencies": [
+        "https://lacodda.github.io/dowel/r/button.json",
+        "https://lacodda.github.io/dowel/r/popover.json"
+      ],
+      "files": [
+        {
+          "path": "ui/notification-bell.tsx",
+          "target": "@ui/notification-bell.tsx",
+          "type": "registry:ui",
+          "content": "import { Children, useState, type ReactNode } from 'react'\nimport { cn } from 'dowel-ui'\nimport { Button } from './button'\nimport { Popover, PopoverPopup, PopoverTrigger } from './popover'\n\n/*\n * The bell in the title bar, lit by what asks to be looked at.\n *\n * A bell that is always lit is a bell nobody reads, so the count is the\n * product's decision and this draws it: nothing at zero, the number past\n * that, `9+` past nine. Pressing it does not leave the screen - the last few\n * entries open under it and the whole history is one more click, which is\n * the shape every product converged on once the first one tried a page.\n *\n * What is in the list is the product's: the rows are `children`, because a\n * journal entry, a failed upload and a comment are three different lines and\n * one component cannot draw them. What is shared is the frame around them -\n * the trigger with its badge, the heading with the button that clears the\n * count, the empty line, and the footer that leads to everything.\n *\n * Built on Popover and Button rather than on a `<div>` of its own, so the\n * panel opens, positions and closes the way every other panel does.\n */\n\nexport interface NotificationBellProps {\n  /** How many things ask to be looked at. Nothing is drawn at zero. */\n  count: number\n  /** What the bell is called, for a screen reader and the tooltip. */\n  label: string\n  /** The heading of the panel. */\n  title: string\n  /** Open, controlled. Left out, the bell manages itself. */\n  open?: boolean\n  onOpenChange?: (open: boolean) => void\n  /** The button that clears the count, shown only while there is one. */\n  markAllLabel?: string\n  onMarkAll?: () => void\n  /** The footer button, which closes the panel and hands over. */\n  seeAllLabel?: string\n  onSeeAll?: () => void\n  /** What the list says when there are no rows. */\n  emptyLabel: string\n  /** The rows. */\n  children?: ReactNode\n  /** While the product is clearing the count: the button waits. */\n  busy?: boolean\n  className?: string\n}\n\nexport function NotificationBell({\n  count,\n  label,\n  title,\n  open,\n  onOpenChange,\n  markAllLabel,\n  onMarkAll,\n  seeAllLabel,\n  onSeeAll,\n  emptyLabel,\n  children,\n  busy = false,\n  className,\n}: NotificationBellProps) {\n  const [own, setOwn] = useState(false)\n  const isOpen = open ?? own\n  const setOpen = (next: boolean) => {\n    setOwn(next)\n    onOpenChange?.(next)\n  }\n  const empty = Children.count(children) === 0\n\n  return (\n    <Popover open={isOpen} onOpenChange={setOpen}>\n      <PopoverTrigger\n        render={\n          <Button variant=\"icon\" size=\"icon-sm\" className={cn('relative', className)} title={label} aria-label={label} />\n        }\n      >\n        <Bell />\n        {count > 0 ? (\n          <span\n            data-badge\n            className={cn(\n              'absolute -right-0.5 -top-0.5 min-w-3.5 rounded-full bg-warn px-1',\n              'text-center font-mono text-[9px] leading-[14px] text-on-warn',\n            )}\n          >\n            {count > 9 ? '9+' : count}\n          </span>\n        ) : null}\n      </PopoverTrigger>\n      <PopoverPopup align=\"end\" arrow={false} size=\"lg\" className=\"p-0\">\n        <header className=\"flex items-center gap-2 border-b border-line px-3 py-2\">\n          <h3 className=\"text-sm font-semibold\">{title}</h3>\n          {count > 0 && markAllLabel ? (\n            <Button variant=\"ghost\" size=\"sm\" className=\"ml-auto\" disabled={busy} onClick={onMarkAll}>\n              {markAllLabel}\n            </Button>\n          ) : null}\n        </header>\n        <div className=\"max-h-80 overflow-y-auto px-3\">\n          {empty ? <p className=\"py-3 text-sm text-dim\">{emptyLabel}</p> : children}\n        </div>\n        {seeAllLabel ? (\n          <footer className=\"border-t border-line p-2\">\n            <Button\n              variant=\"ghost\"\n              size=\"sm\"\n              className=\"w-full\"\n              onClick={() => {\n                setOpen(false)\n                onSeeAll?.()\n              }}\n            >\n              {seeAllLabel}\n            </Button>\n          </footer>\n        ) : null}\n      </PopoverPopup>\n    </Popover>\n  )\n}\n\nfunction Bell() {\n  return (\n    <svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.4\" aria-hidden>\n      <path d=\"M4 11V7.5a4 4 0 0 1 8 0V11l1 1.5H3z\" strokeLinejoin=\"round\" />\n      <path d=\"M6.5 13.5a1.5 1.5 0 0 0 3 0\" strokeLinecap=\"round\" />\n    </svg>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "number-field",
       "type": "registry:ui",
       "title": "Number-field",
       "description": "A number typed into a text input is a string that happens to look like a number, and every product then writes the same four fixes: strip the letters, clamp to a range, round to a step, and decide what an empty box means. This is those four, once, plus the stepper - because a value with a small range is faster nudged than typed.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1107,7 +1146,7 @@
       "title": "Number-format",
       "description": "Two things, and the second is the reason this is a component rather than a call to `toLocaleString` at each site.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1125,7 +1164,7 @@
       "title": "Page-size",
       "description": "Its own file rather than a part of `Pagination`, because the two are needed apart often enough: a list that scrolls for ever wants \"how many to load at a time\" and no page buttons, and a table with a fixed page size wants the buttons and no choice. Together they were also over the size gate, which asked the right question.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/select.json"
@@ -1145,7 +1184,7 @@
       "title": "Pagination",
       "description": "The arithmetic is exported separately from the component for the same reason `table-sort` is a file of its own: a product that pages on the server needs the page numbers and not the buttons, and computing them a second time in a different place is how the two disagree about where the last page ends.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json"
@@ -1166,7 +1205,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1184,7 +1223,7 @@
       "title": "Password-field",
       "description": "The reveal is the whole component, and it is not a convenience. A masked field is the only one in a form where a typo cannot be seen, so people either paste (fine) or type slowly and get it wrong anyway; the toggle is what turns an unverifiable field into a checkable one, and it is why long passphrases became usable at all.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1206,7 +1245,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1226,7 +1265,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1246,7 +1285,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1285,7 +1324,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1303,7 +1342,7 @@
       "title": "Rating-scale",
       "description": "Generalised from kilna, where it is how a work is scored on each of its axes. The shape is a row of marks rather than stars: stars carry a meaning of their own - a review, a public verdict - and this is as often \"how hard was this\" or \"how finished is it\" as it is \"how good\".",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1321,7 +1360,7 @@
       "title": "Relative-time",
       "description": "The relative-time primitive.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1339,7 +1378,7 @@
       "title": "Save-state",
       "description": "The quiet line beside a field that saves itself: \"saving…\", then a tick that fades. It exists because a form without a Save button has to say what it did anyway - otherwise the reader is left guessing whether their edit survived, and the usual answer to that guess is to press Ctrl+S at a page that has no such thing.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/spinner.json"
@@ -1359,7 +1398,7 @@
       "title": "Search-field",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -1376,6 +1415,25 @@
       ]
     },
     {
+      "name": "section-nav",
+      "type": "registry:ui",
+      "title": "Section-nav",
+      "description": "A settings screen is the usual case: five or six sections, each its own address so it can be linked to and the back button walks between them, listed down the left with the current one tinted. Every product draws the same column, and every product draws the active row a little differently - which is exactly the drift a shared list exists to stop.",
+      "dependencies": [
+        "@base-ui/react",
+        "dowel-ui@^0.26.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/section-nav.tsx",
+          "target": "@ui/section-nav.tsx",
+          "type": "registry:ui",
+          "content": "import { useId, type HTMLAttributes, type ReactNode } from 'react'\nimport { useRender } from '@base-ui/react/use-render'\nimport { cn } from 'dowel-ui'\n\n/*\n * The left-hand list of a screen with sections, and the heading each opens.\n *\n * A settings screen is the usual case: five or six sections, each its own\n * address so it can be linked to and the back button walks between them,\n * listed down the left with the current one tinted. Every product draws the\n * same column, and every product draws the active row a little differently -\n * which is exactly the drift a shared list exists to stop.\n *\n * The rows are the product's links, not the component's. `render` takes the\n * item and answers with the element to draw it as - a router's `NavLink`, an\n * `<a>`, whatever the product navigates with - and the component puts the\n * row's clothes, its icon and its `aria-current` on it. Without `render` a\n * row is a button and `onSelect` says which one was pressed, for a screen\n * whose sections are state rather than routes.\n *\n * `SectionHeading` is the other half: the title and the one-line hint above\n * a section's body, so the column and the page it opens are set in the same\n * type.\n */\n\nexport interface SectionNavItem {\n  id: string\n  label: ReactNode\n  icon?: ReactNode\n}\n\nexport interface SectionNavProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSelect'> {\n  /** What the list is called: the caption above it, and the name a screen\n   * reader gives the landmark. */\n  label: string\n  items: readonly SectionNavItem[]\n  /** Which item is the current page. */\n  activeId?: string\n  /** The element a row is drawn as - `render={(item) => <NavLink to={…} />}`.\n   * The row's props are merged onto it, the way Button takes a `render`. */\n  render?: (item: SectionNavItem) => useRender.RenderProp\n  /** Pressed, whatever the row is drawn as. */\n  onSelect?: (id: string) => void\n}\n\nexport function SectionNav({ label, items, activeId, render, onSelect, className, ...props }: SectionNavProps) {\n  const captionId = useId()\n  return (\n    <nav aria-labelledby={captionId} className={cn('flex flex-col gap-0.5', className)} {...props}>\n      <h2 id={captionId} className=\"px-2.5 pb-2 text-2xs font-medium uppercase tracking-caption text-faint\">\n        {label}\n      </h2>\n      {items.map((item) => (\n        <SectionNavRow\n          key={item.id}\n          item={item}\n          active={item.id === activeId}\n          render={render?.(item)}\n          onSelect={onSelect}\n        />\n      ))}\n    </nav>\n  )\n}\n\nfunction SectionNavRow({\n  item,\n  active,\n  render,\n  onSelect,\n}: {\n  item: SectionNavItem\n  active: boolean\n  render?: useRender.RenderProp\n  onSelect?: (id: string) => void\n}) {\n  return useRender({\n    render,\n    defaultTagName: 'button',\n    props: {\n      ...(render === undefined ? { type: 'button' } : {}),\n      // Named as the current page for a screen reader, which cannot see that\n      // it is the tinted one.\n      'aria-current': active ? 'page' : undefined,\n      onClick: () => onSelect?.(item.id),\n      className: cn(\n        'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm text-dim no-underline transition-colors',\n        'hover:bg-soft hover:text-text [&_svg]:size-4 [&_svg]:shrink-0',\n        'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',\n        active && 'bg-accent-soft text-text [&_svg]:text-accent',\n      ),\n      children: (\n        <>\n          {item.icon ? <span aria-hidden className=\"contents\">{item.icon}</span> : null}\n          {item.label}\n        </>\n      ),\n    },\n  })\n}\n\nexport interface SectionHeadingProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {\n  title: ReactNode\n  description?: ReactNode\n}\n\n/** The title of the open section and the line under it. */\nexport function SectionHeading({ title, description, className, ...props }: SectionHeadingProps) {\n  return (\n    <div className={cn('mb-4 flex flex-col gap-1', className)} {...props}>\n      <h2 className=\"text-base font-semibold text-text\">{title}</h2>\n      {description ? <p className=\"text-sm text-dim\">{description}</p> : null}\n    </div>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
@@ -1383,7 +1441,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1419,7 +1477,7 @@
       "title": "Skeleton",
       "description": "The rule the component is built on, and the reason it takes a shape rather than filling the space:\n *   **A skeleton of the wrong shape is worse than no skeleton.**\n * It promises something the content does not keep, and the promise is paid for in a jump: the page settles, the scrollbar appears, and whatever the reader was about to click has moved. Measured rather than assumed - the line's own calendar showed a list of four short lines where a six-row month grid was about to land, and the skeleton was itself the jump it existed to prevent.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1438,7 +1496,7 @@
       "description": "The case for it over a NumberField is that the number does not matter much: a volume, an opacity, a weight in a search filter. Where the exact figure does matter, a slider is a worse field with more pixels - it cannot be typed into, it cannot be pasted into, and it has no state for \"empty\".",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1457,7 +1515,7 @@
       "description": "The shape of a history, not a chart of it: no axes, no gridlines, no ticks.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1476,7 +1534,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1489,13 +1547,31 @@
       ]
     },
     {
+      "name": "splash",
+      "type": "registry:ui",
+      "title": "Splash",
+      "description": "A desktop product has a second or two between the window appearing and the first screen being ready - a workspace to open, a database to migrate, a plugin to start - and a blank window for that long reads as a crash. So the window shows the product instead: the mark, the name, the promise, the version, and a bar that sweeps until there is something to draw.",
+      "dependencies": [
+        "dowel-ui@^0.26.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/splash.tsx",
+          "target": "@ui/splash.tsx",
+          "type": "registry:ui",
+          "content": "import type { HTMLAttributes, ReactNode } from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * What the window shows while the application is opening.\n *\n * A desktop product has a second or two between the window appearing and\n * the first screen being ready - a workspace to open, a database to migrate,\n * a plugin to start - and a blank window for that long reads as a crash. So\n * the window shows the product instead: the mark, the name, the promise, the\n * version, and a bar that sweeps until there is something to draw.\n *\n * It is the second half of a pattern, and the first half is not React. The\n * page paints the same picture in inline CSS before the bundle arrives, so\n * that the window is never blank at all; this component takes over from it\n * on the first render, with the same geometry so nothing jumps, and adds the\n * two lines only the application can say - what it is doing, in the person's\n * language, and one thing worth knowing. The static half is in the docs.\n *\n * It is a status region, not a dialog: the reader is told what is happening\n * and cannot act on it. The sweep is a `<style>` of its own rather than a\n * theme keyframe, because a product installs the theme on its first day and\n * this once; and under reduced motion the theme stops every animation dead,\n * which would leave the sweep parked off the end of its track - so the bar\n * is drawn full and still instead.\n */\n\nexport interface SplashProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {\n  /** The product's mark, drawn at 56px. */\n  mark?: ReactNode\n  /** The product's name. */\n  name: string\n  /** The line under the name. */\n  tagline?: string\n  /** The version, drawn in the mono face; the `v` is the product's to add. */\n  version?: string\n  /** What the application is doing right now. */\n  status?: string\n  /** One thing worth knowing while it does it. */\n  tip?: string\n  /** Whether the bar is sweeping. Still and full when the application is\n   * waiting on something that has no progress, such as a person. */\n  busy?: boolean\n}\n\n/** The sweep, named with a prefix so a product's own `sweep` cannot collide\n * with it in the one document both end up in.\n *\n * The class below writes the name out rather than interpolating this\n * constant, and that is not carelessness: Tailwind finds its classes by\n * scanning the source text, and a class assembled from a template is one it\n * never sees - the bar rendered with the right class name and no CSS behind\n * it, and the stand showed an empty track. The test compiles the class to\n * make sure the two spellings agree. */\nconst SWEEP = 'dowel-splash-sweep'\nconst SWEEPING = 'animate-[dowel-splash-sweep_1.1s_ease-in-out_infinite]'\n\nexport function Splash({\n  mark,\n  name,\n  tagline,\n  version,\n  status,\n  tip,\n  busy = true,\n  className,\n  ...props\n}: SplashProps) {\n  return (\n    <div\n      role=\"status\"\n      aria-live=\"polite\"\n      className={cn(\n        'fixed inset-0 flex flex-col items-center justify-center gap-2.5 bg-bg text-text select-none',\n        className,\n      )}\n      {...props}\n    >\n      <style>{`@keyframes ${SWEEP} { to { left: 100%; } }`}</style>\n      {mark ? <div className=\"mb-1.5 size-14 [&>svg]:size-full\">{mark}</div> : null}\n      <div className=\"text-[26px] leading-none font-semibold tracking-[0.02em]\">{name}</div>\n      {tagline ? <div className=\"text-sm text-dim\">{tagline}</div> : null}\n      {version ? <div className=\"mt-1.5 font-mono text-2xs text-faint\">{version}</div> : null}\n      <div className=\"relative mt-4 h-0.5 w-40 overflow-hidden rounded-full bg-line\">\n        <div\n          data-sweep={busy ? 'on' : 'off'}\n          className={cn(\n            'absolute top-0 h-full rounded-full bg-accent',\n            busy\n              ? cn(\n                  '-left-2/5 w-2/5',\n                  SWEEPING,\n                  'motion-reduce:left-0 motion-reduce:w-full motion-reduce:animate-none',\n                )\n              : 'left-0 w-full',\n          )}\n        />\n      </div>\n      {status ? <p className=\"mt-3 text-xs text-dim\">{status}</p> : null}\n      {tip ? <p className=\"text-2xs text-faint\">{tip}</p> : null}\n    </div>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "stat-tile",
       "type": "registry:ui",
       "title": "Stat-tile",
       "description": "The smallest thing on a dashboard and the one every product writes itself: a label above, a number below, sometimes a word about which way it moved.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1514,7 +1590,7 @@
       "description": "The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair. A checkbox is an answer collected now and submitted later, with the rest of the form; a switch is a setting that applies the moment it moves. Put a switch in a form with a Save button and the reader cannot tell whether anything happened - they flipped it, and nothing said so.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1549,7 +1625,7 @@
       "description": "Parts rather than a `columns` prop, and that is the decision worth stating: a `<DataTable columns={…} rows={…} />` is quicker to write for the first table and then owns every cell in the product forever. The moment one column needs a Badge, another a link, and a third the row's own menu, the prop grows a `render` for each - at which point it is JSX with extra steps, spelt in a shape only this component understands.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/table-sort.json"
@@ -1570,7 +1646,7 @@
       "description": "Free text turned into a list: type a word, press Enter, it becomes a chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/chip.json",
@@ -1591,7 +1667,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1611,7 +1687,7 @@
       "title": "Time-field",
       "description": "No donor for this one: neither product of the line had a time field, so this is written from the same shape as DurationField, and for the same reason. Anything a person plausibly types is accepted - `9`, `9:30`, `930`, `9.30`, `9pm`, `21:30` - and what comes back is always `HH:MM`.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1633,7 +1709,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1653,7 +1729,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1688,7 +1764,7 @@
       "description": "Two products had written this independently and arrived at the same construction - a rounded track, segments positioned absolutely by percent, a floor under the segment width so a short one does not vanish - differing only in what a segment meant. One drew the tiers of a rubric with the score standing among them; the other drew a working day as alternating work and breaks. Neither could be built from the other, and each knew something the other did not: the tiers had the marker and the three-state reading of a segment (passed, standing in, still ahead), the day had the minimum width and the difference between an empty track and an unknown one.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/track-segments.json"
@@ -1724,7 +1800,7 @@
       "title": "Tree-view",
       "description": "The shape products reach for and then get wrong in the same place every time. A tree is not a nest of lists with click handlers - it is one control with a cursor in it, and the difference is the whole component:\n *   **One tab stop, not one per node.** A tree of four hundred files with a   `tabIndex` on each is four hundred stops between the sidebar and the   editor. The container is what the keyboard reaches, and the arrows move a   cursor inside it - the arrangement a `RadioGroup` has, for the same   reason.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/tree-rows.json"
@@ -1744,7 +1820,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1762,7 +1838,7 @@
       "title": "Virtual-list",
       "description": "The browser is fine with long lists until it is not: a hundred thousand `<div>`s is a layout the machine recomputes on every change, and the page stops responding while it does. What is drawn instead is the window the reader can actually see, held in place by a tall spacer, so the scrollbar still says how much there is.",
       "dependencies": [
-        "dowel-ui@^0.25.0"
+        "dowel-ui@^0.26.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1771,6 +1847,25 @@
           "target": "@ui/virtual-list.tsx",
           "type": "registry:ui",
           "content": "import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'\nimport { cn } from 'dowel-ui'\n\n/*\n * A list of a hundred thousand rows that puts a screenful in the DOM.\n *\n * The browser is fine with long lists until it is not: a hundred thousand\n * `<div>`s is a layout the machine recomputes on every change, and the page\n * stops responding while it does. What is drawn instead is the window the\n * reader can actually see, held in place by a tall spacer, so the scrollbar\n * still says how much there is.\n *\n * No virtualisation library. `react-window`, `react-virtuoso` and\n * `@tanstack/react-virtual` all solve the general problem - variable heights\n * measured at runtime, horizontal windows, grids - and the general problem is\n * not the one a design system has: every long list in a product is a column of\n * rows of one height. That case is the arithmetic below, and it is small\n * enough to read.\n *\n * The arithmetic is exported separately, and that is the part worth stating.\n * A window computed inside an effect can only be tested by a browser, and\n * jsdom gives every element a height of zero - so a test would assert against\n * a list that believes it is invisible, and pass whatever the code did. As\n * plain functions the rules are checkable: given a scroll offset and a height,\n * these rows are drawn.\n *\n * Variable row heights are deliberately not supported. Measuring them means\n * rendering to find out, which means a second pass, a cache, and a scrollbar\n * that changes length as the reader travels. When a product needs that, it\n * needs a library rather than a bigger version of this.\n */\n\nexport interface Window {\n  /** Index of the first row to render. */\n  start: number\n  /** Index one past the last row to render. */\n  end: number\n  /** The height of the whole list, drawn or not - what makes the scrollbar\n   * honest. */\n  totalHeight: number\n  /** How far down the first drawn row sits. Applied as a translation rather\n   * than as a top margin, so the rows are not re-laid-out on every scroll. */\n  offsetTop: number\n}\n\nexport interface WindowInput {\n  /** How many rows there are in total. */\n  count: number\n  /** How tall one row is, in pixels. One height for every row. */\n  rowHeight: number\n  /** How tall the scrolling box is. */\n  viewportHeight: number\n  /** How far the box is scrolled. */\n  scrollTop: number\n  /** How many extra rows to draw beyond each edge.\n   *\n   * Not decoration: without it a fast scroll paints blank where rows have not\n   * been drawn yet, because the scroll event arrives after the pixels. Three\n   * rows is enough to cover a frame at ordinary speeds and cheap enough not to\n   * matter. */\n  overscan?: number\n}\n\n/** Which rows to draw. Pure arithmetic, so it can be checked without a browser.\n *\n * Every edge case here is one that shows as a blank list rather than as an\n * error: a viewport of zero (the box has not been measured yet), a scroll\n * position past the end (the list shrank under the reader), a negative one\n * (elastic scrolling on a trackpad). */\nexport function windowFor({\n  count,\n  rowHeight,\n  viewportHeight,\n  scrollTop,\n  overscan = 3,\n}: WindowInput): Window {\n  const rows = Math.max(0, Math.floor(count))\n  const height = Math.max(1, rowHeight)\n  const totalHeight = rows * height\n\n  if (rows === 0) return { start: 0, end: 0, totalHeight: 0, offsetTop: 0 }\n\n  // Clamped rather than trusted. A negative scrollTop is what a trackpad hands\n  // over at the top of an elastic scroll, and `Math.floor` of it walks the\n  // start index backwards into rows that do not exist.\n  const top = Math.min(Math.max(0, scrollTop), Math.max(0, totalHeight - 1))\n\n  const first = Math.floor(top / height)\n  /* One more row than fits, so the row cut by the bottom edge is drawn rather\n   * than appearing as the reader scrolls into it.\n   *\n   * The `+ 1` is also what keeps the first frame from being empty: before the\n   * effect measures the box, `viewportHeight` is 0 and this is 1. A\n   * `Math.max(1, ...)` around it looks like the guard for that and is dead\n   * code - the expression cannot reach zero. Mutation found it: removing the\n   * floor changed nothing at all. */\n  const visible = Math.ceil(Math.max(0, viewportHeight) / height) + 1\n\n  const start = Math.max(0, first - overscan)\n  const end = Math.min(rows, first + visible + overscan)\n\n  return { start, end, totalHeight, offsetTop: start * height }\n}\n\nexport interface VirtualListProps<Row> {\n  rows: readonly Row[]\n  /** How tall one row is. Fixed, and the component enforces it - a row that\n   * grows past this height overlaps its neighbour, which is why the value is\n   * required rather than measured. */\n  rowHeight: number\n  children: (row: Row, index: number) => ReactNode\n  /** A stable identity per row. Without it React keys by index, and a list\n   * that is sorted or filtered reuses the wrong DOM node - the row moves but\n   * its input keeps the text that was typed into a different row. */\n  rowKey: (row: Row, index: number) => string | number\n  overscan?: number\n  /** What a screen reader calls the list. Required: a scrolling box of rows\n   * with no name is announced as \"list\" and nothing else, and the word is the\n   * product's to give. */\n  label: string\n  className?: string\n}\n\nexport function VirtualList<Row>({\n  rows,\n  rowHeight,\n  children,\n  rowKey,\n  overscan = 3,\n  label,\n  className,\n}: VirtualListProps<Row>) {\n  const viewport = useRef<HTMLDivElement>(null)\n  const [scrollTop, setScrollTop] = useState(0)\n  const [viewportHeight, setViewportHeight] = useState(0)\n\n  const measure = useCallback(() => {\n    const element = viewport.current\n    if (!element) return\n    setViewportHeight(element.clientHeight)\n    setScrollTop(element.scrollTop)\n  }, [])\n\n  useEffect(() => {\n    const element = viewport.current\n    if (!element) return\n    measure()\n\n    /* The height is watched, not read once. A list inside a panel that opens,\n     * a window the reader resizes, a font that loads late - all change the\n     * viewport after mount, and a list that measured once draws the wrong\n     * number of rows until something scrolls. */\n    if (typeof ResizeObserver === 'undefined') return\n    const observer = new ResizeObserver(measure)\n    observer.observe(element)\n    return () => observer.disconnect()\n  }, [measure])\n\n  const { start, end, totalHeight, offsetTop } = windowFor({\n    count: rows.length,\n    rowHeight,\n    viewportHeight,\n    scrollTop,\n    overscan,\n  })\n\n  return (\n    <div\n      ref={viewport}\n      onScroll={(event) => setScrollTop(event.currentTarget.scrollTop)}\n      // `tabIndex` because a box that scrolls has to be reachable: a keyboard\n      // user with no focusable row inside cannot otherwise page through it.\n      tabIndex={0}\n      role=\"list\"\n      aria-label={label}\n      className={cn(\n        'relative overflow-y-auto',\n        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n        className,\n      )}\n    >\n      {/* The spacer is what the scrollbar measures. Without it the box is only\n        * as tall as the rows drawn, and the reader can never scroll past the\n        * first screenful. */}\n      <div style={{ height: totalHeight }} className=\"relative\">\n        <div\n          // Translated rather than positioned with `top`: a transform is\n          // composited, while changing `top` re-lays-out the subtree on every\n          // scroll event.\n          style={{ transform: `translateY(${offsetTop}px)` }}\n          className=\"absolute inset-x-0 top-0\"\n        >\n          {rows.slice(start, end).map((row, offset) => {\n            const index = start + offset\n            return (\n              <div\n                key={rowKey(row, index)}\n                role=\"listitem\"\n                /* The pair that makes a window honest to a screen reader.\n                 *\n                 * Without them the reader counts the rows it can see and says\n                 * \"3 of 20\" in a list of a hundred thousand - the rows in the\n                 * DOM are a screenful, and that is exactly what a virtual list\n                 * hides. `aria-setsize` is the real total, `aria-posinset` the\n                 * real position.\n                 *\n                 * Deliberately not `aria-rowcount`/`aria-rowindex`, which were\n                 * the obvious names and are wrong: those belong to `grid`,\n                 * `table` and `treegrid`. On a `list` they are unsupported -\n                 * axe rejects them, and a reader would simply ignore them,\n                 * which is the worse half: the markup would look like it said\n                 * something. */\n                aria-setsize={rows.length}\n                aria-posinset={index + 1}\n                style={{ height: rowHeight }}\n              >\n                {children(row, index)}\n              </div>\n            )\n          })}\n        </div>\n      </div>\n    </div>\n  )\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "window-frame",
+      "type": "registry:ui",
+      "title": "Window-frame",
+      "description": "With `decorations: false` the system draws nothing, so everything it used to do is the page's: dragging the window by its title bar, double-click to maximise, the three buttons, and the edges you grab to resize. Each is small; the reason to take them on at all is that a system title bar over an application title bar costs a strip of every laptop screen for nothing.",
+      "dependencies": [
+        "@tauri-apps/api",
+        "dowel-ui@^0.26.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/window-frame.tsx",
+          "target": "@ui/window-frame.tsx",
+          "type": "registry:ui",
+          "content": "import {\n  useCallback,\n  useEffect,\n  useState,\n  type CSSProperties,\n  type MouseEvent,\n  type PointerEvent,\n  type ReactNode,\n} from 'react'\nimport { getCurrentWindow } from '@tauri-apps/api/window'\nimport { cn } from 'dowel-ui'\n\n/** The eight compass names Tauri resizes by. Read off the method rather than\n * imported: the package declares the type without exporting it. */\ntype ResizeDirection = Parameters<ReturnType<typeof getCurrentWindow>['startResizeDragging']>[0]\n\n/*\n * The window's own frame, for a window that has no system frame.\n *\n * With `decorations: false` the system draws nothing, so everything it used\n * to do is the page's: dragging the window by its title bar, double-click to\n * maximise, the three buttons, and the edges you grab to resize. Each is\n * small; the reason to take them on at all is that a system title bar over an\n * application title bar costs a strip of every laptop screen for nothing.\n * scheda made the trade first and kilna copied it, which is the second\n * consumer the line asks for before anything becomes shared.\n *\n * Four exports, and they are used together: `WindowButtons` in the bar,\n * `useTitleBarGestures()` spread on the bar, `ResizeEdges` once at the root,\n * and `useMaximized()` for anything else that changes shape with the window.\n *\n * Outside Tauri - a browser, a test, the stand - there is no window to drive.\n * Every call goes through `currentWindow()`, which answers null when the\n * Tauri bridge is absent, so the chrome renders and does nothing rather than\n * throwing on the first click. A product's own storybook runs in a browser\n * too, and a title bar that crashes it is a title bar nobody previews.\n */\n\n/** The Tauri window, or null where there is none to drive. The bridge is what\n * `getCurrentWindow` reads its label from, so its absence is the test. */\nfunction currentWindow() {\n  return '__TAURI_INTERNALS__' in window ? getCurrentWindow() : null\n}\n\n/** Whether the window is maximised, kept current as the window changes.\n *\n * The window can be maximised without our buttons - a drag to the top edge,\n * the keyboard, a snap layout - so the answer follows the window rather than\n * our own last click. */\nexport function useMaximized(): boolean {\n  const [maximized, setMaximized] = useState(false)\n\n  useEffect(() => {\n    const target = currentWindow()\n    if (!target) return\n    const read = () => {\n      target.isMaximized().then(setMaximized).catch(() => undefined)\n    }\n    read()\n    const unlisten = target.onResized(read)\n    return () => {\n      unlisten.then((stop) => stop()).catch(() => undefined)\n    }\n  }, [])\n\n  return maximized\n}\n\nexport interface WindowButtonsProps {\n  /** What each button is called. Required, and deliberately without a\n   * default: a string this component invents is a string the product cannot\n   * translate. `restore` replaces `maximize` while the window is maximised. */\n  labels: { minimize: string; maximize: string; restore: string; close: string }\n  className?: string\n}\n\ntype Control = keyof WindowButtonsProps['labels']\n\n/** The four glyphs, drawn in one stroke on a ten-pixel grid - the size the\n * system's own were, so the bar reads as the window's and not as a toolbar. */\nconst GLYPH: Record<Control, ReactNode> = {\n  minimize: <path d=\"M0 5h10\" />,\n  maximize: <rect x=\"0.5\" y=\"0.5\" width=\"9\" height=\"9\" />,\n  restore: <path d=\"M2.5 2.5V0.5h7v7h-2M0.5 2.5h7v7h-7z\" />,\n  close: <path d=\"M0 0l10 10M10 0L0 10\" />,\n}\n\n/** The window controls, in the order Windows puts them. */\nexport function WindowButtons({ labels, className }: WindowButtonsProps) {\n  const maximized = useMaximized()\n  const controls: [Control, () => unknown][] = [\n    ['minimize', () => currentWindow()?.minimize()],\n    [maximized ? 'restore' : 'maximize', () => currentWindow()?.toggleMaximize()],\n    ['close', () => currentWindow()?.close()],\n  ]\n\n  return (\n    <div className={cn('flex h-full shrink-0 items-stretch', className)}>\n      {controls.map(([name, act]) => (\n        <button\n          key={name}\n          type=\"button\"\n          aria-label={labels[name]}\n          title={labels[name]}\n          onClick={() => void act()}\n          className={cn(\n            'flex h-full w-[46px] cursor-default items-center justify-center text-dim transition-colors',\n            'hover:bg-soft hover:text-text',\n            // The close button is the one that must not be mistaken for its\n            // neighbours: it goes red under the pointer, as on every desktop.\n            name === 'close' && 'hover:bg-bad hover:text-on-bad',\n          )}\n        >\n          <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1\" aria-hidden>\n            {GLYPH[name]}\n          </svg>\n        </button>\n      ))}\n    </div>\n  )\n}\n\n/** A press on a control has already been handled by the control. */\nconst shouldHandle = (target: EventTarget | null) =>\n  !(target as HTMLElement | null)?.closest(\n    'button, a, input, textarea, [role=\"menu\"], [role=\"menuitem\"], [role=\"tab\"], [role=\"dialog\"]',\n  )\n\n/** How far the pointer moves before a press becomes a drag, in pixels. */\nconst THRESHOLD = 4\n\n/** Makes an element behave like a title bar: drag to move, double-click to\n * maximise. Both are what the system used to do for free. Spread the result\n * on the bar: `<header {...useTitleBarGestures()}>`.\n *\n * Two handlers rather than one. A `pointerdown` cannot recognise a double\n * click: its `detail` counts clicks of the *mouse* event sequence, and the\n * second press still arrives as 1 - reading it there fired `startDragging`\n * three times over a double click and toggled nothing. So the press starts a\n * drag, and `dblclick`, which the browser is the one qualified to detect,\n * maximises.\n *\n * Dragging starts on the first movement, not on the press. `startDragging`\n * hands the window over to the system - which is what keeps snap layouts and\n * drag-to-edge working - but from that moment the webview stops seeing the\n * mouse. Calling it on `pointerdown` ate the second click of every double\n * click, and maximising never happened. */\nexport function useTitleBarGestures() {\n  const onPointerDown = useCallback((event: PointerEvent) => {\n    if (event.button !== 0 || !shouldHandle(event.target)) return\n\n    const start = { x: event.clientX, y: event.clientY }\n    const onMove = (move: globalThis.PointerEvent) => {\n      if (Math.abs(move.clientX - start.x) < THRESHOLD && Math.abs(move.clientY - start.y) < THRESHOLD) {\n        return\n      }\n      stop()\n      void currentWindow()?.startDragging()\n    }\n    const stop = () => {\n      window.removeEventListener('pointermove', onMove)\n      window.removeEventListener('pointerup', stop)\n      window.removeEventListener('pointercancel', stop)\n    }\n\n    window.addEventListener('pointermove', onMove)\n    window.addEventListener('pointerup', stop)\n    window.addEventListener('pointercancel', stop)\n  }, [])\n\n  const onDoubleClick = useCallback((event: MouseEvent) => {\n    if (event.button !== 0 || !shouldHandle(event.target)) return\n    void currentWindow()?.toggleMaximize()\n  }, [])\n\n  return { onPointerDown, onDoubleClick }\n}\n\n/** The eight edges and corners a frameless window still has to offer. */\nconst RESIZE_HANDLES: readonly ResizeDirection[] = [\n  'North',\n  'South',\n  'East',\n  'West',\n  'NorthEast',\n  'NorthWest',\n  'SouthEast',\n  'SouthWest',\n]\n\nconst EDGE = 5\nconst CORNER = 10\n\n/** Where each strip sits and which cursor it shows. Inline styles rather than\n * classes: eight positions of a few pixels each are geometry, not design. */\nconst EDGE_STYLE: Record<ResizeDirection, CSSProperties> = {\n  North: { top: 0, left: CORNER, right: CORNER, height: EDGE, cursor: 'ns-resize' },\n  South: { bottom: 0, left: CORNER, right: CORNER, height: EDGE, cursor: 'ns-resize' },\n  East: { top: CORNER, bottom: CORNER, right: 0, width: EDGE, cursor: 'ew-resize' },\n  West: { top: CORNER, bottom: CORNER, left: 0, width: EDGE, cursor: 'ew-resize' },\n  NorthEast: { top: 0, right: 0, width: CORNER, height: CORNER, cursor: 'nesw-resize' },\n  NorthWest: { top: 0, left: 0, width: CORNER, height: CORNER, cursor: 'nwse-resize' },\n  SouthEast: { bottom: 0, right: 0, width: CORNER, height: CORNER, cursor: 'nwse-resize' },\n  SouthWest: { bottom: 0, left: 0, width: CORNER, height: CORNER, cursor: 'nesw-resize' },\n}\n\nexport interface ResizeEdgesProps {\n  /** Merged into every strip. `fixed` to the viewport by default, which is\n   * where a window's edges are; `absolute` puts them on the nearest\n   * positioned box instead, for a frame drawn inside a page. */\n  className?: string\n}\n\n/** Invisible strips along the window's edges.\n *\n * A frameless window has no border to grab, so these put one back. They sit\n * outside the flow, above everything, and are only a few pixels wide -\n * enough to hit, not enough to steal a click meant for the text. A maximised\n * window has no edges to drag, and leaving the strips in place would mean\n * the top few pixels of the title bar stop taking clicks. */\nexport function ResizeEdges({ className }: ResizeEdgesProps) {\n  const maximized = useMaximized()\n  if (maximized) return null\n\n  return (\n    <>\n      {RESIZE_HANDLES.map((direction) => (\n        <div\n          key={direction}\n          aria-hidden\n          data-resize-edge={direction}\n          className={cn('fixed [z-index:var(--z-floating)]', className)}\n          style={EDGE_STYLE[direction]}\n          onPointerDown={(event) => {\n            if (event.button !== 0) return\n            event.preventDefault()\n            void currentWindow()?.startResizeDragging(direction)\n          }}\n        />\n      ))}\n    </>\n  )\n}\n"
         }
       ]
     },

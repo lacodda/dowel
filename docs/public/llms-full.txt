@@ -1,4 +1,4 @@
-# dowel 0.25.0
+# dowel 0.26.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,9 +23,9 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.25.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and seventy-six primitives — the last six of them text
-and code — each with a page of its own on
+**v0.26.0.** The theme and its scales, an accent for each of the nineteen
+products of the line, and eighty-one primitives — the last five of them a
+desktop window's own chrome — each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -569,7 +569,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Seventy-six of them.
+A single component: Button, Dialog, Select. Eighty-one of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -3783,6 +3783,86 @@ ceiling.
 
 ---
 
+# MarkedText
+
+Source: https://lacodda.github.io/dowel/components/marked-text
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#marked-text
+
+A verse with a repeated word marked and a new line painted, read-only and then as a textarea you can type into.
+
+## Notes
+
+A textarea cannot colour a word. The way round it is older than React: draw
+the same text twice, once as marked-up HTML underneath and once as the
+textarea on top with its own text transparent, so the caret and the selection
+are the browser's and the colours are ours.
+
+```tsx
+<MarkedTextarea
+  value={text}
+  onChange={setText}
+  marks={repeats.map((r) => ({ start: r.start, end: r.end, className: 'bg-warn-soft' }))}
+  lineMarks={added.map((line) => ({ line, className: 'bg-good-soft' }))}
+  className="p-3 font-mono text-sm leading-6"
+/>
+```
+
+**Both layers take one class list.** The two have to agree on every metric —
+font, size, line height, padding, wrapping — or the marks slide off the words
+they mark. So `className` is the metrics, given once and put on both; the
+textarea adds only what makes it invisible.
+
+**The mirror sizes the box.** It sits in the flow and the textarea is
+stretched over it, so the field grows with its text without a `scrollHeight`
+measurement and never scrolls inside itself — the box around it scrolls, and
+the marks scroll with the words.
+
+**Two kinds of mark.** A `Mark` is a span of characters, as offsets into the
+whole text — a repeated word, a misspelling. A `LineMark` is a whole line —
+one that is new since the other version. A span that crosses a line break is
+cut at the break, one `<mark>` per line; a line is a block, so a line mark
+paints the full width and wraps exactly as the textarea's line does.
+
+**A blank line keeps its height.** An empty block collapses, and every mark
+below it lands one line early. The trailing space on the last line is the
+same rule for a text that ends in a newline.
+
+**The `<mark>` is transparent by default.** The browser's yellow is dropped so
+the mark's own `className` is its colour — in whichever tone the mark means,
+which is the product's to say.
+
+`MarkedText` is the same layer to read rather than type into, and
+`MarkedLines` is the layer itself, for a product composing its own box.
+
+## Props
+
+### `MarkedTextarea`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Required |
+| `onChange` | `(value: string) => void` | | The new value, not the event |
+| `marks` | `Mark[]` | `[]` | `{ start, end, className?, style? }` |
+| `lineMarks` | `LineMark[]` | `[]` | `{ line, className? }`, zero-based |
+| `className` | `string` | | The metrics both layers share |
+| `ref` | `Ref<HTMLTextAreaElement>` | | |
+
+Every other `<textarea>` attribute passes through.
+
+### `MarkedText`
+
+`text`, `marks`, `lineMarks` and `className`.
+
+### `MarkedLines`
+
+`text`, `marks`, `lineMarks` and `ghost` — transparent text, for a layer under
+something else.
+
+---
+
 # Menu
 
 Source: https://lacodda.github.io/dowel/components/menu
@@ -3872,6 +3952,79 @@ which of them is the dangerous one.
 `Menu`, `MenuTrigger`, `MenuGroup`, `MenuGroupLabel`, `MenuSeparator`,
 `MenuSub` and `MenuCheckboxIndicator` take the props their Base UI parts take;
 `render` composes each with your own element.
+
+---
+
+# NotificationBell
+
+Source: https://lacodda.github.io/dowel/components/notification-bell
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#notification-bell
+
+The bell at zero, at three and past nine; press one to open the panel, mark everything read, or hand over to the whole list.
+
+## Notes
+
+A bell that is always lit is a bell nobody reads. So the count is your
+decision — ordinary edits are recorded and never counted; only what needs a
+look lights it — and this draws it: nothing at zero, the number past that,
+`9+` past nine. Pressing it does not leave the screen. The last few entries
+open under it, and the whole history is one more click.
+
+```tsx
+<NotificationBell
+  count={unread}
+  label={t('journal.open')}
+  title={t('journal.recent')}
+  markAllLabel={t('journal.markRead')}
+  onMarkAll={() => markRead.mutate()}
+  busy={markRead.isPending}
+  seeAllLabel={t('journal.seeAll')}
+  onSeeAll={() => navigate('/journal')}
+  emptyLabel={t('journal.nothingRecent')}
+>
+  <ul>{recent.map((entry) => <RecentLine key={entry.id} entry={entry} />)}</ul>
+</NotificationBell>
+```
+
+**The rows are yours.** A journal entry, a failed upload and a comment are
+three different lines, and one component cannot draw them; `children` is the
+list. What is shared is the frame — the trigger with its badge, the heading
+with the button that clears the count, the empty line, and the footer that
+leads to everything.
+
+**Mark-all is offered only while there is something to mark.** A button that
+does nothing is worse than no button. It appears when `count > 0` and a label
+is given, and `busy` holds it while the product is clearing.
+
+**See-all closes first, then hands over.** The panel is gone before the
+route changes, so nothing is left open over the page it led to.
+
+**Controlled or not.** Leave `open` out and the bell manages itself; pass it
+with `onOpenChange` to drive it — to close it when a row is chosen, say.
+
+Built on [Popover](/components/popover/) and [Button](/components/button/),
+so the panel opens, positions and closes the way every other panel does.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `count` | `number` | | Required; nothing drawn at zero, `9+` past nine |
+| `label` | `string` | | Required — the bell's name for a screen reader |
+| `title` | `string` | | Required — the panel's heading |
+| `emptyLabel` | `string` | | Required — what the list says with no rows |
+| `children` | `ReactNode` | | The rows |
+| `markAllLabel` | `string` | | With `onMarkAll`; shown only while `count > 0` |
+| `onMarkAll` | `() => void` | | |
+| `busy` | `boolean` | `false` | Holds the mark-all button |
+| `seeAllLabel` | `string` | | With `onSeeAll`; the footer is drawn only when given |
+| `onSeeAll` | `() => void` | | Called after the panel closes |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `onOpenChange` | `(open) => void` | | |
+| `className` | `string` | | On the trigger |
 
 ---
 
@@ -5054,6 +5207,81 @@ always `search`.
 
 ---
 
+# SectionNav
+
+Source: https://lacodda.github.io/dowel/components/section-nav
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#section-nav
+
+A settings column with icons and a current section, beside the heading it opens - press a row to move.
+
+## Notes
+
+A settings screen is the usual case: five or six sections, each its own
+address so it can be linked to and the back button walks between them, listed
+down the left with the current one tinted. Every product draws the same
+column, and every product draws the active row a little differently — which
+is exactly the drift a shared list exists to stop.
+
+```tsx
+<div className="grid gap-8 md:grid-cols-[11rem_minmax(0,1fr)]">
+  <SectionNav
+    label={t('settings.title')}
+    items={SECTIONS.map((id) => ({ id, label: t(`settings.section.${id}`), icon: <Icon id={id} /> }))}
+    activeId={section}
+    render={(item) => <Link to={`/settings/${item.id}`} />}
+    className="md:sticky md:top-0"
+  />
+  <div>
+    <SectionHeading title={t(`settings.section.${section}`)} description={t(`settings.hint.${section}`)} />
+    <Body section={section} />
+  </div>
+</div>
+```
+
+**The rows are your links.** `render` takes the item and answers with the
+element to draw it as — a router's link, an `<a>`, whatever you navigate with
+— and the component puts the row's clothes, its icon and its `aria-current`
+on it, the way [Button](/components/button/) takes a `render`. Without
+`render` a row is a button and `onSelect` says which was pressed, for a screen
+whose sections are state rather than routes.
+
+**The current section is announced, not only tinted.** The active row carries
+`aria-current="page"`, which is how a screen reader learns which of six
+identical links is where you are.
+
+**The caption names the landmark.** `label` is drawn above the list and the
+`<nav>` is labelled by it, so the same word serves the eye and the reader.
+
+**The heading is the other half.** `SectionHeading` is the title and the
+one-line hint above a section's body, so the column and the page it opens are
+set in the same type.
+
+## Props
+
+### `SectionNav`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required — the caption and the landmark's name |
+| `items` | `{ id, label, icon? }[]` | | Required |
+| `activeId` | `string` | | The current page |
+| `render` | `(item) => ReactElement` | | The element each row is drawn as |
+| `onSelect` | `(id) => void` | | Pressed, whatever the row is drawn as |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `SectionHeading`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | | Required, an `h2` |
+| `description` | `ReactNode` | | The line under it |
+| `className` | `string` | | |
+
+---
+
 # Select
 
 Source: https://lacodda.github.io/dowel/components/select
@@ -5497,6 +5725,134 @@ meaning anyway.
 | `size` | `sm \| md \| lg` | `md` | |
 | `tone` | `current \| dim \| accent` | `current` | Follows the surrounding text by default |
 | `label` | `string` | | What is being waited for, for a screen reader |
+
+---
+
+# Splash
+
+Source: https://lacodda.github.io/dowel/components/splash
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#splash
+
+The full picture inside a box, sweeping and still, with and without the two lines only the application can say.
+
+## Notes
+
+A desktop product has a second or two between the window appearing and the
+first screen being ready — a workspace to open, a database to migrate, a
+plugin to start — and a blank window for that long reads as a crash. So the
+window shows the product instead.
+
+```tsx
+<Splash
+  mark={<Mark />}
+  name="kilna"
+  tagline={t('app.tagline')}
+  version={`v${__APP_VERSION__}`}
+  status={t('splash.opening')}
+  tip={t('splash.tip')}
+/>
+```
+
+**It is a status region.** `role="status"` with a polite live region, so the
+`status` line is announced when it changes and nothing about the panel asks
+for an answer. It is not a dialog: the reader cannot act on it.
+
+**The sweep stops honestly under reduced motion.** The theme halts every
+animation for `prefers-reduced-motion`, which on its own would leave the sweep
+parked off the end of its track — an empty bar. The bar is drawn full and
+still instead, and the same when `busy` is `false`: waiting on a person has
+no progress to show.
+
+**The keyframes travel with the component.** A product installs the theme on
+its first day and a splash once, so the sweep is a `<style>` the component
+renders rather than a keyframe in the theme.
+
+**Only the lines you give are drawn.** An empty `<p>` still takes its height,
+and the picture below has no such line — the name would jump when React took
+over.
+
+## The other half: before the bundle
+
+This component cannot be the first thing the window shows, because React is
+what is still loading. So the page paints the same picture in inline CSS —
+inline, because the stylesheet arrives with the bundle, which is the thing
+being waited for — and the component takes over on its first render with the
+same geometry, so nothing moves:
+
+```tsx
+useEffect(() => {
+  document.getElementById('splash')?.remove()
+}, [])
+```
+
+The static half, in `index.html`. The two backgrounds are the theme's dark
+and light written out, since the theme file is in that same bundle; a stored
+explicit theme is applied by the page a moment later and the splash follows it
+through the classes on `<html>`:
+
+```html
+<style>
+  html { background: #141216; color: #e8e3ec; }
+  @media (prefers-color-scheme: light) {
+    html { background: #f7f5f9; color: #221c27; }
+  }
+  html.dark { background: #141216; color: #e8e3ec; }
+  html.light { background: #f7f5f9; color: #221c27; }
+  #splash {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; user-select: none;
+    font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  #splash .mark { width: 56px; height: 56px; margin-bottom: 6px; }
+  #splash .name { font-size: 26px; font-weight: 600; letter-spacing: 0.02em; line-height: 1; }
+  #splash .tagline { font-size: 13px; opacity: 0.62; }
+  #splash .version { margin-top: 6px; font-family: Consolas, ui-monospace, monospace; font-size: 11px; opacity: 0.45; }
+  #splash .bar {
+    position: relative; width: 160px; height: 2px; margin-top: 18px;
+    border-radius: 999px; background: rgba(128, 128, 128, 0.18); overflow: hidden;
+  }
+  #splash .bar::after {
+    content: ''; position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
+    border-radius: 999px; background: #d9569e;
+    animation: splash-sweep 1.1s ease-in-out infinite;
+  }
+  @keyframes splash-sweep { to { left: 100%; } }
+  @media (prefers-reduced-motion: reduce) {
+    #splash .bar::after { animation: none; left: 0; width: 100%; }
+  }
+</style>
+
+<div id="splash" aria-hidden="true">
+  <svg class="mark" viewBox="0 0 32 32">…</svg>
+  <div class="name">kilna</div>
+  <div class="tagline">From raw idea to shipped work.</div>
+  <div class="version">v__APP_VERSION__</div>
+  <div class="bar"></div>
+</div>
+<div id="root"></div>
+```
+
+The raw colours are allowed there and nowhere else: this is the one file that
+runs before the theme exists. `aria-hidden` because the React half is the one
+that speaks; two status regions saying the same thing would be announced
+twice.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `mark` | `ReactNode` | | The product's mark, drawn at 56px |
+| `name` | `string` | | Required |
+| `tagline` | `string` | | |
+| `version` | `string` | | Drawn in the mono face; the `v` is yours |
+| `status` | `string` | | What the application is doing, announced |
+| `tip` | `string` | | One thing worth knowing |
+| `busy` | `boolean` | `true` | `false` draws the bar full and still |
+| `className` | `string` | | Merged so the caller wins a conflict — `absolute` puts it in a box |
 
 ---
 
@@ -6747,6 +7103,112 @@ rows until something scrolls it.
 
 `windowFor({ count, rowHeight, viewportHeight, scrollTop, overscan? })` returns
 `{ start, end, totalHeight, offsetTop }` — for a product windowing its own rows.
+
+---
+
+# WindowFrame
+
+Source: https://lacodda.github.io/dowel/components/window-frame
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#window-frame
+
+The three buttons and the eight resize strips, drawn inside a frame - the stand runs in a browser, so they render and stay inert.
+
+## Notes
+
+A desktop product of the line draws its own title bar. With Tauri's
+`decorations: false` the system draws nothing, so everything it used to do is
+the page's: dragging the window by its bar, double-click to maximise, the
+three buttons, and the edges you grab to resize. Each is small. The reason to
+take them on at all is that a system title bar over an application title bar
+costs a strip of every laptop screen for nothing — scheda made the trade
+first, kilna copied it, and this is the copy.
+
+Four exports, used together:
+
+```tsx
+import { ResizeEdges, WindowButtons, useTitleBarGestures } from '@/components/ui/window-frame'
+
+function Titlebar() {
+  const gestures = useTitleBarGestures()
+  return (
+    <header className="flex h-9 items-center border-b border-line bg-bg" {...gestures}>
+      <Brand />
+      <Trail />
+      <div className="ml-auto flex h-full items-center">
+        <Bell />
+        <WindowButtons labels={t('shell', { returnObjects: true })} />
+      </div>
+    </header>
+  )
+}
+
+function Shell() {
+  return (
+    <>
+      <ResizeEdges />
+      <Titlebar />
+      <Outlet />
+    </>
+  )
+}
+```
+
+**Everything in the bar that is not a control is a handle.** The gestures
+ignore a press that lands on a button, a link, a field, a menu, a tab or a
+dialog — the control has already handled it — and treat the rest of the bar
+as the thing you move the window by.
+
+**A drag starts on the first movement, not on the press.** `startDragging`
+hands the window to the system, which is what keeps snap layouts and
+drag-to-edge working, but from that moment the webview stops seeing the
+mouse. Calling it on `pointerdown` ate the second click of every double click,
+and maximising never happened. So the press waits for four pixels of movement,
+and `dblclick`, which the browser is the one qualified to detect, maximises.
+
+**The maximise button follows the window, not the last click.** A window can
+be maximised without our buttons — a drag to the top edge, the keyboard, a
+snap layout — so `useMaximized()` asks the window and listens for resizes.
+The button's label switches to `restore` from the same answer, and
+`ResizeEdges` draws nothing while it is true: a maximised window has no edges
+to drag, and a strip left along the top would take the clicks meant for the
+title bar.
+
+**The edges are geometry, not design.** Eight strips of five pixels (ten at
+the corners), positioned by inline style, invisible, above everything. They
+are `fixed` to the viewport, which is where a window's edges are; pass
+`className="absolute"` to put them on a box instead, as the stand does.
+
+**Outside Tauri it renders and does nothing.** Every call goes through a check
+for the Tauri bridge (`window.__TAURI_INTERNALS__`), so a browser, a test or
+a storybook gets the chrome without a thrown error on the first click. The
+labels are the only thing it needs from you, and all four are required so
+they can be translated.
+
+## Props
+
+### `WindowButtons`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `labels` | `{ minimize, maximize, restore, close }` | | Required — `restore` replaces `maximize` while maximised |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `useTitleBarGestures()`
+
+Returns `{ onPointerDown, onDoubleClick }` to spread on the bar.
+
+### `ResizeEdges`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `className` | `string` | | Merged into every strip; `absolute` moves them onto the nearest positioned box |
+
+### `useMaximized()`
+
+Returns `boolean`, kept current as the window resizes. `false` outside Tauri.
 
 ---
 

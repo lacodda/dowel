@@ -1,6 +1,6 @@
 # dowel
 
-> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.25.0.
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.26.0.
 
 Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
 
@@ -57,7 +57,9 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [KeyValue](https://lacodda.github.io/dowel/components/key-value.md): A list of facts - a name and what it is - in the element that says which belongs to which.
 - [LineChart](https://lacodda.github.io/dowel/components/line-chart.md): A quantity over time, where it continues between the readings - with a hole drawn as a hole.
 - [line-scale](https://lacodda.github.io/dowel/components/line-scale.md): Bounds, runs and round-number ticks for a line - the arithmetic, with no React in it.
+- [MarkedText](https://lacodda.github.io/dowel/components/marked-text.md): Text with marks on it - a span of characters or a whole line - to read, or to type into with the marks under the letters.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
+- [NotificationBell](https://lacodda.github.io/dowel/components/notification-bell.md): The bell in the title bar, lit only by what asks to be looked at, with the last few entries under it and the whole history one click further.
 - [NumberField](https://lacodda.github.io/dowel/components/number-field.md): A number, its stepper, and what an empty box actually means.
 - [NumberFormat](https://lacodda.github.io/dowel/components/number-format.md): A number written the way the reader's language writes numbers, with figures that line up in a column.
 - [PageSize](https://lacodda.github.io/dowel/components/page-size.md): How many rows to a page - a Select, never a native one, handing back a number.
@@ -74,12 +76,14 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [RelativeTime](https://lacodda.github.io/dowel/components/relative-time.md): A phrase like "3 minutes ago" in the reader's own language, over a date they can still read.
 - [SaveState](https://lacodda.github.io/dowel/components/save-state.md): The quiet line beside a field that saves itself: saving, then a tick that fades.
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
+- [SectionNav](https://lacodda.github.io/dowel/components/section-nav.md): The left-hand list of a screen with sections, drawn as the product's own links, and the heading each section opens under.
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
 - [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
 - [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
 - [Sparkline](https://lacodda.github.io/dowel/components/sparkline.md): The shape of a history, small enough to sit beside the number it belongs to.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
+- [Splash](https://lacodda.github.io/dowel/components/splash.md): What the window shows while the application is opening - the mark, the name, the version and a bar that sweeps until there is something to draw.
 - [StatTile](https://lacodda.github.io/dowel/components/stat-tile.md): One figure and what it is a figure of, in the element that ties them together.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.
 - [Table](https://lacodda.github.io/dowel/components/table.md): A table of rows and the heading that reorders them - parts you compose, not a columns prop.
@@ -95,6 +99,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [TreeView](https://lacodda.github.io/dowel/components/tree-view.md): Folders that open, one tab stop, and the arrow keys a hand-rolled tree leaves out.
 - [Truncate](https://lacodda.github.io/dowel/components/truncate.md): Text that does not fit, cut with an ellipsis and still readable in full.
 - [VirtualList](https://lacodda.github.io/dowel/components/virtual-list.md): A hundred thousand rows that puts a screenful in the DOM, and keeps the scrollbar honest.
+- [WindowFrame](https://lacodda.github.io/dowel/components/window-frame.md): The window's own frame for a window with no system frame - the three buttons, drag and double-click on the title bar, and the edges you resize by.
 
 ## Guides
 
