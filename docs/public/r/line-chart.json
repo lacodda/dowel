@@ -6,7 +6,7 @@
   "description": "The distinction against its neighbours is the data's, not the drawing's. A column says each period is its own sum - hours worked in a week, and there is no Wednesday-afternoon figure between two weeks. A line says the value existed the whole time and was sampled: an account balance, a price, a temperature. Drawing a sum as a line claims readings nobody took; drawing a level as columns throws away the thing being watched.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.26.0"
+    "dowel-ui@^0.26.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/line-scale.json"

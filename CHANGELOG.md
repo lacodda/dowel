@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.26.1] - 2026-09-18
+
+### Bug Fixes
+- Shade a popup instead of staining the page behind it
+
 ## [0.26.0] - 2026-09-18
 
 ### Build

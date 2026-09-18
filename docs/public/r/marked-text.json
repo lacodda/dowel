@@ -5,7 +5,7 @@
   "title": "Marked-text",
   "description": "A textarea cannot colour a word. The way round it is older than React: draw the same text twice, once as marked-up HTML underneath and once as the textarea on top with its own text transparent, so the caret and the selection are the browser's and the colours are ours. The two have to agree on every metric - font, size, line height, padding, wrapping - or the marks slide off the words they mark. So both take ONE class list, given by the caller, and the textarea adds only what makes it invisible.",
   "dependencies": [
-    "dowel-ui@^0.26.0"
+    "dowel-ui@^0.26.1"
   ],
   "registryDependencies": [],
   "files": [

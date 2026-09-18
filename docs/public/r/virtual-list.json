@@ -5,7 +5,7 @@
   "title": "Virtual-list",
   "description": "The browser is fine with long lists until it is not: a hundred thousand `<div>`s is a layout the machine recomputes on every change, and the page stops responding while it does. What is drawn instead is the window the reader can actually see, held in place by a tall spacer, so the scrollbar still says how much there is.",
   "dependencies": [
-    "dowel-ui@^0.26.0"
+    "dowel-ui@^0.26.1"
   ],
   "registryDependencies": [],
   "files": [

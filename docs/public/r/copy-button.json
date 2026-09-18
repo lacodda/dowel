@@ -5,7 +5,7 @@
   "title": "Copy-button",
   "description": "Whatever a product shows in a panel - code, a payload, a log, one side of a comparison - somebody eventually wants to take it away, and the button that lets them is written again every time with the same three things missed.",
   "dependencies": [
-    "dowel-ui@^0.26.0"
+    "dowel-ui@^0.26.1"
   ],
   "registryDependencies": [],
   "files": [

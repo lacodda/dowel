@@ -1,4 +1,4 @@
-# dowel 0.26.0
+# dowel 0.26.1
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
