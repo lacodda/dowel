@@ -1,0 +1,106 @@
+---
+title: WindowFrame
+description: The window's own frame for a window with no system frame - the three buttons, drag and double-click on the title bar, and the edges you resize by.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/window-frame.json
+```
+
+<Stand component="window-frame" caption="The three buttons and the eight resize strips, drawn inside a frame - the stand runs in a browser, so they render and stay inert." />
+
+## Notes
+
+A desktop product of the line draws its own title bar. With Tauri's
+`decorations: false` the system draws nothing, so everything it used to do is
+the page's: dragging the window by its bar, double-click to maximise, the
+three buttons, and the edges you grab to resize. Each is small. The reason to
+take them on at all is that a system title bar over an application title bar
+costs a strip of every laptop screen for nothing — scheda made the trade
+first, kilna copied it, and this is the copy.
+
+Four exports, used together:
+
+```tsx
+import { ResizeEdges, WindowButtons, useTitleBarGestures } from '@/components/ui/window-frame'
+
+function Titlebar() {
+  const gestures = useTitleBarGestures()
+  return (
+    <header className="flex h-9 items-center border-b border-line bg-bg" {...gestures}>
+      <Brand />
+      <Trail />
+      <div className="ml-auto flex h-full items-center">
+        <Bell />
+        <WindowButtons labels={t('shell', { returnObjects: true })} />
+      </div>
+    </header>
+  )
+}
+
+function Shell() {
+  return (
+    <>
+      <ResizeEdges />
+      <Titlebar />
+      <Outlet />
+    </>
+  )
+}
+```
+
+**Everything in the bar that is not a control is a handle.** The gestures
+ignore a press that lands on a button, a link, a field, a menu, a tab or a
+dialog — the control has already handled it — and treat the rest of the bar
+as the thing you move the window by.
+
+**A drag starts on the first movement, not on the press.** `startDragging`
+hands the window to the system, which is what keeps snap layouts and
+drag-to-edge working, but from that moment the webview stops seeing the
+mouse. Calling it on `pointerdown` ate the second click of every double click,
+and maximising never happened. So the press waits for four pixels of movement,
+and `dblclick`, which the browser is the one qualified to detect, maximises.
+
+**The maximise button follows the window, not the last click.** A window can
+be maximised without our buttons — a drag to the top edge, the keyboard, a
+snap layout — so `useMaximized()` asks the window and listens for resizes.
+The button's label switches to `restore` from the same answer, and
+`ResizeEdges` draws nothing while it is true: a maximised window has no edges
+to drag, and a strip left along the top would take the clicks meant for the
+title bar.
+
+**The edges are geometry, not design.** Eight strips of five pixels (ten at
+the corners), positioned by inline style, invisible, above everything. They
+are `fixed` to the viewport, which is where a window's edges are; pass
+`className="absolute"` to put them on a box instead, as the stand does.
+
+**Outside Tauri it renders and does nothing.** Every call goes through a check
+for the Tauri bridge (`window.__TAURI_INTERNALS__`), so a browser, a test or
+a storybook gets the chrome without a thrown error on the first click. The
+labels are the only thing it needs from you, and all four are required so
+they can be translated.
+
+## Props
+
+### `WindowButtons`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `labels` | `{ minimize, maximize, restore, close }` | | Required — `restore` replaces `maximize` while maximised |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `useTitleBarGestures()`
+
+Returns `{ onPointerDown, onDoubleClick }` to spread on the bar.
+
+### `ResizeEdges`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `className` | `string` | | Merged into every strip; `absolute` moves them onto the nearest positioned box |
+
+### `useMaximized()`
+
+Returns `boolean`, kept current as the window resizes. `false` outside Tauri.
