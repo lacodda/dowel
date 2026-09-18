@@ -1,0 +1,73 @@
+---
+title: NotificationBell
+description: The bell in the title bar, lit only by what asks to be looked at, with the last few entries under it and the whole history one click further.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/notification-bell.json
+```
+
+<Stand component="notification-bell" caption="The bell at zero, at three and past nine; press one to open the panel, mark everything read, or hand over to the whole list." />
+
+## Notes
+
+A bell that is always lit is a bell nobody reads. So the count is your
+decision — ordinary edits are recorded and never counted; only what needs a
+look lights it — and this draws it: nothing at zero, the number past that,
+`9+` past nine. Pressing it does not leave the screen. The last few entries
+open under it, and the whole history is one more click.
+
+```tsx
+<NotificationBell
+  count={unread}
+  label={t('journal.open')}
+  title={t('journal.recent')}
+  markAllLabel={t('journal.markRead')}
+  onMarkAll={() => markRead.mutate()}
+  busy={markRead.isPending}
+  seeAllLabel={t('journal.seeAll')}
+  onSeeAll={() => navigate('/journal')}
+  emptyLabel={t('journal.nothingRecent')}
+>
+  <ul>{recent.map((entry) => <RecentLine key={entry.id} entry={entry} />)}</ul>
+</NotificationBell>
+```
+
+**The rows are yours.** A journal entry, a failed upload and a comment are
+three different lines, and one component cannot draw them; `children` is the
+list. What is shared is the frame — the trigger with its badge, the heading
+with the button that clears the count, the empty line, and the footer that
+leads to everything.
+
+**Mark-all is offered only while there is something to mark.** A button that
+does nothing is worse than no button. It appears when `count > 0` and a label
+is given, and `busy` holds it while the product is clearing.
+
+**See-all closes first, then hands over.** The panel is gone before the
+route changes, so nothing is left open over the page it led to.
+
+**Controlled or not.** Leave `open` out and the bell manages itself; pass it
+with `onOpenChange` to drive it — to close it when a row is chosen, say.
+
+Built on [Popover](/components/popover/) and [Button](/components/button/),
+so the panel opens, positions and closes the way every other panel does.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `count` | `number` | | Required; nothing drawn at zero, `9+` past nine |
+| `label` | `string` | | Required — the bell's name for a screen reader |
+| `title` | `string` | | Required — the panel's heading |
+| `emptyLabel` | `string` | | Required — what the list says with no rows |
+| `children` | `ReactNode` | | The rows |
+| `markAllLabel` | `string` | | With `onMarkAll`; shown only while `count > 0` |
+| `onMarkAll` | `() => void` | | |
+| `busy` | `boolean` | `false` | Holds the mark-all button |
+| `seeAllLabel` | `string` | | With `onSeeAll`; the footer is drawn only when given |
+| `onSeeAll` | `() => void` | | Called after the panel closes |
+| `open` | `boolean` | | Controlled, with `onOpenChange` |
+| `onOpenChange` | `(open) => void` | | |
+| `className` | `string` | | On the trigger |
