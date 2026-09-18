@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.26.0] - 2026-09-18
+
+### Build
+- Add @tauri-apps/api as a dev dependency
+
+### Documentation
+- Make the readme a shopfront
+- Drop the duplicate heading, add the badges
+
+### Features
+- Add the frameless window's own chrome
+- Add the opening screen
+- Add text with marks, to read or to type into
+- Add the section column and its heading
+- Add the title-bar bell
+- Show the five shell components
+- A header edge to drag, rows that reorder, a funnel with a panel
+
 ## [0.25.0] - 2026-09-17
 
 ### Bug Fixes
