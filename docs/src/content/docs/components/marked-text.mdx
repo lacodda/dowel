@@ -1,0 +1,80 @@
+---
+title: MarkedText
+description: Text with marks on it - a span of characters or a whole line - to read, or to type into with the marks under the letters.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/marked-text.json
+```
+
+<Stand component="marked-text" caption="A verse with a repeated word marked and a new line painted, read-only and then as a textarea you can type into." />
+
+## Notes
+
+A textarea cannot colour a word. The way round it is older than React: draw
+the same text twice, once as marked-up HTML underneath and once as the
+textarea on top with its own text transparent, so the caret and the selection
+are the browser's and the colours are ours.
+
+```tsx
+<MarkedTextarea
+  value={text}
+  onChange={setText}
+  marks={repeats.map((r) => ({ start: r.start, end: r.end, className: 'bg-warn-soft' }))}
+  lineMarks={added.map((line) => ({ line, className: 'bg-good-soft' }))}
+  className="p-3 font-mono text-sm leading-6"
+/>
+```
+
+**Both layers take one class list.** The two have to agree on every metric —
+font, size, line height, padding, wrapping — or the marks slide off the words
+they mark. So `className` is the metrics, given once and put on both; the
+textarea adds only what makes it invisible.
+
+**The mirror sizes the box.** It sits in the flow and the textarea is
+stretched over it, so the field grows with its text without a `scrollHeight`
+measurement and never scrolls inside itself — the box around it scrolls, and
+the marks scroll with the words.
+
+**Two kinds of mark.** A `Mark` is a span of characters, as offsets into the
+whole text — a repeated word, a misspelling. A `LineMark` is a whole line —
+one that is new since the other version. A span that crosses a line break is
+cut at the break, one `<mark>` per line; a line is a block, so a line mark
+paints the full width and wraps exactly as the textarea's line does.
+
+**A blank line keeps its height.** An empty block collapses, and every mark
+below it lands one line early. The trailing space on the last line is the
+same rule for a text that ends in a newline.
+
+**The `<mark>` is transparent by default.** The browser's yellow is dropped so
+the mark's own `className` is its colour — in whichever tone the mark means,
+which is the product's to say.
+
+`MarkedText` is the same layer to read rather than type into, and
+`MarkedLines` is the layer itself, for a product composing its own box.
+
+## Props
+
+### `MarkedTextarea`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Required |
+| `onChange` | `(value: string) => void` | | The new value, not the event |
+| `marks` | `Mark[]` | `[]` | `{ start, end, className?, style? }` |
+| `lineMarks` | `LineMark[]` | `[]` | `{ line, className? }`, zero-based |
+| `className` | `string` | | The metrics both layers share |
+| `ref` | `Ref<HTMLTextAreaElement>` | | |
+
+Every other `<textarea>` attribute passes through.
+
+### `MarkedText`
+
+`text`, `marks`, `lineMarks` and `className`.
+
+### `MarkedLines`
+
+`text`, `marks`, `lineMarks` and `ghost` — transparent text, for a layer under
+something else.
