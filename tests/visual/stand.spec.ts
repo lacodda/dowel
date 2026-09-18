@@ -21,6 +21,7 @@ const SECTIONS = [
   'button',
   'input',
   'textarea',
+  'marked-text',
   'field',
   'checkbox',
   'radio-group',
@@ -95,6 +96,10 @@ const SECTIONS = [
   'progress',
   'query-state',
   'error-boundary',
+  'section-nav',
+  'notification-bell',
+  'window-frame',
+  'splash',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

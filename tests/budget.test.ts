@@ -136,6 +136,17 @@ describe('what a primitive weighs', () => {
         'paths and the bounded expand-all with no React in them. What is left is the ' +
         'rows, the ARIA tree, and the leaf drawn as the type it actually is.',
     },
+    'window-frame': {
+      ceiling: 5632,
+      because:
+        'Four exports that are one frame: the buttons, the title-bar gestures and the ' +
+        'resize strips all read the same `useMaximized` and go through the same guard ' +
+        'for a window that is not there. Split, a product installs three files that have ' +
+        'to agree on when the window is maximised - and the strip along the top edge that ' +
+        'must vanish then is in one of them while the button that says so is in another. ' +
+        'The buttons were already folded into one map; what is left is the eight-entry ' +
+        'geometry table, which is the only honest way to write eight positions.',
+    },
     calendar: {
       ceiling: 8192,
       because:
@@ -399,6 +410,26 @@ describe('what a primitive drags in', () => {
     // retry - the alternative was a hand-drawn button, which is exactly the
     // drift the set exists to prevent.
     'error-boundary': ['button', 'empty-state'],
+    // Two layers of the same text, and nothing else: the mirror is divs and
+    // `<mark>`s, the field is a native textarea, and the metrics are the
+    // caller's. No editor library - what CodeMirror would add is a document
+    // model this does not need, since the product already holds the text.
+    'marked-text': [],
+    // The rows are Base UI's `useRender`, the way Button takes a `render`: the
+    // whole point is that a row is the product's own router link wearing the
+    // column's clothes, and that is what `useRender` is for.
+    'section-nav': ['@base-ui/react'],
+    // The frame is Popover's and the buttons are Button's, so the panel
+    // opens, positions and closes the way every other panel in the set does.
+    'notification-bell': ['button', 'popover'],
+    // The Tauri window API, and it is the first dependency here that is not a
+    // UI library: the component is the line's desktop chrome, and the window
+    // it drives is Tauri's. A product without Tauri has no use for it and
+    // does not install it; one with Tauri already has this package.
+    'window-frame': ['@tauri-apps/api'],
+    // Its own markup and a `<style>` of eight words for the sweep. No
+    // dependency, because it runs before most of the application has loaded.
+    splash: [],
   }
 
   /** What the file imports: bare module specifiers minus React and the

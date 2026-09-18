@@ -182,6 +182,11 @@ import {
   TooltipTrigger,
 } from '../../registry/ui/tooltip'
 import { Truncate } from '../../registry/ui/truncate'
+import { MarkedText, MarkedTextarea, type Mark } from '../../registry/ui/marked-text'
+import { SectionHeading, SectionNav } from '../../registry/ui/section-nav'
+import { NotificationBell } from '../../registry/ui/notification-bell'
+import { ResizeEdges, WindowButtons, useTitleBarGestures } from '../../registry/ui/window-frame'
+import { Splash } from '../../registry/ui/splash'
 
 /*
  * The stand.
@@ -209,6 +214,12 @@ const sections = [
   { id: 'button', title: 'Button', docs: '/dowel/components/button/', render: () => <ButtonSection /> },
   { id: 'input', title: 'Input', docs: '/dowel/components/input/', render: () => <InputSection /> },
   { id: 'textarea', title: 'Textarea', docs: '/dowel/components/textarea/', render: () => <TextareaSection /> },
+  {
+    id: 'marked-text',
+    title: 'MarkedText',
+    docs: '/dowel/components/marked-text/',
+    render: () => <MarkedTextSection />,
+  },
   { id: 'field', title: 'Field', docs: '/dowel/components/field/', render: () => <FieldSection /> },
   { id: 'checkbox', title: 'Checkbox', docs: '/dowel/components/checkbox/', render: () => <CheckboxSection /> },
   {
@@ -527,6 +538,31 @@ const sections = [
     title: 'ErrorBoundary',
     docs: '/dowel/components/error-boundary/',
     render: () => <ErrorBoundarySection />,
+  },
+  /* The shell: what a desktop product of the line draws around its screens. */
+  {
+    id: 'section-nav',
+    title: 'SectionNav',
+    docs: '/dowel/components/section-nav/',
+    render: () => <SectionNavSection />,
+  },
+  {
+    id: 'notification-bell',
+    title: 'NotificationBell',
+    docs: '/dowel/components/notification-bell/',
+    render: () => <NotificationBellSection />,
+  },
+  {
+    id: 'window-frame',
+    title: 'WindowFrame',
+    docs: '/dowel/components/window-frame/',
+    render: () => <WindowFrameSection />,
+  },
+  {
+    id: 'splash',
+    title: 'Splash',
+    docs: '/dowel/components/splash/',
+    render: () => <SplashSection />,
   },
 ]
 
@@ -4492,6 +4528,246 @@ function ErrorBoundarySection() {
           <ErrorBoundary labels={boundaryLabels} resetKey={attempt}>
             <Thrower failing={failing} />
           </ErrorBoundary>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+/* A verse with one word used twice and one line new since the last draft:
+ * the two kinds of mark, on text short enough to read at a glance. */
+const verse = `The wire hums where the road gives out,
+a kettle somewhere, a door ajar.
+The light stays on in the hallway.
+Nobody counts the hours here.`
+
+/** Every occurrence of a word, as marks into the text. */
+function occurrences(text: string, word: string, className: string): Mark[] {
+  const marks: Mark[] = []
+  let at = text.indexOf(word)
+  while (at !== -1) {
+    marks.push({ start: at, end: at + word.length, className })
+    at = text.indexOf(word, at + word.length)
+  }
+  return marks
+}
+
+function MarkedTextSection() {
+  const [text, setText] = useState(verse)
+  const metrics = 'p-3 text-sm leading-6'
+
+  return (
+    <>
+      <Row label="to read - a repeated word marked, a new line painted">
+        <MarkedText
+          text={verse}
+          marks={occurrences(verse, 'The', 'bg-warn-soft')}
+          lineMarks={[{ line: 2, className: 'bg-good-soft' }]}
+          className={cn('w-[26rem] rounded-md border border-line bg-raise', metrics)}
+        />
+      </Row>
+
+      <Row label="to type into - the marks stay under the letters as you edit">
+        <MarkedTextarea
+          value={text}
+          onChange={setText}
+          marks={occurrences(text, 'the', 'bg-warn-soft')}
+          lineMarks={[{ line: 2, className: 'bg-good-soft' }]}
+          aria-label="Verse"
+          className={cn('w-[26rem] rounded-md border border-line bg-raise', metrics)}
+        />
+      </Row>
+    </>
+  )
+}
+
+const settingsSections = [
+  {
+    id: 'general',
+    label: 'General',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <path d="M2 4h12M2 8h8M2 12h10" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: 'card',
+    label: 'Card',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <rect x="2" y="3" width="12" height="10" rx="1.5" />
+        <path d="M2 7h12" />
+      </svg>
+    ),
+  },
+  {
+    id: 'data',
+    label: 'Data',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <ellipse cx="8" cy="4" rx="5" ry="2" />
+        <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2" />
+      </svg>
+    ),
+  },
+  {
+    id: 'agents',
+    label: 'Agents',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <rect x="3" y="5" width="10" height="8" rx="2" />
+        <path d="M8 2v3M6 9h.01M10 9h.01" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+]
+
+const settingsHints: Record<string, string> = {
+  general: 'Language, theme, and what the window does on close.',
+  card: 'Which fields a work shows, and in what order.',
+  data: 'Where it lives, and how to take it away.',
+  agents: 'The command an assistant runs to reach this workspace.',
+}
+
+function SectionNavSection() {
+  const [active, setActive] = useState('data')
+  const current = settingsSections.find((section) => section.id === active)!
+
+  return (
+    <Row label="the column and the heading it opens - press a row">
+      <div className="grid w-full gap-8 md:grid-cols-[11rem_minmax(0,1fr)]">
+        <SectionNav label="Settings" items={settingsSections} activeId={active} onSelect={setActive} />
+        <div className="min-w-0">
+          <SectionHeading title={current.label} description={settingsHints[active]} />
+          <SkeletonText lines={3} />
+        </div>
+      </div>
+    </Row>
+  )
+}
+
+const bellLabels = {
+  label: 'Notifications',
+  title: 'Recent',
+  markAllLabel: 'Mark all read',
+  seeAllLabel: 'See all',
+  emptyLabel: 'Nothing recent.',
+}
+
+const recentEntries = [
+  { text: 'A release lost its slot: Harbour lights, Friday.', warn: true, when: '2h' },
+  { text: 'Tide tables was scored.', warn: false, when: '5h' },
+  { text: 'A new version of Harbour lights was pasted in.', warn: false, when: '1d' },
+]
+
+function NotificationBellSection() {
+  const [unread, setUnread] = useState(1)
+  const [seen, setSeen] = useState('nothing yet')
+
+  const rows = (
+    <ul className="m-0 list-none p-0">
+      {recentEntries.map((entry) => (
+        <li key={entry.text} className="flex items-baseline gap-2.5 border-b border-line py-2 last:border-b-0">
+          <span
+            aria-hidden
+            className={cn('mt-1.5 size-1.5 shrink-0 rounded-full', entry.warn && unread > 0 ? 'bg-warn' : 'bg-line-2')}
+          />
+          <p className={cn('m-0 min-w-0 flex-1 text-[13px] text-dim', entry.warn && unread > 0 && 'text-text')}>
+            {entry.text}
+          </p>
+          <span className="shrink-0 text-2xs tabular-nums text-faint">{entry.when}</span>
+        </li>
+      ))}
+    </ul>
+  )
+
+  return (
+    <>
+      <Row label="lit by one thing that needs a look - open it, mark it read, or see everything">
+        <NotificationBell
+          count={unread}
+          {...bellLabels}
+          onMarkAll={() => setUnread(0)}
+          onSeeAll={() => setSeen('sent to the whole history')}
+        >
+          {rows}
+        </NotificationBell>
+        <span className="text-xs text-dim">{seen}</span>
+      </Row>
+
+      <Row label="at zero, at three, and past nine">
+        <NotificationBell count={0} {...bellLabels} />
+        <NotificationBell count={3} {...bellLabels}>
+          {rows}
+        </NotificationBell>
+        <NotificationBell count={42} {...bellLabels}>
+          {rows}
+        </NotificationBell>
+      </Row>
+    </>
+  )
+}
+
+const windowLabels = { minimize: 'Minimize', maximize: 'Maximize', restore: 'Restore', close: 'Close' }
+
+/* The stand runs in a browser, where there is no Tauri window to drive: the
+ * component checks for the bridge before every call and stays inert without
+ * it, so nothing here is mocked. */
+function WindowFrameSection() {
+  const gestures = useTitleBarGestures()
+
+  return (
+    <Row label="a frameless window's chrome, inside a frame - the strips along the edges are tinted here so they can be seen">
+      <div className="relative h-56 w-full overflow-hidden rounded-lg border border-line bg-bg">
+        <ResizeEdges className="absolute bg-accent/40" />
+        <header className="flex h-9 items-center border-b border-line bg-bg pl-3 select-none" {...gestures}>
+          <span className="text-xs font-semibold">kilna</span>
+          <span className="ml-2 font-mono text-2xs text-faint">v0.74.0</span>
+          <span className="ml-auto flex h-full items-center gap-2">
+            <NotificationBell count={2} {...bellLabels} />
+            <span aria-hidden className="ml-1 h-4 w-px bg-line" />
+            <WindowButtons labels={windowLabels} />
+          </span>
+        </header>
+        <p className="m-0 p-4 text-sm text-dim">
+          Everything in the bar that is not a control is a handle. Drag it to move the window;
+          double-click to maximise.
+        </p>
+      </div>
+    </Row>
+  )
+}
+
+const splashMark = (
+  <svg viewBox="0 0 32 32" aria-hidden>
+    <path d="M16 2 28 9v14L16 30 4 23V9z" fill="var(--accent)" />
+    <text x="16" y="20.5" fontFamily="Consolas, monospace" fontSize="11" fontWeight="700" fill="var(--on-accent)" textAnchor="middle">
+      ki
+    </text>
+  </svg>
+)
+
+function SplashSection() {
+  return (
+    <>
+      <Row label="opening - the sweep runs until there is something to draw">
+        <div className="relative h-80 w-full overflow-hidden rounded-lg border border-line">
+          <Splash
+            className="absolute"
+            mark={splashMark}
+            name="kilna"
+            tagline="From raw idea to shipped work."
+            version="v0.74.0"
+            status="Opening the workspace"
+            tip="Ctrl+K finds anything."
+          />
+        </div>
+      </Row>
+
+      <Row label="waiting on a person - still, and without the two lines">
+        <div className="relative h-64 w-full overflow-hidden rounded-lg border border-line">
+          <Splash className="absolute" mark={splashMark} name="kilna" tagline="From raw idea to shipped work." version="v0.74.0" busy={false} />
         </div>
       </Row>
     </>
