@@ -72,11 +72,22 @@ describe('the delta, which is a claim when it is empty', () => {
 describe('tone classes, which is where the copies drifted', () => {
   it.each([
     ['accent', 'text-accent-2'],
-    ['warn', 'text-warn'],
-    ['bad', 'text-bad'],
     ['default', 'text-text'],
   ] as const)('gives %s its own class', (tone, expected) => {
     const { container } = render(<StatTile label="Worked" value="6h" tone={tone} />)
+    expect(container.querySelector('dd')?.className).toContain(expected)
+  })
+
+  it.each([
+    ['warn', 'text-warn'],
+    ['bad', 'text-bad'],
+  ] as const)('gives %s its own class, and makes it bring a mark', (tone, expected) => {
+    // Written separately from the two above because the type will not let a
+    // judgement be rendered without one - which is the point, and is checked
+    // by the compiler rather than by an assertion here.
+    const { container } = render(
+      <StatTile label="Silent" value="3" tone={tone} icon={<svg />} />,
+    )
     expect(container.querySelector('dd')?.className).toContain(expected)
   })
 
@@ -86,7 +97,9 @@ describe('tone classes, which is where the copies drifted', () => {
      * `text-accent-2text-warn` and was styled by neither. It never showed
      * because the two flags were never passed together - which is exactly the
      * kind of defect that waits for the day they are. */
-    const { container } = render(<StatTile label="Silent" value="3" tone="warn" size="lg" />)
+    const { container } = render(
+      <StatTile label="Silent" value="3" tone="warn" icon={<svg />} size="lg" />,
+    )
     const className = container.querySelector('dd')!.className
     expect(className).toContain('text-warn')
     expect(className).toContain('text-2xl')
@@ -138,9 +151,44 @@ describe('accessibility', () => {
       <StatRow>
         <StatTile label="Worked" value="32h 10m" tone="accent" delta="+2h vs last week" deltaTone="good" />
         <StatTile label="Paused" value="3h 04m" />
-        <StatTile label="Silent" value="3" tone="warn" delta="1 more than yesterday" deltaTone="bad" />
-        <StatTile label="Failed" value="0" tone="bad" size="lg" />
+        <StatTile
+          label="Silent"
+          value="3"
+          tone="warn"
+          icon={<svg data-testid="warn-mark" />}
+          delta="1 more than yesterday"
+          deltaTone="bad"
+        />
+        <StatTile label="Failed" value="0" tone="bad" icon={<svg />} size="lg" />
       </StatRow>,
     )
+  })
+
+  it('keeps the mark out of what a reader hears', () => {
+    // The mark restates the tone, and the tone is already in the label's
+    // words. Announcing it would be the screen reader saying twice what the
+    // sighted reader sees once.
+    const { container } = render(
+      <StatTile label="Silent" value="3" tone="warn" icon={<svg data-testid="mark" />} />,
+    )
+    const mark = container.querySelector('[aria-hidden="true"]')
+    expect(mark).not.toBeNull()
+    expect(mark?.querySelector('[data-testid="mark"]')).not.toBeNull()
+  })
+
+  it('lays the mark beside the figure rather than above it', () => {
+    const { container } = render(
+      <StatTile label="Silent" value="3" tone="warn" icon={<svg />} />,
+    )
+    const value = container.querySelector('dd')
+    expect(value?.className).toContain('flex')
+    expect(value?.className).toContain('items-center')
+  })
+
+  it('leaves an unmarked figure alone', () => {
+    // A tile without a mark must not gain a flex row it does not need - the
+    // numbers in a row share a baseline, and a stray flex breaks it.
+    const { container } = render(<StatTile label="People" value="12" />)
+    expect(container.querySelector('dd')?.className).not.toContain('flex')
   })
 })
