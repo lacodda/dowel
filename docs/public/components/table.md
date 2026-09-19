@@ -6,7 +6,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#table
 
-Sortable, dense, with a sticky heading, and empty.
+Sortable, the same table in a compact region, with a sticky heading, and empty.
 
 ## Notes
 
@@ -83,7 +83,7 @@ message sits under the first column.
 | | |
 | --- | --- |
 | `TableScroll` | The scroll container. Where the scrollbar and the sticky heading live |
-| `Table` | `density`: `base` (default) or `dense` |
+| `Table` | The `<table>`. Row height follows the region's density |
 | `TableHead` | `sticky`: keep the heading in view while the body scrolls |
 | `TableBody` | |
 | `TableRow` | `selected`: the row picked out. Announced, not only coloured |

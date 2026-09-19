@@ -156,7 +156,8 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 The theme, the scales, an accent per product, and eighty-nine primitives are
 in daily use across two products of the line. Every component installs from a
 versioned registry and passes its own gate - axe, the keyboard, a dependency
-budget and a picture in both themes - before it ships.
+budget, a scale that refuses a length nobody argued for, a floor under every
+pointer target, and a picture in both themes - before it ships.
 
 Released versions and what landed in each: [CHANGELOG](https://github.com/lacodda/dowel/blob/main/CHANGELOG.md).
 

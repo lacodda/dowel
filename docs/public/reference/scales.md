@@ -127,3 +127,70 @@ order is a sentence you can read.
 
 A toast is last on purpose: a message about what just happened has to be
 visible over whatever caused it.
+
+## Control height and density
+
+```css
+--row-control: 36px;   /* h-control    — a field, a select, a date picker */
+--row-control-sm: 32px;/* h-control-sm */
+--row-control-lg: 40px;/* h-control-lg */
+--row-cell: 10px;      /* py-row       — the space above and below a table row */
+```
+
+`h-9` used to appear in nine primitives — every field the set has — each
+spelling it out, which is why `Input` could not be made compact without editing
+`Input`. One decision made nine times gets one name.
+
+**Density is an attribute on a container, not a prop on a component:**
+
+```html
+<form data-density="compact">   <!-- every field inside it -->
+```
+
+`compact` and `comfortable` move the control height and the table row together.
+A prop would have to be added to every primitive, threaded through every
+wrapper, and passed at each call site — and a primitive written next year would
+not have it. An attribute is inherited, so it reaches components that did not
+exist when the product was built, including a product's own, as long as they
+measure in `h-control` like everything else.
+
+These are plain custom properties rather than `@theme` tokens, and that is
+load-bearing: a token declared in `@theme` is **inlined** by the compiler, so
+`h-control` would emit `height: 36px` and an override on a container would have
+nothing to bind to. It was written that way first and measured in a browser —
+the container reported 32px while the field inside it stayed 36.
+
+## Pointer target
+
+```css
+--size-target: 24px;   /* size-target, and the `target-min` utility */
+```
+
+The floor WCAG 2.2 sets for a pointer target (2.5.8, AA). It does **not** move
+with density: a compact row is still one a hand can hit.
+
+```tsx
+<button className="size-4 target-min" aria-label={t('tag.remove')}>
+```
+
+`target-min` grows the hit area without moving the glyph — a pseudo-element
+centred on the control, taking its size, refusing to go under the floor. The
+obvious fix is to make the control 24px instead, and it is the wrong one: a
+chip is small by design, and a cross a third of its height reads as a button
+with a chip around it. Measured on the stand, the set had four answers to this
+one question — 16, 19, 21 and 24 — and three of them failed.
+
+## A step between the steps
+
+```css
+--spacing-hair: 3px;   /* gap-hair, -top-hair */
+```
+
+The spacing scale runs in fours. Four primitives independently reached past it
+for three pixels — the gap between segments of a rating and of an axis, between
+cells of a heatmap, and how far a tooltip's arrow tucks under its popup. Four
+hands arriving at one number is a step the scale was missing, not four
+accidents.
+
+For hairline gaps between things that are themselves small, where two pixels
+reads as touching and four as separate objects. Nothing larger belongs here.
