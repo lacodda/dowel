@@ -386,7 +386,7 @@ export function AxisBar({
       aria-valuetext={valueText}
       onKeyDown={interactive ? onKeyDown : undefined}
       className={cn(
-        'flex gap-[3px] rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
+        'flex gap-hair rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
         className,
       )}
       {...props}

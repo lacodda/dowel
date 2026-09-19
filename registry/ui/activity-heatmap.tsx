@@ -44,7 +44,7 @@ export const activityHeatmapVariants = cva('inline-flex flex-col gap-2', {
       /* The year view, where a square is small enough that 53 columns fit. */
       sm: '[--cell:10px] [--gap:2px]',
       /* A quarter or a month, where there is room to hover comfortably. */
-      md: '[--cell:14px] [--gap:3px]',
+      md: '[--cell:14px] [--gap:var(--spacing-hair)]',
     },
   },
   defaultVariants: { size: 'md' },

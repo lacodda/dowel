@@ -157,10 +157,10 @@ export function TooltipArrow({ className, ...props }: Base.Arrow.Props) {
          * reads as a second arrow pointing the wrong way - and it is small
          * enough that it looked like a rendering artefact rather than a rule
          * nobody wrote. */
-        'data-[side=bottom]:-top-[3px] data-[side=bottom]:border-r-0 data-[side=bottom]:border-b-0',
-        'data-[side=top]:-bottom-[3px] data-[side=top]:border-t-0 data-[side=top]:border-l-0',
-        'data-[side=left]:-right-[3px] data-[side=left]:border-b-0 data-[side=left]:border-l-0',
-        'data-[side=right]:-left-[3px] data-[side=right]:border-r-0 data-[side=right]:border-t-0',
+        'data-[side=bottom]:-top-hair data-[side=bottom]:border-r-0 data-[side=bottom]:border-b-0',
+        'data-[side=top]:-bottom-hair data-[side=top]:border-t-0 data-[side=top]:border-l-0',
+        'data-[side=left]:-right-hair data-[side=left]:border-b-0 data-[side=left]:border-l-0',
+        'data-[side=right]:-left-hair data-[side=right]:border-r-0 data-[side=right]:border-t-0',
         className,
       )}
       {...props}

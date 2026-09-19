@@ -114,7 +114,7 @@ export function RatingScale({
       aria-disabled={disabled || undefined}
       onKeyDown={onKeyDown}
       className={cn(
-        'flex gap-[3px] rounded-md',
+        'flex gap-hair rounded-md',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
         disabled && 'cursor-not-allowed opacity-50',
         className,
@@ -138,7 +138,7 @@ export function RatingScale({
               onValueChange(value === mark ? undefined : mark)
             }}
             className={cn(
-              'h-[22px] flex-1 rounded-sm transition-colors',
+              'h-5 flex-1 rounded-sm transition-colors',
               disabled ? 'cursor-not-allowed' : 'cursor-pointer',
               filled ? 'bg-accent' : 'bg-soft',
               !disabled && (filled ? 'hover:bg-accent-2' : 'hover:bg-line-2'),

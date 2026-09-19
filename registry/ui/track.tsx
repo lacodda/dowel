@@ -166,7 +166,7 @@ export function Track({
          * as half a step further along than it is. */
         <span
           style={{ left: `${at}%` }}
-          className="absolute top-1/2 h-[10px] w-[6px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-bg ring-2 ring-text"
+          className="absolute top-1/2 h-2.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-bg ring-2 ring-text"
         />
       )}
     </div>
