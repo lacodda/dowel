@@ -172,6 +172,24 @@ export const motionTokens = [
   'ease-in-out',
 ] as const
 
+/**
+ * How big things are: the floor for a pointer target, the step below the
+ * spacing scale, and how tall a control and a table row stand.
+ *
+ * The last three are deliberately not `@theme` tokens. Tailwind inlines what
+ * it finds there - `h-control` would compile to `height: 36px` - and an
+ * override on a container would have nothing to bind to, which is exactly
+ * what density needs. Declared as plain properties, they stay a reference.
+ */
+export const sizeTokens = [
+  'size-target',
+  'spacing-hair',
+  'row-control',
+  'row-control-sm',
+  'row-control-lg',
+  'row-cell',
+] as const
+
 /** Stacking order. Not a Tailwind namespace either: a component reads these
  * as `z-index: var(--z-modal)`. The names are a promise about what covers
  * what, and the values only mean anything relative to each other. */
@@ -202,6 +220,7 @@ export const allTokens = [
   ...radiusTokens,
   ...typeTokens,
   ...motionTokens,
+  ...sizeTokens,
   ...layerTokens,
 ] as const
 
@@ -211,6 +230,7 @@ export type ElevationToken = (typeof elevationTokens)[number]
 export type RadiusToken = (typeof radiusTokens)[number]
 export type TypeToken = (typeof typeTokens)[number]
 export type MotionToken = (typeof motionTokens)[number]
+export type SizeToken = (typeof sizeTokens)[number]
 export type LayerToken = (typeof layerTokens)[number]
 /* The chart and code palettes belong in this union as much as the rest, and
  * were missing from it until v0.25 - `allTokens` listed them while `Token` did
@@ -234,6 +254,7 @@ export type Token =
   | RadiusToken
   | TypeToken
   | MotionToken
+  | SizeToken
   | LayerToken
 
 /** The custom property a token is read from: `token('accent')` is

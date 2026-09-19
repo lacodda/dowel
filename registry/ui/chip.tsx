@@ -78,7 +78,11 @@ export function Chip({
             onRemove()
           }}
           className={cn(
-            'grid size-4 place-items-center rounded-full text-faint transition-colors',
+            // `target-min` keeps the cross the size it looks - a chip is a
+            // small thing and a cross a third of its height reads as a button
+            // with a chip around it - while the area a pointer has to find
+            // grows to the floor the theme sets.
+            'grid size-4 place-items-center rounded-full text-faint transition-colors target-min',
             'hover:bg-line hover:text-text',
             'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
           )}

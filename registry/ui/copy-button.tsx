@@ -78,7 +78,7 @@ export function CopyButton({
         onClick={copy}
         aria-label={copied ? copiedLabel : label}
         className={cn(
-          'shrink-0 rounded-sm p-1 text-faint transition-colors',
+          'shrink-0 rounded-sm p-1 text-faint transition-colors target-min',
           'hover:bg-soft hover:text-text',
           /* `group-hover` rather than a hover of its own: the button is in the
            * corner of a block, and it has to appear when the pointer is

@@ -70,7 +70,7 @@ export function Copyable({
       onClick={copy}
       aria-label={copied ? copiedLabel : label}
       className={cn(
-        'group inline-flex max-w-full items-center gap-1.5 rounded-sm px-1 py-0.5 text-left',
+        'group inline-flex max-w-full items-center gap-1.5 rounded-sm px-1 py-0.5 text-left target-min',
         'font-mono text-xs text-dim transition-colors',
         'hover:bg-soft hover:text-text',
         'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
