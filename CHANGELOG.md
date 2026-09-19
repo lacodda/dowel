@@ -2,6 +2,35 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.28.0] - 2026-09-19
+
+### Breaking Changes
+
+- **Density as a property of a region**
+`Table` no longer takes a `density` prop. Row height now
+follows the region's density, so `<Table density="dense">` becomes a
+`data-density="compact"` on any ancestor - a wrapper, the panel, the page.
+The prop's two values map onto the shared vocabulary: `base` is the default
+density and `dense` is `compact`.
+
+- **A judgement has to bring a mark, and the type says so**
+`StatTile` with `tone="warn"` or `tone="bad"` now requires an
+`icon`. Pass the mark the product already uses for a problem - a triangle, a
+cross - and it is drawn before the figure. Tiles with `default` or `accent`
+are unchanged.
+
+### Documentation
+- Show density, and why a judgement needs its mark
+
+### Features
+- A floor for pointer targets, and a way to reach it
+- Measure in steps, and name the step that was missing
+- Density as a property of a region
+- A judgement has to bring a mark, and the type says so
+
+### Testing
+- Photograph the five state sections
+
 ## [0.27.0] - 2026-09-19
 
 ### Bug Fixes
