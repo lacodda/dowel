@@ -2,10 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.27.0] - 2026-09-19
+
+### Bug Fixes
+- The front page states the version the package is at
+
+### Features
+- A condition that carries its word, not only its colour
+- A person in the space of a word, with the fallback as the normal case
+- The band, the road to the next one, and one axis of the score
+- A history whose rail stops where the history does
+- A placeholder that measures the content instead of guessing it
+- Show the five state components
+
 ## [0.26.1] - 2026-09-18
 
 ### Bug Fixes
 - Shade a popup instead of staining the page behind it
+
+### Testing
+- Photograph the eight new sections
 
 ## [0.26.0] - 2026-09-18
 
