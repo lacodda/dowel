@@ -621,6 +621,7 @@ declare const __DOWEL_VERSION__: string
 export function App() {
   const { theme, setTheme } = useThemeSwitch('dowel.stand.theme')
   const [accent, setAccent] = useStoredState('dowel.stand.accent', 'dowel')
+  const [density, setDensity] = useStoredState('dowel.stand.density', 'default')
   const { path, navigate } = useRoute()
 
   /*
@@ -650,7 +651,13 @@ export function App() {
   }, [accent])
 
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <div
+      className="min-h-screen bg-bg text-text"
+      /* The whole point of density being an attribute: one here reaches
+         every control on the stand, including the ones that never heard
+         of it. */
+      data-density={density === 'default' ? undefined : density}
+    >
       {/*
         * The header is a plain block, not `sticky`.
         *
@@ -723,6 +730,20 @@ export function App() {
                   <SelectItem value="system">system</SelectItem>
                   <SelectItem value="light">light</SelectItem>
                   <SelectItem value="dark">dark</SelectItem>
+                </SelectPopup>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs text-dim">
+              <span id="density-label">density</span>
+              <Select value={density} onValueChange={(value) => setDensity(value as string)}>
+                <SelectTrigger size="sm" aria-labelledby="density-label">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  <SelectItem value="default">default</SelectItem>
+                  <SelectItem value="compact">compact</SelectItem>
+                  <SelectItem value="comfortable">comfortable</SelectItem>
                 </SelectPopup>
               </Select>
             </div>
@@ -2773,9 +2794,12 @@ function TableSection() {
         </TableScroll>
       </Row>
 
-      <Row label="dense, for a table that is scanned rather than read">
-        <TableScroll className="w-full">
-          <Table density="dense">
+      <Row label="the same table in a compact region - one attribute, no prop">
+        {/* The density comes from a container rather than from the table, so
+            the same markup reads tight here and roomy above. The switch in the
+            header does this to the whole stand. */}
+        <TableScroll className="w-full" data-density="compact">
+          <Table>
             <TableHead>
               <TableRow>
                 <TableHeader>Title</TableHeader>
@@ -2798,7 +2822,7 @@ function TableSection() {
 
       <Row label="a sticky heading - scroll the box, the heading stays">
         <div className="h-48 w-64 overflow-y-auto rounded-md border border-line">
-          <Table density="dense">
+          <Table>
             <TableHead sticky>
               <TableRow>
                 <TableHeader>Title</TableHeader>
@@ -3840,6 +3864,19 @@ function SparklineSection() {
   )
 }
 
+/** A triangle for a figure that is a problem. Inlined rather than pulled from
+ * an icon set: the stand shows what a product would pass, and a product passes
+ * its own. */
+function WarningMark() {
+  return (
+    <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+      <path d="M8 2.5 14.5 13.5h-13L8 2.5Z" strokeLinejoin="round" />
+      <path d="M8 6.5v3.2" strokeLinecap="round" />
+      <path d="M8 11.8h.01" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function StatTileSection() {
   return (
     <>
@@ -3870,16 +3907,28 @@ function StatTileSection() {
               delta="-30s vs last week"
               deltaTone="good"
             />
-            <StatTile label="Silent" value="3" tone="warn" delta="1 more than yesterday" deltaTone="bad" />
+            <StatTile
+              label="Silent"
+              value="3"
+              tone="warn"
+              icon={<WarningMark />}
+              delta="1 more than yesterday"
+              deltaTone="bad"
+            />
           </StatRow>
         </Panel>
       </Row>
 
-      <Row label="a figure that is itself the problem - warn, then bad">
+      <Row label="a figure that is itself the problem - and why the mark is required">
         <Panel className="p-5">
           <StatRow>
-            <StatTile label="Queue" value="128" tone="warn" />
-            <StatTile label="Failed" value="4" tone="bad" />
+            {/* The accented tile and the warning one, side by side. This
+                product's accent is close enough to the warning hue that the
+                colour alone does not separate them - which is the whole reason
+                the type will not let a judgement be drawn without a mark. */}
+            <StatTile label="Worked" value="219h" tone="accent" />
+            <StatTile label="Queue" value="128" tone="warn" icon={<WarningMark />} />
+            <StatTile label="Failed" value="4" tone="bad" icon={<WarningMark />} />
           </StatRow>
         </Panel>
       </Row>

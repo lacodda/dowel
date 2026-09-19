@@ -36,13 +36,36 @@ number belongs to the label.
 <StatRow>
   <StatTile label="Worked" value={duration(worked)} tone="accent" />
   <StatTile label="Paused" value={duration(paused)} />
-  <StatTile label="Silent" value={String(silent)} tone="warn" />
+  <StatTile label="Silent" value={String(silent)} tone="warn" icon={<TriangleAlert className="size-4" />} />
 </StatRow>
 ```
 
 **The delta is a second line, not a colour on the number.** A figure that turns
 red is a figure whose colour has to be explained, and the explanation is never
 on the screen. `+40m vs last week` explains itself.
+
+**A judgement brings a mark with it, and the type enforces that.** `warn` and
+`bad` say the figure is itself a problem, and on a dashboard that claim rests
+on colour alone — which is where it fails. The line's accents sit close to the
+status hues: measured in OKLab, dowel's own accent is ΔE 6.1 from `--warn`,
+kasl-server's gold is 3.7, hilvan's is 2.5 from `--bad`. An accented tile and a
+warning one, three tiles apart in a row, are the same colour to a reader
+glancing down it.
+
+Neither side can move — the status hues are the line's shared language and the
+accents come from the brand registry — so the rule the theme states in prose
+becomes structure here: `tone="warn"` without an `icon` does not compile.
+
+```tsx
+// Will not build: a judgement drawn in colour alone.
+<StatTile label="Silent" value="3" tone="warn" />
+```
+
+The first consumer had already worked this out by hand, wrapping its value in a
+flex row with a warning triangle. That is the proof the requirement is real,
+and the reason it belongs in the primitive rather than in a guideline nobody
+reads twice. The mark is `aria-hidden`: it restates the tone, and the tone is
+already in the label's words.
 
 Its tone is stated rather than read off the sign, because the sign does not
 know what the figure means: for *time to first response* a fall is the good
@@ -81,6 +104,7 @@ delta stands taller than its neighbours, and the numbers stop sharing a line.
 | `label` | `ReactNode` | | What the figure is |
 | `value` | `ReactNode` | | The figure, already formatted |
 | `tone` | `default` `accent` `warn` `bad` | `default` | How the value itself reads |
+| `icon` | `ReactNode` | | A mark before the figure. **Required** with `warn` or `bad` |
 | `delta` | `ReactNode` | | Which way it moved, in the caller's words |
 | `deltaTone` | `default` `good` `bad` | `default` | Whether that movement is good news |
 | `size` | `md` `lg` | `md` | `lg` for a figure that leads a page |
