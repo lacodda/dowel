@@ -5,7 +5,7 @@
   "title": "Splash",
   "description": "A desktop product has a second or two between the window appearing and the first screen being ready - a workspace to open, a database to migrate, a plugin to start - and a blank window for that long reads as a crash. So the window shows the product instead: the mark, the name, the promise, the version, and a bar that sweeps until there is something to draw.",
   "dependencies": [
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

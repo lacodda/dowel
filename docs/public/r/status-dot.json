@@ -6,7 +6,7 @@
   "description": "The smallest thing a screen can say about something's condition: a server is up, a job failed, a person is away. Every product of the line drew its own coloured circle, and every one of them drew it the same way - a `<span>` with a background - which means the condition existed for exactly the readers who could see it.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

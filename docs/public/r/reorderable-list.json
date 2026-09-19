@@ -5,7 +5,7 @@
   "title": "Reorderable-list",
   "description": "The columns in a column picker, the stops of a dial, the roles of a profile. A hook and a grip rather than a list component: the rows are already something else's - a menu's items, a form's fields - and a component wrapping them would have to reproduce whatever that something else does.",
   "dependencies": [
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

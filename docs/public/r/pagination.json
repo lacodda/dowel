@@ -5,7 +5,7 @@
   "title": "Pagination",
   "description": "The arithmetic is exported separately from the component for the same reason `table-sort` is a file of its own: a product that pages on the server needs the page numbers and not the buttons, and computing them a second time in a different place is how the two disagree about where the last page ends.",
   "dependencies": [
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/button.json"

@@ -6,7 +6,7 @@
   "description": "A settings screen is the usual case: five or six sections, each its own address so it can be linked to and the back button walks between them, listed down the left with the current one tinted. Every product draws the same column, and every product draws the active row a little differently - which is exactly the drift a shared list exists to stop.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

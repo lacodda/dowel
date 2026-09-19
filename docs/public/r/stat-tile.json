@@ -6,7 +6,7 @@
   "description": "The smallest thing on a dashboard and the one every product writes itself: a label above, a number below, sometimes a word about which way it moved.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

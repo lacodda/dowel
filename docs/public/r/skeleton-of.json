@@ -5,7 +5,7 @@
   "title": "Skeleton-of",
   "description": "`Skeleton` and its shapes solved half the problem: they gave a product a list, a card and a grid to reach for instead of a spinner. The half left over is the one that actually causes the jump, and it is a human one - somebody has to look at the real thing, judge how many rows it has and how tall they are, and type that in. The judgement is made once, the screen changes a month later, and the placeholder goes on promising the old shape.",
   "dependencies": [
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

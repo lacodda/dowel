@@ -6,7 +6,7 @@
   "description": "Three kinds of nothing, and a product that draws the same panel for all three is telling the reader the wrong thing twice:\n *   **empty** - there is nothing here yet, and that is normal. The panel says   what would be here and offers the one action that makes it appear.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [

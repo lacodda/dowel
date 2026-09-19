@@ -6,7 +6,7 @@
   "description": "What happened, in the order it happened: a release history, an audit trail, the steps a job went through. Four products of the line draw one, and all four drew it the same way - a list with a border on the left and a dot positioned over it by hand.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.28.0"
+    "dowel-ui@^0.28.1"
   ],
   "registryDependencies": [],
   "files": [
