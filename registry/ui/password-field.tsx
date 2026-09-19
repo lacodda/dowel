@@ -71,7 +71,7 @@ export function PasswordField({
     <div
       className={cn(
         fieldClasses,
-        'flex h-9 items-stretch overflow-hidden p-0',
+        'flex h-control items-stretch overflow-hidden p-0',
         'focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-accent',
         className,
       )}

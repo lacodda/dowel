@@ -159,7 +159,7 @@ export function DurationField({
           commit()
         }
       }}
-      className={cn(fieldClasses, 'h-9 tabular-nums', className)}
+      className={cn(fieldClasses, 'h-control tabular-nums', className)}
     />
   )
 }

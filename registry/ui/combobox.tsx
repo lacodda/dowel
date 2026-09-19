@@ -54,9 +54,9 @@ import { selectItemVariants, selectPopupVariants } from './select'
 export const comboboxInputVariants = cva('', {
   variants: {
     size: {
-      sm: 'h-8 text-xs',
-      md: 'h-9',
-      lg: 'h-10 text-base',
+      sm: 'h-control-sm text-xs',
+      md: 'h-control',
+      lg: 'h-control-lg text-base',
     },
     bare: {
       true: 'h-7 w-auto min-w-24 flex-1 bg-transparent px-1 text-sm text-text placeholder:text-faint outline-none',

@@ -34,9 +34,9 @@ import { fieldClasses } from './input'
 export const selectTriggerVariants = cva([fieldClasses, 'flex items-center justify-between gap-2'], {
   variants: {
     size: {
-      sm: 'h-8 text-xs',
-      md: 'h-9',
-      lg: 'h-10 text-base',
+      sm: 'h-control-sm text-xs',
+      md: 'h-control',
+      lg: 'h-control-lg text-base',
     },
   },
   defaultVariants: { size: 'md' },

@@ -84,7 +84,7 @@ export function NumberField({
       <Base.Group
         className={cn(
           fieldClasses,
-          'flex h-9 items-stretch overflow-hidden p-0',
+          'flex h-control items-stretch overflow-hidden p-0',
           // The group carries the field's clothes, so the focus ring belongs
           // to the whole control rather than to the bare input inside it.
           'focus-within:outline-2 focus-within:outline-offset-0 focus-within:outline-accent',

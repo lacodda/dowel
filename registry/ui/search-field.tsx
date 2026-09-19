@@ -88,7 +88,7 @@ export function SearchField({
         onChange={(event) => onValueChange(event.target.value)}
         className={cn(
           fieldClasses,
-          'h-9 pl-8',
+          'h-control pl-8',
           // Room on the right for whatever sits there, and none when nothing
           // does - a field with a permanent gap looks broken.
           showClear && 'pr-8',

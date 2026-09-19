@@ -226,6 +226,27 @@ describe('the shell', () => {
     expect(container.querySelector('table')?.className).not.toContain('text-sm')
   })
 
+  it('takes its row height from the region, not from a prop of its own', () => {
+    /*
+     * This had a `density` prop with words of its own - `base` and `dense` -
+     * so "density" meant two things in one set: an attribute on a container
+     * for every field, and a prop on this one element for rows. A product
+     * wanting a tight screen had to know both and set both, and a table
+     * inside a compact form stayed comfortable unless somebody remembered.
+     *
+     * The prop was also entirely untested, which is how it drifted from the
+     * rest of the set without anything going red.
+     */
+    const { container } = render(<Example />)
+    const table = container.querySelector('table')
+
+    expect(table?.className).toContain('[&_td]:py-row')
+    expect(table?.className).toContain('[&_th]:py-row')
+    // The old vocabulary is gone rather than kept alongside: two ways to say
+    // one thing is the drift, not the cure.
+    expect(table?.className).not.toMatch(/py-2\.5|py-1\.5/)
+  })
+
   it('passes axe, sorted, sticky and empty', async () => {
     // Unmounted between the two: two renders in one test mount into the same
     // document, and the second tree is then judged with the first still in it.

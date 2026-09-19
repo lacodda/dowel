@@ -84,11 +84,14 @@ describe('what a primitive weighs', () => {
         'neither is a component of its own.',
     },
     combobox: {
-      ceiling: 4608,
+      ceiling: 4736,
       because:
         'The chips container is the field when it is used - a row that wraps, with the ' +
         'input on the same line as the last chip. Splitting it would leave a container ' +
-        'nobody can use without reassembling it.',
+        'nobody can use without reassembling it. Raised by four bytes in v0.28: the ' +
+        'three sizes read `h-control-sm`/`h-control`/`h-control-lg` instead of ' +
+        '`h-8`/`h-9`/`h-10`, which is longer to write and is the whole point - the ' +
+        'height is now one decision the density can move, not three literals.',
     },
     'command-palette': {
       ceiling: 4864,

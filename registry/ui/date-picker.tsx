@@ -77,7 +77,7 @@ export function DatePicker({
         aria-label={ariaLabel}
         className={cn(
           fieldClasses,
-          'flex h-9 cursor-pointer items-center gap-2 text-left',
+          'flex h-control cursor-pointer items-center gap-2 text-left',
           'disabled:cursor-not-allowed',
           className,
         )}
