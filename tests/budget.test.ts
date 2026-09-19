@@ -63,6 +63,11 @@ describe('what a primitive weighs', () => {
       because:
         'pointer drag, the keyboard path and the drop line are one gesture split three ways; two of them would be a list that reorders by mouse only',
     },
+    tier: {
+      ceiling: 8192,
+      because:
+        'the badge, the ruler and the axis are three readings of one score and share the `Tier` it is read against; split apart, the band arithmetic would be written twice and the two copies would disagree about where a boundary falls - which is the defect the ruler was written to correct in the first place',
+    },
     /* The three that grew when a live run found what they were not doing.
      *
      * Each gained one thing a reader had asked for and none of them can be
@@ -450,6 +455,24 @@ describe('what a primitive drags in', () => {
     // The panel is Popover's and Clear is Button's, so a funnel's panel
     // opens and positions the way every other panel in the set does.
     'filter-popover': ['button', 'popover'],
+    // A tile, its letters and the rule that cuts them. Nothing else: the
+    // initials are one function, and deriving a colour from the name - which
+    // is what an avatar library brings - is the thing this deliberately does
+    // not do.
+    avatar: ['class-variance-authority'],
+    // A circle and a word. The variants carry the status vocabulary, which is
+    // exactly what `cva` is for and is the whole component.
+    'status-dot': ['class-variance-authority'],
+    // Three pieces of one subject with a shared `Tier`, and their variants.
+    // No charting library: the bands are percentages of a bar.
+    tier: ['class-variance-authority'],
+    // Markers, a rail and a list. The variants are the status vocabulary
+    // again; the rail is a one-pixel span.
+    timeline: ['class-variance-authority'],
+    // A `ResizeObserver` and two numbers. Nothing to install: the measurement
+    // is `getBoundingClientRect`, and a library that virtualised or animated
+    // it would be solving a different problem.
+    'skeleton-of': [],
   }
 
   /** What the file imports: bare module specifiers minus React and the

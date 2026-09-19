@@ -190,6 +190,11 @@ import { Splash } from '../../registry/ui/splash'
 import { ColumnResizeHandle, measureColumns, useColumnWidths } from '../../registry/ui/column-resize-handle'
 import { ReorderGrip, ReorderIndicator, useReorder } from '../../registry/ui/reorderable-list'
 import { FilterPopover } from '../../registry/ui/filter-popover'
+import { Avatar, AvatarGroup } from '../../registry/ui/avatar'
+import { StatusBadge, StatusDot } from '../../registry/ui/status-dot'
+import { AxisBar, TierBadge, TierRuler, tierAt, type Tier } from '../../registry/ui/tier'
+import { Timeline, TimelineItem } from '../../registry/ui/timeline'
+import { SkeletonOf } from '../../registry/ui/skeleton-of'
 
 /*
  * The stand.
@@ -586,6 +591,26 @@ const sections = [
     title: 'Splash',
     docs: '/dowel/components/splash/',
     render: () => <SplashSection />,
+  },
+  { id: 'avatar', title: 'Avatar', docs: '/dowel/components/avatar/', render: () => <AvatarSection /> },
+  {
+    id: 'status-dot',
+    title: 'StatusDot',
+    docs: '/dowel/components/status-dot/',
+    render: () => <StatusDotSection />,
+  },
+  { id: 'tier', title: 'Tier', docs: '/dowel/components/tier/', render: () => <TierSection /> },
+  {
+    id: 'timeline',
+    title: 'Timeline',
+    docs: '/dowel/components/timeline/',
+    render: () => <TimelineSection />,
+  },
+  {
+    id: 'skeleton-of',
+    title: 'SkeletonOf',
+    docs: '/dowel/components/skeleton-of/',
+    render: () => <SkeletonOfSection />,
   },
 ]
 
@@ -4793,6 +4818,311 @@ function SplashSection() {
           <Splash className="absolute" mark={splashMark} name="kilna" tagline="From raw idea to shipped work." version="v0.74.0" busy={false} />
         </div>
       </Row>
+    </>
+  )
+}
+
+const standPeople = [
+  { name: 'Ines Almeida' },
+  { name: 'Ravi Chandrasekaran' },
+  { name: 'Kit Brennan' },
+  { name: 'Tomas Vrba' },
+  { name: 'Anne-Marie Dubois' },
+]
+
+function AvatarSection() {
+  return (
+    <>
+      <Row label="sizes - a picture, and the initials when there is none">
+        <Avatar name="Ines Almeida" size="xs" />
+        <Avatar name="Ines Almeida" size="sm" />
+        <Avatar name="Ines Almeida" size="md" />
+        <Avatar name="Ines Almeida" size="lg" />
+        <Avatar name="Ines Almeida" size="xl" />
+      </Row>
+
+      <Row label="a name is not a colour - every tile stands on the same neutral ground">
+        {standPeople.map((person) => (
+          <Avatar key={person.name} name={person.name} size="lg" />
+        ))}
+      </Row>
+
+      <Row label="square, for a thing that is not a person">
+        <Avatar name="dowel" shape="square" size="lg" />
+        <Avatar name="kilna" shape="square" size="lg" />
+        <Avatar name="rigger" shape="square" size="lg" />
+      </Row>
+
+      <Row label="a picture that fails to load falls back rather than showing a broken glyph">
+        <Avatar name="Ines Almeida" size="lg" src="https://example.invalid/missing.png" />
+      </Row>
+
+      <Row label="a group, and the count of the ones it did not draw">
+        <AvatarGroup people={standPeople} max={3} label="Assignees" size="md" />
+        <AvatarGroup people={standPeople.slice(0, 2)} max={3} label="Reviewers" size="md" />
+      </Row>
+    </>
+  )
+}
+
+function StatusDotSection() {
+  const tick = (
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3.5 8.5l3 3 6-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+  const cross = (
+    <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
+    </svg>
+  )
+
+  return (
+    <>
+      <Row label="the dot alone - the word is still there, for a reader who does not see the colour">
+        <StatusDot status="good" label="Online" />
+        <StatusDot status="warn" label="Degraded" />
+        <StatusDot status="bad" label="Down" />
+        <StatusDot status="info" label="Syncing" />
+        <StatusDot status="neutral" label="Unknown" />
+      </Row>
+
+      <Row label="with the word printed, which is the better answer when there is room">
+        <StatusDot status="good" label="Online" showLabel />
+        <StatusDot status="warn" label="Degraded" showLabel />
+        <StatusDot status="bad" label="Down" showLabel />
+        <StatusDot status="neutral" label="Unknown" showLabel />
+      </Row>
+
+      <Row label="a shape instead of the dot - the second channel">
+        <StatusDot status="good" label="Passed" icon={tick} showLabel />
+        <StatusDot status="bad" label="Failed" icon={cross} showLabel />
+      </Row>
+
+      <Row label="sizes">
+        <StatusDot status="good" label="Online" size="sm" showLabel />
+        <StatusDot status="good" label="Online" size="md" showLabel />
+        <StatusDot status="good" label="Online" size="lg" showLabel />
+      </Row>
+
+      <Row label="the badge, when the state deserves the words">
+        <StatusBadge status="good">Passed</StatusBadge>
+        <StatusBadge status="warn">Flaky</StatusBadge>
+        <StatusBadge status="bad">Failed</StatusBadge>
+        <StatusBadge status="info">Queued</StatusBadge>
+        <StatusBadge status="neutral">Skipped</StatusBadge>
+      </Row>
+
+      <Row label="a badge carrying a shape rather than a second dot">
+        <StatusBadge status="good" icon={tick}>
+          Passed
+        </StatusBadge>
+        <StatusBadge status="bad" icon={cross}>
+          Failed
+        </StatusBadge>
+      </Row>
+    </>
+  )
+}
+
+const standTiers: Tier[] = [
+  { key: 'draft', label: 'Draft', min: 0 },
+  { key: 'fair', label: 'Fair', min: 50 },
+  { key: 'publishable', label: 'Publishable', min: 78 },
+  { key: 'clip', label: 'A clip', min: 90 },
+]
+
+function TierSection() {
+  const [melody, setMelody] = useState<number | undefined>(7)
+  const [words, setWords] = useState<number | undefined>(undefined)
+
+  return (
+    <>
+      <Row label="the verdict">
+        <TierBadge label="Draft" status="neutral" />
+        <TierBadge label="Fair" status="info" value="63" />
+        <TierBadge label="Publishable" value="78.4" />
+        <TierBadge label="A clip" status="good" value="91.2" />
+      </Row>
+
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+          the road - bands to scale, and every label over the boundary it names
+        </div>
+        <div className="flex flex-col gap-5 rounded-lg border border-line bg-raise p-4">
+          {[24, 64, 82, 96].map((score) => (
+            <div key={score} className="flex items-center gap-4">
+              <span className="w-10 shrink-0 text-xs text-dim">{score}</span>
+              <TierRuler
+                className="flex-1"
+                tiers={standTiers}
+                value={score}
+                label="Score"
+                valueText={`${score} of 100, ${tierAt(standTiers, score)?.label ?? 'unplaced'}`}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+          one axis - click a mark, or focus the row and use the arrows; click the mark again to
+          unjudge it
+        </div>
+        <div className="flex flex-col gap-3 rounded-lg border border-line bg-raise p-4">
+          <div className="flex items-center gap-3">
+            <span className="w-20 shrink-0 text-xs text-dim">Melody</span>
+            <AxisBar
+              className="flex-1"
+              label="Melody"
+              scale={10}
+              value={melody}
+              onChange={setMelody}
+              threshold={{ mark: 8, label: 'A clip from 8' }}
+              valueText={melody === undefined ? 'unjudged' : String(melody)}
+            />
+            <span className="w-16 shrink-0 text-right text-xs text-faint">
+              {melody ?? 'unjudged'}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="w-20 shrink-0 text-xs text-dim">Words</span>
+            <AxisBar
+              className="flex-1"
+              label="Words"
+              scale={10}
+              value={words}
+              onChange={setWords}
+              valueText={words === undefined ? 'unjudged' : String(words)}
+            />
+            <span className="w-16 shrink-0 text-right text-xs text-faint">
+              {words ?? 'unjudged'}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="w-20 shrink-0 text-xs text-dim">Mix</span>
+            <AxisBar className="flex-1" label="Mix" scale={10} value={6} valueText="6, set elsewhere" />
+            <span className="w-16 shrink-0 text-right text-xs text-faint">read only</span>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function TimelineSection() {
+  const tick = (
+    <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="2.5">
+      <path d="M3.5 8.5l3 3 6-6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+  const cross = (
+    <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="2.5">
+      <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
+    </svg>
+  )
+
+  return (
+    <>
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+          a history - the rail stops at the last entry rather than trailing off
+        </div>
+        <div className="rounded-lg border border-line bg-raise p-4">
+          <Timeline>
+            <TimelineItem title="Opened" time="3 days ago" status="neutral">
+              by Ines Almeida
+            </TimelineItem>
+            <TimelineItem title="Review requested" time="2 days ago" status="info" statusLabel="Waiting">
+              Ravi Chandrasekaran, Kit Brennan
+            </TimelineItem>
+            <TimelineItem title="Checks passed" time="yesterday" status="good" statusLabel="Succeeded" icon={tick}>
+              2,621 tests in 81 seconds
+            </TimelineItem>
+            <TimelineItem title="Deploy failed" time="an hour ago" status="bad" statusLabel="Failed" icon={cross} last>
+              Rolled back after the health check
+            </TimelineItem>
+          </Timeline>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+          steps, with the ones not taken yet drawn as empty rings
+        </div>
+        <div className="rounded-lg border border-line bg-raise p-4">
+          <Timeline>
+            <TimelineItem title="Written" status="good" statusLabel="Done" icon={tick} />
+            <TimelineItem title="Reviewed" status="good" statusLabel="Done" icon={tick} />
+            <TimelineItem title="Mixed" status="accent" statusLabel="In progress" />
+            <TimelineItem title="Mastered" pending />
+            <TimelineItem title="Published" pending last />
+          </Timeline>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function SkeletonOfSection() {
+  const [pending, setPending] = useState(false)
+  const [rows, setRows] = useState(3)
+
+  return (
+    <>
+      <Row label="load it once, then ask again - the placeholder is the shape that was there">
+        <Button onClick={() => setPending((held) => !held)}>
+          {pending ? 'Show the content' : 'Pretend it is loading'}
+        </Button>
+        <Button variant="ghost" onClick={() => setRows((held) => (held === 3 ? 6 : 3))}>
+          {rows === 3 ? 'Grow the list to six' : 'Back to three'}
+        </Button>
+      </Row>
+
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+          grow the list, then ask again: the placeholder follows, because it measures rather than
+          remembering a number somebody typed
+        </div>
+        <div className="rounded-lg border border-line bg-raise p-4">
+          <SkeletonOf
+            pending={pending}
+            rowSelector="[data-row]"
+            gapClassName="gap-2"
+            fallback={<SkeletonList rows={3} />}
+          >
+            <div className="flex flex-col gap-2">
+              {works.slice(0, rows).map((work) => (
+                <div
+                  key={work.id}
+                  data-row
+                  className="flex items-center justify-between rounded-md border border-line px-3 py-2"
+                >
+                  <span className="text-sm text-text">{work.title}</span>
+                  <span className="text-xs text-faint">{work.owner}</span>
+                </div>
+              ))}
+            </div>
+          </SkeletonOf>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+          a block with no repeating part is one box, the height the block had
+        </div>
+        <div className="rounded-lg border border-line bg-raise p-4">
+          <SkeletonOf pending={pending}>
+            <div className="rounded-md border border-line p-4">
+              <div className="text-sm text-text">Harbour lights</div>
+              <p className="mt-2 text-xs text-dim">
+                A card has no rows to count, so what is remembered is how tall it stood.
+              </p>
+            </div>
+          </SkeletonOf>
+        </div>
+      </div>
     </>
   )
 }

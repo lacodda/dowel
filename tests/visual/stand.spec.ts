@@ -103,6 +103,11 @@ const SECTIONS = [
   'notification-bell',
   'window-frame',
   'splash',
+  'avatar',
+  'status-dot',
+  'tier',
+  'timeline',
+  'skeleton-of',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {
