@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.28.1] - 2026-09-19
+
+### Bug Fixes
+- An allowance that does not grow with the picture
+
+### Testing
+- Re-record what the strict allowance can now see
+
 ## [0.28.0] - 2026-09-19
 
 ### Breaking Changes
