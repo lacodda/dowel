@@ -48,10 +48,29 @@ export default defineConfig({
 
   expect: {
     toHaveScreenshot: {
-      // Anti-aliasing differs a little between runs of the same browser
-      // version. This is small enough that a one-pixel layout shift still
-      // fails and large enough that a re-render of the same picture does not.
-      maxDiffPixelRatio: 0.002,
+      /*
+       * An absolute count, not a ratio - and the difference is the whole
+       * point.
+       *
+       * This was `maxDiffPixelRatio: 0.002`, with a comment claiming a
+       * one-pixel layout shift would still fail. It does not, and the size of
+       * the section is why: a ratio makes the allowance grow with the picture.
+       * The StatTile section is 896x862, so two tenths of a percent is 1,545
+       * pixels of licence - and three 16x16 marks added to it come to 768. The
+       * gate compared them and passed.
+       *
+       * That was found by noticing the gate had *not* gone red when the marks
+       * landed, rather than by it failing; a tolerance that scales with the
+       * thing it measures hides most in exactly the biggest screens, where
+       * there is most to hide.
+       *
+       * A hundred pixels sits between the two populations cleanly.
+       * Anti-aliasing on text edges differs by tens of pixels between runs of
+       * the same browser; the smallest real change - one 16x16 glyph - is 256,
+       * a one-pixel shift of a 400px row is 400, and a two-pixel height change
+       * across the section is 1,792.
+       */
+      maxDiffPixels: 100,
       animations: 'disabled',
       caret: 'hide',
     },
