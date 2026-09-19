@@ -1,0 +1,88 @@
+---
+title: Timeline
+description: What happened, in the order it happened - as a real list, with a rail that stops at the last entry and a state that is not only a colour.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/timeline.json
+```
+
+<Stand component="timeline" caption="A four-entry history ending in a failure, and a set of steps with the ones not taken yet drawn as empty rings." />
+
+## Notes
+
+A release history, an audit trail, the steps a job went through. Four products
+draw one, and all four drew it the same way — a list with a border on the left
+and a dot positioned over it by hand. Three things go wrong with that version.
+
+**The rail runs past the last entry.** A border on the container ends where
+the container does, which is below the last dot, so the history trails off
+into a line going nowhere and a finished list cannot be told from one still
+loading. Here the rail belongs to the entry, and the last one does not draw
+it — which also means an entry renders correctly on its own, without a
+container to inherit a border from.
+
+**It is a list, and says so.** A stack of `<div>`s is announced as nothing; an
+`<ol>` tells a reader how many entries there are and which one they are on,
+which is the whole navigational value of a history.
+
+**The state is a colour.** A red dot for a failed step is invisible to the
+reader it matters most to. `statusLabel` names the state in the product's
+words, and an `icon` gives it a shape as well as a hue.
+
+```tsx
+<Timeline>
+  {events.map((event, index) => (
+    <TimelineItem
+      key={event.id}
+      title={t(`event.${event.kind}`)}
+      time={<RelativeTime value={event.at} />}
+      status={toneOf(event)}
+      statusLabel={t(`event.state.${event.state}`)}
+      last={index === events.length - 1}
+    >
+      {event.detail}
+    </TimelineItem>
+  ))}
+</Timeline>
+```
+
+**It does not sort.** "Newest first" and "the order it happened" are both
+right, and only the product knows which it means.
+
+**An unnamed marker stays out of the tree.** A dot meaning nothing beyond
+"here is an entry" is decoration, and announcing it would be noise on top of
+the title beside it. Give `statusLabel` whenever the colour carries something
+the title does not already say.
+
+**`pending` is a step not taken yet**: the ring of a dot with nothing in it,
+which is how every other tool draws it.
+
+Takes the same vocabulary as [StatusDot](/dowel/components/status-dot/), and
+`time` takes a node so a product can pass its own
+[RelativeTime](/dowel/components/relative-time/) rather than a string it
+formatted early.
+
+## Props
+
+### `Timeline`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `side` | `start \| end` | `start` | Which side the rail runs down |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `TimelineItem`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | | Required — what happened |
+| `time` | `ReactNode` | | When, drawn quieter |
+| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `neutral` | |
+| `statusLabel` | `string` | | Names the state; without it the marker is decoration |
+| `icon` | `ReactNode` | | A shape inside the marker |
+| `pending` | `boolean` | `false` | An empty ring: not taken yet |
+| `last` | `boolean` | `false` | Draws no rail below |
+| `children` | `ReactNode` | | The detail under the title |
