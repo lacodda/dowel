@@ -1,0 +1,81 @@
+---
+title: Avatar
+description: A person in the space of a word - with a fallback that is the normal case, initials cut by a rule, and the name announced once.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/avatar.json
+```
+
+<Stand component="avatar" caption="Five sizes, initials on a neutral ground, the square shape for a thing that is not a person, a picture that fails to load, and a group with its count." />
+
+## Notes
+
+Every screen that lists people needs one, and the three things that go wrong
+with it are always the same.
+
+**The picture fails to load**, and a broken-image glyph appears where a face
+was. Profile links expire; the fallback is not a nicety but the state the
+component spends most of its life in, so it is the default rather than the
+exception.
+
+**The initials are cut from the wrong end.** Splitting a name on spaces and
+taking the first letter of each part is the version everyone writes, and it
+turns a one-word name into one letter and a hyphenated surname into three.
+`initialsOf` takes the first and the *last* word, keeps punctuation inside a
+word, gives a single word two letters, and iterates by character rather than
+by code unit — so a name beginning outside the basic plane does not come out
+as a replacement glyph.
+
+```tsx
+<Avatar name={person.fullName} src={person.avatarUrl} size="sm" />
+```
+
+**It is announced once.** The tile is the `role="img"` and carries the name;
+the `<img>` inside it has `alt=""`. A picture labelled with the person's name
+beside the person's name as text reads the name twice.
+
+**A name is not a colour.** Hashing a string into a hue looks charming on a
+design page and produces, in a real list, colours that collide with the status
+vocabulary — a face is not `--bad` — and that differ between products for the
+same person. The ground is the neutral `--soft`, always.
+
+**Square is for a thing that is not a person**: a project, a repository. It is
+how every other tool says so, and borrowing that saves a caption.
+
+**In a group, the first face is on top.** Later siblings paint over earlier
+ones by default, which would put the last face over the first; the eye reads
+left to right and expects the leftmost tile whole, so the stack is reversed
+explicitly. The `+3` tile has nobody behind it, so it is text rather than a
+labelled image.
+
+## Props
+
+### `Avatar`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `name` | `string` | | Required — the label, and the source of the initials |
+| `src` | `string` | | Absent or failing, falls back to the initials |
+| `fallback` | `ReactNode` | | Drawn instead of the initials |
+| `size` | `xs \| sm \| md \| lg \| xl` | `md` | |
+| `shape` | `circle \| square` | `circle` | |
+| `imgProps` | `ImgHTMLAttributes` | | For `loading`, `referrerPolicy` |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `AvatarGroup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `people` | `{ name, src? }[]` | | Required |
+| `max` | `number` | `4` | Tiles before the rest become a count |
+| `size` | `Avatar['size']` | `sm` | |
+| `label` | `string` | | Names the row for a screen reader |
+
+### `initialsOf`
+
+| | |
+| --- | --- |
+| `initialsOf(name, count = 2)` | The letters a tile shows, by the rule above |
