@@ -1,6 +1,6 @@
 # dowel
 
-> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.26.1.
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.27.0.
 
 Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
 
@@ -23,6 +23,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [ActivityLegend](https://lacodda.github.io/dowel/components/activity-legend.md): What the shades of an activity grid mean - including what its darkest square stands for.
 - [activity-weeks](https://lacodda.github.io/dowel/components/activity-weeks.md): Laying a run of dates out in weeks, with the four meanings of a cell - and no React in it.
 - [Alert](https://lacodda.github.io/dowel/components/alert.md): A condition that is still true, about the thing it sits beside.
+- [Avatar](https://lacodda.github.io/dowel/components/avatar.md): A person in the space of a word - with a fallback that is the normal case, initials cut by a rule, and the name announced once.
 - [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
 - [BarChart](https://lacodda.github.io/dowel/components/bar-chart.md): Columns over a baseline - one period, one bar - with the plot height stated in pixels.
@@ -83,17 +84,21 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
 - [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
 - [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
+- [SkeletonOf](https://lacodda.github.io/dowel/components/skeleton-of.md): A placeholder that measures the content instead of guessing it - the shape that was on screen, drawn back while the next load is in flight.
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.
 - [Sparkline](https://lacodda.github.io/dowel/components/sparkline.md): The shape of a history, small enough to sit beside the number it belongs to.
 - [Spinner](https://lacodda.github.io/dowel/components/spinner.md): Something is happening and the answer has not arrived.
 - [Splash](https://lacodda.github.io/dowel/components/splash.md): What the window shows while the application is opening - the mark, the name, the version and a bar that sweeps until there is something to draw.
 - [StatTile](https://lacodda.github.io/dowel/components/stat-tile.md): One figure and what it is a figure of, in the element that ties them together.
+- [StatusDot](https://lacodda.github.io/dowel/components/status-dot.md): A condition in the space of a character, and the same condition written out - both carrying the word a reader gets in place of the colour.
 - [Switch](https://lacodda.github.io/dowel/components/switch.md): A setting that takes effect when you flip it - which is what separates it from a checkbox.
 - [Table](https://lacodda.github.io/dowel/components/table.md): A table of rows and the heading that reorders them - parts you compose, not a columns prop.
 - [table-sort](https://lacodda.github.io/dowel/components/table-sort.md): How a column is ordered, with no React in it - and the one rule a two-line sort gets wrong.
 - [TagInput](https://lacodda.github.io/dowel/components/tag-input.md): Free text turned into a list: type a word, press Enter, it becomes a chip.
 - [Textarea](https://lacodda.github.io/dowel/components/textarea.md): A multi-line field that can grow with what is typed into it.
+- [Tier](https://lacodda.github.io/dowel/components/tier.md): The band a score falls in, the road of bands drawn to scale, and one axis of the judgement that produced it.
 - [TimeField](https://lacodda.github.io/dowel/components/time-field.md): A time of day, typed the way people say it - loose going in, one spelling stored.
+- [Timeline](https://lacodda.github.io/dowel/components/timeline.md): What happened, in the order it happened - as a real list, with a rail that stops at the last entry and a state that is not only a colour.
 - [Toast](https://lacodda.github.io/dowel/components/toast.md): Something that just happened, said briefly and then gone.
 - [Tooltip](https://lacodda.github.io/dowel/components/tooltip.md): A short visual label for a control with no room for one - on hover and on focus, and never the only place the words appear.
 - [Track](https://lacodda.github.io/dowel/components/track.md): A bar divided into stretches, with something standing somewhere along it.

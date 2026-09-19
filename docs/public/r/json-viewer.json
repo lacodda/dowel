@@ -5,7 +5,7 @@
   "title": "Json-viewer",
   "description": "What a product reaches for when it has to show a response, a settings file, a webhook payload - data the reader needs to understand, not edit. The alternative it replaces is `JSON.stringify(value, null, 2)` inside a `<pre>`, which is fine for twenty lines and useless for two hundred: nothing folds, nothing is findable, and the shape of the document is somewhere inside the indentation.",
   "dependencies": [
-    "dowel-ui@^0.26.1"
+    "dowel-ui@^0.27.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/json-rows.json"

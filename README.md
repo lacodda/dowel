@@ -60,7 +60,7 @@ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json   # or a whole set
 ```
 
-Eighty-four primitives so far - the everyday controls, forms, overlays built on
+Eighty-nine primitives so far - the everyday controls, forms, overlays built on
 [Base UI](https://base-ui.com), menus and selection, the command palette,
 tables and long lists, charts, the screens between asking for data and showing
 it, markdown, code and diffs, a desktop window's own chrome and the three
@@ -153,7 +153,7 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 
 ## Status
 
-The theme, the scales, an accent per product, and eighty-four primitives are
+The theme, the scales, an accent per product, and eighty-nine primitives are
 in daily use across two products of the line. Every component installs from a
 versioned registry and passes its own gate - axe, the keyboard, a dependency
 budget and a picture in both themes - before it ships.

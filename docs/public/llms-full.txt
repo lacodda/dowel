@@ -1,4 +1,4 @@
-# dowel 0.26.1
+# dowel 0.27.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,9 +23,10 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.26.0.** The theme and its scales, an accent for each of the nineteen
-products of the line, and eighty-four primitives — the last eight of them a
-desktop window's own chrome and a catalogue table's abilities — each with a
+**v0.27.0.** The theme and its scales, an accent for each of the nineteen
+products of the line, and eighty-nine primitives — the last five of them the
+states a screen shows about something: who, in what condition, in which band,
+in what order, and what stands in while it loads — each with a
 page of its own on
 [the stand](/dowel/stand/), which remembers the theme and the accent you left
 it in. Components install from the
@@ -570,7 +571,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Eighty-four of them.
+A single component: Button, Dialog, Select. Eighty-nine of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -1013,6 +1014,87 @@ Only the product knows which it has.
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 `children` is the body. Anything else goes to the `<div>`.
+
+---
+
+# Avatar
+
+Source: https://lacodda.github.io/dowel/components/avatar
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#avatar
+
+Five sizes, initials on a neutral ground, the square shape for a thing that is not a person, a picture that fails to load, and a group with its count.
+
+## Notes
+
+Every screen that lists people needs one, and the three things that go wrong
+with it are always the same.
+
+**The picture fails to load**, and a broken-image glyph appears where a face
+was. Profile links expire; the fallback is not a nicety but the state the
+component spends most of its life in, so it is the default rather than the
+exception.
+
+**The initials are cut from the wrong end.** Splitting a name on spaces and
+taking the first letter of each part is the version everyone writes, and it
+turns a one-word name into one letter and a hyphenated surname into three.
+`initialsOf` takes the first and the *last* word, keeps punctuation inside a
+word, gives a single word two letters, and iterates by character rather than
+by code unit — so a name beginning outside the basic plane does not come out
+as a replacement glyph.
+
+```tsx
+<Avatar name={person.fullName} src={person.avatarUrl} size="sm" />
+```
+
+**It is announced once.** The tile is the `role="img"` and carries the name;
+the `<img>` inside it has `alt=""`. A picture labelled with the person's name
+beside the person's name as text reads the name twice.
+
+**A name is not a colour.** Hashing a string into a hue looks charming on a
+design page and produces, in a real list, colours that collide with the status
+vocabulary — a face is not `--bad` — and that differ between products for the
+same person. The ground is the neutral `--soft`, always.
+
+**Square is for a thing that is not a person**: a project, a repository. It is
+how every other tool says so, and borrowing that saves a caption.
+
+**In a group, the first face is on top.** Later siblings paint over earlier
+ones by default, which would put the last face over the first; the eye reads
+left to right and expects the leftmost tile whole, so the stack is reversed
+explicitly. The `+3` tile has nobody behind it, so it is text rather than a
+labelled image.
+
+## Props
+
+### `Avatar`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `name` | `string` | | Required — the label, and the source of the initials |
+| `src` | `string` | | Absent or failing, falls back to the initials |
+| `fallback` | `ReactNode` | | Drawn instead of the initials |
+| `size` | `xs \| sm \| md \| lg \| xl` | `md` | |
+| `shape` | `circle \| square` | `circle` | |
+| `imgProps` | `ImgHTMLAttributes` | | For `loading`, `referrerPolicy` |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `AvatarGroup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `people` | `{ name, src? }[]` | | Required |
+| `max` | `number` | `4` | Tiles before the rest become a count |
+| `size` | `Avatar['size']` | `sm` | |
+| `label` | `string` | | Names the row for a screen reader |
+
+### `initialsOf`
+
+| | |
+| --- | --- |
+| `initialsOf(name, count = 2)` | The letters a tile shows, by the rule above |
 
 ---
 
@@ -5829,6 +5911,95 @@ exists to prevent.
 
 ---
 
+# SkeletonOf
+
+Source: https://lacodda.github.io/dowel/components/skeleton-of
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#skeleton-of
+
+Load the list, ask again, and the placeholder is the shape that was there - grow it to six rows and the placeholder follows.
+
+## Notes
+
+[Skeleton](/dowel/components/skeleton/) solved half the problem: it gave a
+product a list, a card and a grid to reach for instead of a spinner. The half
+left over is the one that actually causes the jump, and it is a human one —
+somebody has to look at the real thing, judge how many rows it has and how
+tall they are, and type that in. The judgement is made once, the screen
+changes a month later, and the placeholder goes on promising the old shape.
+
+**The rule is the same one `Skeleton` is built on:**
+
+> A skeleton of the wrong shape is worse than no skeleton.
+
+What is new here is where the shape comes from. The content was on screen a
+moment ago; it measured itself, and nothing else knows its shape better.
+
+```tsx
+<SkeletonOf pending={works.isPending} rowSelector="[data-row]" fallback={<SkeletonList rows={6} />}>
+  <WorkList works={works.data ?? []} />
+</SkeletonOf>
+```
+
+**Why measuring and not reading the source.** The obvious version of "derive
+the skeleton from the markup" is to parse the component's JSX and emit boxes
+from it. It cannot work, and the reason is worth stating: the shape on screen
+is not in the source. It is the source plus the data (five rows or fifty),
+plus the viewport (one column or three), plus the theme's own spacing. A
+generator reading `list.tsx` sees one `<li>` in a `map` and knows nothing
+about any of that. Measuring the rendered thing sees all of it at once, and it
+costs a `ResizeObserver` rather than a build step.
+
+**The measurement follows the content.** Taken in a layout effect and on every
+resize, not once on mount: a list that gains rows, a window that narrows, a
+font that loads late all change the shape.
+
+**The first load has nothing to remember.** `fallback` is what stands in until
+there is a measurement to use; after that it is never seen again on that
+screen. With neither a measurement nor a fallback the component draws nothing
+— a shape made up on the spot is the defect, and silence is the honest answer.
+A product that stores `measureShape`'s answer between sessions can hand it
+back as `shape` and be honest on a first load too.
+
+**It does not remember a zero.** A block of no height has not been laid out —
+a hidden tab, a parent still collapsing — and remembering that would draw
+nothing and claim it was the shape.
+
+**It does not measure its own placeholder.** Only the branch rendering the
+content carries the ref, so the memory cannot decay one load at a time into a
+single thin bar.
+
+**Rows are found by selector**, because the repeating part is rarely a direct
+child: a table's rows are inside a `<tbody>`, a list's inside a `<ul>` that may
+itself be inside a scroller. Without `rowSelector` the placeholder is one box
+the height of the whole block, which is the right answer for a card.
+
+**It is `aria-hidden`, like every skeleton.** The loading fact belongs to the
+region and is said once, by whatever owns it —
+[QueryState](/dowel/components/query-state/) does it with `aria-busy`.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `pending` | `boolean` | | Required — shows the remembered shape |
+| `children` | `ReactNode` | | Required — the real thing, measured |
+| `rowSelector` | `string` | | `'tr'`, `'li'`, `'[data-row]'` |
+| `fallback` | `ReactNode` | | Until there is something to remember |
+| `shape` | `MeasuredShape` | | A measurement from an earlier session |
+| `gapClassName` | `string` | `gap-1` | The gap between drawn rows |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `measureShape`
+
+| | |
+| --- | --- |
+| `measureShape(node, rowSelector?)` | `{ height, rows }` — the block, and each row inside it |
+
+---
+
 # Slider
 
 Source: https://lacodda.github.io/dowel/components/slider
@@ -6217,6 +6388,81 @@ delta stands taller than its neighbours, and the numbers stop sharing a line.
 
 ---
 
+# StatusDot
+
+Source: https://lacodda.github.io/dowel/components/status-dot
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#status-dot
+
+The five conditions as dots, with and without their words, as badges, and with a shape standing in for the dot.
+
+## Notes
+
+Every product drew its own coloured circle, and every one of them drew it the
+same way — a `<span>` with a background — which means the condition existed
+for exactly the readers who could see it.
+
+**The rule this pair is built on:**
+
+> Colour is emphasis. The word is the message.
+
+That is not a preference. About one man in twelve does not separate red from
+green, `--good` and `--bad` are the two hues most screens rest on, and a
+printed or projected screen loses the distinction for everybody. So `label` is
+required, and a label that is not printed is still in the accessibility tree.
+
+```tsx
+<StatusDot status={run.ok ? 'good' : 'bad'} label={t(`run.state.${run.state}`)} />
+```
+
+**The word is announced once.** The dot and its text are one `role="img"` with
+one `aria-label`, and the printed copy is `aria-hidden` — otherwise a reader
+hears the state twice, once from the image and once from the text beside it.
+
+**`StatusBadge` is the same fact with room to write it.** It is separate
+rather than a variant because the choice between them is about the space on
+the screen, not about the state — and a product that has the room should be
+nudged towards the words. The badge is *not* named as an image: the word is on
+the screen, and labelling it would replace the text a reader can already hear.
+
+**A shape is the second channel.** `icon` replaces the dot with a tick, a cross
+or an exclamation, which differ by shape rather than by hue. A badge given an
+icon drops its dot — two marks for one condition is noise.
+
+**`neutral` is not a fifth colour.** It is the absence of a judgement, for the
+states that are neither good nor bad: queued, archived, unknown. Drawing those
+in one of the four would be a claim the product did not make.
+
+**No words of its own.** "Online" is the product's vocabulary in the product's
+language. See [Badge](/dowel/components/badge/) for a label of any other kind,
+and [Timeline](/dowel/components/timeline/), which takes the same vocabulary.
+
+## Props
+
+### `StatusDot`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required — what a reader gets in place of the colour |
+| `status` | `good \| warn \| bad \| info \| neutral` | `neutral` | |
+| `size` | `sm \| md \| lg` | `md` | |
+| `showLabel` | `boolean` | `false` | Print the word beside the dot |
+| `icon` | `ReactNode` | | A shape in the dot's place |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `StatusBadge`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `status` | `good \| warn \| bad \| info \| neutral` | `neutral` | |
+| `icon` | `ReactNode` | | A shape before the word; drops the dot |
+| `dot` | `boolean` | `true` | |
+| `children` | `ReactNode` | | The word, in the product's language |
+
+---
+
 # Switch
 
 Source: https://lacodda.github.io/dowel/components/switch
@@ -6538,6 +6784,113 @@ Everything else goes to the `<textarea>`.
 
 ---
 
+# Tier
+
+Source: https://lacodda.github.io/dowel/components/tier
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tier
+
+Verdicts as badges, four scores on the same road, and three axes - two you can set with the pointer or the arrow keys, one read-only.
+
+## Notes
+
+A work is scored on several axes and the total lands in a named band: draft,
+publishable, a clip. Three products of the line grade something this way,
+which is what makes it a primitive rather than a screen.
+
+The three pieces answer three different questions, and are separate for that
+reason:
+
+| | |
+| --- | --- |
+| `TierBadge` | *Which band is this in?* A verdict, in one word |
+| `TierRuler` | *How far into it, and how far to the next?* |
+| `AxisBar` | *What did one axis contribute?* |
+
+```tsx
+<TierBadge label={tier.label} value={score.toFixed(1)} />
+<TierRuler tiers={TIERS} value={score} label={t('score.ruler')} valueText={t('score.spoken', { score, tier: tier.label })} />
+```
+
+**The ruler is drawn to scale, and so are its labels.** That is the whole
+promise: a band starting at 78 sits nearly four fifths along, and the gap you
+are looking at is the gap you have to close. The donor drew the bands to scale
+and then laid the labels out evenly — with bands at 0, 50, 78 and 90 the label
+"78" stood a fifth of the bar from the boundary it named. Here both come from
+the same arithmetic.
+
+**Three states per band, not two** — passed, standing in, still ahead. A flat
+wash of "reached" over half the bar says only that the value is not at zero;
+picking out the band being stood in is what carries the eye.
+
+**It is a `meter`.** A measurement inside a known range is exactly what that
+role is for, so a screen reader says the value without the product building a
+sentence out of `aria-label`. Give `valueText` and it says the phrase instead
+of the bare number.
+
+**An axis is a slider when it can be set, and a meter when it cannot.** Not a
+disabled slider: nothing is disabled, the number is simply a fact. Scoring is
+a judgement, and a row you click answers "is this a seven or an eight" in one
+movement where a spin box asks you to read, aim and type.
+
+**Unjudged is not zero.** Zero is a verdict of its own, so the arrow keys step
+onto the first or last mark from blank rather than through it; `Backspace` and
+`Delete` go back to unjudged, as does clicking the mark already set — the only
+way back with a pointer.
+
+**The row owns the keyboard.** The marks are pointer targets and nothing else,
+or tabbing past one axis would take ten presses. They are spans rather than
+buttons: a focusable control inside a `role="slider"` is a nested interactive
+element, and `tabindex="-1"` does not undo that.
+
+**A band's colour is `accent` by default**, because a band is a position on
+the product's own scale and not a judgement in the
+[status vocabulary](/dowel/components/status-dot/). A product that means "this
+one is bad" says so.
+
+## Props
+
+### `TierBadge`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | Required — the band's name |
+| `value` | `ReactNode` | | The score behind the verdict, drawn quieter |
+| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `accent` | |
+
+### `TierRuler`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tiers` | `Tier[]` | | Required — `{ key, label, min, status? }` |
+| `value` | `number` | | Required |
+| `label` | `string` | | Required — names the meter |
+| `min` / `max` | `number` | `0` / `100` | The ends of the road |
+| `valueText` | `string` | | Spoken instead of the bare number |
+| `showLabels` | `boolean` | `true` | |
+
+### `AxisBar`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required |
+| `scale` | `number` | | Required — one segment per whole point |
+| `value` | `number \| undefined` | | `undefined` is unjudged, not zero |
+| `onChange` | `(value) => void` | | Given, the row becomes a slider |
+| `threshold` | `{ mark, label }` | | The mark that crosses into the next band |
+| `valueText` | `string` | | |
+
+### Helpers
+
+| | |
+| --- | --- |
+| `orderedTiers(tiers, min?, max?)` | Sorted, with unplaceable bands dropped |
+| `tierAt(tiers, value)` | The band a value stands in, or `undefined` |
+
+---
+
 # TimeField
 
 Source: https://lacodda.github.io/dowel/components/time-field
@@ -6600,6 +6953,94 @@ of the product's own fields would have one that is visibly not.
 
 `parseTime` and `formatTime` are exported beside the component, for a product
 that has to read or write the same spellings elsewhere.
+
+---
+
+# Timeline
+
+Source: https://lacodda.github.io/dowel/components/timeline
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#timeline
+
+A four-entry history ending in a failure, and a set of steps with the ones not taken yet drawn as empty rings.
+
+## Notes
+
+A release history, an audit trail, the steps a job went through. Four products
+draw one, and all four drew it the same way — a list with a border on the left
+and a dot positioned over it by hand. Three things go wrong with that version.
+
+**The rail runs past the last entry.** A border on the container ends where
+the container does, which is below the last dot, so the history trails off
+into a line going nowhere and a finished list cannot be told from one still
+loading. Here the rail belongs to the entry, and the last one does not draw
+it — which also means an entry renders correctly on its own, without a
+container to inherit a border from.
+
+**It is a list, and says so.** A stack of `<div>`s is announced as nothing; an
+`<ol>` tells a reader how many entries there are and which one they are on,
+which is the whole navigational value of a history.
+
+**The state is a colour.** A red dot for a failed step is invisible to the
+reader it matters most to. `statusLabel` names the state in the product's
+words, and an `icon` gives it a shape as well as a hue.
+
+```tsx
+<Timeline>
+  {events.map((event, index) => (
+    <TimelineItem
+      key={event.id}
+      title={t(`event.${event.kind}`)}
+      time={<RelativeTime value={event.at} />}
+      status={toneOf(event)}
+      statusLabel={t(`event.state.${event.state}`)}
+      last={index === events.length - 1}
+    >
+      {event.detail}
+    </TimelineItem>
+  ))}
+</Timeline>
+```
+
+**It does not sort.** "Newest first" and "the order it happened" are both
+right, and only the product knows which it means.
+
+**An unnamed marker stays out of the tree.** A dot meaning nothing beyond
+"here is an entry" is decoration, and announcing it would be noise on top of
+the title beside it. Give `statusLabel` whenever the colour carries something
+the title does not already say.
+
+**`pending` is a step not taken yet**: the ring of a dot with nothing in it,
+which is how every other tool draws it.
+
+Takes the same vocabulary as [StatusDot](/dowel/components/status-dot/), and
+`time` takes a node so a product can pass its own
+[RelativeTime](/dowel/components/relative-time/) rather than a string it
+formatted early.
+
+## Props
+
+### `Timeline`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `side` | `start \| end` | `start` | Which side the rail runs down |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `TimelineItem`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | | Required — what happened |
+| `time` | `ReactNode` | | When, drawn quieter |
+| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `neutral` | |
+| `statusLabel` | `string` | | Names the state; without it the marker is decoration |
+| `icon` | `ReactNode` | | A shape inside the marker |
+| `pending` | `boolean` | `false` | An empty ring: not taken yet |
+| `last` | `boolean` | `false` | Draws no rail below |
+| `children` | `ReactNode` | | The detail under the title |
 
 ---
 

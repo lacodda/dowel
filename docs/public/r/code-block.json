@@ -6,7 +6,7 @@
   "description": "The frame around a piece of code is the same everywhere and is written again in every product: the scroll that must not wrap, the gutter of line numbers that must not be selectable, the copy button, the caption saying which file this is, and the marking of the lines the reader was sent here to look at.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.26.1"
+    "dowel-ui@^0.27.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/copy-button.json"
