@@ -6,7 +6,7 @@
   "description": "Parts rather than a `columns` prop, and that is the decision worth stating: a `<DataTable columns={…} rows={…} />` is quicker to write for the first table and then owns every cell in the product forever. The moment one column needs a Badge, another a link, and a third the row's own menu, the prop grows a `render` for each - at which point it is JSX with extra steps, spelt in a shape only this component understands.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/table-sort.json"

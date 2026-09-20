@@ -6,7 +6,7 @@
   "description": "The tier primitive.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

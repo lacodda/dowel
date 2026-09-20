@@ -5,7 +5,7 @@
   "title": "NumberFormat",
   "description": "Two things, and the second is the reason this is a component rather than a call to `toLocaleString` at each site.",
   "dependencies": [
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

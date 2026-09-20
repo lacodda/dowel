@@ -6,7 +6,7 @@
   "description": "The frame a product draws once and then never thinks about: a bar across the top, a rail down the left, and the screen in the corner they leave. It is three boxes and a grid, which is exactly why every product wrote its own - and why every one of them got the same two things wrong before getting them right.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

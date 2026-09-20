@@ -6,7 +6,7 @@
   "description": "A person, in the space of a word. Every screen that lists people needs one, and the three things that go wrong with it are always the same:\n * - **The picture fails to load** and a broken-image glyph appears where a   face was. The fallback is not a nicety; it is the state this component   spends most of its life in, because half the people in any list have no   picture at all.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

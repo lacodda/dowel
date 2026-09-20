@@ -6,7 +6,7 @@
   "description": "Where you are, as a trail rather than as a word. On a list screen the screen's own name is enough; on something opened from it, it is not - \"Works\" says nothing about which work, and the way back to the list is otherwise the browser's back button alone, which a desktop window does not visibly have.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

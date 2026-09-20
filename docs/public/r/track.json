@@ -6,7 +6,7 @@
   "description": "Two products had written this independently and arrived at the same construction - a rounded track, segments positioned absolutely by percent, a floor under the segment width so a short one does not vanish - differing only in what a segment meant. One drew the tiers of a rubric with the score standing among them; the other drew a working day as alternating work and breaks. Neither could be built from the other, and each knew something the other did not: the tiers had the marker and the three-state reading of a segment (passed, standing in, still ahead), the day had the minimum width and the difference between an empty track and an unknown one.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/track-segments.json"

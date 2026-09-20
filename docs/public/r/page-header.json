@@ -6,7 +6,7 @@
   "description": "What a screen says it is, and the buttons that act on the whole of it: a title, a line under it, and the actions at the far end of the same row.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

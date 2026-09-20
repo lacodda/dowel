@@ -6,7 +6,7 @@
   "description": "With `decorations: false` the system draws nothing, so everything it used to do is the page's: dragging the window by its title bar, double-click to maximise, the three buttons, and the edges you grab to resize. Each is small; the reason to take them on at all is that a system title bar over an application title bar costs a strip of every laptop screen for nothing.",
   "dependencies": [
     "@tauri-apps/api",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

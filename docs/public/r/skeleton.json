@@ -5,7 +5,7 @@
   "title": "Skeleton",
   "description": "The rule the component is built on, and the reason it takes a shape rather than filling the space:\n *   **A skeleton of the wrong shape is worse than no skeleton.**\n * It promises something the content does not keep, and the promise is paid for in a jump: the page settles, the scrollbar appears, and whatever the reader was about to click has moved. Measured rather than assumed - the line's own calendar showed a list of four short lines where a six-row month grid was about to land, and the skeleton was itself the jump it existed to prevent.",
   "dependencies": [
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

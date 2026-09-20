@@ -6,7 +6,7 @@
   "description": "The line between one part of a screen and the next. The set already had four of them - in the menu, the select, the context menu and the action bar - and each was written inside the thing it divided, so a screen that wanted a rule between two sections had nothing and reached for a bare `<hr>` or a `div` with a background.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

@@ -5,7 +5,7 @@
   "title": "RelativeTime",
   "description": "The relative-time primitive.",
   "dependencies": [
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

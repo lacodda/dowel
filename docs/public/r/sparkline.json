@@ -6,7 +6,7 @@
   "description": "The shape of a history, not a chart of it: no axes, no gridlines, no ticks.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

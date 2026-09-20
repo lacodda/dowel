@@ -6,7 +6,7 @@
   "description": "The shape every product builds out of two `<div>`s in a flex row, and the reason it is worth having once: it is a `<dl>`, and the pairing is what a screen reader announces. Two divs read as four unrelated pieces of text - \"Created\", \"2 hours ago\", \"Owner\", \"Ines\" - and nothing says which value belongs to which name. The right element says it for free.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

@@ -309,7 +309,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -328,7 +328,7 @@
       "description": "The shape everyone recognises: weeks as columns, weekdays as rows, time running left to right, and a value carried by how dark a square is. Two products of the line asked for it by name before it existed.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/activity-weeks.json"
@@ -348,7 +348,7 @@
       "title": "ActivityLegend",
       "description": "Separate from the grid because a caller showing three grids on one screen wants one legend, and because the words in it are the product's.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/activity-heatmap.json",
@@ -386,7 +386,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -405,7 +405,7 @@
       "description": "The frame a product draws once and then never thinks about: a bar across the top, a rail down the left, and the screen in the corner they leave. It is three boxes and a grid, which is exactly why every product wrote its own - and why every one of them got the same two things wrong before getting them right.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -424,7 +424,7 @@
       "description": "A person, in the space of a word. Every screen that lists people needs one, and the three things that go wrong with it are always the same:\n * - **The picture fails to load** and a broken-image glyph appears where a   face was. The fallback is not a nicety; it is the state this component   spends most of its life in, because half the people in any list have no   picture at all.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -443,7 +443,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -462,7 +462,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -481,7 +481,7 @@
       "description": "Bars rather than a line, and the distinction is the data's not the drawing's: a line says the value exists between the points, a column says each period is its own sum. Hours worked in a week is a sum - there is no \"Wednesday afternoon\" reading between two weeks - so it is a column.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -500,7 +500,7 @@
       "description": "Where you are, as a trail rather than as a word. On a list screen the screen's own name is enough; on something opened from it, it is not - \"Works\" says nothing about which work, and the way back to the list is otherwise the browser's back button alone, which a desktop window does not visibly have.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -520,7 +520,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -554,7 +554,7 @@
       "title": "Calendar",
       "description": "The sums live next door in `calendar-math`, which has no React in it; this is the grid that draws them and the keyboard that moves around it.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar-math.json"
@@ -575,7 +575,7 @@
       "description": "The interesting part is the words. A checkbox on its own is a nine-pixel target that says nothing; wired to a label it is the whole row, and the row is what a finger and a pointer both aim at. So the label is part of the component rather than something a caller remembers to add - the commonest bug in a hand-rolled checkbox is a `<label>` that is next to the input instead of tied to it, which looks identical and does nothing.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -594,7 +594,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -613,7 +613,7 @@
       "description": "The frame around a piece of code is the same everywhere and is written again in every product: the scroll that must not wrap, the gutter of line numbers that must not be selectable, the copy button, the caption saying which file this is, and the marking of the lines the reader was sent here to look at.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/copy-button.json"
@@ -633,7 +633,7 @@
       "title": "ColorField",
       "description": "Picking a colour for something the product stores: a tag, a project, a calendar. Note what that is *not* - it is not choosing the appearance of the interface. The theme decides that, from one accent, and a field that let a reader repaint the chrome would undo the argument the whole system rests on.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -653,7 +653,7 @@
       "title": "ColumnResizeHandle",
       "description": "The handle, and the hook that keeps the widths it produces. Pointer events rather than HTML5 drag-and-drop: a desktop shell that takes file drops for itself never lets a `dragstart` reach the page, so the native API is a handle that does nothing there; pointer capture on the handle also keeps the drag alive when the pointer runs ahead of the cell, which at any speed above a crawl it does.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -673,7 +673,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -696,7 +696,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -719,7 +719,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -738,7 +738,7 @@
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -758,7 +758,7 @@
       "title": "CopyButton",
       "description": "Whatever a product shows in a panel - code, a payload, a log, one side of a comparison - somebody eventually wants to take it away, and the button that lets them is written again every time with the same three things missed.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -776,7 +776,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -794,7 +794,7 @@
       "title": "DatePicker",
       "description": "The trigger is a button rather than a text input, and that is the decision worth stating. A typable date field has to answer \"what does `03/04/26` mean\" in a locale it cannot be sure of, and it answers wrong for half the world; a button showing the date spelled out has no such question. Where typing genuinely matters - a birth date, forty years back - the calendar is the wrong control anyway and a product should reach for a plain field.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar.json",
@@ -817,7 +817,7 @@
       "title": "DateRangePicker",
       "description": "The interesting part is the state between them. After the first click there is a start and no end, and that is not an incomplete range to be hidden or a range of one day - it is the normal middle of the interaction, and the calendar has to show it: the first day marked, the days under the pointer shading as the reader moves, the popup staying open. Products that skip it end up with a picker that seems to do nothing until the second click.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar.json",
@@ -842,7 +842,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -877,7 +877,7 @@
       "description": "The question this answers is \"how did this read before, and how does it read now\" - a version against the one before it, a proposal against what is there, a file against what is on disk. Not a code review: there is no staging, no comment, nothing to accept. It is for looking.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/copy-button.json",
@@ -899,7 +899,7 @@
       "description": "The line between one part of a screen and the next. The set already had four of them - in the menu, the select, the context menu and the action bar - and each was written inside the thing it divided, so a screen that wanted a rule between two sections had nothing and reached for a bare `<hr>` or a `div` with a background.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -919,7 +919,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -937,7 +937,7 @@
       "title": "DurationField",
       "description": "The alternative is what products keep building: two number boxes labelled \"hours\" and \"minutes\", which means two tab stops, two validations, and a reader who has to divide 90 minutes in their head before typing. Here they write `1h 30m`, or `90m`, or `1.5h`, and it means the same thing.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -958,7 +958,7 @@
       "description": "Three kinds of nothing, and a product that draws the same panel for all three is telling the reader the wrong thing twice:\n *   **empty** - there is nothing here yet, and that is normal. The panel says   what would be here and offers the one action that makes it appear.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -996,7 +996,7 @@
       "description": "Every form is the same four parts repeated: a name for the control, the control, sometimes a hint, and sometimes an error. Written by hand each time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no screen reader mentions, the error appears in red and is announced by nothing at all. This is that arrangement, once.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1014,7 +1014,7 @@
       "title": "FileDrop",
       "description": "A place to put files: drag them onto it, or press it and pick them. It takes files and hands them over - it does not upload them. Where they go, with which credentials, retried how - that is the product's transport, and a primitive that owned it would be wrong for every product whose upload does not look like the one it guessed.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1032,7 +1032,7 @@
       "title": "FilterPopover",
       "description": "A text box, a handful of checkboxes - with one way to clear it. The shell only: what goes in the panel is the caller's, since a stage is ticked and a title is typed and the popover has no opinion.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json",
@@ -1053,7 +1053,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1087,7 +1087,7 @@
       "title": "JsonViewer",
       "description": "What a product reaches for when it has to show a response, a settings file, a webhook payload - data the reader needs to understand, not edit. The alternative it replaces is `JSON.stringify(value, null, 2)` inside a `<pre>`, which is fine for twenty lines and useless for two hundred: nothing folds, nothing is findable, and the shape of the document is somewhere inside the indentation.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/json-rows.json"
@@ -1107,7 +1107,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1126,7 +1126,7 @@
       "description": "The shape every product builds out of two `<div>`s in a flex row, and the reason it is worth having once: it is a `<dl>`, and the pairing is what a screen reader announces. Two divs read as four unrelated pieces of text - \"Created\", \"2 hours ago\", \"Owner\", \"Ines\" - and nothing says which value belongs to which name. The right element says it for free.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1145,7 +1145,7 @@
       "description": "The distinction against its neighbours is the data's, not the drawing's. A column says each period is its own sum - hours worked in a week, and there is no Wednesday-afternoon figure between two weeks. A line says the value existed the whole time and was sampled: an account balance, a price, a temperature. Drawing a sum as a line claims readings nobody took; drawing a level as columns throws away the thing being watched.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/line-scale.json"
@@ -1181,7 +1181,7 @@
       "title": "MarkedText",
       "description": "A textarea cannot colour a word. The way round it is older than React: draw the same text twice, once as marked-up HTML underneath and once as the textarea on top with its own text transparent, so the caret and the selection are the browser's and the colours are ours. The two have to agree on every metric - font, size, line height, padding, wrapping - or the marks slide off the words they mark. So both take ONE class list, given by the caller, and the textarea adds only what makes it invisible.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1201,7 +1201,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1221,7 +1221,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1239,7 +1239,7 @@
       "title": "NotificationBell",
       "description": "A bell that is always lit is a bell nobody reads, so the count is the product's decision and this draws it: nothing at zero, the number past that, `9+` past nine. Pressing it does not leave the screen - the last few entries open under it and the whole history is one more click, which is the shape every product converged on once the first one tried a page.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json",
@@ -1261,7 +1261,7 @@
       "description": "A number typed into a text input is a string that happens to look like a number, and every product then writes the same four fixes: strip the letters, clamp to a range, round to a step, and decide what an empty box means. This is those four, once, plus the stepper - because a value with a small range is faster nudged than typed.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1281,7 +1281,7 @@
       "title": "NumberFormat",
       "description": "Two things, and the second is the reason this is a component rather than a call to `toLocaleString` at each site.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1300,7 +1300,7 @@
       "description": "What a screen says it is, and the buttons that act on the whole of it: a title, a line under it, and the actions at the far end of the same row.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1318,7 +1318,7 @@
       "title": "PageSize",
       "description": "Its own file rather than a part of `Pagination`, because the two are needed apart often enough: a list that scrolls for ever wants \"how many to load at a time\" and no page buttons, and a table with a fixed page size wants the buttons and no choice. Together they were also over the size gate, which asked the right question.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/select.json"
@@ -1338,7 +1338,7 @@
       "title": "Pagination",
       "description": "The arithmetic is exported separately from the component for the same reason `table-sort` is a file of its own: a product that pages on the server needs the page numbers and not the buttons, and computing them a second time in a different place is how the two disagree about where the last page ends.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json"
@@ -1359,7 +1359,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1377,7 +1377,7 @@
       "title": "PasswordField",
       "description": "The reveal is the whole component, and it is not a convenience. A masked field is the only one in a form where a typo cannot be seen, so people either paste (fine) or type slowly and get it wrong anyway; the toggle is what turns an unverifiable field into a checkable one, and it is why long passphrases became usable at all.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1399,7 +1399,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1419,7 +1419,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1439,7 +1439,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1478,7 +1478,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1496,7 +1496,7 @@
       "title": "RatingScale",
       "description": "Generalised from kilna, where it is how a work is scored on each of its axes. The shape is a row of marks rather than stars: stars carry a meaning of their own - a review, a public verdict - and this is as often \"how hard was this\" or \"how finished is it\" as it is \"how good\".",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1514,7 +1514,7 @@
       "title": "RelativeTime",
       "description": "The relative-time primitive.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1532,7 +1532,7 @@
       "title": "ReorderableList",
       "description": "The columns in a column picker, the stops of a dial, the roles of a profile. A hook and a grip rather than a list component: the rows are already something else's - a menu's items, a form's fields - and a component wrapping them would have to reproduce whatever that something else does.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1550,7 +1550,7 @@
       "title": "SaveState",
       "description": "The quiet line beside a field that saves itself: \"saving…\", then a tick that fades. It exists because a form without a Save button has to say what it did anyway - otherwise the reader is left guessing whether their edit survived, and the usual answer to that guess is to press Ctrl+S at a page that has no such thing.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/spinner.json"
@@ -1570,7 +1570,7 @@
       "title": "SearchField",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -1593,7 +1593,7 @@
       "description": "A settings screen is the usual case: five or six sections, each its own address so it can be linked to and the back button walks between them, listed down the left with the current one tinted. Every product draws the same column, and every product draws the active row a little differently - which is exactly the drift a shared list exists to stop.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1613,7 +1613,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1649,7 +1649,7 @@
       "title": "SkeletonOf",
       "description": "`Skeleton` and its shapes solved half the problem: they gave a product a list, a card and a grid to reach for instead of a spinner. The half left over is the one that actually causes the jump, and it is a human one - somebody has to look at the real thing, judge how many rows it has and how tall they are, and type that in. The judgement is made once, the screen changes a month later, and the placeholder goes on promising the old shape.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1667,7 +1667,7 @@
       "title": "Skeleton",
       "description": "The rule the component is built on, and the reason it takes a shape rather than filling the space:\n *   **A skeleton of the wrong shape is worse than no skeleton.**\n * It promises something the content does not keep, and the promise is paid for in a jump: the page settles, the scrollbar appears, and whatever the reader was about to click has moved. Measured rather than assumed - the line's own calendar showed a list of four short lines where a six-row month grid was about to land, and the skeleton was itself the jump it existed to prevent.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1686,7 +1686,7 @@
       "description": "The case for it over a NumberField is that the number does not matter much: a volume, an opacity, a weight in a search filter. Where the exact figure does matter, a slider is a worse field with more pixels - it cannot be typed into, it cannot be pasted into, and it has no state for \"empty\".",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1705,7 +1705,7 @@
       "description": "The shape of a history, not a chart of it: no axes, no gridlines, no ticks.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1724,7 +1724,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1742,7 +1742,7 @@
       "title": "Splash",
       "description": "A desktop product has a second or two between the window appearing and the first screen being ready - a workspace to open, a database to migrate, a plugin to start - and a blank window for that long reads as a crash. So the window shows the product instead: the mark, the name, the promise, the version, and a bar that sweeps until there is something to draw.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1761,7 +1761,7 @@
       "description": "The smallest thing on a dashboard and the one every product writes itself: a label above, a number below, sometimes a word about which way it moved.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1780,7 +1780,7 @@
       "description": "The smallest thing a screen can say about something's condition: a server is up, a job failed, a person is away. Every product of the line drew its own coloured circle, and every one of them drew it the same way - a `<span>` with a background - which means the condition existed for exactly the readers who could see it.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1799,7 +1799,7 @@
       "description": "The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair. A checkbox is an answer collected now and submitted later, with the rest of the form; a switch is a setting that applies the moment it moves. Put a switch in a form with a Save button and the reader cannot tell whether anything happened - they flipped it, and nothing said so.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1834,7 +1834,7 @@
       "description": "Parts rather than a `columns` prop, and that is the decision worth stating: a `<DataTable columns={…} rows={…} />` is quicker to write for the first table and then owns every cell in the product forever. The moment one column needs a Badge, another a link, and a third the row's own menu, the prop grows a `render` for each - at which point it is JSX with extra steps, spelt in a shape only this component understands.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/table-sort.json"
@@ -1855,7 +1855,7 @@
       "description": "Free text turned into a list: type a word, press Enter, it becomes a chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/chip.json",
@@ -1876,7 +1876,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1897,7 +1897,7 @@
       "description": "The tier primitive.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1915,7 +1915,7 @@
       "title": "TimeField",
       "description": "No donor for this one: neither product of the line had a time field, so this is written from the same shape as DurationField, and for the same reason. Anything a person plausibly types is accepted - `9`, `9:30`, `930`, `9.30`, `9pm`, `21:30` - and what comes back is always `HH:MM`.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1936,7 +1936,7 @@
       "description": "What happened, in the order it happened: a release history, an audit trail, the steps a job went through. Four products of the line draw one, and all four drew it the same way - a list with a border on the left and a dot positioned over it by hand.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1956,7 +1956,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -1976,7 +1976,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -2011,7 +2011,7 @@
       "description": "Two products had written this independently and arrived at the same construction - a rounded track, segments positioned absolutely by percent, a floor under the segment width so a short one does not vanish - differing only in what a segment meant. One drew the tiers of a rubric with the score standing among them; the other drew a working day as alternating work and breaks. Neither could be built from the other, and each knew something the other did not: the tiers had the marker and the three-state reading of a segment (passed, standing in, still ahead), the day had the minimum width and the difference between an empty track and an unknown one.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/track-segments.json"
@@ -2047,7 +2047,7 @@
       "title": "TreeView",
       "description": "The shape products reach for and then get wrong in the same place every time. A tree is not a nest of lists with click handlers - it is one control with a cursor in it, and the difference is the whole component:\n *   **One tab stop, not one per node.** A tree of four hundred files with a   `tabIndex` on each is four hundred stops between the sidebar and the   editor. The container is what the keyboard reaches, and the arrows move a   cursor inside it - the arrangement a `RadioGroup` has, for the same   reason.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/tree-rows.json"
@@ -2067,7 +2067,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -2085,7 +2085,7 @@
       "title": "VirtualList",
       "description": "The browser is fine with long lists until it is not: a hundred thousand `<div>`s is a layout the machine recomputes on every change, and the page stops responding while it does. What is drawn instead is the window the reader can actually see, held in place by a tall spacer, so the scrollbar still says how much there is.",
       "dependencies": [
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [
@@ -2104,7 +2104,7 @@
       "description": "With `decorations: false` the system draws nothing, so everything it used to do is the page's: dragging the window by its title bar, double-click to maximise, the three buttons, and the edges you grab to resize. Each is small; the reason to take them on at all is that a system title bar over an application title bar costs a strip of every laptop screen for nothing.",
       "dependencies": [
         "@tauri-apps/api",
-        "dowel-ui@^0.29.0"
+        "dowel-ui@^0.29.1"
       ],
       "registryDependencies": [],
       "files": [

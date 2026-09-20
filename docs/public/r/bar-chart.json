@@ -6,7 +6,7 @@
   "description": "Bars rather than a line, and the distinction is the data's not the drawing's: a line says the value exists between the points, a column says each period is its own sum. Hours worked in a week is a sum - there is no \"Wednesday afternoon\" reading between two weeks - so it is a column.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [

@@ -5,7 +5,7 @@
   "title": "ColumnResizeHandle",
   "description": "The handle, and the hook that keeps the widths it produces. Pointer events rather than HTML5 drag-and-drop: a desktop shell that takes file drops for itself never lets a `dragstart` reach the page, so the native API is a handle that does nothing there; pointer capture on the handle also keeps the drag alive when the pointer runs ahead of the cell, which at any speed above a crawl it does.",
   "dependencies": [
-    "dowel-ui@^0.29.0"
+    "dowel-ui@^0.29.1"
   ],
   "registryDependencies": [],
   "files": [
