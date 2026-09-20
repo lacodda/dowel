@@ -63,6 +63,19 @@ describe('what a primitive weighs', () => {
       because:
         'pointer drag, the keyboard path and the drop line are one gesture split three ways; two of them would be a list that reorders by mouse only',
     },
+    /* Three bytes over, and the three are the `flex` a live run found missing
+     * from the tab shape. Splitting would mean three components for one list
+     * of destinations - which is what the products had before this existed,
+     * and they drew the current entry three different ways. The number is a
+     * little above what it measures, so the next growth still has to argue
+     * for itself. */
+    'nav-rail': {
+      ceiling: 4352,
+      because:
+        'one list of destinations in the three shapes a product actually needs it - ' +
+        'a rail, a row of tabs, a phone bar. Three components would be three answers ' +
+        'to "which entry is the current one", which is the drift this exists to end',
+    },
     tier: {
       ceiling: 8192,
       because:
@@ -207,11 +220,19 @@ describe('what a primitive drags in', () => {
    */
   const ALLOWED: Record<string, string[]> = {
     alert: ['class-variance-authority'],
+    // The grid and the screen inside it. `cva` is the screen's: where it
+    // scrolls and what margins it has are two independent variants, and the
+    // shell's own geometry is inline style because a track size is a value,
+    // not a class.
+    'app-shell': ['class-variance-authority'],
     // The strip is Base UI's Toolbar - `role="toolbar"` and the arrow keys
     // that make a bar one tab stop. Writing that by hand is how an action bar
     // ends up as five tab stops between the last field and Save.
     'action-bar': ['@base-ui/react', 'class-variance-authority'],
     badge: ['class-variance-authority'],
+    // `useRender` alone: the crumbs before the last are the product's own
+    // link element, and the trail has no clothes worth a `cva`.
+    breadcrumbs: ['@base-ui/react'],
     // Its own clothes and nothing else. A banner is a strip with a slot at
     // each end - importing Alert's `cva` would tie a message about the whole
     // application to one about the field beside it, and those drift apart on
@@ -247,6 +268,9 @@ describe('what a primitive drags in', () => {
     // keyboard and the indeterminate state a native input cannot express.
     checkbox: ['@base-ui/react'],
     dialog: ['@base-ui/react', 'class-variance-authority'],
+    // Its own element rather than Base UI's Separator, which renders no
+    // `role` at all - the one thing a separator is for. See the component.
+    divider: ['class-variance-authority'],
     // The whole component is text a person typed being turned into minutes.
     // Input's field clothes, so a duration and a text box are the same
     // control with different content.
@@ -265,6 +289,9 @@ describe('what a primitive drags in', () => {
     input: [],
     kbd: [],
     menu: ['@base-ui/react', 'class-variance-authority'],
+    // `useRender` for the entry, which is the product's own link, and `cva`
+    // for the three shapes the same list takes.
+    'nav-rail': ['@base-ui/react', 'class-variance-authority'],
     panel: ['class-variance-authority'],
     // The group is the control - one tab stop, arrows within it - and that is
     // Base UI's roving focus rather than anything drawn here.
@@ -332,6 +359,8 @@ describe('what a primitive drags in', () => {
     table: ['class-variance-authority', 'table-sort'],
     // Button, and nothing else: the row of pages and the two arrows.
     pagination: ['button'],
+    // `cva` for the container's four measures. The header itself is a row.
+    'page-header': ['class-variance-authority'],
     // A Select, which is the control most likely to reintroduce a native
     // `<select>` - three numbers in a box looks like the case where it would
     // not matter.
@@ -559,11 +588,43 @@ describe('a primitive has no words of its own', () => {
     'numeric',
   ])
 
+  /*
+   * What the gate is actually about is text a reader sees, and two kinds of
+   * string default are reliably not that.
+   *
+   * A CSS value - `var(--spacing-rail)`, `1px`, `100%` - is a length. It is
+   * never read out, never translated, and making the prop required to avoid
+   * it would mean every product of the line picks its own title bar height,
+   * which is precisely the drift the token exists to end.
+   *
+   * A keyword the component itself declares - `'horizontal'` against
+   * `orientation?: 'horizontal' | 'vertical'` - is an enum member, checked by
+   * the compiler and never rendered. Recognised from the declaration rather
+   * than from a list of allowed words: a list would have to grow for every
+   * component, and each line of it would be a claim nobody re-checks. If the
+   * union is there, the value is one of its members and the compiler agrees.
+   */
+  const CSS_VALUE = /^(var\(|calc\(|-?\d)|^(auto|none|inherit|currentColor)$/
+
+  /** Whether the component declares this prop as a union of string literals
+   * that includes this value - which makes the value an enum member rather
+   * than a word. */
+  function isDeclaredKeyword(source: string, prop: string, value: string): boolean {
+    // `prop?:` and not `prop:` - an optional property in an interface is the
+    // one that can have a default. Matching the looser form found `cva`'s
+    // variant block, which is a different `orientation:` entirely, and the
+    // first match of several is almost always the wrong one.
+    const declared = source.match(new RegExp(String.raw`\b${prop}\?:\s*([^\n;]+)`))?.[1]
+    return declared !== undefined && declared.includes(`'${value}'`)
+  }
+
   /** String defaults in a destructured props list: `label = 'Copy'`. */
   function stringDefaults(source: string): string[] {
     const body = source.match(/export function \w+\(\{([\s\S]*?)\}:/)?.[1] ?? ''
     return [...body.matchAll(/(\w+)\s*=\s*'([^']*)'/g)]
       .filter(([, prop, value]) => /[A-Za-z]{2}/.test(value!) && !NOT_A_WORD.has(prop!))
+      .filter(([, , value]) => !CSS_VALUE.test(value!))
+      .filter(([, prop, value]) => !isDeclaredKeyword(source, prop!, value!))
       .map(([, prop, value]) => `${prop} = '${value}'`)
   }
 
