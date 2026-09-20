@@ -224,8 +224,41 @@ const componentSources = readdirSync(componentDir)
     content: readFileSync(resolve(componentDir, file), 'utf8').replace(/\r\n/g, '\n'),
   }))
 
+/*
+ * The title, checked against the component's own export rather than written
+ * from its file name.
+ *
+ * Capitalising the file name gave "Bar-chart", "Window-frame", "Status-dot"
+ * and "Skeleton-of" - which is what `shadcn add` prints to whoever installs
+ * one, and what a catalogue listing this registry shows. It had been wrong
+ * since the first multi-word primitive and was found by reading the published
+ * registry, not by any gate.
+ *
+ * The obvious replacement - take the first capitalised export - is worse than
+ * it looks, and measured rather than assumed: on this set it disagrees with
+ * the component in 17 files out of 94. It answers `STEPS` for activity-weeks,
+ * `MIN_SEGMENT_WIDTH` for track-segments, `ToastProvider` for toast and
+ * `WindowButtons` for window-frame, and each of those is a confident wrong
+ * answer that nothing downstream can tell from a right one.
+ *
+ * So the file name proposes and the exports confirm. The candidate is the
+ * de-hyphenated name; if the file exports something by exactly that name -
+ * which 77 of them do - that is what a consumer types in their JSX and the
+ * title is right by construction. If it does not, the file is a module of
+ * parts rather than one component (calendar-math, tree-rows, window-frame),
+ * and the de-hyphenated name is its own answer: `WindowFrame` names the group
+ * the way the documentation page does, where `WindowButtons` would name one
+ * of four and hide the other three.
+ */
+function titleOf(name) {
+  return name
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('')
+}
+
 const componentItems = componentSources.map(({ file, name, content }) => {
-  const title = name.charAt(0).toUpperCase() + name.slice(1)
+  const title = titleOf(name)
 
   // The first paragraph of the file's own block comment, so the description
   // and the code cannot disagree about what the component is for.

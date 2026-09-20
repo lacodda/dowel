@@ -135,6 +135,68 @@ describe('every item', () => {
     }
   })
 
+  /*
+   * The title is what `shadcn add` prints and what a catalogue listing this
+   * registry shows, so it is the shopfront. It was written by capitalising
+   * the file name, which gave "Bar-chart", "Window-frame", "Status-dot" and
+   * "Skeleton-of" from the first multi-word primitive onwards - found by
+   * reading the published registry, not by any gate.
+   *
+   * Checking for a hyphen would catch that one bug and nothing else, so the
+   * gate asks the stronger question: does the file export a component by
+   * exactly this name? Where it does, the title is provably the identifier a
+   * consumer types in their JSX and cannot drift from it. Where it does not,
+   * the file is a module of parts rather than one component, and the set of
+   * those is listed below so that it stays a decision.
+   */
+  const PART_MODULES = new Set([
+    // Pure functions, imported by the component that draws with them.
+    'calendar-math',
+    'line-scale',
+    'table-sort',
+    'tree-rows',
+    'json-rows',
+    'activity-weeks',
+    'diff-lines',
+    'track-segments',
+    // Several exports used together, with no single root: the four halves of
+    // a window's own frame, the provider and the thing it provides.
+    'window-frame',
+    'shortcut',
+    'reorderable-list',
+    'tier',
+  ])
+
+  it('names a component the way a consumer types it', () => {
+    const missing: string[] = []
+    for (const item of items) {
+      if (item.type !== 'registry:ui') continue
+      const source = readFileSync(resolve(root, 'registry/ui', `${item.name}.tsx`), 'utf8')
+      // Anchored on the export keyword, so a mention in a comment or in a
+      // type cannot stand in for a declaration.
+      const declared = new RegExp(String.raw`^export (?:function|const|class) ${item.title}\b`, 'm')
+      if (declared.test(source)) continue
+      if (PART_MODULES.has(item.name)) continue
+      missing.push(`${item.name} is titled \`${item.title}\`, which it does not export`)
+    }
+    expect(missing, missing.join('; ')).toEqual([])
+  })
+
+  it('lists no part module that has since grown a root export', () => {
+    // The other direction: a listed exception that stopped being one is a
+    // line of permission nobody needs, and the list is only useful while
+    // every name on it is still earning its place.
+    const stale = [...PART_MODULES].filter((name) => {
+      const source = readFileSync(resolve(root, 'registry/ui', `${name}.tsx`), 'utf8')
+      const title = name
+        .split('-')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join('')
+      return new RegExp(String.raw`^export (?:function|const|class) ${title}\b`, 'm').test(source)
+    })
+    expect(stale, `${stale.join(', ')} exports its own name now - drop it from PART_MODULES`).toEqual([])
+  })
+
   it('writes only inside the consumer project', () => {
     // Two safe forms. `~/` is the project root, for files that have no
     // conventional home - the theme, the accents. `@ui/` and its siblings are
