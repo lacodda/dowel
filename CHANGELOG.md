@@ -2,6 +2,25 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.29.0] - 2026-09-20
+
+### Bug Fixes
+- Title a component the way a consumer types it
+
+### Build
+- Regenerate the registry, the docs mirror and llms.txt
+
+### Documentation
+- Show the frame at a size, and the shapes a rail takes
+
+### Features
+- Name the window's own chrome, so four products stop guessing
+- The frame, with the two mistakes already made
+- One list of destinations, in the three shapes it takes
+- A screen's own heading, and the measure under it
+- Where you are, as a trail rather than a word
+- A rule that says whether it means anything
+
 ## [0.28.1] - 2026-09-19
 
 ### Bug Fixes
