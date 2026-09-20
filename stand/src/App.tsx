@@ -184,6 +184,11 @@ import {
 import { Truncate } from '../../registry/ui/truncate'
 import { MarkedText, MarkedTextarea, type Mark } from '../../registry/ui/marked-text'
 import { SectionHeading, SectionNav } from '../../registry/ui/section-nav'
+import { AppShell, Screen } from '../../registry/ui/app-shell'
+import { NavGroup, NavRail, NavSpacer, type NavRailItem } from '../../registry/ui/nav-rail'
+import { Container, PageHeader } from '../../registry/ui/page-header'
+import { Breadcrumbs } from '../../registry/ui/breadcrumbs'
+import { Divider, SectionHeader } from '../../registry/ui/divider'
 import { NotificationBell } from '../../registry/ui/notification-bell'
 import { ResizeEdges, WindowButtons, useTitleBarGestures } from '../../registry/ui/window-frame'
 import { Splash } from '../../registry/ui/splash'
@@ -568,6 +573,36 @@ const sections = [
     render: () => <ErrorBoundarySection />,
   },
   /* The shell: what a desktop product of the line draws around its screens. */
+  {
+    id: 'app-shell',
+    title: 'AppShell',
+    docs: '/dowel/components/app-shell/',
+    render: () => <AppShellSection />,
+  },
+  {
+    id: 'nav-rail',
+    title: 'NavRail',
+    docs: '/dowel/components/nav-rail/',
+    render: () => <NavRailSection />,
+  },
+  {
+    id: 'page-header',
+    title: 'PageHeader',
+    docs: '/dowel/components/page-header/',
+    render: () => <PageHeaderSection />,
+  },
+  {
+    id: 'breadcrumbs',
+    title: 'Breadcrumbs',
+    docs: '/dowel/components/breadcrumbs/',
+    render: () => <BreadcrumbsSection />,
+  },
+  {
+    id: 'divider',
+    title: 'Divider',
+    docs: '/dowel/components/divider/',
+    render: () => <DividerSection />,
+  },
   {
     id: 'section-nav',
     title: 'SectionNav',
@@ -5337,5 +5372,300 @@ function FilterPopoverSection() {
         </Table>
       </TableScroll>
     </Row>
+  )
+}
+
+/*
+ * The frame.
+ *
+ * Shown at a size, in a box with a border, rather than taking over the page:
+ * the shell's whole job is to fill the height it is given, so a
+ * demonstration that filled the stand would show nothing and break every
+ * section under it. The box is the window; what is inside it is the real
+ * component.
+ */
+
+const shellScreens: NavRailItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <rect x="2" y="2" width="5" height="5" rx="1" />
+        <rect x="9" y="2" width="5" height="5" rx="1" />
+        <rect x="2" y="9" width="5" height="5" rx="1" />
+        <rect x="9" y="9" width="5" height="5" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    id: 'catalogue',
+    label: 'Catalogue',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <path d="M3 4h10M3 8h10M3 12h6" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: 'calendar',
+    label: 'Calendar',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <rect x="2.5" y="3.5" width="11" height="10" rx="2" />
+        <path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+]
+
+const shellRoadmap: NavRailItem[] = [
+  {
+    id: 'notes',
+    label: 'Notes',
+    soon: true,
+    end: '0.59',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+        <path d="M4 2.5h5L12.5 6v7.5h-8.5z" />
+        <path d="M9 2.5V6h3.5" />
+      </svg>
+    ),
+  },
+]
+
+function AppShellSection() {
+  const [screen, setScreen] = useState('catalogue')
+  const current = shellScreens.find((item) => item.id === screen)
+
+  return (
+    <>
+      <Row label="a desktop frame - a bar, a rail, and the screen in the corner they leave">
+        {/* A fixed height, because the shell fills what it is given and a
+            demonstration has to give it something. */}
+        <div className="h-[19rem] w-full overflow-hidden rounded-lg border border-line">
+          <AppShell
+            top={
+              <header className="flex h-full items-center gap-3 border-b border-line bg-bg px-3">
+                <span className="text-sm font-semibold">Product</span>
+                <Breadcrumbs
+                  label="Trail"
+                  items={[
+                    { id: screen, label: (current?.label as string) ?? 'Screen' },
+                    { id: 'work', label: 'Harbour lights' },
+                  ]}
+                  onSelect={() => undefined}
+                />
+              </header>
+            }
+            side={
+              <NavRail label="Screens" items={shellScreens} activeId={screen} onSelect={setScreen} />
+            }
+          >
+            <Screen>
+              <PageHeader
+                title={(current?.label as string) ?? 'Screen'}
+                description="The heading belongs to the screen, not to the frame."
+                actions={<Button size="sm">New</Button>}
+              />
+              <SkeletonText lines={6} />
+            </Screen>
+          </AppShell>
+        </div>
+      </Row>
+
+      <Row label="the same frame with no rail - the shape a web product usually has">
+        <div className="h-[13rem] w-full overflow-hidden rounded-lg border border-line">
+          <AppShell
+            top={
+              <header className="flex h-full items-center gap-4 border-b border-line bg-bg px-3">
+                <span className="text-sm font-semibold">Product</span>
+                <NavRail
+                  layout="row"
+                  label="Screens"
+                  items={shellScreens}
+                  activeId={screen}
+                  onSelect={setScreen}
+                />
+              </header>
+            }
+          >
+            <Screen pad="tight">
+              <SkeletonText lines={4} />
+            </Screen>
+          </AppShell>
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function NavRailSection() {
+  const [column, setColumn] = useState('catalogue')
+  const [row, setRow] = useState('dashboard')
+  const [bar, setBar] = useState('calendar')
+
+  return (
+    <>
+      <Row label="column - the desktop rail, and the same rail with a group and a foot">
+        <div className="h-64 w-56 overflow-hidden rounded-lg border border-line">
+          <NavRail label="Screens" items={shellScreens} activeId={column} onSelect={setColumn} />
+        </div>
+        {/* A group and a foot are things the product puts around the list:
+            NavRail takes the destinations, and where they sit is the rail the
+            product assembles. */}
+        <div className="flex h-64 w-56 flex-col overflow-hidden rounded-lg border-r border-line">
+          <NavRail
+            label="Screens"
+            items={shellScreens}
+            activeId={column}
+            onSelect={setColumn}
+            className="h-auto border-r-0 pb-0"
+          />
+          <NavGroup>Library</NavGroup>
+          <NavRail label="Library" items={shellRoadmap} className="h-auto border-r-0 pt-0 pb-0" />
+          <NavSpacer>
+            <NavRail
+              label="Settings"
+              items={[{ id: 'settings', label: 'Settings' }]}
+              className="h-auto border-r-0 pt-0"
+            />
+          </NavSpacer>
+        </div>
+      </Row>
+
+      <Row label="row - tabs in a header, beside the name of the product">
+        <div className="flex w-full items-center gap-4 rounded-lg border border-line bg-bg px-3 py-2">
+          <span className="text-sm font-semibold">Product</span>
+          <NavRail layout="row" label="Screens" items={shellScreens} activeId={row} onSelect={setRow} />
+        </div>
+      </Row>
+
+      <Row label="bar - along the bottom of a phone, where the thumb already is">
+        <div className="w-full max-w-[22rem] overflow-hidden rounded-lg border border-line bg-bg">
+          <div className="h-16" />
+          <NavRail layout="bar" label="Screens" items={shellScreens} activeId={bar} onSelect={setBar} />
+        </div>
+      </Row>
+    </>
+  )
+}
+
+function PageHeaderSection() {
+  return (
+    <>
+      <Row label="a heading for a screen, with what acts on the whole of it">
+        <div className="w-full rounded-lg border border-line bg-bg p-4">
+          <PageHeader
+            title="Catalogue"
+            description="Everything you have written, newest first."
+            actions={
+              <>
+                <Button variant="ghost" size="sm">
+                  Export
+                </Button>
+                <Button size="sm">New</Button>
+              </>
+            }
+          >
+            <Breadcrumbs
+              label="Trail"
+              items={[
+                { id: 'library', label: 'Library' },
+                { id: 'catalogue', label: 'Catalogue' },
+              ]}
+              onSelect={() => undefined}
+            />
+          </PageHeader>
+          <SkeletonText lines={3} />
+        </div>
+      </Row>
+
+      <Row label="the four measures - how wide the content is allowed to get">
+        <div className="flex w-full flex-col gap-3">
+          {(['prose', 'default', 'wide', 'full'] as const).map((width) => (
+            <div key={width}>
+              <div className="mb-1 text-2xs uppercase tracking-caption text-faint">{width}</div>
+              <Container width={width}>
+                <div className="h-2 rounded-full bg-accent-soft" />
+              </Container>
+            </div>
+          ))}
+        </div>
+      </Row>
+    </>
+  )
+}
+
+const longTrail = [
+  { id: 'library', label: 'Library' },
+  { id: 'collections', label: 'Collections' },
+  { id: 'sea-songs', label: 'Sea songs' },
+  { id: 'works', label: 'Works' },
+  { id: 'harbour', label: 'Harbour lights' },
+]
+
+function BreadcrumbsSection() {
+  return (
+    <>
+      <Row label="a short trail - the way back is a link, where you stand is not">
+        <Breadcrumbs label="Trail" items={longTrail.slice(3)} onSelect={() => undefined} />
+      </Row>
+      <Row label="a long one, folded - the way out and the place you stand are kept">
+        <Breadcrumbs label="Trail" items={longTrail} onSelect={() => undefined} />
+      </Row>
+      <Row label="the same trail unfolded, for comparison">
+        <Breadcrumbs label="Trail" items={longTrail} max={5} onSelect={() => undefined} />
+      </Row>
+    </>
+  )
+}
+
+function DividerSection() {
+  return (
+    <>
+      <Row label="a rule between two parts of a screen">
+        <div className="w-full">
+          <p className="text-sm text-dim">Above the line.</p>
+          <Divider spacing="md" />
+          <p className="text-sm text-dim">Below it.</p>
+        </div>
+      </Row>
+
+      <Row label="a captioned break - a heading for a run that does not deserve one">
+        <div className="w-full">
+          <p className="text-sm text-dim">Entries from yesterday.</p>
+          <Divider label="Today" spacing="md" />
+          <p className="text-sm text-dim">Entries from this morning.</p>
+        </div>
+      </Row>
+
+      <Row label="vertical, in a row of controls - it stretches rather than fills">
+        <div className="flex items-center gap-1 rounded-lg border border-line bg-bg px-2 py-1.5">
+          <Button variant="ghost" size="sm">
+            Cut
+          </Button>
+          <Divider orientation="vertical" spacing="sm" decorative />
+          <Button variant="ghost" size="sm">
+            Copy
+          </Button>
+          <Divider orientation="vertical" spacing="sm" decorative />
+          <Button variant="ghost" size="sm">
+            Paste
+          </Button>
+        </div>
+      </Row>
+
+      <Row label="a section heading, one level inside the heading of the page">
+        <div className="w-full">
+          <SectionHeader
+            title="Versions"
+            description="Every take, newest first."
+            actions={<Button size="sm">Add</Button>}
+          />
+          <SkeletonText lines={2} />
+        </div>
+      </Row>
+    </>
   )
 }
