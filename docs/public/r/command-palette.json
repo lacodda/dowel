@@ -2,12 +2,12 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "command-palette",
   "type": "registry:ui",
-  "title": "Command-palette",
+  "title": "CommandPalette",
   "description": "One box that finds anything: the shortcut opens it, typing narrows a list, Enter runs what is highlighted.",
   "dependencies": [
     "@base-ui/react",
     "class-variance-authority",
-    "dowel-ui@^0.28.1"
+    "dowel-ui@^0.29.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/combobox.json",

@@ -2,11 +2,11 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "context-menu",
   "type": "registry:ui",
-  "title": "Context-menu",
+  "title": "ContextMenu",
   "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.28.1"
+    "dowel-ui@^0.29.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/menu.json"

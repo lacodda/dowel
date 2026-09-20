@@ -1,6 +1,6 @@
 # dowel
 
-> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.28.1.
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.29.0.
 
 Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
 
@@ -23,10 +23,12 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [ActivityLegend](https://lacodda.github.io/dowel/components/activity-legend.md): What the shades of an activity grid mean - including what its darkest square stands for.
 - [activity-weeks](https://lacodda.github.io/dowel/components/activity-weeks.md): Laying a run of dates out in weeks, with the four meanings of a cell - and no React in it.
 - [Alert](https://lacodda.github.io/dowel/components/alert.md): A condition that is still true, about the thing it sits beside.
+- [AppShell](https://lacodda.github.io/dowel/components/app-shell.md): The frame around a product's screens - a bar across the top, a rail down the left, and a screen that scrolls inside the window rather than past it.
 - [Avatar](https://lacodda.github.io/dowel/components/avatar.md): A person in the space of a word - with a fallback that is the normal case, initials cut by a rule, and the name announced once.
 - [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
 - [BarChart](https://lacodda.github.io/dowel/components/bar-chart.md): Columns over a baseline - one period, one bar - with the plot height stated in pixels.
+- [Breadcrumbs](https://lacodda.github.io/dowel/components/breadcrumbs.md): Where you are, as a trail rather than a word - the way back as links, the place you stand as text, and the middle folded away when it will not fit.
 - [Button](https://lacodda.github.io/dowel/components/button.md): The five buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
 - [Calendar](https://lacodda.github.io/dowel/components/calendar.md): A month of days, built on Intl rather than on a date library - and a value that is a string, never a Date.
 - [calendar-math](https://lacodda.github.io/dowel/components/calendar-math.md): The date arithmetic under the Calendar, importable on its own - strings in, strings out, no Date and no library.
@@ -46,6 +48,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Dialog](https://lacodda.github.io/dowel/components/dialog.md): A question the reader has to answer before anything else continues.
 - [diff-lines](https://lacodda.github.io/dowel/components/diff-lines.md): The comparison behind DiffView - an exact line diff, and the pairing that makes two columns line up.
 - [DiffView](https://lacodda.github.io/dowel/components/diff-view.md): Two drafts side by side, with what moved between them shown - and the two columns kept in step, which is the whole point.
+- [Divider](https://lacodda.github.io/dowel/components/divider.md): The line between one part of a screen and the next - announced as a boundary, or taken out of the reading when it is only drawing - and the heading over a section.
 - [Drawer](https://lacodda.github.io/dowel/components/drawer.md): A modal panel that slides in from an edge - a filter sheet, a detail pane, a form too long to centre.
 - [DurationField](https://lacodda.github.io/dowel/components/duration-field.md): A length of time, typed the way people say it - loose going in, one spelling coming out.
 - [EmptyState](https://lacodda.github.io/dowel/components/empty-state.md): What a screen says when there is nothing on it - and the three kinds of nothing that need different answers.
@@ -62,9 +65,11 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [line-scale](https://lacodda.github.io/dowel/components/line-scale.md): Bounds, runs and round-number ticks for a line - the arithmetic, with no React in it.
 - [MarkedText](https://lacodda.github.io/dowel/components/marked-text.md): Text with marks on it - a span of characters or a whole line - to read, or to type into with the marks under the letters.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
+- [NavRail](https://lacodda.github.io/dowel/components/nav-rail.md): A product's destinations, drawn as the product's own links - a column down the left, a row of tabs in a header, or a bar along the bottom of a phone.
 - [NotificationBell](https://lacodda.github.io/dowel/components/notification-bell.md): The bell in the title bar, lit only by what asks to be looked at, with the last few entries under it and the whole history one click further.
 - [NumberField](https://lacodda.github.io/dowel/components/number-field.md): A number, its stepper, and what an empty box actually means.
 - [NumberFormat](https://lacodda.github.io/dowel/components/number-format.md): A number written the way the reader's language writes numbers, with figures that line up in a column.
+- [PageHeader](https://lacodda.github.io/dowel/components/page-header.md): What a screen says it is - a title, a line under it, and the buttons that act on the whole of it - with the measure its content is read at.
 - [PageSize](https://lacodda.github.io/dowel/components/page-size.md): How many rows to a page - a Select, never a native one, handing back a number.
 - [Pagination](https://lacodda.github.io/dowel/components/pagination.md): Paging through a list, in a row that keeps its width wherever the reader is.
 - [Panel](https://lacodda.github.io/dowel/components/panel.md): The raised surface everything else sits on.

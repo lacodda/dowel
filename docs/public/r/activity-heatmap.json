@@ -2,11 +2,11 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "activity-heatmap",
   "type": "registry:ui",
-  "title": "Activity-heatmap",
+  "title": "ActivityHeatmap",
   "description": "The shape everyone recognises: weeks as columns, weekdays as rows, time running left to right, and a value carried by how dark a square is. Two products of the line asked for it by name before it existed.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.28.1"
+    "dowel-ui@^0.29.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/activity-weeks.json"

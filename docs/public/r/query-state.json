@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "query-state",
   "type": "registry:ui",
-  "title": "Query-state",
+  "title": "QueryState",
   "description": "Every list in every product writes the same ladder - loading, then failed, then nothing found, then the content - and writes it slightly differently each time. What differs is never deliberate: one screen forgets the empty case, another shows a spinner where the shape was known, a third prints the raw error object. This is that ladder, once.",
   "dependencies": [],
   "registryDependencies": [

@@ -2,11 +2,11 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tag-input",
   "type": "registry:ui",
-  "title": "Tag-input",
+  "title": "TagInput",
   "description": "Free text turned into a list: type a word, press Enter, it becomes a chip.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.28.1"
+    "dowel-ui@^0.29.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/chip.json",

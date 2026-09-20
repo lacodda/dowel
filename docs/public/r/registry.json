@@ -14,7 +14,7 @@
           "path": "dowel/theme.css",
           "target": "~/dowel/theme.css",
           "type": "registry:file",
-          "content": "/*\n * dowel theme - the token vocabulary every product of the lacodda line shares.\n *\n * The vocabulary comes from the products themselves: kilna and kasl-server\n * already ship the same token names (bg / raise / soft / line / text / dim /\n * accent / good / warn / bad / info) and differ only in values. That is the\n * contract this file freezes. Names are the mockup's own words rather than\n * stock component-library names, so a screen can be checked against a mockup\n * in the mockup's words.\n *\n * Two things are parametric, and everything else is derived from them:\n *\n *   --accent-base   the product's hue from the brand-line registry\n *   --neutral-base  the hue the greys are tinted with (the accent, by default)\n *\n * Tinting the neutrals is not decoration - it is what the two live products do\n * by hand: kilna's greys lean magenta, kasl-server's lean gold. Here that lean\n * is one declaration instead of thirty hand-picked hex values.\n *\n * Soft variants are mixed from their own base with `color-mix`, so a product\n * that overrides `--accent-base` gets a matching `--accent-soft` for free and\n * cannot pick one that disagrees with it.\n *\n * Theme selection: no class on the root element follows the operating system,\n * an explicit `light` or `dark` class pins the theme. Components never use\n * `dark:` utilities - every colour goes through a token, and the theme swaps\n * the token underneath.\n */\n\n:root {\n  /* The two parameters. `--accent-base` is overridden per product by an accent\n   * file; `--neutral-base` follows it unless a product says otherwise. */\n  --accent-base: #e8862d;\n  --neutral-base: var(--accent-base);\n\n  /* Ink and ground of the dark theme, before the neutral tint is mixed in.\n   * Kept as their own tokens so the tint amount is the only thing that\n   * changes when a product wants greyer or warmer chrome. */\n  --ground: #131316;\n  --ink: #ece9ef;\n\n  /* How much of `--neutral-base` bleeds into the greys. The live products sit\n   * at roughly this much: enough that the chrome belongs to the product,\n   * little enough that it still reads as grey. */\n  --neutral-tint: 6%;\n  --neutral-tint-strong: 9%;\n\n  color-scheme: dark;\n\n  --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));\n  --raise: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), #1c1c21);\n\n  /* Surfaces that lift by translucency rather than by their own colour: they\n   * must work over `--bg` and over `--raise` alike. */\n  --soft: rgb(255 255 255 / 0.045);\n  --softer: rgb(255 255 255 / 0.025);\n  --line: rgb(255 255 255 / 0.08);\n  --line-2: rgb(255 255 255 / 0.15);\n\n  --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));\n  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #a7a2ad);\n  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #6e6a76);\n\n  --accent: var(--accent-base);\n  /* The hover/active partner: lighter on dark, where the ground is what the\n   * accent has to separate from. */\n  --accent-2: color-mix(in oklab, white 22%, var(--accent-base));\n  --accent-soft: color-mix(in oklab, var(--accent-base) 16%, transparent);\n\n  /* Status hues are the line's own and do not follow the product accent: a\n   * green that shifted per product would stop meaning \"good\". Meaning never\n   * rests on colour alone - a badge carries an icon and a word - so these\n   * exist for emphasis, not as the message. */\n  --good: #45d18f;\n  --warn: #e8b13f;\n  --bad: #ef6a6a;\n  --info: #4cc4e0;\n  --good-soft: color-mix(in oklab, var(--good) 14%, transparent);\n  --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);\n  --bad-soft: color-mix(in oklab, var(--bad) 14%, transparent);\n  --info-soft: color-mix(in oklab, var(--info) 15%, transparent);\n\n  /* Series colours, for charts.\n   *\n   * Like the status hues and unlike everything else here, these do NOT follow\n   * the product accent - and that is the whole decision. A series is a\n   * property of the data, not of the product showing it; a palette derived\n   * from the accent would paint the same series differently in kilna and in\n   * kasl-server, which is the one thing a series colour must never do.\n   *\n   * Deriving them from the accent was measured, not guessed: rotating the hue\n   * by fixed angles put the best candidate at Delta-E 12.1 from the product's\n   * own accent with adjacent pairs at 9.8, and threw 46 of 152 colours outside\n   * sRGB. The fixed palette does better on both counts.\n   *\n   * The cost of fixing them is stated plainly: 13 of the line's 19 accents sit\n   * within Delta-E 8 of some slot (lyrid 2.7, atlas 3.1, turnout 3.2). A chart\n   * shows one accent, so this is survivable - but it is exactly why identity is\n   * carried by the legend and by direct labels, never by hue on its own. The\n   * components of this block enforce that; it is not advice.\n   *\n   * Assigned in order, 1..8, and never cycled: a ninth series folds into\n   * \"other\", or the chart becomes small multiples. The order is the\n   * colour-blind-safety mechanism - the worst adjacent pair is Delta-E 8.4\n   * under simulated protanopia - so re-ordering these breaks a gate.\n   *\n   * Slot 8 is the line's own value rather than the reference palette's. The\n   * reference red sat Delta-E 1.9 from `--bad`, which would have let a series\n   * impersonate a status; this one clears every status by 15 and costs\n   * nothing, the worst adjacent pair being unchanged.\n   *\n   * Some slots sit below 3:1 against the surface. That is allowed only because\n   * the relief ships with them: visible values, or the table view.\n   */\n  --series-1: #3987e5;\n  --series-2: #d95926;\n  --series-3: #199e70;\n  --series-4: #c98500;\n  --series-5: #d55181;\n  --series-6: #008300;\n  --series-7: #9085e9;\n  --series-8: #a3215a;\n\n  /* Magnitude rather than identity: one hue, light to dark. A heatmap cell\n   * reads this. The lightest step is allowed to recede toward the surface,\n   * because \"near zero\" should; an ordered-but-discrete scale (tiers, funnel\n   * stages) starts at 300 instead, where the contrast still holds. */\n  --scale-100: #0d366b;\n  --scale-200: #184f95;\n  --scale-300: #256abf;\n  --scale-400: #2a78d6;\n  --scale-500: #3987e5;\n  --scale-600: #5598e7;\n  --scale-700: #86b6ef;\n\n  /* The chart's own furniture. A gridline that competes with the data is drawn\n   * wrong, so it is quieter than `--line`; the axis is the one that may be\n   * seen. */\n  --chart-grid: rgb(255 255 255 / 0.06);\n  --chart-axis: rgb(255 255 255 / 0.14);\n\n  /* Heat, for a grid of cells where colour is the only thing carrying the\n   * value - a year of activity, a month of a team's hours.\n   *\n   * Five discrete steps rather than the seven of `--scale-*`, and a separate\n   * set rather than a slice of them, because the two answer different\n   * questions. `--scale-*` is sequential: a continuous magnitude, where the\n   * lightest step means \"near zero\" and may recede toward the surface.\n   * Heat is ordinal: five shades a reader tells apart at a glance and matches\n   * against a legend, which needs wider gaps between them (no slice of\n   * `--scale-*` clears the 0.06 lightness step - they sit 0.047 apart) and a\n   * bottom step that stays distinct from an empty cell.\n   *\n   * That last one is the whole point. A heatmap cell has more meanings than a\n   * number: nothing recorded, a day still running, a day outside the data, and\n   * a value. If the faintest value looks like the empty cell, the grid says\n   * somebody did nothing on a day nobody reported - and `--heat-1` clears the\n   * empty square by 2.1:1 so it cannot.\n   *\n   * Fixed, like the series and unlike almost everything else here. Derived\n   * from the accent - as the first consumer did - the faintest step sat 1.3:1\n   * from the empty cell for half the line, and pinning lightness instead ran\n   * out of sRGB: the darkest accents cannot reach the top of the ramp at their\n   * own chroma.\n   */\n  --heat-1: #28528e;\n  --heat-2: #3a65a3;\n  --heat-3: #4d78b7;\n  --heat-4: #608ccd;\n  --heat-5: #73a0e2;\n\n  /* Syntax, for code shown inside a product.\n   *\n   * Eight kinds rather than the fifty a highlighter's theme names, because\n   * these are the distinctions that survive across languages: a keyword, a\n   * literal string, a number, a comment, an identifier, a type, punctuation,\n   * and the metadata around the code (a decorator, an attribute, a prompt).\n   * Anything finer is a grammar's own vocabulary and does not travel.\n   *\n   * Fixed, like the series and the heat ramps, and for the same reason: code\n   * is not a property of the product showing it, and `if` should not be\n   * magenta in kilna and cobalt in kasl-server.\n   *\n   * Chosen against the surface code actually sits on - `--soft` over `--bg`,\n   * which is what CodeBlock and `.prose pre` draw - and every slot clears\n   * 4.5:1 AS TEXT in both themes. That threshold, not the 3:1 the series are\n   * held to, is the whole reason these exist separately: the series palette\n   * was measured here first and five of its eight light values sat under 3:1,\n   * one at 1.90:1. A filled bar can be pale; a 12px glyph cannot.\n   *\n   * These are deliberately NOT held to the colour-blind floor the series are.\n   * A series colour is the identity of its mark - lose the hue and the data is\n   * gone. Syntax colour is a second reading of what the text already says in\n   * full: a keyword is a keyword by its spelling, and CodeBlock's default\n   * renders no colour at all and stays readable. `syntax.test.ts` says so in\n   * place, so the omission is not mistaken for an oversight.\n   *\n   * `comment` is the quietest on purpose - it is the one kind a reader is\n   * meant to be able to skip - and still clears the threshold.\n   */\n  --syntax-keyword: #c792ea;\n  --syntax-string: #9ccc65;\n  --syntax-number: #f78c6c;\n  --syntax-comment: #9e99a6;\n  --syntax-name: #82aaff;\n  --syntax-type: #4dd0b1;\n  --syntax-punctuation: #c4bfcb;\n  --syntax-meta: #f0a868;\n\n  /* Elevation, three steps. The products had one shadow and used it for\n   * everything that leaves the flow - a toast, a dropdown and a modal all\n   * floated by the same amount, so a modal never felt further away than the\n   * menu it covered. The three are the steps.\n   *\n   * Two layers each, and that is what makes them read as depth on a dark\n   * surface rather than as a stain. One big soft blur at high opacity is what\n   * these were - `0 24px 60px` of 55% black - and against a near-black page\n   * the wide skirt never resolves into shade: it just darkens a ring of\n   * background around the panel, which a pilot photographed and called an ugly\n   * dark contour. Depth is read from the CONTACT shadow, the tight one right\n   * under the edge; the ambient layer only has to hint that there is room\n   * under the thing. So each step is a tight, slightly stronger layer plus a\n   * wider, much weaker one, and the totals come down. */\n  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 6px rgb(0 0 0 / 0.22);\n  --shadow-raise: 0 2px 4px rgb(0 0 0 / 0.36), 0 8px 20px rgb(0 0 0 / 0.26);\n  --shadow-float: 0 4px 8px rgb(0 0 0 / 0.36), 0 18px 44px rgb(0 0 0 / 0.32);\n}\n\n/*\n * Light theme, twice: once for the operating system's preference, once for the\n * explicit `light` class. The declarations are identical - only the selector\n * differs - so that a product can pin a theme against the system setting.\n */\n@media (prefers-color-scheme: light) {\n  :root:not(.dark) {\n    color-scheme: light;\n\n    --ground: #f6f5f7;\n    --ink: #232027;\n\n    --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));\n    --raise: #ffffff;\n\n    /* Tinted, and translucent - which took two goes to get right.\n     *\n     * `color-mix` mixes the alpha along with the colour, so mixing 60% of an\n     * opaque accent into a 5%-opaque grey gives a surface 62% opaque: twelve\n     * times denser than the hairline it was meant to be. It went unnoticed for\n     * ten versions because `bg-soft` was only ever used for a hover, where a\n     * flash of colour reads as feedback rather than as a mistake. The first\n     * component to sit on it permanently - Alert - made it obvious.\n     *\n     * `oklch(from … / alpha)` keeps the alpha out of the mix: the hue comes\n     * from the tinted colour, the transparency is stated. */\n    --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);\n    --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);\n    --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);\n    --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);\n\n    --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));\n    --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);\n    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);\n\n    /* On a light ground the accent has to darken to stay legible as text and\n     * as a fill. It darkens *to* a lightness rather than *by* an amount: how\n     * far a hue has to travel depends on where it starts, and a fixed step\n     * that suits magenta leaves lime and gold short. Pinning the lightness and\n     * keeping the hue and chroma clears 5:1 for every accent in the line. */\n    --accent: oklch(from var(--accent-base) 0.5 c h);\n    --accent-2: oklch(from var(--accent-base) 0.4 c h);\n    --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);\n\n    --good: #0c8554;\n    --warn: #9a6b0c;\n    --bad: #c93b3b;\n    --info: #0d7f9c;\n    --good-soft: color-mix(in oklab, var(--good) 12%, transparent);\n    --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);\n    --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);\n    --info-soft: color-mix(in oklab, var(--info) 11%, transparent);\n\n    /* Series and scale, stepped for the light surface - the same eight hues\n     * chosen again against this ground, not the dark values lightened. The dark\n     * block says why these do not follow the product accent. */\n    --series-1: #2a78d6;\n    --series-2: #eb6834;\n    --series-3: #1baf7a;\n    --series-4: #eda100;\n    --series-5: #e87ba4;\n    --series-6: #008300;\n    --series-7: #4a3aa7;\n    --series-8: #85284d;\n\n    --scale-100: #cde2fb;\n    --scale-200: #9ec5f4;\n    --scale-300: #6da7ec;\n    --scale-400: #3987e5;\n    --scale-500: #2a78d6;\n    --scale-600: #1c5cab;\n    --scale-700: #104281;\n\n    --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);\n    --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);\n\n    /* The same five steps chosen again for the light ground, running the other\n     * way: here \"more\" is darker. See the dark block for why heat is its own\n     * ramp and not a slice of `--scale-*`. */\n    --heat-1: #84a8fd;\n    --heat-2: #7193e7;\n    --heat-3: #5e7fd1;\n    --heat-4: #4c6cbb;\n    --heat-5: #3b58a6;\n\n    /* The same eight kinds chosen again for the light ground - not the dark\n     * values darkened. Each clears 4.5:1 as text against `--soft` over this\n     * theme's `--bg`; the dark block says why syntax is its own palette and\n     * why it is not held to the colour-blind floor. */\n    --syntax-keyword: #7c3aad;\n    --syntax-string: #276c2b;\n    --syntax-number: #b5451b;\n    --syntax-comment: #6f6b78;\n    --syntax-name: #1a5fb4;\n    --syntax-type: #00695c;\n    --syntax-punctuation: #4a4753;\n    --syntax-meta: #9c4a00;\n\n    --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);\n    --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);\n    --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);\n  }\n}\n\n:root.light {\n  color-scheme: light;\n\n  --ground: #f6f5f7;\n  --ink: #232027;\n\n  --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));\n  --raise: #ffffff;\n\n  /* The same surfaces as above; see the note there. */\n  --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);\n  --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);\n  --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);\n  --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);\n\n  --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));\n  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);\n  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);\n\n  /* Darkened to a lightness, not by an amount - see the note above. */\n  --accent: oklch(from var(--accent-base) 0.5 c h);\n  --accent-2: oklch(from var(--accent-base) 0.4 c h);\n  --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);\n\n  --good: #0c8554;\n  --warn: #9a6b0c;\n  --bad: #c93b3b;\n  --info: #0d7f9c;\n  --good-soft: color-mix(in oklab, var(--good) 12%, transparent);\n  --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);\n  --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);\n  --info-soft: color-mix(in oklab, var(--info) 11%, transparent);\n\n  /* Series and scale, stepped for the light surface - the same eight hues\n   * chosen again against this ground, not the dark values lightened. The dark\n   * block says why these do not follow the product accent. */\n  --series-1: #2a78d6;\n  --series-2: #eb6834;\n  --series-3: #1baf7a;\n  --series-4: #eda100;\n  --series-5: #e87ba4;\n  --series-6: #008300;\n  --series-7: #4a3aa7;\n  --series-8: #85284d;\n\n  --scale-100: #cde2fb;\n  --scale-200: #9ec5f4;\n  --scale-300: #6da7ec;\n  --scale-400: #3987e5;\n  --scale-500: #2a78d6;\n  --scale-600: #1c5cab;\n  --scale-700: #104281;\n\n  --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);\n  --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);\n\n  /* The same five steps chosen again for the light ground, running the other\n   * way: here \"more\" is darker. See the dark block for why heat is its own\n   * ramp and not a slice of `--scale-*`. */\n  --heat-1: #84a8fd;\n  --heat-2: #7193e7;\n  --heat-3: #5e7fd1;\n  --heat-4: #4c6cbb;\n  --heat-5: #3b58a6;\n\n  /* The same eight kinds chosen again for the light ground - not the dark\n   * values darkened. Each clears 4.5:1 as text against `--soft` over this\n   * theme's `--bg`; the dark block says why syntax is its own palette and\n   * why it is not held to the colour-blind floor. */\n  --syntax-keyword: #7c3aad;\n  --syntax-string: #276c2b;\n  --syntax-number: #b5451b;\n  --syntax-comment: #6f6b78;\n  --syntax-name: #1a5fb4;\n  --syntax-type: #00695c;\n  --syntax-punctuation: #4a4753;\n  --syntax-meta: #9c4a00;\n\n  --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);\n  --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);\n  --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);\n}\n\n/*\n * `--on-accent` - what sits on top of an accent fill.\n *\n * A light accent (gold, lime, amber) needs dark glyphs; a dark one needs\n * white. The live products picked this by hand and wrote the answer into the\n * theme; here the theme works it out, by the same rule the brand-line S tile\n * uses.\n *\n * `contrast-color()` is the direct way to say it and is used where supported.\n * The fallback covers browsers that lack it. Relative colour syntax exposes\n * the accent's own lightness as `l`; `clamp()` turns that into a hard switch,\n * because the multiplication drives the middle term far past either bound\n * everywhere except within a hair of the threshold. Below it the accent is\n * dark and the result is 1 (white); above it, 0 (black). Chroma is dropped to\n * zero, so what comes out is neutral rather than a tinted grey.\n *\n * The threshold is 0.58, and it is deliberately far below the midpoint an eye\n * would guess. Contrast is not symmetric about it: a mid-lightness colour is\n * still much closer to white than to black in luminance, so black wins well\n * before the colour looks light. Checked against all fourteen accents of the\n * line - every one of them reads better with dark glyphs, the closest being\n * cobalt at 4.86:1 against 4.32:1 for white. A higher threshold is what puts\n * white text on magenta at 3.6:1, which is the defect this rule exists to\n * prevent.\n */\n:root {\n  --on-accent: oklch(from var(--accent) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n\n  /*\n   * The same question for the status fills, and it has to be asked separately:\n   * `--on-accent` is derived from the accent, so using it on a `--warn` fill\n   * is only ever right by coincidence. The line's first consumer did exactly\n   * that - a count on a yellow badge, drawn in white at 1.95:1 - and it read\n   * as correct for as long as the product happened to pin white.\n   *\n   * The status hues do not follow the product accent, so these four are the\n   * same for every product; they are still derived rather than written down,\n   * because the status colours themselves change between the themes.\n   */\n  --on-good: oklch(from var(--good) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n  --on-warn: oklch(from var(--warn) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n  --on-bad: oklch(from var(--bad) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n  --on-info: oklch(from var(--info) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n}\n\n@supports (color: contrast-color(red)) {\n  :root {\n    --on-accent: contrast-color(var(--accent));\n    --on-good: contrast-color(var(--good));\n    --on-warn: contrast-color(var(--warn));\n    --on-bad: contrast-color(var(--bad));\n    --on-info: contrast-color(var(--info));\n  }\n}\n\n/*\n * The Tailwind 4 surface. `--color-*: initial` drops the stock palette on\n * purpose: a raw `bg-zinc-800` in a product should not compile, because the\n * only colours that exist here are the line's own.\n */\n@theme inline {\n  --color-*: initial;\n  --color-bg: var(--bg);\n  --color-raise: var(--raise);\n  --color-soft: var(--soft);\n  --color-softer: var(--softer);\n  --color-line: var(--line);\n  --color-line-2: var(--line-2);\n  --color-text: var(--text);\n  --color-dim: var(--dim);\n  --color-faint: var(--faint);\n  --color-accent: var(--accent);\n  --color-accent-2: var(--accent-2);\n  --color-accent-soft: var(--accent-soft);\n  --color-on-accent: var(--on-accent);\n  --color-on-good: var(--on-good);\n  --color-on-warn: var(--on-warn);\n  --color-on-bad: var(--on-bad);\n  --color-on-info: var(--on-info);\n  --color-good: var(--good);\n  --color-good-soft: var(--good-soft);\n  --color-warn: var(--warn);\n  --color-warn-soft: var(--warn-soft);\n  --color-bad: var(--bad);\n  --color-bad-soft: var(--bad-soft);\n  --color-info: var(--info);\n  --color-info-soft: var(--info-soft);\n\n  /* Charts. `bg-series-3`, `fill-series-3`, `stroke-scale-500` - the same\n   * utilities the rest of the vocabulary gets, so a chart is written in\n   * tokens like everything else and `dowel/no-raw-color` can hold it to\n   * that. */\n  --color-series-1: var(--series-1);\n  --color-series-2: var(--series-2);\n  --color-series-3: var(--series-3);\n  --color-series-4: var(--series-4);\n  --color-series-5: var(--series-5);\n  --color-series-6: var(--series-6);\n  --color-series-7: var(--series-7);\n  --color-series-8: var(--series-8);\n  --color-scale-100: var(--scale-100);\n  --color-scale-200: var(--scale-200);\n  --color-scale-300: var(--scale-300);\n  --color-scale-400: var(--scale-400);\n  --color-scale-500: var(--scale-500);\n  --color-scale-600: var(--scale-600);\n  --color-scale-700: var(--scale-700);\n  --color-chart-grid: var(--chart-grid);\n  --color-chart-axis: var(--chart-axis);\n  --color-heat-1: var(--heat-1);\n  --color-heat-2: var(--heat-2);\n  --color-heat-3: var(--heat-3);\n  --color-heat-4: var(--heat-4);\n  --color-heat-5: var(--heat-5);\n\n  /* Syntax, so a highlighted token is written `text-syntax-keyword` like every\n   * other colour in the system, and `dowel/no-raw-color` can hold it to that.\n   * A highlighter's own stylesheet - which writes hex values into class names\n   * of its own choosing - is what this replaces. */\n  --color-syntax-keyword: var(--syntax-keyword);\n  --color-syntax-string: var(--syntax-string);\n  --color-syntax-number: var(--syntax-number);\n  --color-syntax-comment: var(--syntax-comment);\n  --color-syntax-name: var(--syntax-name);\n  --color-syntax-type: var(--syntax-type);\n  --color-syntax-punctuation: var(--syntax-punctuation);\n  --color-syntax-meta: var(--syntax-meta);\n\n  /* Kept because they are not palette choices: a hairline is `transparent`,\n   * an SVG follows `currentColor`, and pure black and white are what an\n   * overlay scrim and a print sheet are made of. */\n  --color-transparent: transparent;\n  --color-current: currentColor;\n  --color-white: #fff;\n  --color-black: #000;\n\n  /*\n   * Type. System stacks on purpose: a downloaded face costs a network round\n   * trip before the first word appears, and the line's products are desktop\n   * tools where the operating system's own face is the one the user already\n   * reads everything else in.\n   */\n  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;\n  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;\n\n  /*\n   * Radius. Taken from what the products actually draw, not from a ratio:\n   * `rounded-[9px]` appears twenty times and `rounded-[10px]` twelve, because\n   * a control and the primary button were tuned by eye and then copied. The\n   * scale keeps the cluster they landed in and gives it names.\n   *\n   * `md` is the control radius - inputs, buttons, list rows. That the primary\n   * button was one pixel rounder than every other variant is not preserved:\n   * the products differ from themselves there, and buttons of the same size\n   * sitting side by side should not have mismatched corners.\n   */\n  --radius-xs: 4px;\n  --radius-sm: 6px;\n  --radius-md: 9px;\n  --radius-lg: 12px;\n  --radius-xl: 16px;\n  --radius-2xl: 20px;\n\n  /*\n   * A radius nested inside another has to be smaller by the gap between them,\n   * or the inner corner looks wrong against the outer one. The products did\n   * this by hand once - 18px outside, 17px inside - and nowhere else.\n   */\n  --radius-inner: calc(var(--radius-lg) - 1px);\n\n  /*\n   * Type scale. The products live between 10px and 14px: `text-sm` and\n   * `text-xs` together account for nine tenths of every size in both, and the\n   * rest scattered across 9, 9.5, 10, 10.5, 11, 11.5, 12.5 and 13 - nine steps\n   * inside four pixels, which no eye distinguishes and no reason justifies.\n   * This is the same range with the noise removed.\n   */\n  --text-2xs: 10px;\n  --text-2xs--line-height: 14px;\n  --text-xs: 11px;\n  --text-xs--line-height: 15px;\n  --text-sm: 12px;\n  --text-sm--line-height: 16px;\n  --text-base: 14px;\n  --text-base--line-height: 20px;\n  --text-lg: 16px;\n  --text-lg--line-height: 22px;\n  --text-xl: 18px;\n  --text-xl--line-height: 24px;\n  --text-2xl: 21px;\n  --text-2xl--line-height: 28px;\n\n  /* Weights. `semibold` is what both products use for anything emphasised;\n   * `bold` appears in neither, and the one `font-[650]` in a page title is the\n   * kind of value a scale exists to absorb. */\n  --font-weight-normal: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n\n  /* Tracking. The uppercase caption is the only place the products track at\n   * all - and they do it at 0.08em in six files and 0.09em in three, a\n   * difference nobody can see. One name settles it. */\n  --tracking-caption: 0.085em;\n  --tracking-tight: -0.01em;\n\n  /*\n   * A step between the steps.\n   *\n   * The spacing scale runs in fours - 2, 4, 6, 8 - and four different\n   * primitives independently reached past it for three pixels: the gap\n   * between segments of a rating and of an axis, the gap between cells of a\n   * heatmap, and how far a tooltip's arrow tucks under its popup. Four hands\n   * arriving at the same number is not four accidents; it is a step the scale\n   * was missing, and each of them wrote `[3px]` because there was nothing to\n   * name.\n   *\n   * It exists for hairline gaps between things that are themselves small -\n   * where two pixels reads as touching and four as separate objects. Nothing\n   * larger belongs here: this is the bottom of the scale, not a licence to\n   * measure by eye.\n   */\n  --spacing-hair: 3px;\n\n  /*\n  /* Easing. `out` for anything the user asked for - it arrives fast and\n   * settles, which reads as responsive. `in-out` for something moving on its\n   * own. `in` is deliberately absent: it starts slowly, which on a control\n   * reads as lag. */\n  --ease-out: cubic-bezier(0.2, 0, 0, 1);\n  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);\n\n  /*\n   * Elevation. Three steps, because the products had one and used it for a\n   * toast, a dropdown and a modal alike - so a modal never sat further from\n   * the page than the menu it covered.\n   */\n  --shadow-lift: var(--shadow-lift);\n  --shadow-raise: var(--shadow-raise);\n  --shadow-float: var(--shadow-float);\n\n  /*\n   * The smallest a pointer target may be.\n   *\n   * 24 CSS pixels, which is WCAG 2.2's 2.5.8 at AA. Not a matter of taste, and\n   * measured rather than assumed: a live run of the stand found four different\n   * answers to the same question in one set - a chip's cross at 16, Copyable\n   * at 19, CopyButton at 21, a search field's clear at 24. Three of the four\n   * fail, and the failure is silent. A cross missed by a thumb on a tablet, or\n   * by anyone whose hand is not steady, does not delete the tag and does not\n   * say anything either.\n   *\n   * It is a size token rather than a spacing step because it is a floor, not a\n   * rhythm: nothing is ever `--target-min` tall on purpose, things are at\n   * least that big. `size-target` and `min-size-target` come free from the\n   * namespace, but the way a primitive usually reaches it is `target-min`\n   * below, which grows the hit area without growing the glyph.\n   */\n  --size-target: 24px;\n}\n\n/*\n * `target-min` - visually smaller, clickably larger.\n *\n * The obvious fix for a 16px cross is to make it 24px, and it is the wrong\n * one: a chip is a small thing by design and a cross a third of its height\n * reads as a button with a chip around it. The set's appearance is a\n * decision, and an accessibility floor should not overturn it.\n *\n * So the target grows and the glyph does not. The pseudo-element is centred on\n * the control, takes its size, and refuses to go under the floor - so a\n * control already large enough is untouched, and a smaller one gains an\n * invisible margin of hit area on every side.\n *\n * `position: relative` comes with it rather than being left to the caller: a\n * target that silently does nothing because its parent forgot to establish a\n * containing block is exactly the failure this exists to prevent.\n *\n * Not `padding`, which was the other candidate: padding moves the glyph inside\n * its box and changes how the control sits in a flex row, so every call site\n * would need a compensating negative margin. This changes nothing about\n * layout.\n */\n@utility target-min {\n  position: relative;\n\n  &::after {\n    content: '';\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    translate: -50% -50%;\n    width: 100%;\n    height: 100%;\n    min-width: var(--size-target);\n    min-height: var(--size-target);\n  }\n}\n\n/*\n * How tall a control is, and how much room a screen gives each row.\n *\n * `h-9` appeared in nine primitives - every field the set has - each spelling\n * it out, which is why `Input` could not be made compact without editing\n * `Input`. One decision made nine times gets one name.\n *\n * **Not in `@theme`, and that is the whole mechanism.** A token declared there\n * is inlined by the compiler: `h-control` came out as `height: 36px`, the\n * override on a container had nothing to bind to, and the density attribute\n * did exactly nothing. Measured in the browser rather than assumed - the\n * container's `--row-control` read 32px while the field it contained stayed\n * 36. Tailwind also writes a fallback for any `var()` it recognises from the\n * theme, so the name has to live outside the theme's namespaces entirely.\n *\n * Declared here as plain custom properties and turned into utilities by hand\n * below, the reference survives, and an override on an ancestor reaches every\n * control under it - which is what makes density a property of a region\n * rather than of a component.\n */\n:root {\n  --row-control: 36px;\n  --row-control-sm: 32px;\n  --row-control-lg: 40px;\n\n  /* The same question for a table, whose rows are sized by what is above and\n   * below the text rather than by a height. `Table` had its own `density`\n   * prop for this, with its own words - `base` and `dense` - which meant the\n   * set used one word for two mechanisms and a product had to set both. */\n  --row-cell: 10px;\n}\n\n@utility h-control {\n  height: var(--row-control);\n}\n\n@utility py-row {\n  padding-block: var(--row-cell);\n}\n\n@utility h-control-sm {\n  height: var(--row-control-sm);\n}\n\n@utility h-control-lg {\n  height: var(--row-control-lg);\n}\n\n/*\n * Density.\n *\n * Two answers to one question, and the set had neither: a product wanting a\n * tighter table wrote `h-8` at every call site, which is the drift the scale\n * exists to stop, one screen at a time.\n *\n * **It is an attribute on a container, not a prop on a component.** A prop\n * would have to be added to every primitive, threaded through every wrapper a\n * product writes, and passed by hand at each call site - and a primitive\n * written next year would not have it. An attribute is inherited:\n *\n *     <form data-density=\"compact\">   …every field inside it…\n *\n * That reaches components which did not exist when the product was built, and\n * a product's own components too, as long as they measure in `h-control` like\n * everything else.\n *\n * The floor does not move with it. `--size-target` stays 24px at every\n * density, because WCAG does not care how tight a table is - which is exactly\n * why `target-min` grows the hit area rather than the control: a compact row\n * is still one a hand can hit.\n */\n[data-density='compact'] {\n  --row-control: 32px;\n  --row-control-sm: 28px;\n  --row-control-lg: 36px;\n  --row-cell: 6px;\n}\n\n[data-density='comfortable'] {\n  --row-control: 40px;\n  --row-control-sm: 36px;\n  --row-control-lg: 44px;\n  --row-cell: 14px;\n}\n\n/*\n * Stacking order.\n *\n * Not in `@theme`: Tailwind has no z-index namespace, so `z-50` is a literal\n * fifty and a named step would not compile. These are custom properties a\n * component reads directly - `z-index: var(--z-modal)`.\n *\n * The order is the products' own, with the gaps closed. They ran 10 for an\n * in-flow popup, 20 sticky, 30 menu, 40 for a floating button, 50 for modals\n * and drawers, then jumped to 70 and 80 for the command palette - which had to\n * clear the modal layer and had no name to do it with.\n */\n:root {\n  /*\n   * Motion. One duration existed before this - 160ms on a route change - and\n   * everything else rode Tailwind's default. These are the steps around it:\n   * `quick` for a colour or an opacity that should feel immediate, `base` for\n   * something that moves, `slow` for something arriving from off-screen.\n   *\n   * Not in `@theme`: Tailwind's `duration-*` utility takes a literal number,\n   * not a named step, so these are read directly - `transition-duration:\n   * var(--duration-base)`. The easing curves opposite them ARE a namespace,\n   * so `ease-out` is a class.\n   *\n   * Every duration here is for people who want motion: `prefers-reduced-\n   * motion` cuts them to nothing further down.\n   */\n  --duration-quick: 120ms;\n  --duration-base: 160ms;\n  --duration-slow: 240ms;\n\n  --z-popup: 10;\n  --z-sticky: 20;\n  --z-menu: 30;\n  --z-floating: 40;\n  --z-overlay: 50;\n  --z-modal: 60;\n  --z-palette: 70;\n  --z-toast: 80;\n}\n\n/*\n * Base layer: what every product would otherwise write again. Scoped to\n * elements and to `:focus-visible`, never to a class, so nothing here can\n * collide with a component.\n */\nbody {\n  margin: 0;\n  background-color: var(--bg);\n  color: var(--text);\n  font-family: var(--font-sans);\n  -webkit-font-smoothing: antialiased;\n}\n\n/*\n * In `@layer base`, so a component can turn it off.\n *\n * Unlayered, this rule has the same specificity as `focus-visible:outline-none`\n * from Tailwind - both are one pseudo-class - and wins on source order alone,\n * because the theme is imported before the utilities. Every component that\n * draws its own focus ring got this one on top of it: the command palette's\n * field had an accent outline it had explicitly opted out of, and a combobox\n * with chips drew two rings, one around the box and one around the input\n * inside it.\n *\n * A layered rule loses to any unlayered one regardless of specificity, which\n * is the whole point of cascade layers - the base layer states a default and\n * a component overrides it by saying so.\n */\n@layer base {\n  :focus-visible {\n    outline: 2px solid var(--accent);\n    outline-offset: 2px;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  *,\n  *::before,\n  *::after {\n    transition-duration: 0.01ms !important;\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    scroll-behavior: auto !important;\n  }\n}\n\n/*\n * Scrollbars. A browser's default bar is a piece of someone else's chrome\n * sitting in the middle of the product - full width, with step arrows. These\n * are the line's own: thin, in the palette, drawn only where something\n * actually scrolls.\n */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: var(--line-2) transparent;\n}\n\n*::-webkit-scrollbar {\n  width: 10px;\n  height: 10px;\n}\n\n*::-webkit-scrollbar-track {\n  background: transparent;\n}\n\n*::-webkit-scrollbar-thumb {\n  border: 3px solid transparent;\n  border-radius: 999px;\n  background: var(--line-2);\n  background-clip: content-box;\n  /* The thumb is drawn proportional to how much of the document fits on\n   * screen, so a long one collapses it to a few pixels: still visible, no\n   * longer catchable by a pointer. This is the floor below which it stops\n   * being a control. */\n  min-height: 2.5rem;\n}\n\n*::-webkit-scrollbar-thumb:hover {\n  background: var(--dim);\n  background-clip: content-box;\n}\n\n*::-webkit-scrollbar-corner {\n  background: transparent;\n}\n\n*::-webkit-scrollbar-button {\n  display: none;\n}\n"
+          "content": "/*\n * dowel theme - the token vocabulary every product of the lacodda line shares.\n *\n * The vocabulary comes from the products themselves: kilna and kasl-server\n * already ship the same token names (bg / raise / soft / line / text / dim /\n * accent / good / warn / bad / info) and differ only in values. That is the\n * contract this file freezes. Names are the mockup's own words rather than\n * stock component-library names, so a screen can be checked against a mockup\n * in the mockup's words.\n *\n * Two things are parametric, and everything else is derived from them:\n *\n *   --accent-base   the product's hue from the brand-line registry\n *   --neutral-base  the hue the greys are tinted with (the accent, by default)\n *\n * Tinting the neutrals is not decoration - it is what the two live products do\n * by hand: kilna's greys lean magenta, kasl-server's lean gold. Here that lean\n * is one declaration instead of thirty hand-picked hex values.\n *\n * Soft variants are mixed from their own base with `color-mix`, so a product\n * that overrides `--accent-base` gets a matching `--accent-soft` for free and\n * cannot pick one that disagrees with it.\n *\n * Theme selection: no class on the root element follows the operating system,\n * an explicit `light` or `dark` class pins the theme. Components never use\n * `dark:` utilities - every colour goes through a token, and the theme swaps\n * the token underneath.\n */\n\n:root {\n  /* The two parameters. `--accent-base` is overridden per product by an accent\n   * file; `--neutral-base` follows it unless a product says otherwise. */\n  --accent-base: #e8862d;\n  --neutral-base: var(--accent-base);\n\n  /* Ink and ground of the dark theme, before the neutral tint is mixed in.\n   * Kept as their own tokens so the tint amount is the only thing that\n   * changes when a product wants greyer or warmer chrome. */\n  --ground: #131316;\n  --ink: #ece9ef;\n\n  /* How much of `--neutral-base` bleeds into the greys. The live products sit\n   * at roughly this much: enough that the chrome belongs to the product,\n   * little enough that it still reads as grey. */\n  --neutral-tint: 6%;\n  --neutral-tint-strong: 9%;\n\n  color-scheme: dark;\n\n  --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));\n  --raise: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), #1c1c21);\n\n  /* Surfaces that lift by translucency rather than by their own colour: they\n   * must work over `--bg` and over `--raise` alike. */\n  --soft: rgb(255 255 255 / 0.045);\n  --softer: rgb(255 255 255 / 0.025);\n  --line: rgb(255 255 255 / 0.08);\n  --line-2: rgb(255 255 255 / 0.15);\n\n  --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));\n  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #a7a2ad);\n  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #6e6a76);\n\n  --accent: var(--accent-base);\n  /* The hover/active partner: lighter on dark, where the ground is what the\n   * accent has to separate from. */\n  --accent-2: color-mix(in oklab, white 22%, var(--accent-base));\n  --accent-soft: color-mix(in oklab, var(--accent-base) 16%, transparent);\n\n  /* Status hues are the line's own and do not follow the product accent: a\n   * green that shifted per product would stop meaning \"good\". Meaning never\n   * rests on colour alone - a badge carries an icon and a word - so these\n   * exist for emphasis, not as the message. */\n  --good: #45d18f;\n  --warn: #e8b13f;\n  --bad: #ef6a6a;\n  --info: #4cc4e0;\n  --good-soft: color-mix(in oklab, var(--good) 14%, transparent);\n  --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);\n  --bad-soft: color-mix(in oklab, var(--bad) 14%, transparent);\n  --info-soft: color-mix(in oklab, var(--info) 15%, transparent);\n\n  /* Series colours, for charts.\n   *\n   * Like the status hues and unlike everything else here, these do NOT follow\n   * the product accent - and that is the whole decision. A series is a\n   * property of the data, not of the product showing it; a palette derived\n   * from the accent would paint the same series differently in kilna and in\n   * kasl-server, which is the one thing a series colour must never do.\n   *\n   * Deriving them from the accent was measured, not guessed: rotating the hue\n   * by fixed angles put the best candidate at Delta-E 12.1 from the product's\n   * own accent with adjacent pairs at 9.8, and threw 46 of 152 colours outside\n   * sRGB. The fixed palette does better on both counts.\n   *\n   * The cost of fixing them is stated plainly: 13 of the line's 19 accents sit\n   * within Delta-E 8 of some slot (lyrid 2.7, atlas 3.1, turnout 3.2). A chart\n   * shows one accent, so this is survivable - but it is exactly why identity is\n   * carried by the legend and by direct labels, never by hue on its own. The\n   * components of this block enforce that; it is not advice.\n   *\n   * Assigned in order, 1..8, and never cycled: a ninth series folds into\n   * \"other\", or the chart becomes small multiples. The order is the\n   * colour-blind-safety mechanism - the worst adjacent pair is Delta-E 8.4\n   * under simulated protanopia - so re-ordering these breaks a gate.\n   *\n   * Slot 8 is the line's own value rather than the reference palette's. The\n   * reference red sat Delta-E 1.9 from `--bad`, which would have let a series\n   * impersonate a status; this one clears every status by 15 and costs\n   * nothing, the worst adjacent pair being unchanged.\n   *\n   * Some slots sit below 3:1 against the surface. That is allowed only because\n   * the relief ships with them: visible values, or the table view.\n   */\n  --series-1: #3987e5;\n  --series-2: #d95926;\n  --series-3: #199e70;\n  --series-4: #c98500;\n  --series-5: #d55181;\n  --series-6: #008300;\n  --series-7: #9085e9;\n  --series-8: #a3215a;\n\n  /* Magnitude rather than identity: one hue, light to dark. A heatmap cell\n   * reads this. The lightest step is allowed to recede toward the surface,\n   * because \"near zero\" should; an ordered-but-discrete scale (tiers, funnel\n   * stages) starts at 300 instead, where the contrast still holds. */\n  --scale-100: #0d366b;\n  --scale-200: #184f95;\n  --scale-300: #256abf;\n  --scale-400: #2a78d6;\n  --scale-500: #3987e5;\n  --scale-600: #5598e7;\n  --scale-700: #86b6ef;\n\n  /* The chart's own furniture. A gridline that competes with the data is drawn\n   * wrong, so it is quieter than `--line`; the axis is the one that may be\n   * seen. */\n  --chart-grid: rgb(255 255 255 / 0.06);\n  --chart-axis: rgb(255 255 255 / 0.14);\n\n  /* Heat, for a grid of cells where colour is the only thing carrying the\n   * value - a year of activity, a month of a team's hours.\n   *\n   * Five discrete steps rather than the seven of `--scale-*`, and a separate\n   * set rather than a slice of them, because the two answer different\n   * questions. `--scale-*` is sequential: a continuous magnitude, where the\n   * lightest step means \"near zero\" and may recede toward the surface.\n   * Heat is ordinal: five shades a reader tells apart at a glance and matches\n   * against a legend, which needs wider gaps between them (no slice of\n   * `--scale-*` clears the 0.06 lightness step - they sit 0.047 apart) and a\n   * bottom step that stays distinct from an empty cell.\n   *\n   * That last one is the whole point. A heatmap cell has more meanings than a\n   * number: nothing recorded, a day still running, a day outside the data, and\n   * a value. If the faintest value looks like the empty cell, the grid says\n   * somebody did nothing on a day nobody reported - and `--heat-1` clears the\n   * empty square by 2.1:1 so it cannot.\n   *\n   * Fixed, like the series and unlike almost everything else here. Derived\n   * from the accent - as the first consumer did - the faintest step sat 1.3:1\n   * from the empty cell for half the line, and pinning lightness instead ran\n   * out of sRGB: the darkest accents cannot reach the top of the ramp at their\n   * own chroma.\n   */\n  --heat-1: #28528e;\n  --heat-2: #3a65a3;\n  --heat-3: #4d78b7;\n  --heat-4: #608ccd;\n  --heat-5: #73a0e2;\n\n  /* Syntax, for code shown inside a product.\n   *\n   * Eight kinds rather than the fifty a highlighter's theme names, because\n   * these are the distinctions that survive across languages: a keyword, a\n   * literal string, a number, a comment, an identifier, a type, punctuation,\n   * and the metadata around the code (a decorator, an attribute, a prompt).\n   * Anything finer is a grammar's own vocabulary and does not travel.\n   *\n   * Fixed, like the series and the heat ramps, and for the same reason: code\n   * is not a property of the product showing it, and `if` should not be\n   * magenta in kilna and cobalt in kasl-server.\n   *\n   * Chosen against the surface code actually sits on - `--soft` over `--bg`,\n   * which is what CodeBlock and `.prose pre` draw - and every slot clears\n   * 4.5:1 AS TEXT in both themes. That threshold, not the 3:1 the series are\n   * held to, is the whole reason these exist separately: the series palette\n   * was measured here first and five of its eight light values sat under 3:1,\n   * one at 1.90:1. A filled bar can be pale; a 12px glyph cannot.\n   *\n   * These are deliberately NOT held to the colour-blind floor the series are.\n   * A series colour is the identity of its mark - lose the hue and the data is\n   * gone. Syntax colour is a second reading of what the text already says in\n   * full: a keyword is a keyword by its spelling, and CodeBlock's default\n   * renders no colour at all and stays readable. `syntax.test.ts` says so in\n   * place, so the omission is not mistaken for an oversight.\n   *\n   * `comment` is the quietest on purpose - it is the one kind a reader is\n   * meant to be able to skip - and still clears the threshold.\n   */\n  --syntax-keyword: #c792ea;\n  --syntax-string: #9ccc65;\n  --syntax-number: #f78c6c;\n  --syntax-comment: #9e99a6;\n  --syntax-name: #82aaff;\n  --syntax-type: #4dd0b1;\n  --syntax-punctuation: #c4bfcb;\n  --syntax-meta: #f0a868;\n\n  /* Elevation, three steps. The products had one shadow and used it for\n   * everything that leaves the flow - a toast, a dropdown and a modal all\n   * floated by the same amount, so a modal never felt further away than the\n   * menu it covered. The three are the steps.\n   *\n   * Two layers each, and that is what makes them read as depth on a dark\n   * surface rather than as a stain. One big soft blur at high opacity is what\n   * these were - `0 24px 60px` of 55% black - and against a near-black page\n   * the wide skirt never resolves into shade: it just darkens a ring of\n   * background around the panel, which a pilot photographed and called an ugly\n   * dark contour. Depth is read from the CONTACT shadow, the tight one right\n   * under the edge; the ambient layer only has to hint that there is room\n   * under the thing. So each step is a tight, slightly stronger layer plus a\n   * wider, much weaker one, and the totals come down. */\n  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 6px rgb(0 0 0 / 0.22);\n  --shadow-raise: 0 2px 4px rgb(0 0 0 / 0.36), 0 8px 20px rgb(0 0 0 / 0.26);\n  --shadow-float: 0 4px 8px rgb(0 0 0 / 0.36), 0 18px 44px rgb(0 0 0 / 0.32);\n}\n\n/*\n * Light theme, twice: once for the operating system's preference, once for the\n * explicit `light` class. The declarations are identical - only the selector\n * differs - so that a product can pin a theme against the system setting.\n */\n@media (prefers-color-scheme: light) {\n  :root:not(.dark) {\n    color-scheme: light;\n\n    --ground: #f6f5f7;\n    --ink: #232027;\n\n    --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));\n    --raise: #ffffff;\n\n    /* Tinted, and translucent - which took two goes to get right.\n     *\n     * `color-mix` mixes the alpha along with the colour, so mixing 60% of an\n     * opaque accent into a 5%-opaque grey gives a surface 62% opaque: twelve\n     * times denser than the hairline it was meant to be. It went unnoticed for\n     * ten versions because `bg-soft` was only ever used for a hover, where a\n     * flash of colour reads as feedback rather than as a mistake. The first\n     * component to sit on it permanently - Alert - made it obvious.\n     *\n     * `oklch(from … / alpha)` keeps the alpha out of the mix: the hue comes\n     * from the tinted colour, the transparency is stated. */\n    --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);\n    --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);\n    --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);\n    --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);\n\n    --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));\n    --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);\n    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);\n\n    /* On a light ground the accent has to darken to stay legible as text and\n     * as a fill. It darkens *to* a lightness rather than *by* an amount: how\n     * far a hue has to travel depends on where it starts, and a fixed step\n     * that suits magenta leaves lime and gold short. Pinning the lightness and\n     * keeping the hue and chroma clears 5:1 for every accent in the line. */\n    --accent: oklch(from var(--accent-base) 0.5 c h);\n    --accent-2: oklch(from var(--accent-base) 0.4 c h);\n    --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);\n\n    --good: #0c8554;\n    --warn: #9a6b0c;\n    --bad: #c93b3b;\n    --info: #0d7f9c;\n    --good-soft: color-mix(in oklab, var(--good) 12%, transparent);\n    --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);\n    --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);\n    --info-soft: color-mix(in oklab, var(--info) 11%, transparent);\n\n    /* Series and scale, stepped for the light surface - the same eight hues\n     * chosen again against this ground, not the dark values lightened. The dark\n     * block says why these do not follow the product accent. */\n    --series-1: #2a78d6;\n    --series-2: #eb6834;\n    --series-3: #1baf7a;\n    --series-4: #eda100;\n    --series-5: #e87ba4;\n    --series-6: #008300;\n    --series-7: #4a3aa7;\n    --series-8: #85284d;\n\n    --scale-100: #cde2fb;\n    --scale-200: #9ec5f4;\n    --scale-300: #6da7ec;\n    --scale-400: #3987e5;\n    --scale-500: #2a78d6;\n    --scale-600: #1c5cab;\n    --scale-700: #104281;\n\n    --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);\n    --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);\n\n    /* The same five steps chosen again for the light ground, running the other\n     * way: here \"more\" is darker. See the dark block for why heat is its own\n     * ramp and not a slice of `--scale-*`. */\n    --heat-1: #84a8fd;\n    --heat-2: #7193e7;\n    --heat-3: #5e7fd1;\n    --heat-4: #4c6cbb;\n    --heat-5: #3b58a6;\n\n    /* The same eight kinds chosen again for the light ground - not the dark\n     * values darkened. Each clears 4.5:1 as text against `--soft` over this\n     * theme's `--bg`; the dark block says why syntax is its own palette and\n     * why it is not held to the colour-blind floor. */\n    --syntax-keyword: #7c3aad;\n    --syntax-string: #276c2b;\n    --syntax-number: #b5451b;\n    --syntax-comment: #6f6b78;\n    --syntax-name: #1a5fb4;\n    --syntax-type: #00695c;\n    --syntax-punctuation: #4a4753;\n    --syntax-meta: #9c4a00;\n\n    --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);\n    --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);\n    --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);\n  }\n}\n\n:root.light {\n  color-scheme: light;\n\n  --ground: #f6f5f7;\n  --ink: #232027;\n\n  --bg: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ground));\n  --raise: #ffffff;\n\n  /* The same surfaces as above; see the note there. */\n  --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);\n  --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);\n  --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);\n  --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);\n\n  --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));\n  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);\n  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);\n\n  /* Darkened to a lightness, not by an amount - see the note above. */\n  --accent: oklch(from var(--accent-base) 0.5 c h);\n  --accent-2: oklch(from var(--accent-base) 0.4 c h);\n  --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);\n\n  --good: #0c8554;\n  --warn: #9a6b0c;\n  --bad: #c93b3b;\n  --info: #0d7f9c;\n  --good-soft: color-mix(in oklab, var(--good) 12%, transparent);\n  --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);\n  --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);\n  --info-soft: color-mix(in oklab, var(--info) 11%, transparent);\n\n  /* Series and scale, stepped for the light surface - the same eight hues\n   * chosen again against this ground, not the dark values lightened. The dark\n   * block says why these do not follow the product accent. */\n  --series-1: #2a78d6;\n  --series-2: #eb6834;\n  --series-3: #1baf7a;\n  --series-4: #eda100;\n  --series-5: #e87ba4;\n  --series-6: #008300;\n  --series-7: #4a3aa7;\n  --series-8: #85284d;\n\n  --scale-100: #cde2fb;\n  --scale-200: #9ec5f4;\n  --scale-300: #6da7ec;\n  --scale-400: #3987e5;\n  --scale-500: #2a78d6;\n  --scale-600: #1c5cab;\n  --scale-700: #104281;\n\n  --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);\n  --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);\n\n  /* The same five steps chosen again for the light ground, running the other\n   * way: here \"more\" is darker. See the dark block for why heat is its own\n   * ramp and not a slice of `--scale-*`. */\n  --heat-1: #84a8fd;\n  --heat-2: #7193e7;\n  --heat-3: #5e7fd1;\n  --heat-4: #4c6cbb;\n  --heat-5: #3b58a6;\n\n  /* The same eight kinds chosen again for the light ground - not the dark\n   * values darkened. Each clears 4.5:1 as text against `--soft` over this\n   * theme's `--bg`; the dark block says why syntax is its own palette and\n   * why it is not held to the colour-blind floor. */\n  --syntax-keyword: #7c3aad;\n  --syntax-string: #276c2b;\n  --syntax-number: #b5451b;\n  --syntax-comment: #6f6b78;\n  --syntax-name: #1a5fb4;\n  --syntax-type: #00695c;\n  --syntax-punctuation: #4a4753;\n  --syntax-meta: #9c4a00;\n\n  --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);\n  --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);\n  --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);\n}\n\n/*\n * `--on-accent` - what sits on top of an accent fill.\n *\n * A light accent (gold, lime, amber) needs dark glyphs; a dark one needs\n * white. The live products picked this by hand and wrote the answer into the\n * theme; here the theme works it out, by the same rule the brand-line S tile\n * uses.\n *\n * `contrast-color()` is the direct way to say it and is used where supported.\n * The fallback covers browsers that lack it. Relative colour syntax exposes\n * the accent's own lightness as `l`; `clamp()` turns that into a hard switch,\n * because the multiplication drives the middle term far past either bound\n * everywhere except within a hair of the threshold. Below it the accent is\n * dark and the result is 1 (white); above it, 0 (black). Chroma is dropped to\n * zero, so what comes out is neutral rather than a tinted grey.\n *\n * The threshold is 0.58, and it is deliberately far below the midpoint an eye\n * would guess. Contrast is not symmetric about it: a mid-lightness colour is\n * still much closer to white than to black in luminance, so black wins well\n * before the colour looks light. Checked against all fourteen accents of the\n * line - every one of them reads better with dark glyphs, the closest being\n * cobalt at 4.86:1 against 4.32:1 for white. A higher threshold is what puts\n * white text on magenta at 3.6:1, which is the defect this rule exists to\n * prevent.\n */\n:root {\n  --on-accent: oklch(from var(--accent) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n\n  /*\n   * The same question for the status fills, and it has to be asked separately:\n   * `--on-accent` is derived from the accent, so using it on a `--warn` fill\n   * is only ever right by coincidence. The line's first consumer did exactly\n   * that - a count on a yellow badge, drawn in white at 1.95:1 - and it read\n   * as correct for as long as the product happened to pin white.\n   *\n   * The status hues do not follow the product accent, so these four are the\n   * same for every product; they are still derived rather than written down,\n   * because the status colours themselves change between the themes.\n   */\n  --on-good: oklch(from var(--good) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n  --on-warn: oklch(from var(--warn) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n  --on-bad: oklch(from var(--bad) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n  --on-info: oklch(from var(--info) clamp(0, (0.58 - l) * 1000, 1) 0 0);\n}\n\n@supports (color: contrast-color(red)) {\n  :root {\n    --on-accent: contrast-color(var(--accent));\n    --on-good: contrast-color(var(--good));\n    --on-warn: contrast-color(var(--warn));\n    --on-bad: contrast-color(var(--bad));\n    --on-info: contrast-color(var(--info));\n  }\n}\n\n/*\n * The Tailwind 4 surface. `--color-*: initial` drops the stock palette on\n * purpose: a raw `bg-zinc-800` in a product should not compile, because the\n * only colours that exist here are the line's own.\n */\n@theme inline {\n  --color-*: initial;\n  --color-bg: var(--bg);\n  --color-raise: var(--raise);\n  --color-soft: var(--soft);\n  --color-softer: var(--softer);\n  --color-line: var(--line);\n  --color-line-2: var(--line-2);\n  --color-text: var(--text);\n  --color-dim: var(--dim);\n  --color-faint: var(--faint);\n  --color-accent: var(--accent);\n  --color-accent-2: var(--accent-2);\n  --color-accent-soft: var(--accent-soft);\n  --color-on-accent: var(--on-accent);\n  --color-on-good: var(--on-good);\n  --color-on-warn: var(--on-warn);\n  --color-on-bad: var(--on-bad);\n  --color-on-info: var(--on-info);\n  --color-good: var(--good);\n  --color-good-soft: var(--good-soft);\n  --color-warn: var(--warn);\n  --color-warn-soft: var(--warn-soft);\n  --color-bad: var(--bad);\n  --color-bad-soft: var(--bad-soft);\n  --color-info: var(--info);\n  --color-info-soft: var(--info-soft);\n\n  /* Charts. `bg-series-3`, `fill-series-3`, `stroke-scale-500` - the same\n   * utilities the rest of the vocabulary gets, so a chart is written in\n   * tokens like everything else and `dowel/no-raw-color` can hold it to\n   * that. */\n  --color-series-1: var(--series-1);\n  --color-series-2: var(--series-2);\n  --color-series-3: var(--series-3);\n  --color-series-4: var(--series-4);\n  --color-series-5: var(--series-5);\n  --color-series-6: var(--series-6);\n  --color-series-7: var(--series-7);\n  --color-series-8: var(--series-8);\n  --color-scale-100: var(--scale-100);\n  --color-scale-200: var(--scale-200);\n  --color-scale-300: var(--scale-300);\n  --color-scale-400: var(--scale-400);\n  --color-scale-500: var(--scale-500);\n  --color-scale-600: var(--scale-600);\n  --color-scale-700: var(--scale-700);\n  --color-chart-grid: var(--chart-grid);\n  --color-chart-axis: var(--chart-axis);\n  --color-heat-1: var(--heat-1);\n  --color-heat-2: var(--heat-2);\n  --color-heat-3: var(--heat-3);\n  --color-heat-4: var(--heat-4);\n  --color-heat-5: var(--heat-5);\n\n  /* Syntax, so a highlighted token is written `text-syntax-keyword` like every\n   * other colour in the system, and `dowel/no-raw-color` can hold it to that.\n   * A highlighter's own stylesheet - which writes hex values into class names\n   * of its own choosing - is what this replaces. */\n  --color-syntax-keyword: var(--syntax-keyword);\n  --color-syntax-string: var(--syntax-string);\n  --color-syntax-number: var(--syntax-number);\n  --color-syntax-comment: var(--syntax-comment);\n  --color-syntax-name: var(--syntax-name);\n  --color-syntax-type: var(--syntax-type);\n  --color-syntax-punctuation: var(--syntax-punctuation);\n  --color-syntax-meta: var(--syntax-meta);\n\n  /* Kept because they are not palette choices: a hairline is `transparent`,\n   * an SVG follows `currentColor`, and pure black and white are what an\n   * overlay scrim and a print sheet are made of. */\n  --color-transparent: transparent;\n  --color-current: currentColor;\n  --color-white: #fff;\n  --color-black: #000;\n\n  /*\n   * Type. System stacks on purpose: a downloaded face costs a network round\n   * trip before the first word appears, and the line's products are desktop\n   * tools where the operating system's own face is the one the user already\n   * reads everything else in.\n   */\n  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;\n  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;\n\n  /*\n   * Radius. Taken from what the products actually draw, not from a ratio:\n   * `rounded-[9px]` appears twenty times and `rounded-[10px]` twelve, because\n   * a control and the primary button were tuned by eye and then copied. The\n   * scale keeps the cluster they landed in and gives it names.\n   *\n   * `md` is the control radius - inputs, buttons, list rows. That the primary\n   * button was one pixel rounder than every other variant is not preserved:\n   * the products differ from themselves there, and buttons of the same size\n   * sitting side by side should not have mismatched corners.\n   */\n  --radius-xs: 4px;\n  --radius-sm: 6px;\n  --radius-md: 9px;\n  --radius-lg: 12px;\n  --radius-xl: 16px;\n  --radius-2xl: 20px;\n\n  /*\n   * A radius nested inside another has to be smaller by the gap between them,\n   * or the inner corner looks wrong against the outer one. The products did\n   * this by hand once - 18px outside, 17px inside - and nowhere else.\n   */\n  --radius-inner: calc(var(--radius-lg) - 1px);\n\n  /*\n   * Type scale. The products live between 10px and 14px: `text-sm` and\n   * `text-xs` together account for nine tenths of every size in both, and the\n   * rest scattered across 9, 9.5, 10, 10.5, 11, 11.5, 12.5 and 13 - nine steps\n   * inside four pixels, which no eye distinguishes and no reason justifies.\n   * This is the same range with the noise removed.\n   */\n  --text-2xs: 10px;\n  --text-2xs--line-height: 14px;\n  --text-xs: 11px;\n  --text-xs--line-height: 15px;\n  --text-sm: 12px;\n  --text-sm--line-height: 16px;\n  --text-base: 14px;\n  --text-base--line-height: 20px;\n  --text-lg: 16px;\n  --text-lg--line-height: 22px;\n  --text-xl: 18px;\n  --text-xl--line-height: 24px;\n  --text-2xl: 21px;\n  --text-2xl--line-height: 28px;\n\n  /* Weights. `semibold` is what both products use for anything emphasised;\n   * `bold` appears in neither, and the one `font-[650]` in a page title is the\n   * kind of value a scale exists to absorb. */\n  --font-weight-normal: 400;\n  --font-weight-medium: 500;\n  --font-weight-semibold: 600;\n\n  /* Tracking. The uppercase caption is the only place the products track at\n   * all - and they do it at 0.08em in six files and 0.09em in three, a\n   * difference nobody can see. One name settles it. */\n  --tracking-caption: 0.085em;\n  --tracking-tight: -0.01em;\n\n  /*\n   * A step between the steps.\n   *\n   * The spacing scale runs in fours - 2, 4, 6, 8 - and four different\n   * primitives independently reached past it for three pixels: the gap\n   * between segments of a rating and of an axis, the gap between cells of a\n   * heatmap, and how far a tooltip's arrow tucks under its popup. Four hands\n   * arriving at the same number is not four accidents; it is a step the scale\n   * was missing, and each of them wrote `[3px]` because there was nothing to\n   * name.\n   *\n   * It exists for hairline gaps between things that are themselves small -\n   * where two pixels reads as touching and four as separate objects. Nothing\n   * larger belongs here: this is the bottom of the scale, not a licence to\n   * measure by eye.\n   */\n  --spacing-hair: 3px;\n\n  /*\n  /* Easing. `out` for anything the user asked for - it arrives fast and\n   * settles, which reads as responsive. `in-out` for something moving on its\n   * own. `in` is deliberately absent: it starts slowly, which on a control\n   * reads as lag. */\n  --ease-out: cubic-bezier(0.2, 0, 0, 1);\n  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);\n\n  /*\n   * Elevation. Three steps, because the products had one and used it for a\n   * toast, a dropdown and a modal alike - so a modal never sat further from\n   * the page than the menu it covered.\n   */\n  --shadow-lift: var(--shadow-lift);\n  --shadow-raise: var(--shadow-raise);\n  --shadow-float: var(--shadow-float);\n\n  /*\n   * The smallest a pointer target may be.\n   *\n   * 24 CSS pixels, which is WCAG 2.2's 2.5.8 at AA. Not a matter of taste, and\n   * measured rather than assumed: a live run of the stand found four different\n   * answers to the same question in one set - a chip's cross at 16, Copyable\n   * at 19, CopyButton at 21, a search field's clear at 24. Three of the four\n   * fail, and the failure is silent. A cross missed by a thumb on a tablet, or\n   * by anyone whose hand is not steady, does not delete the tag and does not\n   * say anything either.\n   *\n   * It is a size token rather than a spacing step because it is a floor, not a\n   * rhythm: nothing is ever `--target-min` tall on purpose, things are at\n   * least that big. `size-target` and `min-size-target` come free from the\n   * namespace, but the way a primitive usually reaches it is `target-min`\n   * below, which grows the hit area without growing the glyph.\n   */\n  --size-target: 24px;\n\n  /*\n   * The window's own chrome: the strip at the top, the rail at the left, and\n   * the buttons that close the window.\n   *\n   * Four products of the line draw their own title bar - the trade is that a\n   * system bar over an application bar costs a strip of every laptop screen\n   * for nothing - and by the time the fourth one did it, the strip was 40px\n   * in one and 2.4rem in another. Neither number is wrong; having two is. A\n   * window's chrome is the part of a product that is supposed to look like\n   * the operating system rather than like the product, so it is the last\n   * place where two of them should differ.\n   *\n   * 40px is not a taste either. The window buttons have to clear the pointer\n   * target floor with room for the hover fill to read as a button, and the\n   * strip has to hold a mark, a trail and a search box at one line of text\n   * without the trail wrapping. 40 is where both stop being tight.\n   *\n   * `--spacing-window-button` is 46px because that is what Windows draws, and\n   * a bar whose buttons are narrower than the system's has a gap the pointer\n   * falls into on the way to the corner. It is deliberately wider than it is\n   * tall: the close button is the one that must be hit without aiming, and on\n   * a maximised window it is the screen's corner.\n   *\n   * These are in the spacing namespace rather than beside `--size-target`,\n   * and the reason is mechanical rather than tidy. `--size-*` yields exactly\n   * one utility, `size-*`, which sets both axes - so `w-window-button` off a\n   * `--size-` token compiles to NOTHING, and a button written that way loses\n   * its width with no error anywhere. Every measurement here is one axis: the\n   * bar has a height, the rail a width, the button a width unequal to its\n   * height. `--spacing-*` is the namespace that feeds `w-`, `h-`, `min-h-`\n   * and the padding utilities, so it is the one that can say so. Caught by\n   * compiling the utility rather than by reading the stylesheet, which is\n   * what `tailwind.test.ts` exists for.\n   */\n  --spacing-titlebar: 40px;\n  --spacing-rail: 216px;\n  --spacing-window-button: 46px;\n\n  /*\n   * How much of a frameless window's edge can be grabbed to resize it.\n   *\n   * The system used to own this and gave about 4 pixels plus whatever the\n   * border was; a frameless window has no border, so the whole of it has to\n   * be put back by hand. Five is the smallest that can be hit reliably with a\n   * mouse and the largest that does not steal a click meant for the first\n   * line of text - the strips sit above everything, so anything they cover\n   * they cover completely.\n   *\n   * The corner is double, because a corner is aimed at less precisely than an\n   * edge and is the one that resizes both axes at once.\n   */\n  --spacing-resize-edge: 5px;\n  --spacing-resize-corner: 10px;\n}\n\n/*\n * `target-min` - visually smaller, clickably larger.\n *\n * The obvious fix for a 16px cross is to make it 24px, and it is the wrong\n * one: a chip is a small thing by design and a cross a third of its height\n * reads as a button with a chip around it. The set's appearance is a\n * decision, and an accessibility floor should not overturn it.\n *\n * So the target grows and the glyph does not. The pseudo-element is centred on\n * the control, takes its size, and refuses to go under the floor - so a\n * control already large enough is untouched, and a smaller one gains an\n * invisible margin of hit area on every side.\n *\n * `position: relative` comes with it rather than being left to the caller: a\n * target that silently does nothing because its parent forgot to establish a\n * containing block is exactly the failure this exists to prevent.\n *\n * Not `padding`, which was the other candidate: padding moves the glyph inside\n * its box and changes how the control sits in a flex row, so every call site\n * would need a compensating negative margin. This changes nothing about\n * layout.\n */\n@utility target-min {\n  position: relative;\n\n  &::after {\n    content: '';\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    translate: -50% -50%;\n    width: 100%;\n    height: 100%;\n    min-width: var(--size-target);\n    min-height: var(--size-target);\n  }\n}\n\n/*\n * How tall a control is, and how much room a screen gives each row.\n *\n * `h-9` appeared in nine primitives - every field the set has - each spelling\n * it out, which is why `Input` could not be made compact without editing\n * `Input`. One decision made nine times gets one name.\n *\n * **Not in `@theme`, and that is the whole mechanism.** A token declared there\n * is inlined by the compiler: `h-control` came out as `height: 36px`, the\n * override on a container had nothing to bind to, and the density attribute\n * did exactly nothing. Measured in the browser rather than assumed - the\n * container's `--row-control` read 32px while the field it contained stayed\n * 36. Tailwind also writes a fallback for any `var()` it recognises from the\n * theme, so the name has to live outside the theme's namespaces entirely.\n *\n * Declared here as plain custom properties and turned into utilities by hand\n * below, the reference survives, and an override on an ancestor reaches every\n * control under it - which is what makes density a property of a region\n * rather than of a component.\n */\n:root {\n  --row-control: 36px;\n  --row-control-sm: 32px;\n  --row-control-lg: 40px;\n\n  /* The same question for a table, whose rows are sized by what is above and\n   * below the text rather than by a height. `Table` had its own `density`\n   * prop for this, with its own words - `base` and `dense` - which meant the\n   * set used one word for two mechanisms and a product had to set both. */\n  --row-cell: 10px;\n}\n\n@utility h-control {\n  height: var(--row-control);\n}\n\n@utility py-row {\n  padding-block: var(--row-cell);\n}\n\n@utility h-control-sm {\n  height: var(--row-control-sm);\n}\n\n@utility h-control-lg {\n  height: var(--row-control-lg);\n}\n\n/*\n * Density.\n *\n * Two answers to one question, and the set had neither: a product wanting a\n * tighter table wrote `h-8` at every call site, which is the drift the scale\n * exists to stop, one screen at a time.\n *\n * **It is an attribute on a container, not a prop on a component.** A prop\n * would have to be added to every primitive, threaded through every wrapper a\n * product writes, and passed by hand at each call site - and a primitive\n * written next year would not have it. An attribute is inherited:\n *\n *     <form data-density=\"compact\">   …every field inside it…\n *\n * That reaches components which did not exist when the product was built, and\n * a product's own components too, as long as they measure in `h-control` like\n * everything else.\n *\n * The floor does not move with it. `--size-target` stays 24px at every\n * density, because WCAG does not care how tight a table is - which is exactly\n * why `target-min` grows the hit area rather than the control: a compact row\n * is still one a hand can hit.\n */\n[data-density='compact'] {\n  --row-control: 32px;\n  --row-control-sm: 28px;\n  --row-control-lg: 36px;\n  --row-cell: 6px;\n}\n\n[data-density='comfortable'] {\n  --row-control: 40px;\n  --row-control-sm: 36px;\n  --row-control-lg: 44px;\n  --row-cell: 14px;\n}\n\n/*\n * Stacking order.\n *\n * Not in `@theme`: Tailwind has no z-index namespace, so `z-50` is a literal\n * fifty and a named step would not compile. These are custom properties a\n * component reads directly - `z-index: var(--z-modal)`.\n *\n * The order is the products' own, with the gaps closed. They ran 10 for an\n * in-flow popup, 20 sticky, 30 menu, 40 for a floating button, 50 for modals\n * and drawers, then jumped to 70 and 80 for the command palette - which had to\n * clear the modal layer and had no name to do it with.\n */\n:root {\n  /*\n   * Motion. One duration existed before this - 160ms on a route change - and\n   * everything else rode Tailwind's default. These are the steps around it:\n   * `quick` for a colour or an opacity that should feel immediate, `base` for\n   * something that moves, `slow` for something arriving from off-screen.\n   *\n   * Not in `@theme`: Tailwind's `duration-*` utility takes a literal number,\n   * not a named step, so these are read directly - `transition-duration:\n   * var(--duration-base)`. The easing curves opposite them ARE a namespace,\n   * so `ease-out` is a class.\n   *\n   * Every duration here is for people who want motion: `prefers-reduced-\n   * motion` cuts them to nothing further down.\n   */\n  --duration-quick: 120ms;\n  --duration-base: 160ms;\n  --duration-slow: 240ms;\n\n  --z-popup: 10;\n  --z-sticky: 20;\n  --z-menu: 30;\n  --z-floating: 40;\n  --z-overlay: 50;\n  --z-modal: 60;\n  --z-palette: 70;\n  --z-toast: 80;\n}\n\n/*\n * Base layer: what every product would otherwise write again. Scoped to\n * elements and to `:focus-visible`, never to a class, so nothing here can\n * collide with a component.\n */\nbody {\n  margin: 0;\n  background-color: var(--bg);\n  color: var(--text);\n  font-family: var(--font-sans);\n  -webkit-font-smoothing: antialiased;\n}\n\n/*\n * In `@layer base`, so a component can turn it off.\n *\n * Unlayered, this rule has the same specificity as `focus-visible:outline-none`\n * from Tailwind - both are one pseudo-class - and wins on source order alone,\n * because the theme is imported before the utilities. Every component that\n * draws its own focus ring got this one on top of it: the command palette's\n * field had an accent outline it had explicitly opted out of, and a combobox\n * with chips drew two rings, one around the box and one around the input\n * inside it.\n *\n * A layered rule loses to any unlayered one regardless of specificity, which\n * is the whole point of cascade layers - the base layer states a default and\n * a component overrides it by saying so.\n */\n@layer base {\n  :focus-visible {\n    outline: 2px solid var(--accent);\n    outline-offset: 2px;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  *,\n  *::before,\n  *::after {\n    transition-duration: 0.01ms !important;\n    animation-duration: 0.01ms !important;\n    animation-iteration-count: 1 !important;\n    scroll-behavior: auto !important;\n  }\n}\n\n/*\n * Scrollbars. A browser's default bar is a piece of someone else's chrome\n * sitting in the middle of the product - full width, with step arrows. These\n * are the line's own: thin, in the palette, drawn only where something\n * actually scrolls.\n */\n* {\n  scrollbar-width: thin;\n  scrollbar-color: var(--line-2) transparent;\n}\n\n*::-webkit-scrollbar {\n  width: 10px;\n  height: 10px;\n}\n\n*::-webkit-scrollbar-track {\n  background: transparent;\n}\n\n*::-webkit-scrollbar-thumb {\n  border: 3px solid transparent;\n  border-radius: 999px;\n  background: var(--line-2);\n  background-clip: content-box;\n  /* The thumb is drawn proportional to how much of the document fits on\n   * screen, so a long one collapses it to a few pixels: still visible, no\n   * longer catchable by a pointer. This is the floor below which it stops\n   * being a control. */\n  min-height: 2.5rem;\n}\n\n*::-webkit-scrollbar-thumb:hover {\n  background: var(--dim);\n  background-clip: content-box;\n}\n\n*::-webkit-scrollbar-corner {\n  background: transparent;\n}\n\n*::-webkit-scrollbar-button {\n  display: none;\n}\n"
         }
       ],
       "docs": "Import the theme, then your product accent:\n\n    @import './dowel/theme.css';\n    @import './dowel/accents/kilna.css';\n\nOutside the line, set the colour directly instead:\n\n    :root { --accent-base: #2f7d6b; }"
@@ -304,12 +304,12 @@
     {
       "name": "action-bar",
       "type": "registry:ui",
-      "title": "Action-bar",
+      "title": "ActionBar",
       "description": "The strip of actions that belongs to what is on screen: Save and Cancel at the foot of a form, the bulk actions above a table, the formatting buttons over an editor. `sticky` is the point of it - a long form whose Save button is a thousand pixels below the field being edited has a Save button the reader has to go looking for.",
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -324,11 +324,11 @@
     {
       "name": "activity-heatmap",
       "type": "registry:ui",
-      "title": "Activity-heatmap",
+      "title": "ActivityHeatmap",
       "description": "The shape everyone recognises: weeks as columns, weekdays as rows, time running left to right, and a value carried by how dark a square is. Two products of the line asked for it by name before it existed.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/activity-weeks.json"
@@ -345,10 +345,10 @@
     {
       "name": "activity-legend",
       "type": "registry:ui",
-      "title": "Activity-legend",
+      "title": "ActivityLegend",
       "description": "Separate from the grid because a caller showing three grids on one screen wants one legend, and because the words in it are the product's.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/activity-heatmap.json",
@@ -366,7 +366,7 @@
     {
       "name": "activity-weeks",
       "type": "registry:ui",
-      "title": "Activity-weeks",
+      "title": "ActivityWeeks",
       "description": "Split out for the reason `table-sort` and `track-segments` are - a product that draws this somewhere other than the DOM needs the arithmetic, not a component. One of the line's consumers draws it in a terminal.",
       "dependencies": [],
       "registryDependencies": [],
@@ -386,7 +386,7 @@
       "description": "A message that stays on the screen, in the flow of the page, about the thing next to it: this field could not be saved, this profile has no axes yet, this export is out of date.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -399,13 +399,32 @@
       ]
     },
     {
+      "name": "app-shell",
+      "type": "registry:ui",
+      "title": "AppShell",
+      "description": "The frame a product draws once and then never thinks about: a bar across the top, a rail down the left, and the screen in the corner they leave. It is three boxes and a grid, which is exactly why every product wrote its own - and why every one of them got the same two things wrong before getting them right.",
+      "dependencies": [
+        "class-variance-authority",
+        "dowel-ui@^0.29.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/app-shell.tsx",
+          "target": "@ui/app-shell.tsx",
+          "type": "registry:ui",
+          "content": "import type { CSSProperties, HTMLAttributes, ReactNode } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * AppShell.\n *\n * The frame a product draws once and then never thinks about: a bar across\n * the top, a rail down the left, and the screen in the corner they leave. It\n * is three boxes and a grid, which is exactly why every product wrote its own\n * - and why every one of them got the same two things wrong before getting\n * them right.\n *\n * Those two are the whole reason this is shared rather than copied. A grid\n * item's default `min-width` and `min-height` are `auto`, not zero, so a\n * track measures its content instead of its share of the window. Without\n * `min-h-0` on the rail, its border and footer stopped halfway down a tall\n * window; without `min-w-0` on the content column, one wide table pushed the\n * whole screen out from under the sidebar and there was nothing left to\n * scroll. Both were found in a shipped build, by eye, months apart.\n *\n * The other decision is that the window never scrolls, on either axis.\n * `Screen` hands its height down and each screen scrolls inside itself, so\n * the bottom edge of the content is always the bottom edge of the window and\n * a long page announces itself with a bar rather than hiding its end. A\n * desktop window has a bottom edge; content that runs past it the way a web\n * page does pretends it does not.\n *\n * What it does NOT decide: what is in the bar, what is in the rail, or how\n * you navigate. Those are the product's, and they differ more than they look\n * - one of the line's products draws its own title bar with the window\n * buttons in it, another draws a web header with a phone's bottom bar under\n * it. This is the geometry they share.\n */\n\nexport interface AppShellProps extends HTMLAttributes<HTMLDivElement> {\n  /** The strip across the top, full width - a title bar, a header, a banner\n   * row. Leave it out and the rail runs to the top of the window. */\n  top?: ReactNode\n  /** The rail down the left. Leave it out for a product that navigates from\n   * the top bar alone, which is the usual shape on the web. */\n  side?: ReactNode\n  /** How wide the rail is. A number is pixels; a string is any CSS track\n   * size, for a rail that collapses or is dragged. Defaults to the theme's\n   * `--spacing-rail`, so four products stop each choosing their own. */\n  sideWidth?: number | string\n  /** How tall the top bar is, same rules, defaulting to\n   * `--spacing-titlebar`. It is a fixed track rather than `auto` on purpose:\n   * a bar that grows by a pixel when its content changes moves every screen\n   * under it. */\n  topHeight?: number | string\n  children: ReactNode\n}\n\n/** A track size from a number of pixels or a CSS length the caller wrote. */\nfunction track(value: number | string): string {\n  return typeof value === 'number' ? `${value}px` : value\n}\n\n/**\n * The frame.\n *\n * `h-full` rather than `h-screen`: inside Tauri the window IS the viewport,\n * but on the web this often sits under a banner or inside a container that\n * has already taken its share, and `100vh` would push the bottom of the shell\n * that far below the fold. The host gives it a height; it fills it.\n */\nexport function AppShell({\n  top,\n  side,\n  sideWidth = 'var(--spacing-rail)',\n  topHeight = 'var(--spacing-titlebar)',\n  className,\n  style,\n  children,\n  ...props\n}: AppShellProps) {\n  // The tracks are built from what is actually there, so a shell without a\n  // rail is a one-column grid rather than a two-column grid with an empty\n  // column that still eats 216 pixels.\n  const columns = side === undefined ? 'minmax(0, 1fr)' : `${track(sideWidth)} minmax(0, 1fr)`\n  const rows = top === undefined ? 'minmax(0, 1fr)' : `${track(topHeight)} minmax(0, 1fr)`\n\n  return (\n    <div\n      className={cn('grid h-full w-full overflow-hidden bg-bg text-text', className)}\n      style={{ gridTemplateColumns: columns, gridTemplateRows: rows, ...style } as CSSProperties}\n      {...props}\n    >\n      {/* The bar spans every column, including the rail's: the mark sits\n          where a system title bar would print the name, and the window's own\n          buttons sit at the far end of the same strip. A bar that started\n          after the rail left a notch in the top-left corner that nothing\n          could fill. */}\n      {top === undefined ? null : (\n        <div className=\"col-span-full min-w-0\" style={{ gridColumn: '1 / -1' }}>\n          {top}\n        </div>\n      )}\n      {/* `min-h-0`: without it the rail measures its content rather than the\n          track, and a short nav in a tall window ends its border in mid-air. */}\n      {side === undefined ? null : <div className=\"min-h-0\">{side}</div>}\n      {/* `min-w-0` beside it, on the other axis and for the same reason: a\n          wide table inside this column grew the column instead of scrolling\n          inside it. `relative` so a product can portal something over the\n          screen without covering the bar and the rail. */}\n      <div className=\"relative flex min-h-0 min-w-0 flex-col\">{children}</div>\n    </div>\n  )\n}\n\nexport const screenVariants = cva('min-h-0 flex-1', {\n  variants: {\n    /*\n     * Where the scrolling happens.\n     *\n     * `flow` is the common case and the safe one: the screen is as long as\n     * its content and scrolls within the height it was handed.\n     *\n     * `held` is for a screen that lays its own boxes out against that height\n     * - a table with a sticky header, two columns that each scroll - and so\n     * must not grow. It scrolls nowhere itself; something inside it does.\n     * Chosen by mistake, `held` clips; `flow` never does, which is why it is\n     * the default.\n     */\n    scroll: {\n      /* `scrollbar-gutter: stable` keeps the bar's width reserved whether or\n       * not this screen needs one. Without it every navigation was a small\n       * sideways jump, because a skeleton is short and what replaces it is\n       * not. */\n      flow: 'overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]',\n      held: 'flex flex-col overflow-hidden',\n    },\n    /* The page's own margins. `none` is for a screen that draws edge to edge\n     * - a map, a canvas, an image - where padding would show the page\n     * underneath along every side. */\n    pad: {\n      default: 'px-6 pt-3 pb-6',\n      tight: 'px-4 pt-2 pb-4',\n      none: '',\n    },\n  },\n  defaultVariants: { scroll: 'flow', pad: 'default' },\n})\n\nexport interface ScreenProps\n  extends HTMLAttributes<HTMLElement>,\n    VariantProps<typeof screenVariants> {}\n\n/**\n * One screen inside the frame, handed the height the window has left.\n *\n * A `<main>`, so a reader can jump to the content past the bar and the rail.\n * There is one per shell: it is what the router renders into, not what each\n * route wraps itself in.\n */\nexport function Screen({ scroll, pad, className, ...props }: ScreenProps) {\n  return <main className={cn(screenVariants({ scroll, pad }), className)} {...props} />\n}\n"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
       "description": "A person, in the space of a word. Every screen that lists people needs one, and the three things that go wrong with it are always the same:\n * - **The picture fails to load** and a broken-image glyph appears where a   face was. The fallback is not a nicety; it is the state this component   spends most of its life in, because half the people in any list have no   picture at all.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -424,7 +443,7 @@
       "description": "A small piece of state attached to something else: a count, a status, a label. It is not a button and never was - if it can be clicked it is a Chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -443,7 +462,7 @@
       "description": "A strip across the top of the application, about the application: you are offline, this build is a preview, your licence expires on Friday, a new version is ready to install.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -458,11 +477,11 @@
     {
       "name": "bar-chart",
       "type": "registry:ui",
-      "title": "Bar-chart",
+      "title": "BarChart",
       "description": "Bars rather than a line, and the distinction is the data's not the drawing's: a line says the value exists between the points, a column says each period is its own sum. Hours worked in a week is a sum - there is no \"Wednesday afternoon\" reading between two weeks - so it is a column.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -475,6 +494,25 @@
       ]
     },
     {
+      "name": "breadcrumbs",
+      "type": "registry:ui",
+      "title": "Breadcrumbs",
+      "description": "Where you are, as a trail rather than as a word. On a list screen the screen's own name is enough; on something opened from it, it is not - \"Works\" says nothing about which work, and the way back to the list is otherwise the browser's back button alone, which a desktop window does not visibly have.",
+      "dependencies": [
+        "@base-ui/react",
+        "dowel-ui@^0.29.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/breadcrumbs.tsx",
+          "target": "@ui/breadcrumbs.tsx",
+          "type": "registry:ui",
+          "content": "import { Fragment, type HTMLAttributes, type ReactNode } from 'react'\nimport { useRender } from '@base-ui/react/use-render'\nimport { cn } from 'dowel-ui'\n\n/*\n * Breadcrumbs.\n *\n * Where you are, as a trail rather than as a word. On a list screen the\n * screen's own name is enough; on something opened from it, it is not -\n * \"Works\" says nothing about which work, and the way back to the list is\n * otherwise the browser's back button alone, which a desktop window does not\n * visibly have.\n *\n * The last crumb is where you stand and is not a link. That is not styling:\n * it carries `aria-current=\"page\"`, so a reader hears which of the four is\n * the destination rather than a list of four places to go. Everything before\n * it is the product's own link element, given through `render` for the reason\n * the rest of the set gives it - the registry has no business installing a\n * router.\n *\n * The trail truncates from the middle when it is longer than it is wide: the\n * first crumb and the last are the two that matter, and dropping the middle\n * into an ellipsis keeps the way home and the place you are. Letting it wrap\n * onto a second line would change the height of a title bar.\n */\n\nexport interface Crumb {\n  id: string\n  label: ReactNode\n}\n\nexport interface BreadcrumbsProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSelect'> {\n  /** What the trail is called for a reader - \"Breadcrumb\" by convention, but\n   * a product with two of them on one screen should say which. */\n  label: string\n  items: readonly Crumb[]\n  /** The element a crumb before the last is drawn as. Without it a crumb is a\n   * button and `onSelect` says which was pressed. */\n  render?: (item: Crumb) => useRender.RenderProp\n  onSelect?: (id: string) => void\n  /**\n   * How many crumbs are drawn before the middle is folded away. The first and\n   * the last are always kept, so this is a floor of three.\n   *\n   * The default is four, which is one more than any screen in the line\n   * actually reaches: a trail deeper than that is a sign the screens are\n   * nested more deeply than anyone will navigate.\n   */\n  max?: number\n}\n\n/** The trail with its middle folded away, and where the fold happened.\n *\n * The first crumb is kept because it is the way out, and the last because it\n * is where you are; the ellipsis stands for everything between. It is not a\n * menu: a product whose trail is regularly too long has a navigation problem\n * that a disclosure on a crumb would only hide. */\nfunction fold(items: readonly Crumb[], max: number): (Crumb | 'ellipsis')[] {\n  if (items.length <= max) return [...items]\n  // `max - 2` for the first crumb and the ellipsis, so the count the caller\n  // asked for is the count that is drawn.\n  return [items[0]!, 'ellipsis', ...items.slice(items.length - (max - 2))]\n}\n\nexport function Breadcrumbs({\n  label,\n  items,\n  render,\n  onSelect,\n  max = 4,\n  className,\n  ...props\n}: BreadcrumbsProps) {\n  const shown = fold(items, Math.max(3, max))\n\n  return (\n    <nav aria-label={label} className={cn('flex min-w-0 items-center', className)} {...props}>\n      {/* An ordered list, because the order is the meaning: a reader is told\n          \"list, 3 items\" and then hears them from the root inwards. */}\n      <ol className=\"flex min-w-0 items-center gap-1.5 text-sm\">\n        {shown.map((entry, index) => (\n          <Fragment key={entry === 'ellipsis' ? 'ellipsis' : entry.id}>\n            {index === 0 ? null : (\n              // Hidden from a reader: the separator is punctuation drawn\n              // between list items that are already announced as a list, and\n              // read aloud it becomes \"Works, greater than, Harbour lights\".\n              <li aria-hidden className=\"shrink-0 text-faint\" role=\"presentation\">\n                ›\n              </li>\n            )}\n            {entry === 'ellipsis' ? (\n              <li className=\"shrink-0 text-faint\">…</li>\n            ) : (\n              <BreadcrumbItem\n                item={entry}\n                last={index === shown.length - 1}\n                render={index === shown.length - 1 ? undefined : render?.(entry)}\n                onSelect={onSelect}\n              />\n            )}\n          </Fragment>\n        ))}\n      </ol>\n    </nav>\n  )\n}\n\nfunction BreadcrumbItem({\n  item,\n  last,\n  render,\n  onSelect,\n}: {\n  item: Crumb\n  last: boolean\n  render?: useRender.RenderProp\n  onSelect?: (id: string) => void\n}) {\n  const crumb = useRender({\n    render,\n    // Where you stand is not somewhere to go: the last crumb is text, not a\n    // control, so it is neither focusable nor announced as a link.\n    defaultTagName: last ? 'span' : 'button',\n    props: {\n      ...(render === undefined && !last ? { type: 'button' } : {}),\n      'aria-current': last ? ('page' as const) : undefined,\n      onClick: last ? undefined : () => onSelect?.(item.id),\n      className: cn(\n        'block truncate rounded-xs no-underline',\n        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n        last\n          ? 'font-semibold text-text'\n          : 'cursor-pointer text-dim transition-colors hover:text-text',\n      ),\n      children: item.label,\n    },\n  })\n\n  return (\n    // The crumbs before the last keep their width; the last is the one that\n    // gives, because it is the one that is a title and may be a sentence\n    // long. `min-w-0` on it so `truncate` inside has something to shrink to.\n    <li className={last ? 'min-w-0' : 'shrink-0'}>{crumb}</li>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
@@ -482,7 +520,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -497,7 +535,7 @@
     {
       "name": "calendar-math",
       "type": "registry:ui",
-      "title": "Calendar-math",
+      "title": "CalendarMath",
       "description": "Split out of the Calendar because the size gate asked the right question: the file was two and a half times over its ceiling, and the reason was that it held two things - the sums, and the grid that draws them. These are the sums, and they are what DatePicker, DateRangePicker and any product doing its own date work import.",
       "dependencies": [],
       "registryDependencies": [],
@@ -516,7 +554,7 @@
       "title": "Calendar",
       "description": "The sums live next door in `calendar-math`, which has no React in it; this is the grid that draws them and the keyboard that moves around it.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar-math.json"
@@ -537,7 +575,7 @@
       "description": "The interesting part is the words. A checkbox on its own is a nine-pixel target that says nothing; wired to a label it is the whole row, and the row is what a finger and a pointer both aim at. So the label is part of the component rather than something a caller remembers to add - the commonest bug in a hand-rolled checkbox is a `<label>` that is next to the input instead of tied to it, which looks identical and does nothing.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -556,7 +594,7 @@
       "description": "A badge you can act on: a filter that can be removed, a tag with a count, a selected value in a field. The difference from a Badge is entirely about whether something happens when you click it - and if something does, that part is a real `<button>` with a real label, not a decorative cross.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -571,11 +609,11 @@
     {
       "name": "code-block",
       "type": "registry:ui",
-      "title": "Code-block",
+      "title": "CodeBlock",
       "description": "The frame around a piece of code is the same everywhere and is written again in every product: the scroll that must not wrap, the gutter of line numbers that must not be selectable, the copy button, the caption saying which file this is, and the marking of the lines the reader was sent here to look at.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/copy-button.json"
@@ -592,10 +630,10 @@
     {
       "name": "color-field",
       "type": "registry:ui",
-      "title": "Color-field",
+      "title": "ColorField",
       "description": "Picking a colour for something the product stores: a tag, a project, a calendar. Note what that is *not* - it is not choosing the appearance of the interface. The theme decides that, from one accent, and a field that let a reader repaint the chrome would undo the argument the whole system rests on.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -612,10 +650,10 @@
     {
       "name": "column-resize-handle",
       "type": "registry:ui",
-      "title": "Column-resize-handle",
+      "title": "ColumnResizeHandle",
       "description": "The handle, and the hook that keeps the widths it produces. Pointer events rather than HTML5 drag-and-drop: a desktop shell that takes file drops for itself never lets a `dragstart` reach the page, so the native API is a handle that does nothing there; pointer capture on the handle also keeps the drag alive when the pointer runs ahead of the cell, which at any speed above a crawl it does.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -635,7 +673,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -653,12 +691,12 @@
     {
       "name": "command-palette",
       "type": "registry:ui",
-      "title": "Command-palette",
+      "title": "CommandPalette",
       "description": "One box that finds anything: the shortcut opens it, typing narrows a list, Enter runs what is highlighted.",
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/combobox.json",
@@ -676,12 +714,12 @@
     {
       "name": "confirm-dialog",
       "type": "registry:ui",
-      "title": "Confirm-dialog",
+      "title": "ConfirmDialog",
       "description": "The dialog for a choice that cannot be taken back - deleting, discarding, revoking. It looks almost exactly like Dialog, and that is deliberate: the difference is not clothes, it is what the popup is allowed to do.",
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -696,11 +734,11 @@
     {
       "name": "context-menu",
       "type": "registry:ui",
-      "title": "Context-menu",
+      "title": "ContextMenu",
       "description": "The same list of actions as Menu, opened the other way round: by right click, or by a long press on a touch screen, over an *area* rather than from a button. So the trigger is not a control - it is the region the menu belongs to, a row, a canvas, a file tile - and it renders a `<div>`.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/menu.json"
@@ -717,10 +755,10 @@
     {
       "name": "copy-button",
       "type": "registry:ui",
-      "title": "Copy-button",
+      "title": "CopyButton",
       "description": "Whatever a product shows in a panel - code, a payload, a log, one side of a comparison - somebody eventually wants to take it away, and the button that lets them is written again every time with the same three things missed.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -738,7 +776,7 @@
       "title": "Copyable",
       "description": "Any text that someone will eventually want to copy - an id, a path, a hash, a token - copied with one click. The rule comes from nitid: if a value is worth showing, it is worth being able to take away, and selecting a monospaced id by hand is a small daily tax.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -753,10 +791,10 @@
     {
       "name": "date-picker",
       "type": "registry:ui",
-      "title": "Date-picker",
+      "title": "DatePicker",
       "description": "The trigger is a button rather than a text input, and that is the decision worth stating. A typable date field has to answer \"what does `03/04/26` mean\" in a locale it cannot be sure of, and it answers wrong for half the world; a button showing the date spelled out has no such question. Where typing genuinely matters - a birth date, forty years back - the calendar is the wrong control anyway and a product should reach for a plain field.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar.json",
@@ -776,10 +814,10 @@
     {
       "name": "date-range-picker",
       "type": "registry:ui",
-      "title": "Date-range-picker",
+      "title": "DateRangePicker",
       "description": "The interesting part is the state between them. After the first click there is a start and no end, and that is not an incomplete range to be hidden or a range of one day - it is the normal middle of the interaction, and the calendar has to show it: the first day marked, the days under the pointer shading as the reader moves, the popup staying open. Products that skip it end up with a picker that seems to do nothing until the second click.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/calendar.json",
@@ -804,7 +842,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -819,7 +857,7 @@
     {
       "name": "diff-lines",
       "type": "registry:ui",
-      "title": "Diff-lines",
+      "title": "DiffLines",
       "description": "Split out like `line-scale` and `table-sort`: a product that wants to know how much moved between two drafts - to put a number in a list, to decide whether to offer the comparison at all - should not have to render a component to find out.",
       "dependencies": [],
       "registryDependencies": [],
@@ -835,11 +873,11 @@
     {
       "name": "diff-view",
       "type": "registry:ui",
-      "title": "Diff-view",
+      "title": "DiffView",
       "description": "The question this answers is \"how did this read before, and how does it read now\" - a version against the one before it, a proposal against what is there, a file against what is on disk. Not a code review: there is no staging, no comment, nothing to accept. It is for looking.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/copy-button.json",
@@ -855,6 +893,25 @@
       ]
     },
     {
+      "name": "divider",
+      "type": "registry:ui",
+      "title": "Divider",
+      "description": "The line between one part of a screen and the next. The set already had four of them - in the menu, the select, the context menu and the action bar - and each was written inside the thing it divided, so a screen that wanted a rule between two sections had nothing and reached for a bare `<hr>` or a `div` with a background.",
+      "dependencies": [
+        "class-variance-authority",
+        "dowel-ui@^0.29.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/divider.tsx",
+          "target": "@ui/divider.tsx",
+          "type": "registry:ui",
+          "content": "import type { HTMLAttributes, ReactNode } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * Divider.\n *\n * The line between one part of a screen and the next. The set already had\n * four of them - in the menu, the select, the context menu and the action bar\n * - and each was written inside the thing it divided, so a screen that wanted\n * a rule between two sections had nothing and reached for a bare `<hr>` or a\n * `div` with a background.\n *\n * Those two are not the same as this one, and the difference is the reason\n * this component is not a `<div className=\"h-px bg-line\" />`. A rule between\n * sections is a semantic boundary: `role=\"separator\"` is what tells a reader\n * that the content after it is a different thing, and a `div` tells them\n * nothing. A rule that is only decoration - a hairline inside a card, a tick\n * between two numbers - is the opposite case, and `decorative` takes it back\n * out of the accessibility tree, because a reader announcing \"separator\" six\n * times in one row is being read the styling.\n *\n * With a `label`, the line becomes a captioned break: the rule runs to the\n * caption, the caption sits in it, and the rule continues. It is a heading\n * for a run of content that does not deserve a heading - \"Today\", \"Archived\",\n * \"or\".\n *\n * A `div` of its own rather than Base UI's Separator, which was the obvious\n * dependency and does not do the one thing this is for: it renders a `div`\n * with `aria-orientation` and no `role`, so nothing is announced as a\n * separator at all - measured, not assumed, by rendering it. And there is no\n * way to take the role back off for a decorative rule, because there was\n * never one on. Two elements and two attributes are not worth borrowing\n * anyway; the decision here is which attributes, and that is the part a\n * dependency was not making.\n */\n\nexport const dividerVariants = cva('shrink-0 bg-line', {\n  variants: {\n    orientation: {\n      horizontal: 'h-px w-full',\n      /* `self-stretch` rather than `h-full`: a vertical rule in a flex row of\n       * buttons has no height of its own to be a percentage of, and `h-full`\n       * resolved to zero - a rule that was there in the markup and invisible\n       * on the screen. */\n      vertical: 'w-px self-stretch',\n    },\n    /* How much air it has. `none` is for a rule that is already inside\n     * something padded - a list's rows, a table. */\n    spacing: {\n      none: '',\n      sm: '',\n      md: '',\n      lg: '',\n    },\n  },\n  compoundVariants: [\n    { orientation: 'horizontal', spacing: 'sm', className: 'my-2' },\n    { orientation: 'horizontal', spacing: 'md', className: 'my-4' },\n    { orientation: 'horizontal', spacing: 'lg', className: 'my-8' },\n    { orientation: 'vertical', spacing: 'sm', className: 'mx-2' },\n    { orientation: 'vertical', spacing: 'md', className: 'mx-4' },\n    { orientation: 'vertical', spacing: 'lg', className: 'mx-8' },\n  ],\n  defaultVariants: { orientation: 'horizontal', spacing: 'none' },\n})\n\nexport interface DividerProps\n  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,\n    Omit<VariantProps<typeof dividerVariants>, 'orientation'> {\n  /** Declared here rather than taken from the variants: cva types a variant\n   * as nullable, and `aria-orientation` is not - a `null` passed through\n   * would be a type error at the call site and an attribute React drops. */\n  orientation?: 'horizontal' | 'vertical'\n  /** A caption sitting in the line: \"Today\", \"Archived\", \"or\". Horizontal\n   * only - there is no reading direction that puts a word inside a vertical\n   * rule. */\n  label?: ReactNode\n  /** A rule that is styling rather than structure. Taken out of the\n   * accessibility tree, so a reader is not told about it. */\n  decorative?: boolean\n}\n\nexport function Divider({\n  orientation = 'horizontal',\n  spacing,\n  label,\n  decorative = false,\n  className,\n  ...props\n}: DividerProps) {\n  if (label !== undefined && orientation === 'horizontal') {\n    return (\n      <div\n        // The row is what carries the separator's meaning; the two rules\n        // inside it are drawing. Without `aria-hidden` on them a reader hears\n        // the break announced twice with a word in the middle.\n        role={decorative ? 'presentation' : 'separator'}\n        aria-orientation={decorative ? undefined : 'horizontal'}\n        className={cn(\n          'flex w-full items-center gap-3',\n          dividerVariants({ orientation, spacing }),\n          // The row is not itself the line: it holds two. The variant is\n          // still asked for its spacing, so a captioned break sits in the\n          // same rhythm as a plain one.\n          'h-auto bg-transparent',\n          className,\n        )}\n        {...props}\n      >\n        <span aria-hidden className=\"h-px flex-1 bg-line\" />\n        <span className=\"shrink-0 text-2xs font-medium uppercase tracking-caption text-faint\">\n          {label}\n        </span>\n        <span aria-hidden className=\"h-px flex-1 bg-line\" />\n      </div>\n    )\n  }\n\n  return (\n    <div\n      // `presentation` rather than no role at all: an element with no role is\n      // still a `div`, which a reader may announce as a group when it carries\n      // other attributes. This says outright that there is nothing here.\n      role={decorative ? 'presentation' : 'separator'}\n      // Only on the one that has a role to orient. A presentational element\n      // carrying an aria attribute is itself a violation - the attribute\n      // describes a role the element has just disclaimed.\n      aria-orientation={decorative ? undefined : orientation}\n      className={cn(dividerVariants({ orientation, spacing }), className)}\n      {...props}\n    />\n  )\n}\n\nexport interface SectionHeaderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {\n  title: ReactNode\n  description?: ReactNode\n  /** Buttons belonging to this section rather than to the screen - Add,\n   * Collapse, a link out. */\n  actions?: ReactNode\n}\n\n/**\n * The heading over a part of a screen, with what belongs to that part at the\n * far end of the same row.\n *\n * An `h2`: `PageHeader` holds the screen's `h1`, and a section is one level\n * inside it, so a reader moving by heading walks the screen's actual\n * structure. It is the between-size heading the products kept writing by\n * hand, above `SectionLabel`'s uppercase caption and below the page's title.\n */\nexport function SectionHeader({\n  title,\n  description,\n  actions,\n  className,\n  ...props\n}: SectionHeaderProps) {\n  return (\n    <div\n      className={cn('mb-3 flex flex-wrap items-start justify-between gap-x-4 gap-y-1', className)}\n      {...props}\n    >\n      <div className=\"flex min-w-0 flex-col gap-0.5\">\n        <h2 className=\"text-base font-semibold text-text\">{title}</h2>\n        {description === undefined ? null : <p className=\"text-sm text-dim\">{description}</p>}\n      </div>\n      {actions === undefined ? null : (\n        <div className=\"flex shrink-0 items-center gap-2\">{actions}</div>\n      )}\n    </div>\n  )\n}\n"
+        }
+      ]
+    },
+    {
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
@@ -862,7 +919,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -877,10 +934,10 @@
     {
       "name": "duration-field",
       "type": "registry:ui",
-      "title": "Duration-field",
+      "title": "DurationField",
       "description": "The alternative is what products keep building: two number boxes labelled \"hours\" and \"minutes\", which means two tab stops, two validations, and a reader who has to divide 90 minutes in their head before typing. Here they write `1h 30m`, or `90m`, or `1.5h`, and it means the same thing.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -897,11 +954,11 @@
     {
       "name": "empty-state",
       "type": "registry:ui",
-      "title": "Empty-state",
+      "title": "EmptyState",
       "description": "Three kinds of nothing, and a product that draws the same panel for all three is telling the reader the wrong thing twice:\n *   **empty** - there is nothing here yet, and that is normal. The panel says   what would be here and offers the one action that makes it appear.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -916,7 +973,7 @@
     {
       "name": "error-boundary",
       "type": "registry:ui",
-      "title": "Error-boundary",
+      "title": "ErrorBoundary",
       "description": "A class component, and the only one in the set - not a style choice: React gives no hook for catching a render error, and `componentDidCatch` exists nowhere else. Anything that claims otherwise catches events, not renders.",
       "dependencies": [],
       "registryDependencies": [
@@ -939,7 +996,7 @@
       "description": "Every form is the same four parts repeated: a name for the control, the control, sometimes a hint, and sometimes an error. Written by hand each time, they drift - the label loses its `htmlFor`, the hint is a `<div>` no screen reader mentions, the error appears in red and is announced by nothing at all. This is that arrangement, once.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -954,10 +1011,10 @@
     {
       "name": "file-drop",
       "type": "registry:ui",
-      "title": "File-drop",
+      "title": "FileDrop",
       "description": "A place to put files: drag them onto it, or press it and pick them. It takes files and hands them over - it does not upload them. Where they go, with which credentials, retried how - that is the product's transport, and a primitive that owned it would be wrong for every product whose upload does not look like the one it guessed.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -972,10 +1029,10 @@
     {
       "name": "filter-popover",
       "type": "registry:ui",
-      "title": "Filter-popover",
+      "title": "FilterPopover",
       "description": "A text box, a handful of checkboxes - with one way to clear it. The shell only: what goes in the panel is the caller's, since a stage is ticked and a title is typed and the popover has no opinion.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json",
@@ -996,7 +1053,7 @@
       "title": "Input",
       "description": "A single-line field. It is a plain `<input>` with the line's clothes on, so everything a browser gives an input for free - autofill, spellcheck, the right keyboard on a phone, `type=\"email\"` validation - still works.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1011,7 +1068,7 @@
     {
       "name": "json-rows",
       "type": "registry:ui",
-      "title": "Json-rows",
+      "title": "JsonRows",
       "description": "The sibling of `tree-rows`, built the same way and for the same reason: a product that wants to count the rows before drawing any of them - to put a viewer inside a VirtualList, to say \"1,204 entries\" - imports this and never the component.",
       "dependencies": [],
       "registryDependencies": [],
@@ -1027,10 +1084,10 @@
     {
       "name": "json-viewer",
       "type": "registry:ui",
-      "title": "Json-viewer",
+      "title": "JsonViewer",
       "description": "What a product reaches for when it has to show a response, a settings file, a webhook payload - data the reader needs to understand, not edit. The alternative it replaces is `JSON.stringify(value, null, 2)` inside a `<pre>`, which is fine for twenty lines and useless for two hundred: nothing folds, nothing is findable, and the shape of the document is somewhere inside the indentation.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/json-rows.json"
@@ -1050,7 +1107,7 @@
       "title": "Kbd",
       "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1065,11 +1122,11 @@
     {
       "name": "key-value",
       "type": "registry:ui",
-      "title": "Key-value",
+      "title": "KeyValue",
       "description": "The shape every product builds out of two `<div>`s in a flex row, and the reason it is worth having once: it is a `<dl>`, and the pairing is what a screen reader announces. Two divs read as four unrelated pieces of text - \"Created\", \"2 hours ago\", \"Owner\", \"Ines\" - and nothing says which value belongs to which name. The right element says it for free.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1084,11 +1141,11 @@
     {
       "name": "line-chart",
       "type": "registry:ui",
-      "title": "Line-chart",
+      "title": "LineChart",
       "description": "The distinction against its neighbours is the data's, not the drawing's. A column says each period is its own sum - hours worked in a week, and there is no Wednesday-afternoon figure between two weeks. A line says the value existed the whole time and was sampled: an account balance, a price, a temperature. Drawing a sum as a line claims readings nobody took; drawing a level as columns throws away the thing being watched.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/line-scale.json"
@@ -1105,7 +1162,7 @@
     {
       "name": "line-scale",
       "type": "registry:ui",
-      "title": "Line-scale",
+      "title": "LineScale",
       "description": "Split out like `track-segments` and `activity-weeks`: a product labelling its own points, or checking its own domain sums, should not import a component to get at the numbers.",
       "dependencies": [],
       "registryDependencies": [],
@@ -1121,10 +1178,10 @@
     {
       "name": "marked-text",
       "type": "registry:ui",
-      "title": "Marked-text",
+      "title": "MarkedText",
       "description": "A textarea cannot colour a word. The way round it is older than React: draw the same text twice, once as marked-up HTML underneath and once as the textarea on top with its own text transparent, so the caret and the selection are the browser's and the colours are ours. The two have to agree on every metric - font, size, line height, padding, wrapping - or the marks slide off the words they mark. So both take ONE class list, given by the caller, and the textarea adds only what makes it invisible.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1144,7 +1201,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1157,12 +1214,32 @@
       ]
     },
     {
+      "name": "nav-rail",
+      "type": "registry:ui",
+      "title": "NavRail",
+      "description": "The product's own destinations: the screens it has, drawn as a column down the left, a row of tabs in a header, or a bar along the bottom of a phone.",
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "dowel-ui@^0.29.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/nav-rail.tsx",
+          "target": "@ui/nav-rail.tsx",
+          "type": "registry:ui",
+          "content": "import type { HTMLAttributes, ReactNode } from 'react'\nimport { useRender } from '@base-ui/react/use-render'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * NavRail.\n *\n * The product's own destinations: the screens it has, drawn as a column down\n * the left, a row of tabs in a header, or a bar along the bottom of a phone.\n * One list, three shapes, because they are the same list - and when they were\n * three components in two products they drew the current entry three\n * different ways.\n *\n * The entries are the product's links, not this component's. `render` takes\n * an item and answers with the element to draw it as - a router's `NavLink`,\n * a plain `<a>`, whatever the product navigates with - and the rail puts the\n * clothes, the icon and the `aria-current` on it. That keeps the router out\n * of the registry entirely: a set that imported `react-router` would install\n * one in a product that had chosen another, and there is no version of that\n * which is the design system's business.\n *\n * `NavGroup` is the small uppercase caption between runs of entries, and\n * `NavSpacer` pushes what follows to the far end - the settings, the theme\n * switch, the profile, which every rail in the line keeps at its foot.\n */\n\nexport const navRailVariants = cva('flex', {\n  variants: {\n    /*\n     * Which of the three shapes this is.\n     *\n     * Not a guess from the width: a rail that changed shape when its\n     * container narrowed would change shape in the middle of a drag.\n     */\n    layout: {\n      /* Down the left, the desktop shape. `h-full` so the rail runs the\n       * height of the window and its foot sits at the bottom because the nav\n       * reaches it, not because the content does. */\n      column: 'h-full flex-col gap-0.5 overflow-y-auto border-r border-line px-2.5 pt-2.5 pb-3',\n      /* A row of tabs, in a header beside the product's name. */\n      row: 'flex-row items-center gap-1',\n      /* Along the bottom, where a thumb already is. The safe-area inset is\n       * the phone's home indicator: without it the last row of entries sits\n       * under it with no way to scroll out. */\n      bar: 'flex-row border-t border-line bg-raise pb-[env(safe-area-inset-bottom)]',\n    },\n  },\n  defaultVariants: { layout: 'column' },\n})\n\nexport interface NavRailItem {\n  id: string\n  label: ReactNode\n  icon?: ReactNode\n  /** A count, a dot, a version chip - whatever sits at the end of the row.\n   * Drawn only in `column`, where there is width for it. */\n  end?: ReactNode\n  /** A destination that exists on the roadmap but not in the build. It is\n   * drawn greyed and is not a link: the point is to say the screen is coming,\n   * which an entry that navigates nowhere would say by doing nothing. */\n  soon?: boolean\n}\n\nexport interface NavRailProps\n  extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSelect'>,\n    VariantProps<typeof navRailVariants> {\n  /** What this set of destinations is called. Not drawn - it names the\n   * landmark, so a reader meeting two navs on one page can tell which is\n   * which. A product with a rail AND a bottom bar has exactly that. */\n  label: string\n  items: readonly NavRailItem[]\n  /** Which destination is the open screen. */\n  activeId?: string\n  /** The element an entry is drawn as - `render={(item) => <NavLink to={…} />}`. */\n  render?: (item: NavRailItem) => useRender.RenderProp\n  /** Pressed, whatever the entry is drawn as. */\n  onSelect?: (id: string) => void\n}\n\nexport function NavRail({\n  layout,\n  label,\n  items,\n  activeId,\n  render,\n  onSelect,\n  className,\n  ...props\n}: NavRailProps) {\n  return (\n    <nav aria-label={label} className={cn(navRailVariants({ layout }), className)} {...props}>\n      {items.map((item) => (\n        <NavRailEntry\n          key={item.id}\n          item={item}\n          layout={layout ?? 'column'}\n          active={item.id === activeId}\n          render={item.soon === true ? undefined : render?.(item)}\n          onSelect={onSelect}\n        />\n      ))}\n    </nav>\n  )\n}\n\n/** The clothes of one entry, by shape.\n *\n * `target-min` on the two narrow shapes rather than on all three: a column\n * entry is already taller than the floor, and the utility establishes a\n * containing block, which is not free on every row of a list. */\nconst entryClasses = {\n  column:\n    'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm no-underline transition-colors',\n  /* `flex` here for the same reason as the other two, and it was missing: a\n   * tab is an icon beside a word, and without it the entry is a block, the\n   * icon and the label stack, and the header grows to twice its height. The\n   * class-list tests did not see it - they read the string, not the layout -\n   * and the stand did, in the first screenshot. */\n  row: 'target-min flex items-center gap-2 rounded-md px-2.5 py-1 text-sm no-underline transition-colors',\n  bar: 'target-min flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-2 text-2xs no-underline transition-colors',\n} as const\n\nfunction NavRailEntry({\n  item,\n  layout,\n  active,\n  render,\n  onSelect,\n}: {\n  item: NavRailItem\n  layout: NonNullable<NavRailProps['layout']>\n  active: boolean\n  render?: useRender.RenderProp\n  onSelect?: (id: string) => void\n}) {\n  const soon = item.soon === true\n\n  return useRender({\n    render,\n    // A destination is a link when the product gives it one and a button when\n    // it does not; one that is not built yet is neither, and `span` says so -\n    // a disabled button is still in the tab order on some browsers, and\n    // tabbing onto a screen that does not exist is a dead end.\n    defaultTagName: soon ? 'span' : 'button',\n    props: {\n      ...(render === undefined && !soon ? { type: 'button' } : {}),\n      // Named as the current page, which is how a reader learns which of six\n      // identical links is where they stand. Colour alone says it to nobody\n      // who cannot see it.\n      'aria-current': active ? 'page' : undefined,\n      ...(soon ? { 'aria-disabled': true } : {}),\n      onClick: soon ? undefined : () => onSelect?.(item.id),\n      className: cn(\n        entryClasses[layout],\n        '[&_svg]:size-4 [&_svg]:shrink-0',\n        'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',\n        soon\n          ? 'cursor-default text-faint'\n          : cn(\n              'cursor-pointer text-dim hover:bg-soft hover:text-text',\n              // The bottom bar tints the entry itself rather than filling the\n              // cell: a filled cell in a four-across bar reads as a pressed\n              // button, and it is a location, not an action.\n              active &&\n                (layout === 'bar'\n                  ? 'text-accent-2 hover:bg-transparent'\n                  : 'bg-accent-soft text-text [&_svg]:text-accent'),\n            ),\n      ),\n      children: (\n        <>\n          {item.icon === undefined ? null : (\n            <span aria-hidden className=\"contents\">\n              {item.icon}\n            </span>\n          )}\n          {/* Truncated, in one line. A rail is a fixed-width column, and a\n              label that wraps onto a second line makes the row taller than\n              every other - which in a two-language product happens to one\n              entry and not the rest. `min-w-0` because a flex child refuses\n              to shrink below its content without it. */}\n          <span className={cn('min-w-0 truncate', layout === 'bar' ? 'w-full text-center' : 'flex-1')}>\n            {item.label}\n          </span>\n          {item.end === undefined || layout !== 'column' ? null : (\n            <span className=\"ml-auto shrink-0 text-2xs text-faint\">{item.end}</span>\n          )}\n        </>\n      ),\n    },\n  })\n}\n\n/** The caption over a run of entries: Library, Team, Admin.\n *\n * A `div` rather than a heading: a rail's groups are not the page's outline,\n * and six `h3`s inside a nav put six entries into a reader's document map\n * that lead nowhere. */\nexport function NavGroup({ className, ...props }: HTMLAttributes<HTMLDivElement>) {\n  return (\n    <div\n      className={cn(\n        'px-2.5 pt-3 pb-1 text-2xs font-medium uppercase tracking-caption text-faint',\n        className,\n      )}\n      {...props}\n    />\n  )\n}\n\n/** Pushes everything after it to the far end of the rail. */\nexport function NavSpacer({ className, ...props }: HTMLAttributes<HTMLDivElement>) {\n  return <div className={cn('mt-auto flex flex-col gap-0.5', className)} {...props} />\n}\n"
+        }
+      ]
+    },
+    {
       "name": "notification-bell",
       "type": "registry:ui",
-      "title": "Notification-bell",
+      "title": "NotificationBell",
       "description": "A bell that is always lit is a bell nobody reads, so the count is the product's decision and this draws it: nothing at zero, the number past that, `9+` past nine. Pressing it does not leave the screen - the last few entries open under it and the whole history is one more click, which is the shape every product converged on once the first one tried a page.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json",
@@ -1180,11 +1257,11 @@
     {
       "name": "number-field",
       "type": "registry:ui",
-      "title": "Number-field",
+      "title": "NumberField",
       "description": "A number typed into a text input is a string that happens to look like a number, and every product then writes the same four fixes: strip the letters, clamp to a range, round to a step, and decide what an empty box means. This is those four, once, plus the stepper - because a value with a small range is faster nudged than typed.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1201,10 +1278,10 @@
     {
       "name": "number-format",
       "type": "registry:ui",
-      "title": "Number-format",
+      "title": "NumberFormat",
       "description": "Two things, and the second is the reason this is a component rather than a call to `toLocaleString` at each site.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1217,12 +1294,31 @@
       ]
     },
     {
+      "name": "page-header",
+      "type": "registry:ui",
+      "title": "PageHeader",
+      "description": "What a screen says it is, and the buttons that act on the whole of it: a title, a line under it, and the actions at the far end of the same row.",
+      "dependencies": [
+        "class-variance-authority",
+        "dowel-ui@^0.29.0"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/page-header.tsx",
+          "target": "@ui/page-header.tsx",
+          "type": "registry:ui",
+          "content": "import type { HTMLAttributes, ReactNode } from 'react'\nimport { cva, type VariantProps } from 'class-variance-authority'\nimport { cn } from 'dowel-ui'\n\n/*\n * PageHeader.\n *\n * What a screen says it is, and the buttons that act on the whole of it: a\n * title, a line under it, and the actions at the far end of the same row.\n * Every screen in the line opens with these three and every one of them set\n * the title in a different size, because `text-lg font-semibold` is the kind\n * of thing nobody looks up.\n *\n * The title is an `h1`. It is the one heading a screen is entitled to: the\n * shell's bar names the application and the rail names the destinations, so\n * this is the top of the content's outline, and a reader jumping by heading\n * lands here. `Container` below is the other half - the measure the content\n * under it is read at.\n */\n\nexport interface PageHeaderProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {\n  title: ReactNode\n  /** The line under the title. One sentence: this is the screen's subtitle,\n   * not its documentation. */\n  description?: ReactNode\n  /** Buttons that act on the screen as a whole - New, Export, a filter. They\n   * sit at the far end of the title's row and wrap under it when there is no\n   * width left, rather than squeezing the title into two words. */\n  actions?: ReactNode\n  /** A trail, a status, a tab strip: whatever belongs between the heading and\n   * the content. Drawn under the whole row. */\n  children?: ReactNode\n}\n\nexport function PageHeader({\n  title,\n  description,\n  actions,\n  className,\n  children,\n  ...props\n}: PageHeaderProps) {\n  return (\n    <header className={cn('mb-4 flex flex-col gap-3', className)} {...props}>\n      {/* `flex-wrap` and `items-start`: the actions drop to their own line on\n          a narrow screen instead of the title truncating. A title is what the\n          screen is; a button can wait a row. */}\n      <div className=\"flex flex-wrap items-start justify-between gap-x-4 gap-y-2\">\n        <div className=\"flex min-w-0 flex-col gap-1\">\n          <h1 className=\"text-xl font-semibold tracking-tight text-text\">{title}</h1>\n          {description === undefined ? null : (\n            <p className=\"text-sm text-dim\">{description}</p>\n          )}\n        </div>\n        {actions === undefined ? null : (\n          <div className=\"flex shrink-0 flex-wrap items-center gap-2\">{actions}</div>\n        )}\n      </div>\n      {children}\n    </header>\n  )\n}\n\nexport const containerVariants = cva('mx-auto w-full min-w-0', {\n  variants: {\n    /*\n     * How wide the content is allowed to get.\n     *\n     * A measure rather than a taste: text at more than about ninety\n     * characters a line loses the reader on the way back to the left margin,\n     * and a form whose fields run the width of a 32-inch monitor asks the eye\n     * to travel between a label and its input.\n     */\n    width: {\n      /* Reading and forms: settings, an article, a dialog's worth of fields\n       * given a whole screen. */\n      prose: 'max-w-[68ch]',\n      /* The usual screen: a list, a card, a dashboard's columns. */\n      default: 'max-w-5xl',\n      /* Tables and boards, which are read by scanning down a column rather\n       * than across a line, and are the worse for being penned in. */\n      wide: 'max-w-7xl',\n      /* No ceiling. For a screen that IS the window - a canvas, a map, a\n       * timeline that earns every pixel it is given. */\n      full: '',\n    },\n  },\n  defaultVariants: { width: 'default' },\n})\n\nexport interface ContainerProps\n  extends HTMLAttributes<HTMLDivElement>,\n    VariantProps<typeof containerVariants> {}\n\n/**\n * The measure the screen's content is read at.\n *\n * Width only, and deliberately: the padding belongs to `Screen`, which knows\n * whether it is scrolling and therefore whether a scrollbar is about to take\n * ten pixels off the right. A container that also padded would double it.\n */\nexport function Container({ width, className, ...props }: ContainerProps) {\n  return <div className={cn(containerVariants({ width }), className)} {...props} />\n}\n"
+        }
+      ]
+    },
+    {
       "name": "page-size",
       "type": "registry:ui",
-      "title": "Page-size",
+      "title": "PageSize",
       "description": "Its own file rather than a part of `Pagination`, because the two are needed apart often enough: a list that scrolls for ever wants \"how many to load at a time\" and no page buttons, and a table with a fixed page size wants the buttons and no choice. Together they were also over the size gate, which asked the right question.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/select.json"
@@ -1242,7 +1338,7 @@
       "title": "Pagination",
       "description": "The arithmetic is exported separately from the component for the same reason `table-sort` is a file of its own: a product that pages on the server needs the page numbers and not the buttons, and computing them a second time in a different place is how the two disagree about where the last page ends.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/button.json"
@@ -1263,7 +1359,7 @@
       "description": "The raised surface everything else sits on. It is the one place a screen gets its structure from, so it stays deliberately plain: a ground, a hairline, a corner.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1278,10 +1374,10 @@
     {
       "name": "password-field",
       "type": "registry:ui",
-      "title": "Password-field",
+      "title": "PasswordField",
       "description": "The reveal is the whole component, and it is not a convenience. A masked field is the only one in a form where a typo cannot be seen, so people either paste (fine) or type slowly and get it wrong anyway; the toggle is what turns an unverifiable field into a checkable one, and it is why long passphrases became usable at all.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1303,7 +1399,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1318,12 +1414,12 @@
     {
       "name": "preview-card",
       "type": "registry:ui",
-      "title": "Preview-card",
+      "title": "PreviewCard",
       "description": "The card that appears when a link is hovered: who the author is, what the issue says, what is behind the URL. Rich content - an avatar, a few lines, a figure or two - rather than the phrase a Tooltip holds.",
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1343,7 +1439,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1358,7 +1454,7 @@
     {
       "name": "query-state",
       "type": "registry:ui",
-      "title": "Query-state",
+      "title": "QueryState",
       "description": "Every list in every product writes the same ladder - loading, then failed, then nothing found, then the content - and writes it slightly differently each time. What differs is never deliberate: one screen forgets the empty case, another shows a spinner where the shape was known, a third prints the raw error object. This is that ladder, once.",
       "dependencies": [],
       "registryDependencies": [
@@ -1377,12 +1473,12 @@
     {
       "name": "radio-group",
       "type": "registry:ui",
-      "title": "Radio-group",
+      "title": "RadioGroup",
       "description": "The rule for reaching for this rather than a Select is whether the options are worth the space: a handful of short choices read faster laid out than hidden behind a trigger, and each one becomes a target rather than a step.",
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1397,10 +1493,10 @@
     {
       "name": "rating-scale",
       "type": "registry:ui",
-      "title": "Rating-scale",
+      "title": "RatingScale",
       "description": "Generalised from kilna, where it is how a work is scored on each of its axes. The shape is a row of marks rather than stars: stars carry a meaning of their own - a review, a public verdict - and this is as often \"how hard was this\" or \"how finished is it\" as it is \"how good\".",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1415,10 +1511,10 @@
     {
       "name": "relative-time",
       "type": "registry:ui",
-      "title": "Relative-time",
+      "title": "RelativeTime",
       "description": "The relative-time primitive.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1433,10 +1529,10 @@
     {
       "name": "reorderable-list",
       "type": "registry:ui",
-      "title": "Reorderable-list",
+      "title": "ReorderableList",
       "description": "The columns in a column picker, the stops of a dial, the roles of a profile. A hook and a grip rather than a list component: the rows are already something else's - a menu's items, a form's fields - and a component wrapping them would have to reproduce whatever that something else does.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1451,10 +1547,10 @@
     {
       "name": "save-state",
       "type": "registry:ui",
-      "title": "Save-state",
+      "title": "SaveState",
       "description": "The quiet line beside a field that saves itself: \"saving…\", then a tick that fades. It exists because a form without a Save button has to say what it did anyway - otherwise the reader is left guessing whether their edit survived, and the usual answer to that guess is to press Ctrl+S at a page that has no such thing.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/spinner.json"
@@ -1471,10 +1567,10 @@
     {
       "name": "search-field",
       "type": "registry:ui",
-      "title": "Search-field",
+      "title": "SearchField",
       "description": "An Input that knows it is a search box, which is three small things the products kept not doing:\n *   - a magnifier, so the field is recognisable before it is read;   - a way to clear it that is not \"select all and delete\" - and one that a     keyboard can reach, which a decorative `<span>` cannot;   - the shortcut that focuses it, shown in the field rather than learned.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json",
@@ -1493,11 +1589,11 @@
     {
       "name": "section-nav",
       "type": "registry:ui",
-      "title": "Section-nav",
+      "title": "SectionNav",
       "description": "A settings screen is the usual case: five or six sections, each its own address so it can be linked to and the back button walks between them, listed down the left with the current one tinted. Every product draws the same column, and every product draws the active row a little differently - which is exactly the drift a shared list exists to stop.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1517,7 +1613,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1550,10 +1646,10 @@
     {
       "name": "skeleton-of",
       "type": "registry:ui",
-      "title": "Skeleton-of",
+      "title": "SkeletonOf",
       "description": "`Skeleton` and its shapes solved half the problem: they gave a product a list, a card and a grid to reach for instead of a spinner. The half left over is the one that actually causes the jump, and it is a human one - somebody has to look at the real thing, judge how many rows it has and how tall they are, and type that in. The judgement is made once, the screen changes a month later, and the placeholder goes on promising the old shape.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1571,7 +1667,7 @@
       "title": "Skeleton",
       "description": "The rule the component is built on, and the reason it takes a shape rather than filling the space:\n *   **A skeleton of the wrong shape is worse than no skeleton.**\n * It promises something the content does not keep, and the promise is paid for in a jump: the page settles, the scrollbar appears, and whatever the reader was about to click has moved. Measured rather than assumed - the line's own calendar showed a list of four short lines where a six-row month grid was about to land, and the skeleton was itself the jump it existed to prevent.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1590,7 +1686,7 @@
       "description": "The case for it over a NumberField is that the number does not matter much: a volume, an opacity, a weight in a search filter. Where the exact figure does matter, a slider is a worse field with more pixels - it cannot be typed into, it cannot be pasted into, and it has no state for \"empty\".",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1609,7 +1705,7 @@
       "description": "The shape of a history, not a chart of it: no axes, no gridlines, no ticks.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1628,7 +1724,7 @@
       "description": "Something is happening and the answer has not arrived. It carries no text of its own - what is loading is the product's word, not the system's - but it does have to say *something* to a screen reader, or a page that is busy is silently identical to a page that is empty.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1646,7 +1742,7 @@
       "title": "Splash",
       "description": "A desktop product has a second or two between the window appearing and the first screen being ready - a workspace to open, a database to migrate, a plugin to start - and a blank window for that long reads as a crash. So the window shows the product instead: the mark, the name, the promise, the version, and a bar that sweeps until there is something to draw.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1661,11 +1757,11 @@
     {
       "name": "stat-tile",
       "type": "registry:ui",
-      "title": "Stat-tile",
+      "title": "StatTile",
       "description": "The smallest thing on a dashboard and the one every product writes itself: a label above, a number below, sometimes a word about which way it moved.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1680,11 +1776,11 @@
     {
       "name": "status-dot",
       "type": "registry:ui",
-      "title": "Status-dot",
+      "title": "StatusDot",
       "description": "The smallest thing a screen can say about something's condition: a server is up, a job failed, a person is away. Every product of the line drew its own coloured circle, and every one of them drew it the same way - a `<span>` with a background - which means the condition existed for exactly the readers who could see it.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1703,7 +1799,7 @@
       "description": "The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair. A checkbox is an answer collected now and submitted later, with the rest of the form; a switch is a setting that applies the moment it moves. Put a switch in a form with a Save button and the reader cannot tell whether anything happened - they flipped it, and nothing said so.",
       "dependencies": [
         "@base-ui/react",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1718,7 +1814,7 @@
     {
       "name": "table-sort",
       "type": "registry:ui",
-      "title": "Table-sort",
+      "title": "TableSort",
       "description": "Split out of the Table for the reason `calendar-math` was split out of the Calendar: these are the sums, and the component is the thing that draws them. A product sorting its own rows - on the server, in a worker, before the data ever reaches a component - imports this and nothing else.",
       "dependencies": [],
       "registryDependencies": [],
@@ -1738,7 +1834,7 @@
       "description": "Parts rather than a `columns` prop, and that is the decision worth stating: a `<DataTable columns={…} rows={…} />` is quicker to write for the first table and then owns every cell in the product forever. The moment one column needs a Badge, another a link, and a third the row's own menu, the prop grows a `render` for each - at which point it is JSX with extra steps, spelt in a shape only this component understands.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/table-sort.json"
@@ -1755,11 +1851,11 @@
     {
       "name": "tag-input",
       "type": "registry:ui",
-      "title": "Tag-input",
+      "title": "TagInput",
       "description": "Free text turned into a list: type a word, press Enter, it becomes a chip.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/chip.json",
@@ -1780,7 +1876,7 @@
       "title": "Textarea",
       "description": "A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen. `autoResize` grows it; `maxRows` says when to stop and let it scroll after all.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1801,7 +1897,7 @@
       "description": "The tier primitive.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1816,10 +1912,10 @@
     {
       "name": "time-field",
       "type": "registry:ui",
-      "title": "Time-field",
+      "title": "TimeField",
       "description": "No donor for this one: neither product of the line had a time field, so this is written from the same shape as DurationField, and for the same reason. Anything a person plausibly types is accepted - `9`, `9:30`, `930`, `9.30`, `9pm`, `21:30` - and what comes back is always `HH:MM`.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/input.json"
@@ -1840,7 +1936,7 @@
       "description": "What happened, in the order it happened: a release history, an audit trail, the steps a job went through. Four products of the line draw one, and all four drew it the same way - a list with a border on the left and a dot positioned over it by hand.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1860,7 +1956,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1880,7 +1976,7 @@
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1895,7 +1991,7 @@
     {
       "name": "track-segments",
       "type": "registry:ui",
-      "title": "Track-segments",
+      "title": "TrackSegments",
       "description": "Split out for the reason `table-sort` and `tree-rows` are: a product that needs the numbers - to label a segment, to test its own domain code, to draw the same shape somewhere that is not the DOM - should not import a component to get them.",
       "dependencies": [],
       "registryDependencies": [],
@@ -1915,7 +2011,7 @@
       "description": "Two products had written this independently and arrived at the same construction - a rounded track, segments positioned absolutely by percent, a floor under the segment width so a short one does not vanish - differing only in what a segment meant. One drew the tiers of a rubric with the score standing among them; the other drew a working day as alternating work and breaks. Neither could be built from the other, and each knew something the other did not: the tiers had the marker and the three-state reading of a segment (passed, standing in, still ahead), the day had the minimum width and the difference between an empty track and an unknown one.",
       "dependencies": [
         "class-variance-authority",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/track-segments.json"
@@ -1932,7 +2028,7 @@
     {
       "name": "tree-rows",
       "type": "registry:ui",
-      "title": "Tree-rows",
+      "title": "TreeRows",
       "description": "Split out of the TreeView for the reason `table-sort` and `calendar-math` were split out of their components: these are the sums, and the component is the thing that draws them. A product that windows a large tree needs to know how many rows it has before rendering any of them - that is this file, and it never touches the DOM.",
       "dependencies": [],
       "registryDependencies": [],
@@ -1948,10 +2044,10 @@
     {
       "name": "tree-view",
       "type": "registry:ui",
-      "title": "Tree-view",
+      "title": "TreeView",
       "description": "The shape products reach for and then get wrong in the same place every time. A tree is not a nest of lists with click handlers - it is one control with a cursor in it, and the difference is the whole component:\n *   **One tab stop, not one per node.** A tree of four hundred files with a   `tabIndex` on each is four hundred stops between the sidebar and the   editor. The container is what the keyboard reaches, and the arrows move a   cursor inside it - the arrangement a `RadioGroup` has, for the same   reason.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [
         "https://lacodda.github.io/dowel/r/tree-rows.json"
@@ -1971,7 +2067,7 @@
       "title": "Truncate",
       "description": "Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut. Every product wrote the one-line version of this and none of them remembered the title.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -1986,10 +2082,10 @@
     {
       "name": "virtual-list",
       "type": "registry:ui",
-      "title": "Virtual-list",
+      "title": "VirtualList",
       "description": "The browser is fine with long lists until it is not: a hundred thousand `<div>`s is a layout the machine recomputes on every change, and the page stops responding while it does. What is drawn instead is the window the reader can actually see, held in place by a tall spacer, so the scrollbar still says how much there is.",
       "dependencies": [
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -2004,11 +2100,11 @@
     {
       "name": "window-frame",
       "type": "registry:ui",
-      "title": "Window-frame",
+      "title": "WindowFrame",
       "description": "With `decorations: false` the system draws nothing, so everything it used to do is the page's: dragging the window by its title bar, double-click to maximise, the three buttons, and the edges you grab to resize. Each is small; the reason to take them on at all is that a system title bar over an application title bar costs a strip of every laptop screen for nothing.",
       "dependencies": [
         "@tauri-apps/api",
-        "dowel-ui@^0.28.1"
+        "dowel-ui@^0.29.0"
       ],
       "registryDependencies": [],
       "files": [
@@ -2016,7 +2112,7 @@
           "path": "ui/window-frame.tsx",
           "target": "@ui/window-frame.tsx",
           "type": "registry:ui",
-          "content": "import {\n  useCallback,\n  useEffect,\n  useState,\n  type CSSProperties,\n  type MouseEvent,\n  type PointerEvent,\n  type ReactNode,\n} from 'react'\nimport { getCurrentWindow } from '@tauri-apps/api/window'\nimport { cn } from 'dowel-ui'\n\n/** The eight compass names Tauri resizes by. Read off the method rather than\n * imported: the package declares the type without exporting it. */\ntype ResizeDirection = Parameters<ReturnType<typeof getCurrentWindow>['startResizeDragging']>[0]\n\n/*\n * The window's own frame, for a window that has no system frame.\n *\n * With `decorations: false` the system draws nothing, so everything it used\n * to do is the page's: dragging the window by its title bar, double-click to\n * maximise, the three buttons, and the edges you grab to resize. Each is\n * small; the reason to take them on at all is that a system title bar over an\n * application title bar costs a strip of every laptop screen for nothing.\n * scheda made the trade first and kilna copied it, which is the second\n * consumer the line asks for before anything becomes shared.\n *\n * Four exports, and they are used together: `WindowButtons` in the bar,\n * `useTitleBarGestures()` spread on the bar, `ResizeEdges` once at the root,\n * and `useMaximized()` for anything else that changes shape with the window.\n *\n * Outside Tauri - a browser, a test, the stand - there is no window to drive.\n * Every call goes through `currentWindow()`, which answers null when the\n * Tauri bridge is absent, so the chrome renders and does nothing rather than\n * throwing on the first click. A product's own storybook runs in a browser\n * too, and a title bar that crashes it is a title bar nobody previews.\n */\n\n/** The Tauri window, or null where there is none to drive. The bridge is what\n * `getCurrentWindow` reads its label from, so its absence is the test. */\nfunction currentWindow() {\n  return '__TAURI_INTERNALS__' in window ? getCurrentWindow() : null\n}\n\n/** Whether the window is maximised, kept current as the window changes.\n *\n * The window can be maximised without our buttons - a drag to the top edge,\n * the keyboard, a snap layout - so the answer follows the window rather than\n * our own last click. */\nexport function useMaximized(): boolean {\n  const [maximized, setMaximized] = useState(false)\n\n  useEffect(() => {\n    const target = currentWindow()\n    if (!target) return\n    const read = () => {\n      target.isMaximized().then(setMaximized).catch(() => undefined)\n    }\n    read()\n    const unlisten = target.onResized(read)\n    return () => {\n      unlisten.then((stop) => stop()).catch(() => undefined)\n    }\n  }, [])\n\n  return maximized\n}\n\nexport interface WindowButtonsProps {\n  /** What each button is called. Required, and deliberately without a\n   * default: a string this component invents is a string the product cannot\n   * translate. `restore` replaces `maximize` while the window is maximised. */\n  labels: { minimize: string; maximize: string; restore: string; close: string }\n  className?: string\n}\n\ntype Control = keyof WindowButtonsProps['labels']\n\n/** The four glyphs, drawn in one stroke on a ten-pixel grid - the size the\n * system's own were, so the bar reads as the window's and not as a toolbar. */\nconst GLYPH: Record<Control, ReactNode> = {\n  minimize: <path d=\"M0 5h10\" />,\n  maximize: <rect x=\"0.5\" y=\"0.5\" width=\"9\" height=\"9\" />,\n  restore: <path d=\"M2.5 2.5V0.5h7v7h-2M0.5 2.5h7v7h-7z\" />,\n  close: <path d=\"M0 0l10 10M10 0L0 10\" />,\n}\n\n/** The window controls, in the order Windows puts them. */\nexport function WindowButtons({ labels, className }: WindowButtonsProps) {\n  const maximized = useMaximized()\n  const controls: [Control, () => unknown][] = [\n    ['minimize', () => currentWindow()?.minimize()],\n    [maximized ? 'restore' : 'maximize', () => currentWindow()?.toggleMaximize()],\n    ['close', () => currentWindow()?.close()],\n  ]\n\n  return (\n    <div className={cn('flex h-full shrink-0 items-stretch', className)}>\n      {controls.map(([name, act]) => (\n        <button\n          key={name}\n          type=\"button\"\n          aria-label={labels[name]}\n          title={labels[name]}\n          onClick={() => void act()}\n          className={cn(\n            'flex h-full w-[46px] cursor-default items-center justify-center text-dim transition-colors',\n            'hover:bg-soft hover:text-text',\n            // The close button is the one that must not be mistaken for its\n            // neighbours: it goes red under the pointer, as on every desktop.\n            name === 'close' && 'hover:bg-bad hover:text-on-bad',\n          )}\n        >\n          <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1\" aria-hidden>\n            {GLYPH[name]}\n          </svg>\n        </button>\n      ))}\n    </div>\n  )\n}\n\n/** A press on a control has already been handled by the control. */\nconst shouldHandle = (target: EventTarget | null) =>\n  !(target as HTMLElement | null)?.closest(\n    'button, a, input, textarea, [role=\"menu\"], [role=\"menuitem\"], [role=\"tab\"], [role=\"dialog\"]',\n  )\n\n/** How far the pointer moves before a press becomes a drag, in pixels. */\nconst THRESHOLD = 4\n\n/** Makes an element behave like a title bar: drag to move, double-click to\n * maximise. Both are what the system used to do for free. Spread the result\n * on the bar: `<header {...useTitleBarGestures()}>`.\n *\n * Two handlers rather than one. A `pointerdown` cannot recognise a double\n * click: its `detail` counts clicks of the *mouse* event sequence, and the\n * second press still arrives as 1 - reading it there fired `startDragging`\n * three times over a double click and toggled nothing. So the press starts a\n * drag, and `dblclick`, which the browser is the one qualified to detect,\n * maximises.\n *\n * Dragging starts on the first movement, not on the press. `startDragging`\n * hands the window over to the system - which is what keeps snap layouts and\n * drag-to-edge working - but from that moment the webview stops seeing the\n * mouse. Calling it on `pointerdown` ate the second click of every double\n * click, and maximising never happened. */\nexport function useTitleBarGestures() {\n  const onPointerDown = useCallback((event: PointerEvent) => {\n    if (event.button !== 0 || !shouldHandle(event.target)) return\n\n    const start = { x: event.clientX, y: event.clientY }\n    const onMove = (move: globalThis.PointerEvent) => {\n      if (Math.abs(move.clientX - start.x) < THRESHOLD && Math.abs(move.clientY - start.y) < THRESHOLD) {\n        return\n      }\n      stop()\n      void currentWindow()?.startDragging()\n    }\n    const stop = () => {\n      window.removeEventListener('pointermove', onMove)\n      window.removeEventListener('pointerup', stop)\n      window.removeEventListener('pointercancel', stop)\n    }\n\n    window.addEventListener('pointermove', onMove)\n    window.addEventListener('pointerup', stop)\n    window.addEventListener('pointercancel', stop)\n  }, [])\n\n  const onDoubleClick = useCallback((event: MouseEvent) => {\n    if (event.button !== 0 || !shouldHandle(event.target)) return\n    void currentWindow()?.toggleMaximize()\n  }, [])\n\n  return { onPointerDown, onDoubleClick }\n}\n\n/** The eight edges and corners a frameless window still has to offer. */\nconst RESIZE_HANDLES: readonly ResizeDirection[] = [\n  'North',\n  'South',\n  'East',\n  'West',\n  'NorthEast',\n  'NorthWest',\n  'SouthEast',\n  'SouthWest',\n]\n\nconst EDGE = 5\nconst CORNER = 10\n\n/** Where each strip sits and which cursor it shows. Inline styles rather than\n * classes: eight positions of a few pixels each are geometry, not design. */\nconst EDGE_STYLE: Record<ResizeDirection, CSSProperties> = {\n  North: { top: 0, left: CORNER, right: CORNER, height: EDGE, cursor: 'ns-resize' },\n  South: { bottom: 0, left: CORNER, right: CORNER, height: EDGE, cursor: 'ns-resize' },\n  East: { top: CORNER, bottom: CORNER, right: 0, width: EDGE, cursor: 'ew-resize' },\n  West: { top: CORNER, bottom: CORNER, left: 0, width: EDGE, cursor: 'ew-resize' },\n  NorthEast: { top: 0, right: 0, width: CORNER, height: CORNER, cursor: 'nesw-resize' },\n  NorthWest: { top: 0, left: 0, width: CORNER, height: CORNER, cursor: 'nwse-resize' },\n  SouthEast: { bottom: 0, right: 0, width: CORNER, height: CORNER, cursor: 'nwse-resize' },\n  SouthWest: { bottom: 0, left: 0, width: CORNER, height: CORNER, cursor: 'nesw-resize' },\n}\n\nexport interface ResizeEdgesProps {\n  /** Merged into every strip. `fixed` to the viewport by default, which is\n   * where a window's edges are; `absolute` puts them on the nearest\n   * positioned box instead, for a frame drawn inside a page. */\n  className?: string\n}\n\n/** Invisible strips along the window's edges.\n *\n * A frameless window has no border to grab, so these put one back. They sit\n * outside the flow, above everything, and are only a few pixels wide -\n * enough to hit, not enough to steal a click meant for the text. A maximised\n * window has no edges to drag, and leaving the strips in place would mean\n * the top few pixels of the title bar stop taking clicks. */\nexport function ResizeEdges({ className }: ResizeEdgesProps) {\n  const maximized = useMaximized()\n  if (maximized) return null\n\n  return (\n    <>\n      {RESIZE_HANDLES.map((direction) => (\n        <div\n          key={direction}\n          aria-hidden\n          data-resize-edge={direction}\n          className={cn('fixed [z-index:var(--z-floating)]', className)}\n          style={EDGE_STYLE[direction]}\n          onPointerDown={(event) => {\n            if (event.button !== 0) return\n            event.preventDefault()\n            void currentWindow()?.startResizeDragging(direction)\n          }}\n        />\n      ))}\n    </>\n  )\n}\n"
+          "content": "import {\n  useCallback,\n  useEffect,\n  useState,\n  type CSSProperties,\n  type MouseEvent,\n  type PointerEvent,\n  type ReactNode,\n} from 'react'\nimport { getCurrentWindow } from '@tauri-apps/api/window'\nimport { cn } from 'dowel-ui'\n\n/** The eight compass names Tauri resizes by. Read off the method rather than\n * imported: the package declares the type without exporting it. */\ntype ResizeDirection = Parameters<ReturnType<typeof getCurrentWindow>['startResizeDragging']>[0]\n\n/*\n * The window's own frame, for a window that has no system frame.\n *\n * With `decorations: false` the system draws nothing, so everything it used\n * to do is the page's: dragging the window by its title bar, double-click to\n * maximise, the three buttons, and the edges you grab to resize. Each is\n * small; the reason to take them on at all is that a system title bar over an\n * application title bar costs a strip of every laptop screen for nothing.\n * scheda made the trade first and kilna copied it, which is the second\n * consumer the line asks for before anything becomes shared.\n *\n * Four exports, and they are used together: `WindowButtons` in the bar,\n * `useTitleBarGestures()` spread on the bar, `ResizeEdges` once at the root,\n * and `useMaximized()` for anything else that changes shape with the window.\n *\n * Outside Tauri - a browser, a test, the stand - there is no window to drive.\n * Every call goes through `currentWindow()`, which answers null when the\n * Tauri bridge is absent, so the chrome renders and does nothing rather than\n * throwing on the first click. A product's own storybook runs in a browser\n * too, and a title bar that crashes it is a title bar nobody previews.\n */\n\n/** The Tauri window, or null where there is none to drive. The bridge is what\n * `getCurrentWindow` reads its label from, so its absence is the test. */\nfunction currentWindow() {\n  return '__TAURI_INTERNALS__' in window ? getCurrentWindow() : null\n}\n\n/** Whether the window is maximised, kept current as the window changes.\n *\n * The window can be maximised without our buttons - a drag to the top edge,\n * the keyboard, a snap layout - so the answer follows the window rather than\n * our own last click. */\nexport function useMaximized(): boolean {\n  const [maximized, setMaximized] = useState(false)\n\n  useEffect(() => {\n    const target = currentWindow()\n    if (!target) return\n    const read = () => {\n      target.isMaximized().then(setMaximized).catch(() => undefined)\n    }\n    read()\n    const unlisten = target.onResized(read)\n    return () => {\n      unlisten.then((stop) => stop()).catch(() => undefined)\n    }\n  }, [])\n\n  return maximized\n}\n\nexport interface WindowButtonsProps {\n  /** What each button is called. Required, and deliberately without a\n   * default: a string this component invents is a string the product cannot\n   * translate. `restore` replaces `maximize` while the window is maximised. */\n  labels: { minimize: string; maximize: string; restore: string; close: string }\n  className?: string\n}\n\ntype Control = keyof WindowButtonsProps['labels']\n\n/** The four glyphs, drawn in one stroke on a ten-pixel grid - the size the\n * system's own were, so the bar reads as the window's and not as a toolbar. */\nconst GLYPH: Record<Control, ReactNode> = {\n  minimize: <path d=\"M0 5h10\" />,\n  maximize: <rect x=\"0.5\" y=\"0.5\" width=\"9\" height=\"9\" />,\n  restore: <path d=\"M2.5 2.5V0.5h7v7h-2M0.5 2.5h7v7h-7z\" />,\n  close: <path d=\"M0 0l10 10M10 0L0 10\" />,\n}\n\n/** The window controls, in the order Windows puts them. */\nexport function WindowButtons({ labels, className }: WindowButtonsProps) {\n  const maximized = useMaximized()\n  const controls: [Control, () => unknown][] = [\n    ['minimize', () => currentWindow()?.minimize()],\n    [maximized ? 'restore' : 'maximize', () => currentWindow()?.toggleMaximize()],\n    ['close', () => currentWindow()?.close()],\n  ]\n\n  return (\n    <div className={cn('flex h-full shrink-0 items-stretch', className)}>\n      {controls.map(([name, act]) => (\n        <button\n          key={name}\n          type=\"button\"\n          aria-label={labels[name]}\n          title={labels[name]}\n          onClick={() => void act()}\n          className={cn(\n            'flex h-full w-window-button cursor-default items-center justify-center text-dim transition-colors',\n            'hover:bg-soft hover:text-text',\n            // The close button is the one that must not be mistaken for its\n            // neighbours: it goes red under the pointer, as on every desktop.\n            name === 'close' && 'hover:bg-bad hover:text-on-bad',\n          )}\n        >\n          <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1\" aria-hidden>\n            {GLYPH[name]}\n          </svg>\n        </button>\n      ))}\n    </div>\n  )\n}\n\n/** A press on a control has already been handled by the control. */\nconst shouldHandle = (target: EventTarget | null) =>\n  !(target as HTMLElement | null)?.closest(\n    'button, a, input, textarea, [role=\"menu\"], [role=\"menuitem\"], [role=\"tab\"], [role=\"dialog\"]',\n  )\n\n/** How far the pointer moves before a press becomes a drag, in pixels. */\nconst THRESHOLD = 4\n\n/** Makes an element behave like a title bar: drag to move, double-click to\n * maximise. Both are what the system used to do for free. Spread the result\n * on the bar: `<header {...useTitleBarGestures()}>`.\n *\n * Two handlers rather than one. A `pointerdown` cannot recognise a double\n * click: its `detail` counts clicks of the *mouse* event sequence, and the\n * second press still arrives as 1 - reading it there fired `startDragging`\n * three times over a double click and toggled nothing. So the press starts a\n * drag, and `dblclick`, which the browser is the one qualified to detect,\n * maximises.\n *\n * Dragging starts on the first movement, not on the press. `startDragging`\n * hands the window over to the system - which is what keeps snap layouts and\n * drag-to-edge working - but from that moment the webview stops seeing the\n * mouse. Calling it on `pointerdown` ate the second click of every double\n * click, and maximising never happened. */\nexport function useTitleBarGestures() {\n  const onPointerDown = useCallback((event: PointerEvent) => {\n    if (event.button !== 0 || !shouldHandle(event.target)) return\n\n    const start = { x: event.clientX, y: event.clientY }\n    const onMove = (move: globalThis.PointerEvent) => {\n      if (Math.abs(move.clientX - start.x) < THRESHOLD && Math.abs(move.clientY - start.y) < THRESHOLD) {\n        return\n      }\n      stop()\n      void currentWindow()?.startDragging()\n    }\n    const stop = () => {\n      window.removeEventListener('pointermove', onMove)\n      window.removeEventListener('pointerup', stop)\n      window.removeEventListener('pointercancel', stop)\n    }\n\n    window.addEventListener('pointermove', onMove)\n    window.addEventListener('pointerup', stop)\n    window.addEventListener('pointercancel', stop)\n  }, [])\n\n  const onDoubleClick = useCallback((event: MouseEvent) => {\n    if (event.button !== 0 || !shouldHandle(event.target)) return\n    void currentWindow()?.toggleMaximize()\n  }, [])\n\n  return { onPointerDown, onDoubleClick }\n}\n\n/** The eight edges and corners a frameless window still has to offer. */\nconst RESIZE_HANDLES: readonly ResizeDirection[] = [\n  'North',\n  'South',\n  'East',\n  'West',\n  'NorthEast',\n  'NorthWest',\n  'SouthEast',\n  'SouthWest',\n]\n\n/* The width of a strip and of a corner, as the theme states them. Read off\n * the tokens rather than written here: a window's chrome is shared with the\n * products that draw the rest of their own frame, and two numbers for one\n * edge is how the title bar ended up 40px in one product and 2.4rem in the\n * next. */\nconst EDGE = 'var(--spacing-resize-edge)'\nconst CORNER = 'var(--spacing-resize-corner)'\n\n/** Where each strip sits and which cursor it shows. Inline styles rather than\n * classes: eight positions of a few pixels each are geometry, not design. */\nconst EDGE_STYLE: Record<ResizeDirection, CSSProperties> = {\n  North: { top: 0, left: CORNER, right: CORNER, height: EDGE, cursor: 'ns-resize' },\n  South: { bottom: 0, left: CORNER, right: CORNER, height: EDGE, cursor: 'ns-resize' },\n  East: { top: CORNER, bottom: CORNER, right: 0, width: EDGE, cursor: 'ew-resize' },\n  West: { top: CORNER, bottom: CORNER, left: 0, width: EDGE, cursor: 'ew-resize' },\n  NorthEast: { top: 0, right: 0, width: CORNER, height: CORNER, cursor: 'nesw-resize' },\n  NorthWest: { top: 0, left: 0, width: CORNER, height: CORNER, cursor: 'nwse-resize' },\n  SouthEast: { bottom: 0, right: 0, width: CORNER, height: CORNER, cursor: 'nwse-resize' },\n  SouthWest: { bottom: 0, left: 0, width: CORNER, height: CORNER, cursor: 'nesw-resize' },\n}\n\nexport interface ResizeEdgesProps {\n  /** Merged into every strip. `fixed` to the viewport by default, which is\n   * where a window's edges are; `absolute` puts them on the nearest\n   * positioned box instead, for a frame drawn inside a page. */\n  className?: string\n}\n\n/** Invisible strips along the window's edges.\n *\n * A frameless window has no border to grab, so these put one back. They sit\n * outside the flow, above everything, and are only a few pixels wide -\n * enough to hit, not enough to steal a click meant for the text. A maximised\n * window has no edges to drag, and leaving the strips in place would mean\n * the top few pixels of the title bar stop taking clicks. */\nexport function ResizeEdges({ className }: ResizeEdgesProps) {\n  const maximized = useMaximized()\n  if (maximized) return null\n\n  return (\n    <>\n      {RESIZE_HANDLES.map((direction) => (\n        <div\n          key={direction}\n          aria-hidden\n          data-resize-edge={direction}\n          className={cn('fixed [z-index:var(--z-floating)]', className)}\n          style={EDGE_STYLE[direction]}\n          onPointerDown={(event) => {\n            if (event.button !== 0) return\n            event.preventDefault()\n            void currentWindow()?.startResizeDragging(direction)\n          }}\n        />\n      ))}\n    </>\n  )\n}\n"
         }
       ]
     },

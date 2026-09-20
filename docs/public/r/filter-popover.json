@@ -2,10 +2,10 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "filter-popover",
   "type": "registry:ui",
-  "title": "Filter-popover",
+  "title": "FilterPopover",
   "description": "A text box, a handful of checkboxes - with one way to clear it. The shell only: what goes in the panel is the caller's, since a stage is ticked and a title is typed and the popover has no opinion.",
   "dependencies": [
-    "dowel-ui@^0.28.1"
+    "dowel-ui@^0.29.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/button.json",

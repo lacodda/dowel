@@ -1,0 +1,90 @@
+# AppShell
+
+Source: https://lacodda.github.io/dowel/components/app-shell
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#app-shell
+
+The frame with a bar, a rail and a screen in it - and the same frame without a rail, which is the usual shape on the web.
+
+## Notes
+
+The frame a product draws once and then never thinks about. It is three boxes
+and a grid, which is exactly why every product wrote its own — and why every
+one of them got the same two things wrong before getting them right.
+
+```tsx
+<AppShell top={<Titlebar />} side={<NavRail label={t('nav.screens')} items={screens} />}>
+  <Screen>
+    <PageHeader title={t('catalogue.title')} actions={<Button>{t('new')}</Button>} />
+    <Routes>{/* … */}</Routes>
+  </Screen>
+</AppShell>
+```
+
+**The two failures it exists to prevent.** A grid item's `min-width` and
+`min-height` default to `auto`, not zero, so a track measures its content
+instead of its share of the window. Without `min-h-0` on the rail, its border
+and footer stopped halfway down a tall window; without `min-w-0` on the
+content column, one wide table pushed the whole screen out from under the
+sidebar and there was nothing left to scroll. Both were found in a shipped
+build, by eye, months apart. Neither is something you should have to remember.
+
+**The window never scrolls, on either axis.** `Screen` is handed the height
+the window has left and scrolls inside itself, so the bottom edge of the
+content is the bottom edge of the window and a long page announces itself with
+a bar rather than hiding its end. A desktop window has a bottom edge; content
+that runs past it the way a web page does pretends it does not.
+
+**`flow` or `held`.** `flow` is the common case: the screen is as long as its
+content and scrolls within the height it was given. `held` is for a screen
+that lays its own boxes out against that height — a table with a sticky
+header, two columns that each scroll — and so must not grow; it scrolls
+nowhere itself, something inside it does. Chosen by mistake, `held` clips and
+`flow` never does, which is why `flow` is the default.
+
+**The bar runs across the rail.** It spans every column, as a system title bar
+would: the mark sits where the system prints the name, and the window's own
+buttons sit at the far end of the same strip. A bar that started after the
+rail left a notch in the top-left corner that nothing could fill.
+
+**The sizes come from the theme.** `--spacing-titlebar` and `--spacing-rail`
+are the line's, so four products that each draw their own chrome stop each
+picking their own number — which is how one ended up at 40px and another at
+2.4rem. Override `topHeight` and `sideWidth` where a product genuinely
+differs; a number is pixels and a string is any CSS track size, for a rail
+that collapses or is dragged.
+
+**Leave out what you do not have.** Without `side` the shell is a one-column
+grid rather than a two-column grid with an empty column still eating its
+track, and the same for `top`.
+
+**What it does not decide:** what is in the bar, what is in the rail, or how
+you navigate. Those differ more than they look — one product of the line draws
+its own title bar with the window buttons in it, another a web header with a
+phone's bottom bar under it. This is the geometry they share. See
+[NavRail](/dowel/components/nav-rail/) for the destinations and
+[WindowFrame](/dowel/components/window-frame/) for a window with no system
+frame.
+
+## Props
+
+### `AppShell`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `top` | `ReactNode` | | The strip across the top, full width |
+| `side` | `ReactNode` | | The rail down the left |
+| `sideWidth` | `number \| string` | `var(--spacing-rail)` | Pixels, or any CSS track size |
+| `topHeight` | `number \| string` | `var(--spacing-titlebar)` | Pixels, or any CSS track size |
+| `children` | `ReactNode` | | Required — usually one `Screen` |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `Screen`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `scroll` | `flow \| held` | `flow` | Where the scrolling happens |
+| `pad` | `default \| tight \| none` | `default` | The page's own margins |
+| `className` | `string` | | Merged so the caller wins a conflict |

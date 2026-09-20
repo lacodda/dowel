@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "error-boundary",
   "type": "registry:ui",
-  "title": "Error-boundary",
+  "title": "ErrorBoundary",
   "description": "A class component, and the only one in the set - not a style choice: React gives no hook for catching a render error, and `componentDidCatch` exists nowhere else. Anything that claims otherwise catches events, not renders.",
   "dependencies": [],
   "registryDependencies": [

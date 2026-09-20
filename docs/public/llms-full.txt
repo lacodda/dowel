@@ -1,4 +1,4 @@
-# dowel 0.28.1
+# dowel 0.29.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,8 +23,8 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.28.1.** The theme and its scales, an accent for each of the nineteen
-products of the line, and eighty-nine primitives, each with a page of its own
+**v0.29.0.** The theme and its scales, an accent for each of the nineteen
+products of the line, and ninety-four primitives, each with a page of its own
 on [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in. Size now comes from the scale and is held there by a
 gate; a pointer target has a floor the set cannot fall under; and density is an
@@ -571,7 +571,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Eighty-nine of them.
+A single component: Button, Dialog, Select. Ninety-four of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -1017,6 +1017,99 @@ Only the product knows which it has.
 
 ---
 
+# AppShell
+
+Source: https://lacodda.github.io/dowel/components/app-shell
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#app-shell
+
+The frame with a bar, a rail and a screen in it - and the same frame without a rail, which is the usual shape on the web.
+
+## Notes
+
+The frame a product draws once and then never thinks about. It is three boxes
+and a grid, which is exactly why every product wrote its own — and why every
+one of them got the same two things wrong before getting them right.
+
+```tsx
+<AppShell top={<Titlebar />} side={<NavRail label={t('nav.screens')} items={screens} />}>
+  <Screen>
+    <PageHeader title={t('catalogue.title')} actions={<Button>{t('new')}</Button>} />
+    <Routes>{/* … */}</Routes>
+  </Screen>
+</AppShell>
+```
+
+**The two failures it exists to prevent.** A grid item's `min-width` and
+`min-height` default to `auto`, not zero, so a track measures its content
+instead of its share of the window. Without `min-h-0` on the rail, its border
+and footer stopped halfway down a tall window; without `min-w-0` on the
+content column, one wide table pushed the whole screen out from under the
+sidebar and there was nothing left to scroll. Both were found in a shipped
+build, by eye, months apart. Neither is something you should have to remember.
+
+**The window never scrolls, on either axis.** `Screen` is handed the height
+the window has left and scrolls inside itself, so the bottom edge of the
+content is the bottom edge of the window and a long page announces itself with
+a bar rather than hiding its end. A desktop window has a bottom edge; content
+that runs past it the way a web page does pretends it does not.
+
+**`flow` or `held`.** `flow` is the common case: the screen is as long as its
+content and scrolls within the height it was given. `held` is for a screen
+that lays its own boxes out against that height — a table with a sticky
+header, two columns that each scroll — and so must not grow; it scrolls
+nowhere itself, something inside it does. Chosen by mistake, `held` clips and
+`flow` never does, which is why `flow` is the default.
+
+**The bar runs across the rail.** It spans every column, as a system title bar
+would: the mark sits where the system prints the name, and the window's own
+buttons sit at the far end of the same strip. A bar that started after the
+rail left a notch in the top-left corner that nothing could fill.
+
+**The sizes come from the theme.** `--spacing-titlebar` and `--spacing-rail`
+are the line's, so four products that each draw their own chrome stop each
+picking their own number — which is how one ended up at 40px and another at
+2.4rem. Override `topHeight` and `sideWidth` where a product genuinely
+differs; a number is pixels and a string is any CSS track size, for a rail
+that collapses or is dragged.
+
+**Leave out what you do not have.** Without `side` the shell is a one-column
+grid rather than a two-column grid with an empty column still eating its
+track, and the same for `top`.
+
+**What it does not decide:** what is in the bar, what is in the rail, or how
+you navigate. Those differ more than they look — one product of the line draws
+its own title bar with the window buttons in it, another a web header with a
+phone's bottom bar under it. This is the geometry they share. See
+[NavRail](/dowel/components/nav-rail/) for the destinations and
+[WindowFrame](/dowel/components/window-frame/) for a window with no system
+frame.
+
+## Props
+
+### `AppShell`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `top` | `ReactNode` | | The strip across the top, full width |
+| `side` | `ReactNode` | | The rail down the left |
+| `sideWidth` | `number \| string` | `var(--spacing-rail)` | Pixels, or any CSS track size |
+| `topHeight` | `number \| string` | `var(--spacing-titlebar)` | Pixels, or any CSS track size |
+| `children` | `ReactNode` | | Required — usually one `Screen` |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `Screen`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `scroll` | `flow \| held` | `flow` | Where the scrolling happens |
+| `pad` | `default \| tight \| none` | `default` | The page's own margins |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
 # Avatar
 
 Source: https://lacodda.github.io/dowel/components/avatar
@@ -1369,6 +1462,71 @@ them.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `gutter` | `boolean` | `true` | Room on the right for the baseline's label |
+
+---
+
+# Breadcrumbs
+
+Source: https://lacodda.github.io/dowel/components/breadcrumbs
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#breadcrumbs
+
+A short trail and a long one - the long one keeps the way out and the place you stand, and folds what is between.
+
+## Notes
+
+On a list screen the screen's own name is enough; on something opened from it,
+it is not. "Works" says nothing about which work, and the way back to the list
+is otherwise the browser's back button alone — which a desktop window does not
+visibly have.
+
+```tsx
+<Breadcrumbs
+  label={t('nav.trail')}
+  items={[
+    { id: 'catalogue', label: t('nav.catalogue') },
+    { id: work.id, label: work.title },
+  ]}
+  render={(crumb) => <Link to={crumb.id === 'catalogue' ? '/catalogue' : `/works/${crumb.id}`} />}
+/>
+```
+
+**The last crumb is not a link.** That is not styling: it carries
+`aria-current="page"`, so a reader hears which of the four is where they stand
+rather than a list of four places to go. Everything before it is your own link
+element, given through `render` for the reason the rest of the set gives it —
+the registry has no business installing a router.
+
+**The trail folds from the middle.** When it is longer than `max`, the first
+crumb and the last are kept and what is between becomes an ellipsis: the first
+is the way out and the last is where you stand. Wrapping onto a second line
+instead would change the height of a title bar. `max` has a floor of three,
+below which the fold would drop the thing it exists to keep.
+
+The ellipsis is not a menu. A product whose trail is regularly too long has a
+navigation problem that a disclosure on a crumb would only hide; the default
+`max` of four is already one more than any screen in the line reaches.
+
+**The separator is not read aloud.** It is punctuation between items that are
+already announced as an ordered list — read out, the trail becomes "Works,
+greater than, Harbour lights".
+
+**The last crumb is the one that gives.** It may be a sentence-long title, so
+it truncates; the crumbs before it are screen names and keep their width, so
+the way home does not disappear first.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required — names the landmark |
+| `items` | `{ id, label }[]` | | Required, root first |
+| `render` | `(crumb) => ReactElement` | | The element a crumb before the last is drawn as |
+| `onSelect` | `(id) => void` | | Pressed, whatever the crumb is drawn as |
+| `max` | `number` | `4` | Crumbs drawn before the middle folds; floor of 3 |
+| `className` | `string` | | Merged so the caller wins a conflict |
 
 ---
 
@@ -3071,6 +3229,87 @@ component does not know.
 
 ---
 
+# Divider
+
+Source: https://lacodda.github.io/dowel/components/divider
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#divider
+
+A plain rule, a captioned break, a vertical rule in a row of controls, and a section heading with its own actions.
+
+## Notes
+
+The set already had four separators — in the menu, the select, the context
+menu and the action bar — and each was written inside the thing it divided, so
+a screen that wanted a rule between two sections had nothing and reached for a
+bare `<hr>` or a `div` with a background.
+
+```tsx
+<SectionHeader title={t('versions')} description={t('versions.hint')} actions={<Button>{t('add')}</Button>} />
+<VersionList />
+
+<Divider label={t('archived')} spacing="lg" />
+<ArchivedList />
+```
+
+**A rule is a claim, and `decorative` withdraws it.** A boundary between
+sections carries `role="separator"`, which is what tells a reader the content
+after it is a different thing. A rule that is only drawing — a hairline inside
+a card, a tick between two numbers — should not be announced at all, and a
+reader hearing "separator" six times in one row is being read the styling.
+
+It is not Base UI's `Separator`, which was the obvious dependency and does not
+do the one thing this is for: it renders a `div` with `aria-orientation` and
+no role, so nothing is announced as a separator at all. That was measured by
+rendering it, not read off the documentation.
+
+**A vertical rule stretches, it does not fill.** `h-full` in a flex row of
+buttons resolves to zero — a rule that is in the markup and invisible on the
+screen — so this one is `self-stretch`.
+
+**Spacing follows the axis.** `md` is `my-4` on a horizontal rule and `mx-4`
+on a vertical one; the same step on the wrong axis is the bug that pair
+prevents. The default is `none`, because the common case is a rule inside
+something already padded.
+
+**A caption in the line.** `label` makes the rule a captioned break: the rule
+runs to the word, the word sits in it, and the rule continues. It is a heading
+for a run of content that does not deserve one — "Today", "Archived", "or".
+Horizontal only; there is no reading direction that puts a word inside a
+vertical rule.
+
+**`SectionHeader` is an `h2`.**
+[`PageHeader`](/dowel/components/page-header/) holds the screen's `h1` and a
+section is one level inside it, so a reader moving by heading walks the
+screen's actual structure. It is the between-size heading the products kept
+writing by hand: above `SectionLabel`'s uppercase caption and below the page's
+title.
+
+## Props
+
+### `Divider`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `orientation` | `horizontal \| vertical` | `horizontal` | |
+| `spacing` | `none \| sm \| md \| lg` | `none` | Follows the axis |
+| `label` | `ReactNode` | | A caption in the line; horizontal only |
+| `decorative` | `boolean` | `false` | Drawing rather than structure |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `SectionHeader`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | | Required, an `h2` |
+| `description` | `ReactNode` | | The line under it |
+| `actions` | `ReactNode` | | Buttons belonging to this section |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
 # Drawer
 
 Source: https://lacodda.github.io/dowel/components/drawer
@@ -4217,6 +4456,90 @@ which of them is the dangerous one.
 
 ---
 
+# NavRail
+
+Source: https://lacodda.github.io/dowel/components/nav-rail
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#nav-rail
+
+The same destinations in all three shapes - press one to move it. The greyed entry is a screen that exists on the roadmap and not in the build.
+
+## Notes
+
+One list, three shapes, because they are the same list — and when they were
+three components in two products they drew the current entry three different
+ways.
+
+```tsx
+<NavRail
+  label={t('nav.screens')}
+  items={SCREENS.map((id) => ({ id, label: t(`nav.${id}`), icon: <Icon id={id} /> }))}
+  activeId={screen}
+  render={(item) => <NavLink to={`/${item.id}`} />}
+/>
+```
+
+**The entries are your links.** `render` takes an item and answers with the
+element to draw it as — a router's `NavLink`, a plain `<a>`, whatever you
+navigate with — and the rail puts the clothes, the icon and the `aria-current`
+on it, the way [Button](/dowel/components/button/) and
+[SectionNav](/dowel/components/section-nav/) take a `render`. That keeps the
+router out of the registry: a set that imported one would install it in a
+product that had chosen another. Without `render` an entry is a button and
+`onSelect` says which was pressed.
+
+**The three shapes.** `column` is the desktop rail, running the full height of
+the window so its foot sits at the bottom because the nav reaches it. `row` is
+a strip of tabs beside a product's name in a header. `bar` is the phone's,
+along the bottom where the thumb already is — it carries the safe-area inset
+for the home indicator, without which the last row of entries sits under it
+with no way to scroll out.
+
+A product usually has two of these on one page: a `row` at `sm` and up and a
+`bar` below it. That is why `label` is required and is not drawn — it names
+the landmark, so a reader meeting both is told which is which.
+
+**The current destination is announced, not only tinted.** The active entry
+carries `aria-current="page"`. Colour says it to nobody who cannot see it.
+
+**A destination that is not built yet is not a link.** `soon` draws the entry
+greyed and renders it as a `span`, ignoring `render` — even a disabled button
+is still in the tab order on some browsers, and tabbing onto a screen that
+does not exist is a dead end. Put the version in `end` to say when it arrives.
+
+**Labels stay on one line.** A rail is a fixed-width column, and a label that
+wraps makes one row taller than the rest — which in a two-language product
+happens to one entry and not the others.
+
+**The narrow shapes clear the pointer target floor.** A `row` tab and a `bar`
+cell carry `target-min`, so they are at least 24 CSS pixels however small the
+text is. A `column` entry is already taller than that.
+
+## Props
+
+### `NavRail`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required — names the landmark, not drawn |
+| `items` | `{ id, label, icon?, end?, soon? }[]` | | Required |
+| `layout` | `column \| row \| bar` | `column` | |
+| `activeId` | `string` | | The open screen |
+| `render` | `(item) => ReactElement` | | The element each entry is drawn as |
+| `onSelect` | `(id) => void` | | Pressed, whatever the entry is drawn as |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `NavGroup`, `NavSpacer`
+
+| | |
+| --- | --- |
+| `NavGroup` | The caption over a run of entries: Library, Team, Admin |
+| `NavSpacer` | Pushes what follows to the far end — settings, theme, profile |
+
+---
+
 # NotificationBell
 
 Source: https://lacodda.github.io/dowel/components/notification-bell
@@ -4420,6 +4743,81 @@ ordering.
 
 `formatNumber(value, locale?, options?)` gives the string alone, for a `title`,
 an `aria-label` or a CSV.
+
+---
+
+# PageHeader
+
+Source: https://lacodda.github.io/dowel/components/page-header
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#page-header
+
+A screen's heading with actions and a trail under it, and the four measures a container can hold its content to.
+
+## Notes
+
+Every screen in the line opens with a title, a line and some buttons, and
+every one of them set the title in a different size — because `text-lg
+font-semibold` is the kind of thing nobody looks up.
+
+```tsx
+<Screen>
+  <PageHeader
+    title={t('catalogue.title')}
+    description={t('catalogue.hint')}
+    actions={<Button onClick={create}>{t('new')}</Button>}
+  >
+    <Breadcrumbs label={t('nav.trail')} items={trail} render={(c) => <Link to={c.id} />} />
+  </PageHeader>
+  <Container>
+    <Body />
+  </Container>
+</Screen>
+```
+
+**The title is an `h1`.** It is the one heading a screen is entitled to: the
+shell's bar names the application and the rail names the destinations, so this
+is the top of the content's outline and where a reader jumping by heading
+lands. A section inside the screen is an `h2` —
+[SectionHeader](/dowel/components/divider/) is that one.
+
+**Actions drop to their own line rather than squeezing the title.** The row
+wraps and aligns to the top, so a long title keeps its words and a button
+waits a row. A title is what the screen is.
+
+**`Container` is a measure, not a box.** Text past about ninety characters a
+line loses the reader on the way back to the left margin, and a form whose
+fields run the width of a 32-inch monitor asks the eye to travel between a
+label and its input. `prose` is for reading and forms, `default` for the usual
+screen, `wide` for tables and boards that are scanned down a column rather
+than across a line, and `full` for a screen that *is* the window — a canvas, a
+map, a timeline that earns every pixel.
+
+**It sets width only, deliberately.** The padding belongs to
+[`Screen`](/dowel/components/app-shell/), which knows whether it is scrolling
+and therefore whether a scrollbar is about to take ten pixels off the right. A
+container that also padded would double it.
+
+## Props
+
+### `PageHeader`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | | Required, the screen's `h1` |
+| `description` | `ReactNode` | | One sentence under it |
+| `actions` | `ReactNode` | | Buttons acting on the whole screen |
+| `children` | `ReactNode` | | A trail, a status, a tab strip |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `Container`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `width` | `prose \| default \| wide \| full` | `default` | |
+| `className` | `string` | | Merged so the caller wins a conflict |
 
 ---
 
