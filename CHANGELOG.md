@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.29.1] - 2026-09-20
+
+### Bug Fixes
+- Keep a long section name on one line
+
 ## [0.29.0] - 2026-09-20
 
 ### Bug Fixes
@@ -12,6 +17,7 @@ All notable changes to this project are documented in this file.
 
 ### Documentation
 - Show the frame at a size, and the shapes a rail takes
+- V0.29.0
 
 ### Features
 - Name the window's own chrome, so four products stop guessing
