@@ -63,8 +63,8 @@ npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json   # or a whole 
 Ninety-four primitives so far - the everyday controls, forms, overlays built on
 [Base UI](https://base-ui.com), menus and selection, the command palette,
 tables and long lists, charts, the screens between asking for data and showing
-it, markdown, code and diffs, a desktop window's own chrome and the three
-abilities of a catalogue table. Each is
+it, markdown, code and diffs, the frame a screen sits in, a desktop window's
+own chrome and the three abilities of a catalogue table. Each is
 written in the vocabulary - no raw
 colours, no `dark:` utilities - and runs its own gate before it ships: axe, the
 keyboard, a dependency budget and a picture in both themes.
