@@ -190,6 +190,29 @@ export const sizeTokens = [
   'row-cell',
 ] as const
 
+/**
+ * The window's own chrome: the strip at the top, the rail at the left, the
+ * buttons that close the window, and how much of a frameless window's edge
+ * can be grabbed to resize it.
+ *
+ * Its own group rather than a tail on `sizeTokens`, because it is a different
+ * vocabulary: these describe a window, not a control, and only the products
+ * that draw their own frame speak it. Four of the line's do, and by the fourth
+ * the title bar was 40px in one and 2.4rem in another.
+ *
+ * All in the spacing namespace, which is not tidiness. `--size-*` yields one
+ * utility, `size-*`, setting both axes - so `w-window-button` off a `--size-`
+ * token compiles to nothing and the button loses its width with no error
+ * anywhere. Every measurement here is one axis.
+ */
+export const chromeTokens = [
+  'spacing-titlebar',
+  'spacing-rail',
+  'spacing-window-button',
+  'spacing-resize-edge',
+  'spacing-resize-corner',
+] as const
+
 /** Stacking order. Not a Tailwind namespace either: a component reads these
  * as `z-index: var(--z-modal)`. The names are a promise about what covers
  * what, and the values only mean anything relative to each other. */
@@ -221,6 +244,7 @@ export const allTokens = [
   ...typeTokens,
   ...motionTokens,
   ...sizeTokens,
+  ...chromeTokens,
   ...layerTokens,
 ] as const
 
@@ -231,6 +255,7 @@ export type RadiusToken = (typeof radiusTokens)[number]
 export type TypeToken = (typeof typeTokens)[number]
 export type MotionToken = (typeof motionTokens)[number]
 export type SizeToken = (typeof sizeTokens)[number]
+export type ChromeToken = (typeof chromeTokens)[number]
 export type LayerToken = (typeof layerTokens)[number]
 /* The chart and code palettes belong in this union as much as the rest, and
  * were missing from it until v0.25 - `allTokens` listed them while `Token` did
@@ -255,6 +280,7 @@ export type Token =
   | TypeToken
   | MotionToken
   | SizeToken
+  | ChromeToken
   | LayerToken
 
 /** The custom property a token is read from: `token('accent')` is

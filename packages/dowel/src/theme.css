@@ -671,6 +671,60 @@
    * below, which grows the hit area without growing the glyph.
    */
   --size-target: 24px;
+
+  /*
+   * The window's own chrome: the strip at the top, the rail at the left, and
+   * the buttons that close the window.
+   *
+   * Four products of the line draw their own title bar - the trade is that a
+   * system bar over an application bar costs a strip of every laptop screen
+   * for nothing - and by the time the fourth one did it, the strip was 40px
+   * in one and 2.4rem in another. Neither number is wrong; having two is. A
+   * window's chrome is the part of a product that is supposed to look like
+   * the operating system rather than like the product, so it is the last
+   * place where two of them should differ.
+   *
+   * 40px is not a taste either. The window buttons have to clear the pointer
+   * target floor with room for the hover fill to read as a button, and the
+   * strip has to hold a mark, a trail and a search box at one line of text
+   * without the trail wrapping. 40 is where both stop being tight.
+   *
+   * `--spacing-window-button` is 46px because that is what Windows draws, and
+   * a bar whose buttons are narrower than the system's has a gap the pointer
+   * falls into on the way to the corner. It is deliberately wider than it is
+   * tall: the close button is the one that must be hit without aiming, and on
+   * a maximised window it is the screen's corner.
+   *
+   * These are in the spacing namespace rather than beside `--size-target`,
+   * and the reason is mechanical rather than tidy. `--size-*` yields exactly
+   * one utility, `size-*`, which sets both axes - so `w-window-button` off a
+   * `--size-` token compiles to NOTHING, and a button written that way loses
+   * its width with no error anywhere. Every measurement here is one axis: the
+   * bar has a height, the rail a width, the button a width unequal to its
+   * height. `--spacing-*` is the namespace that feeds `w-`, `h-`, `min-h-`
+   * and the padding utilities, so it is the one that can say so. Caught by
+   * compiling the utility rather than by reading the stylesheet, which is
+   * what `tailwind.test.ts` exists for.
+   */
+  --spacing-titlebar: 40px;
+  --spacing-rail: 216px;
+  --spacing-window-button: 46px;
+
+  /*
+   * How much of a frameless window's edge can be grabbed to resize it.
+   *
+   * The system used to own this and gave about 4 pixels plus whatever the
+   * border was; a frameless window has no border, so the whole of it has to
+   * be put back by hand. Five is the smallest that can be hit reliably with a
+   * mouse and the largest that does not steal a click meant for the first
+   * line of text - the strips sit above everything, so anything they cover
+   * they cover completely.
+   *
+   * The corner is double, because a corner is aimed at less precisely than an
+   * edge and is the one that resizes both axes at once.
+   */
+  --spacing-resize-edge: 5px;
+  --spacing-resize-corner: 10px;
 }
 
 /*

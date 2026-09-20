@@ -83,10 +83,6 @@ const ALLOWED: Record<string, Record<string, string>> = {
     'w-[120px]':
       'the same surface at the size meant to be read rather than glanced at',
   },
-  'window-frame': {
-    'w-[46px]':
-      "the width Windows gives a title-bar button. Not ours to choose: a close button that is not 46px wide is one the user's muscle memory misses, and the corner is where they throw the pointer without looking",
-  },
 }
 
 describe('size comes from the scale', () => {
