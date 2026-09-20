@@ -92,7 +92,13 @@ function SectionNavRow({
       children: (
         <>
           {item.icon ? <span aria-hidden className="contents">{item.icon}</span> : null}
-          {item.label}
+          {/* One line, truncated, like a NavRail entry. A section column is a
+              fixed width, and a label that wraps makes one row taller than
+              every other - which in a two-language product happens to one
+              section and not the rest, so the column reads as ragged and the
+              line height stops meaning anything. `min-w-0` because a flex
+              child will not shrink below its content without it. */}
+          <span className="min-w-0 flex-1 truncate">{item.label}</span>
         </>
       ),
     },

@@ -85,6 +85,21 @@ describe('SectionNav', () => {
     )
     unmount()
   })
+
+  it('keeps a long section name to one line', () => {
+    // A column of fixed width: a label that wraps makes one row taller than
+    // every other, which in a two-language product happens to one section
+    // and not the rest. The same rule NavRail's entries follow - one column,
+    // one answer.
+    render(
+      <SectionNav label="Settings" items={[{ id: 'card', label: 'The card of a work' }]} />,
+    )
+    const label = screen.getByText('The card of a work')
+    expect(label.className).toContain('truncate')
+    expect(label.className, 'a flex child will not shrink below its content without this').toContain(
+      'min-w-0',
+    )
+  })
 })
 
 describe('SectionHeading', () => {

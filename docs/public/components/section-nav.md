@@ -46,6 +46,12 @@ identical links is where you are.
 **The caption names the landmark.** `label` is drawn above the list and the
 `<nav>` is labelled by it, so the same word serves the eye and the reader.
 
+**A long name stays on one line.** The column is a fixed width, and a label
+that wraps makes one row taller than every other — which in a two-language
+product happens to one section and not the rest, so the column reads as ragged
+and the line height stops meaning anything. Pass `title` on your own link
+element if the full text should be available on hover.
+
 **The heading is the other half.** `SectionHeading` is the title and the
 one-line hint above a section's body, so the column and the page it opens are
 set in the same type.
