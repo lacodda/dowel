@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.30.0] - 2026-09-22
+
+### Documentation
+- Name the frame a screen sits in
+- Palettes for native products
+
+### Features
+- Resolve every product's colours for code that cannot read CSS
+
+### Testing
+- Record the baselines for the five shell sections
+
 ## [0.29.1] - 2026-09-20
 
 ### Bug Fixes
