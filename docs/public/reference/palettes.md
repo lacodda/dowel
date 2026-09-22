@@ -1,0 +1,82 @@
+# Palettes for native products
+
+Source: https://lacodda.github.io/dowel/reference/palettes
+
+The theme derives most of its colours. `--bg`, `--text`, `--accent-2` and the
+rest are `color-mix()` and `oklch(from …)` expressions over a product's accent,
+and they have no value until a browser evaluates them. A web product never
+notices. A native one does: nitid draws its interface with egui on top of wgpu,
+and a Tauri window has to be given a background colour before its WebView has
+painted anything.
+
+So the package ships the answer as well as the question: one file per product,
+every colour of the theme in both themes, as the browser computed it.
+
+```text
+dowel-ui/palettes/<product>.json
+```
+
+## What is in a file
+
+Design Tokens Format Module 2025.10, one colour group with a `dark` and a
+`light` theme, and the package version the values were resolved from:
+
+```json
+{
+  "$extensions": {
+    "com.lacodda.dowel": {
+      "package": "dowel-ui",
+      "version": "0.30.0",
+      "product": "nitid",
+      "code": "nd",
+      "accent": "#3FA9D9"
+    }
+  },
+  "color": {
+    "$type": "color",
+    "dark": {
+      "bg": { "$value": "#171b20" },
+      "soft": { "$value": "#ffffff0b" },
+      "accent": { "$value": "#3fa9d9" },
+      "on-accent": { "$value": "#000000" }
+    },
+    "light": {}
+  }
+}
+```
+
+- **Every colour the theme declares** is there, under its token name without
+  the `--`: grounds, hairlines, ink, the accent and its partners, status and
+  their soft fills and `on-` inks, series, scale, heat, syntax, chart
+  furniture. The parameters (`accent-base`, `neutral-base`, `ground`, `ink`)
+  are not — they are inputs, and `accent` is what the theme makes of them.
+- **Translucent colours keep their alpha** as `#rrggbbaa`. `soft`, `line` and
+  every `-soft` are meant to be composited over a surface, exactly as on the
+  web; flattening them would paint a slab.
+- **Eight bits per channel.** That is what a browser keeps for alpha too, so
+  nothing finer is lost.
+
+## How it is made
+
+`tools/build-palettes.mjs` loads `theme.css` into Chromium once per product and
+theme, reads the computed colour of every custom property, and writes it down.
+The formulas stay in `theme.css`; there is no second implementation of
+`color-mix` anywhere to drift from the first. The tests paint each colour into
+a canvas by a separate route and compare the pixel, so a mistake in turning the
+browser's `oklab()` into hex cannot hide.
+
+## Using it from a native product
+
+Vendor the file for your product, keep the version it names, and compare
+against that version when you update:
+
+1. Copy `palettes/<product>.json` (and `tokens.json`, for radius, type and
+   motion) from the `dowel-ui` release you are adopting.
+2. Generate constants from it at build time — in Rust, a `build.rs` that reads
+   the JSON and writes a module. The file, not your code, is where a colour
+   lives.
+3. Keep a check that the vendored copy is byte-for-byte the one published at
+   the version it names, so an edit by hand is caught rather than shipped.
+
+There is no Rust crate yet. One is planned once a second native product of the
+line needs these values; until then the JSON is the interface.

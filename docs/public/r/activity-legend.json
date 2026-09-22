@@ -5,7 +5,7 @@
   "title": "ActivityLegend",
   "description": "Separate from the grid because a caller showing three grids on one screen wants one legend, and because the words in it are the product's.",
   "dependencies": [
-    "dowel-ui@^0.29.1"
+    "dowel-ui@^0.30.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/activity-heatmap.json",

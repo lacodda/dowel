@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "extends": "none",
+  "name": "forms",
+  "type": "registry:style",
+  "title": "dowel forms",
+  "description": "What a form is made of: the fields, the two ways of choosing from a list, and the button that submits it.",
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.30/action-bar.json",
+    "https://lacodda.github.io/dowel/r/v0.30/button.json",
+    "https://lacodda.github.io/dowel/r/v0.30/checkbox.json",
+    "https://lacodda.github.io/dowel/r/v0.30/chip.json",
+    "https://lacodda.github.io/dowel/r/v0.30/color-field.json",
+    "https://lacodda.github.io/dowel/r/v0.30/combobox.json",
+    "https://lacodda.github.io/dowel/r/v0.30/duration-field.json",
+    "https://lacodda.github.io/dowel/r/v0.30/field.json",
+    "https://lacodda.github.io/dowel/r/v0.30/file-drop.json",
+    "https://lacodda.github.io/dowel/r/v0.30/input.json",
+    "https://lacodda.github.io/dowel/r/v0.30/number-field.json",
+    "https://lacodda.github.io/dowel/r/v0.30/password-field.json",
+    "https://lacodda.github.io/dowel/r/v0.30/radio-group.json",
+    "https://lacodda.github.io/dowel/r/v0.30/save-state.json",
+    "https://lacodda.github.io/dowel/r/v0.30/select.json",
+    "https://lacodda.github.io/dowel/r/v0.30/spinner.json",
+    "https://lacodda.github.io/dowel/r/v0.30/switch.json",
+    "https://lacodda.github.io/dowel/r/v0.30/tag-input.json",
+    "https://lacodda.github.io/dowel/r/v0.30/textarea.json"
+  ],
+  "docs": "Field wraps any of the controls: it is what ties a label, a hint and an error to the thing they belong to. Slider and RatingScale are not in this set - install them where the question calls for one."
+}
