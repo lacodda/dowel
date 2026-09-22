@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, readdirSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -180,7 +181,21 @@ describe('what the package ships', () => {
     expect(text(readFileSync(resolve(dist, 'tokens.json'), 'utf8')), 'the built tokens are stale').toBe(
       text(shipped),
     )
-  })
+
+    // The palettes carry the package version, so a build from before the bump
+    // is caught here as well as a build from before a theme change. Rebuilt
+    // aside rather than over `dist`, which another worker may be reading.
+    const palettes = resolve(dist, 'palettes')
+    if (!existsSync(palettes)) return
+    const fresh = mkdtempSync(resolve(tmpdir(), 'dowel-palettes-'))
+    execFileSync('node', ['tools/build-palettes.mjs', fresh], { cwd: root })
+    expect(readdirSync(palettes).sort(), 'the built palettes name other products').toEqual(readdirSync(fresh).sort())
+    for (const file of readdirSync(fresh)) {
+      expect(text(readFileSync(resolve(palettes, file), 'utf8')), `the built palette ${file} is stale`).toBe(
+        text(readFileSync(resolve(fresh, file), 'utf8')),
+      )
+    }
+  }, 60_000)
 })
 
 describe('the docs do not claim an old version', () => {

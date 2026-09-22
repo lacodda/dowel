@@ -49,10 +49,11 @@
     "./prose.css": "./dist/prose.css",
     "./tokens.json": "./dist/tokens.json",
     "./registry.json": "./dist/registry.json",
-    "./accents/*.css": "./dist/accents/*.css"
+    "./accents/*.css": "./dist/accents/*.css",
+    "./palettes/*.json": "./dist/palettes/*.json"
   },
   "scripts": {
-    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs && node ../../tools/build-accents.mjs && node ../../tools/build-registry.mjs && node ../../tools/build-schema.mjs && node ../../tools/build-llms.mjs",
+    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens-json.mjs && node ../../tools/build-accents.mjs && node ../../tools/build-palettes.mjs && node ../../tools/build-registry.mjs && node ../../tools/build-schema.mjs && node ../../tools/build-llms.mjs",
     "typecheck": "tsc --noEmit",
     "prepack": "node ../../tools/copy-readme.mjs"
   },

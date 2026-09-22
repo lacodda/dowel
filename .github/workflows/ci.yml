@@ -33,6 +33,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # The palettes are resolved by a real browser (tools/build-palettes.mjs),
+      # so every job that builds the package needs one.
+      - name: Install the browser the palettes are resolved in
+        run: pnpm exec playwright install --with-deps chromium
       - name: Lint and typecheck
         run: pnpm lint
       - name: Test

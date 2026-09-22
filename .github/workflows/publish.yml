@@ -33,6 +33,10 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
+      # The palettes are resolved by a real browser (tools/build-palettes.mjs),
+      # so every job that builds the package needs one.
+      - name: Install the browser the palettes are resolved in
+        run: pnpm exec playwright install --with-deps chromium
       - run: pnpm build
       # The root README reaches the npm page through the package's `prepack`
       # script, so a manual `npm publish` ships the same file as CI.

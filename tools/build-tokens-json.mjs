@@ -132,7 +132,7 @@ const syntaxNames = [
 
 const tokens = {
   $description:
-    'The dowel token vocabulary: the scales every product of the lacodda line is drawn on. Most colours are omitted - they are derived per product from its own accent - except the five that are fixed for the whole line: the chart series, the magnitude scale, the status hues, the heat ramp and the syntax colours.',
+    'The dowel token vocabulary: the scales every product of the lacodda line is drawn on. Most colours are omitted - they are derived per product from its own accent - except the five that are fixed for the whole line: the chart series, the magnitude scale, the status hues, the heat ramp and the syntax colours. Every colour of one product, resolved, is in palettes/<product>.json.',
 
   radius: {
     $type: 'dimension',
