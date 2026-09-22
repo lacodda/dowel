@@ -125,6 +125,8 @@ try {
       `<!doctype html><html class="${theme}"><head><style>${css}</style>` +
         `<style>:root { --accent-base: ${accent}; }</style></head><body><i id="probe"></i></body></html>`,
     )
+    // The callback runs in the page, not in Node, so it sees the browser's globals.
+    /* global document, getComputedStyle, CSS */
     return page.evaluate((names) => {
       const root = getComputedStyle(document.documentElement)
       const probe = document.getElementById('probe')
