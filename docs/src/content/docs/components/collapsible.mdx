@@ -1,0 +1,74 @@
+---
+title: Collapsible
+description: One region of a screen that a reader shows or hides by choice, its panel opening and closing by its own measured height.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/collapsible.json
+```
+
+<Stand component="collapsible" caption="Closed and open, with content of a different length in each." />
+
+## Notes
+
+One trigger, one panel, no group deciding how many can be open - because there
+is only ever one. That is the whole difference from
+[Accordion](/dowel/components/accordion/): a single light switch versus a
+panel of them.
+
+```tsx
+import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from '@/components/ui/collapsible'
+
+<Collapsible defaultOpen>
+  <CollapsibleTrigger>{t('releaseNotes')}</CollapsibleTrigger>
+  <CollapsiblePanel>{t('releaseNotes.v1_4')}</CollapsiblePanel>
+</Collapsible>
+```
+
+**The trigger is a real `<button>`**, wired to the panel by `aria-controls`
+and reporting `aria-expanded`. That pair is what lets a reader who cannot see
+the panel appear still know that it did - the chevron rotating is drawing for
+everyone else.
+
+**The panel animates by its own measured height**, not by `display` or a
+fixed max-height guess. Base UI measures the content and publishes
+`--collapsible-panel-height`; the panel transitions `height` between `0` and
+that variable, so a one-line panel and a page-long one both open by their real
+size rather than a number picked to be "big enough". Under
+`prefers-reduced-motion` the theme's own global rule cuts every
+`transition-duration` to near-zero, so nothing extra is wired up here for
+it - the panel still opens and closes, just without the motion.
+
+**Closed content stays in the DOM.** That is Base UI's default and this
+primitive does not change it: a collapsible whose content vanishes on close
+cannot be found by the browser's own page search. A product that genuinely
+wants it gone can leave `CollapsiblePanel` out of the tree itself.
+
+## Props
+
+### `Collapsible` (root)
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` / `onOpenChange` | | | Controlled |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `disabled` | `boolean` | `false` | Reaches the trigger and the panel both |
+
+### `CollapsibleTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words on the button |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `CollapsiblePanel`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The content that opens and shuts |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`collapsibleTriggerClasses` is exported too - the trigger's own class list,
+reused by [Accordion](/dowel/components/accordion/) rather than copied.

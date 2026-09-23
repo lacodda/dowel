@@ -1,0 +1,107 @@
+---
+title: Accordion
+description: A stack of collapsible sections that share one rule about how many can be open - an FAQ, or the groups in a settings page.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/accordion.json
+```
+
+<Stand component="accordion" caption="Single-open by default, then the same list with multiple sections open at once." />
+
+## Notes
+
+Each section is [Collapsible](/dowel/components/collapsible/)'s shape - a
+header, a trigger, a panel - repeated inside a group that also decides
+`single` or `multiple`, which is the one thing a lone `Collapsible` has no
+opinion about because it has nothing to be exclusive with.
+
+```tsx
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+
+<Accordion defaultValue={['shipping']}>
+  <AccordionItem value="shipping">
+    <AccordionHeader>
+      <AccordionTrigger>{t('shipping')}</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>{t('shipping.body')}</AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="returns">
+    <AccordionHeader>
+      <AccordionTrigger>{t('returns')}</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>{t('returns.body')}</AccordionPanel>
+  </AccordionItem>
+</Accordion>
+```
+
+**The trigger sits inside `AccordionHeader`, an `<h3>` - never beside it.**
+That is the ARIA accordion pattern, and it is the commonest hand-rolled
+accordion bug: a section title that exists only as a button's accessible name
+is not a heading a reader can navigate to, and the gap is invisible until
+someone actually moves by heading and finds none. A test in this primitive
+checks the trigger is inside the heading for exactly that reason.
+
+**`multiple` decides whether opening one section shuts the others.** `false`
+(the default, `single`) suits an FAQ, where one answer at a time keeps the
+page short; `true` suits a settings page, where every group is independent
+of the rest.
+
+**Each trigger is an ordinary tab stop, not one cursor moved by arrow
+keys.** Older accordion implementations give the group roving focus - Up and
+Down between headers, Home and End to the ends - but the ARIA APG dropped
+that pattern in a 2024 guidance update, and the installed Base UI has already
+followed it: its trigger carries no keydown handling beyond the native
+button's own Enter and Space. [TreeView](/dowel/components/tree-view/), by
+contrast, still owns one cursor for its whole tree, because that update did
+not touch trees. A reader moves between headers with Tab.
+
+**The trigger's class list is shared, not copied.** `Collapsible` exports
+`collapsibleTriggerClasses`, and this primitive reuses it as
+`accordionTriggerClasses` rather than restating it, because a header row and
+a lone trigger are the same control in two places.
+
+## Props
+
+### `Accordion` (root)
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` / `onValueChange` | | | Controlled |
+| `defaultValue` | `any[]` | | Uncontrolled - the values initially open |
+| `multiple` | `boolean` | `false` | Lets more than one section stay open |
+| `disabled` | `boolean` | `false` | Reaches every item |
+
+### `AccordionItem`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `any` | generated | Identifies the section; needed to set it open by default |
+| `disabled` | `boolean` | `false` | This section only |
+
+### `AccordionHeader`
+
+The `<h3>` the trigger belongs inside. Passes its props to Base UI
+unchanged, plus `className` merged so the caller wins a conflict.
+
+### `AccordionTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words on the button |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `AccordionPanel`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The section's content |
+| `className` | `string` | | Merged so the caller wins a conflict |
