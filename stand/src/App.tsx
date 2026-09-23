@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { cn, lineProducts, useThemeSwitch } from 'dowel-ui'
+import { cn, lineProducts, useLocale, useThemeSwitch } from 'dowel-ui'
 import markUrl from '../../assets/logo-m.svg'
 import { linkProps, useRoute } from './router'
 import { useStoredState } from './use-stored-state'
 import { Row } from './row'
+import { ContrastReport } from './contrast-report'
 import { Alert } from '../../registry/ui/alert'
 import { Badge } from '../../registry/ui/badge'
 import { Banner } from '../../registry/ui/banner'
@@ -191,7 +192,19 @@ import { Container, PageHeader } from '../../registry/ui/page-header'
 import { Breadcrumbs } from '../../registry/ui/breadcrumbs'
 import { Divider, SectionHeader } from '../../registry/ui/divider'
 import { NotificationBell } from '../../registry/ui/notification-bell'
-import { ResizeEdges, WindowButtons, useTitleBarGestures } from '../../registry/ui/window-frame'
+import { ResizeEdges, TitleBar } from '../../registry/ui/window-frame'
+import { Tabs, TabsList, TabsTab } from '../../registry/ui/tabs'
+import { TabsSection } from './sections/tabs'
+import { CollapsibleSection } from './sections/collapsible'
+import { AccordionSection } from './sections/accordion'
+import { ScrollAreaSection } from './sections/scroll-area'
+import { SplitterSection } from './sections/splitter'
+import { ImageSection } from './sections/image'
+import { StepperSection } from './sections/stepper'
+import { WizardSection } from './sections/wizard'
+import { ProductMarkSection } from './sections/product-mark'
+import { AboutPlateSection } from './sections/about-plate'
+import { ProductSwitcherSection } from './sections/product-switcher'
 import { Splash } from '../../registry/ui/splash'
 import { ColumnResizeHandle, measureColumns, useColumnWidths } from '../../registry/ui/column-resize-handle'
 import { ReorderGrip, ReorderIndicator, useReorder } from '../../registry/ui/reorderable-list'
@@ -617,6 +630,74 @@ const sections = [
     render: () => <NotificationBellSection />,
   },
   {
+    id: 'tabs',
+    title: 'Tabs',
+    docs: '/dowel/components/tabs/',
+    render: () => <TabsSection />,
+  },
+  /* Layout: how a screen is divided, and what scrolls. */
+  {
+    id: 'collapsible',
+    title: 'Collapsible',
+    docs: '/dowel/components/collapsible/',
+    render: () => <CollapsibleSection />,
+  },
+  {
+    id: 'accordion',
+    title: 'Accordion',
+    docs: '/dowel/components/accordion/',
+    render: () => <AccordionSection />,
+  },
+  {
+    id: 'scroll-area',
+    title: 'ScrollArea',
+    docs: '/dowel/components/scroll-area/',
+    render: () => <ScrollAreaSection />,
+  },
+  {
+    id: 'splitter',
+    title: 'Splitter',
+    docs: '/dowel/components/splitter/',
+    render: () => <SplitterSection />,
+  },
+  {
+    id: 'image',
+    title: 'Image',
+    docs: '/dowel/components/image/',
+    render: () => <ImageSection />,
+  },
+  {
+    id: 'stepper',
+    title: 'Stepper',
+    docs: '/dowel/components/stepper/',
+    render: () => <StepperSection />,
+  },
+  {
+    id: 'wizard',
+    title: 'Wizard',
+    docs: '/dowel/components/wizard/',
+    render: () => <WizardSection />,
+  },
+  /* The line's own signs: the marks, the About plate, the way between products. */
+  {
+    id: 'product-mark',
+    title: 'ProductMark',
+    docs: '/dowel/components/product-mark/',
+    render: () => <ProductMarkSection />,
+  },
+  {
+    id: 'about-plate',
+    title: 'AboutPlate',
+    docs: '/dowel/components/about-plate/',
+    render: () => <AboutPlateSection />,
+  },
+  {
+    id: 'product-switcher',
+    title: 'ProductSwitcher',
+    docs: '/dowel/components/product-switcher/',
+    render: () => <ProductSwitcherSection />,
+  },
+  {
     id: 'window-frame',
     title: 'WindowFrame',
     docs: '/dowel/components/window-frame/',
@@ -951,6 +1032,7 @@ function Overview({ navigate }: { navigate: (to: string) => void }) {
           </p>
         </Panel>
       </div>
+      <ContrastReport />
     </div>
   )
 }
@@ -2698,11 +2780,12 @@ const standNow = new Date('2026-09-09T12:00:00Z')
 function TableSortSection() {
   /* The rule, shown rather than described: the same rows, the same column,
    * both directions - and the two with no score stay at the bottom of each. */
+  const locale = useLocale()
   const rows = works.map((work) => `${work.title} ${work.score ?? '—'}`)
-  const ascending = sortRows(works, { column: 'score', direction: 'asc' }, readWork).map(
+  const ascending = sortRows(works, { column: 'score', direction: 'asc' }, readWork, { locale }).map(
     (work) => `${work.title}: ${work.score ?? '—'}`,
   )
-  const descending = sortRows(works, { column: 'score', direction: 'desc' }, readWork).map(
+  const descending = sortRows(works, { column: 'score', direction: 'desc' }, readWork, { locale }).map(
     (work) => `${work.title}: ${work.score ?? '—'}`,
   )
 
@@ -2739,7 +2822,8 @@ function TableSortSection() {
 function TableSection() {
   const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
   const [picked, setPicked] = useState<string>('w3')
-  const sorted = sortRows(works, sort, readWork, { tiebreak: (work) => work.id })
+  const locale = useLocale()
+  const sorted = sortRows(works, sort, readWork, { locale, tiebreak: (work) => work.id })
 
   return (
     <>
@@ -4829,24 +4913,29 @@ const windowLabels = { minimize: 'Minimize', maximize: 'Maximize', restore: 'Res
  * component checks for the bridge before every call and stays inert without
  * it, so nothing here is mocked. */
 function WindowFrameSection() {
-  const gestures = useTitleBarGestures()
-
   return (
     <Row label="a frameless window's chrome, inside a frame - the strips along the edges are tinted here so they can be seen">
       <div className="relative h-56 w-full overflow-hidden rounded-lg border border-line bg-bg">
         <ResizeEdges className="absolute bg-accent/40" />
-        <header className="flex h-9 items-center border-b border-line bg-bg pl-3 select-none" {...gestures}>
-          <span className="text-xs font-semibold">kilna</span>
-          <span className="ml-2 font-mono text-2xs text-faint">v0.74.0</span>
-          <span className="ml-auto flex h-full items-center gap-2">
-            <NotificationBell count={2} {...bellLabels} />
-            <span aria-hidden className="ml-1 h-4 w-px bg-line" />
-            <WindowButtons labels={windowLabels} />
-          </span>
-        </header>
+        <TitleBar
+          labels={windowLabels}
+          mark={<span className="size-4 [&>svg]:size-full">{splashMark}</span>}
+          actions={<NotificationBell count={2} {...bellLabels} />}
+        >
+          <Tabs defaultValue="draft">
+            <TabsList variant="bar" aria-label="Open documents">
+              <TabsTab value="draft" modified modifiedLabel="unsaved changes" onClose={() => undefined} closeLabel="Close Draft">
+                Draft
+              </TabsTab>
+              <TabsTab value="notes" onClose={() => undefined} closeLabel="Close Notes">
+                Notes
+              </TabsTab>
+            </TabsList>
+          </Tabs>
+        </TitleBar>
         <p className="m-0 p-4 text-sm text-dim">
-          Everything in the bar that is not a control is a handle. Drag it to move the window;
-          double-click to maximise.
+          Everything in the bar that is not a control is a handle - the stretch after the tabs is
+          there only for that. Drag it to move the window; double-click to maximise.
         </p>
       </div>
     </Row>
