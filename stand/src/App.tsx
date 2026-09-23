@@ -3,6 +3,7 @@ import { cn, lineProducts, useThemeSwitch } from 'dowel-ui'
 import markUrl from '../../assets/logo-m.svg'
 import { linkProps, useRoute } from './router'
 import { useStoredState } from './use-stored-state'
+import { Row } from './row'
 import { Alert } from '../../registry/ui/alert'
 import { Badge } from '../../registry/ui/badge'
 import { Banner } from '../../registry/ui/banner'
@@ -809,7 +810,7 @@ export function App() {
 
             {/* Not components, and the list says so rather than leaving a
               * reader to infer it from a lowercase name. */}
-            <h2 className="mt-5 mb-1 px-2 text-2xs uppercase tracking-caption text-faint">
+            <h2 className="mt-5 mb-1 px-2 text-2xs uppercase tracking-caption text-dim">
               Without markup
             </h2>
             <ul className="m-0 list-none space-y-0.5 p-0">
@@ -949,25 +950,6 @@ function Overview({ navigate }: { navigate: (to: string) => void }) {
             left it.
           </p>
         </Panel>
-      </div>
-    </div>
-  )
-}
-
-/** A row of examples with a label above it. */
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-4">
-      <div className="mb-2 text-2xs uppercase tracking-caption text-faint">{label}</div>
-      {/* `items-end`, not `items-center`.
-        *
-        * A row mixes controls of different heights - a bare Input beside a
-        * Field, which carries a label above and a hint below. Centred, their
-        * boxes float at different heights and the row reads as misaligned;
-        * aligned to the bottom, the controls themselves line up and the label
-        * simply sits above its own. That is what a form does. */}
-      <div className="flex flex-wrap items-end gap-2 rounded-lg border border-line bg-raise p-4">
-        {children}
       </div>
     </div>
   )
@@ -2733,7 +2715,7 @@ function TableSortSection() {
             ['descending', descending],
           ].map(([label, list]) => (
             <div key={label as string} className="flex flex-col gap-1">
-              <div className="text-2xs uppercase tracking-caption text-faint">{label}</div>
+              <div className="text-2xs uppercase tracking-caption text-dim">{label}</div>
               {(list as string[]).map((line) => (
                 <div key={line} className="font-mono text-xs text-dim">
                   {line}
@@ -3012,7 +2994,7 @@ function NumberFormatSection() {
             ['proportional', '[font-variant-numeric:proportional-nums]'],
           ].map(([label, variant]) => (
             <div key={label} className="flex w-fit flex-col items-end">
-              <span className="mb-1 text-2xs uppercase tracking-caption text-faint">{label}</span>
+              <span className="mb-1 text-2xs uppercase tracking-caption text-dim">{label}</span>
               {[1111, 8888, 1818, 8181].map((value) => (
                 <span key={value} className={cn('text-sm', variant)}>
                   {value}
@@ -3686,7 +3668,7 @@ function TrackSegmentsSection() {
             ['with the floor', show(floored)],
           ].map(([label, list]) => (
             <div key={label as string} className="flex flex-col gap-1">
-              <div className="text-2xs uppercase tracking-caption text-faint">{label}</div>
+              <div className="text-2xs uppercase tracking-caption text-dim">{label}</div>
               {(list as string[]).map((line) => (
                 <div key={line} className="font-mono text-xs text-dim">
                   {line}
@@ -5030,7 +5012,7 @@ function TierSection() {
       </Row>
 
       <div className="mb-4">
-        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
           the road - bands to scale, and every label over the boundary it names
         </div>
         <div className="flex flex-col gap-5 rounded-lg border border-line bg-raise p-4">
@@ -5050,7 +5032,7 @@ function TierSection() {
       </div>
 
       <div className="mb-4">
-        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
           one axis - click a mark, or focus the row and use the arrows; click the mark again to
           unjudge it
         </div>
@@ -5110,7 +5092,7 @@ function TimelineSection() {
   return (
     <>
       <div className="mb-4">
-        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
           a history - the rail stops at the last entry rather than trailing off
         </div>
         <div className="rounded-lg border border-line bg-raise p-4">
@@ -5132,7 +5114,7 @@ function TimelineSection() {
       </div>
 
       <div className="mb-4">
-        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
           steps, with the ones not taken yet drawn as empty rings
         </div>
         <div className="rounded-lg border border-line bg-raise p-4">
@@ -5165,7 +5147,7 @@ function SkeletonOfSection() {
       </Row>
 
       <div className="mb-4">
-        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
           grow the list, then ask again: the placeholder follows, because it measures rather than
           remembering a number somebody typed
         </div>
@@ -5193,7 +5175,7 @@ function SkeletonOfSection() {
       </div>
 
       <div className="mb-4">
-        <div className="mb-2 text-2xs uppercase tracking-caption text-faint">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
           a block with no repeating part is one box, the height the block had
         </div>
         <div className="rounded-lg border border-line bg-raise p-4">
@@ -5585,7 +5567,7 @@ function PageHeaderSection() {
         <div className="flex w-full flex-col gap-3">
           {(['prose', 'default', 'wide', 'full'] as const).map((width) => (
             <div key={width}>
-              <div className="mb-1 text-2xs uppercase tracking-caption text-faint">{width}</div>
+              <div className="mb-1 text-2xs uppercase tracking-caption text-dim">{width}</div>
               <Container width={width}>
                 <div className="h-2 rounded-full bg-accent-soft" />
               </Container>
