@@ -2,6 +2,37 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.31.0] - 2026-09-23
+
+### Breaking Changes
+
+- **Dates and numbers in the application's language**
+formatNumber, formatTime, sortRows and the calendar
+helpers take the locale as a required argument, and formatRelative
+takes it second: formatRelative(value, locale, now?, options?). The
+locale props are `string` rather than a list. Pass useLocale().
+
+### Build
+- Regenerate the registry, the docs mirror and llms.txt
+
+### Features
+- A window's open documents in its title bar
+- Disclosure alone and in a set
+- An overlay bar that takes no width
+- Panes a person resizes, by pointer or keyboard
+- A picture that holds its box before it arrives
+- Progress through steps, and the form that walks them
+- The line's marks in the package, at the level their size calls for
+- Dates and numbers in the application's language
+- Contrast measured live, in the accent and theme on screen
+
+### Refactoring
+- Give the row its own module and captions a legible ink
+
+### Testing
+- Declare the new components' costs, and count past a hundred
+- Record the baselines for the eleven new sections
+
 ## [0.30.0] - 2026-09-23
 
 ### Bug Fixes
