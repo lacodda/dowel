@@ -1,8 +1,8 @@
 import { useState, type TimeHTMLAttributes } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, useLocale } from 'dowel-ui'
 
 /*
- * "3 minutes ago", in the reader's language, over a date they can still read.
+ * "3 minutes ago", in the application's language, over a date they can still read.
  *
  * The rule the component is built on: **relative time is a convenience, never
  * the only copy of the fact.** "Last week" is quicker to read than a date and
@@ -70,8 +70,8 @@ export function relativeParts(
 /** The phrase alone, for a `title`, an `aria-label` or a string. */
 export function formatRelative(
   from: Date | number | string,
+  locale: string,
   now: Date | number = Date.now(),
-  locale?: string | string[],
   options?: Intl.RelativeTimeFormatOptions,
 ): string {
   const [value, unit] = relativeParts(from, now)
@@ -86,12 +86,13 @@ export interface RelativeTimeProps extends Omit<TimeHTMLAttributes<HTMLTimeEleme
    * re-render on its own schedule, and so a test is not written against the
    * time it runs at. */
   now?: Date | number
-  locale?: string | string[]
+  /** The application's language by default - see `useLocale`. */
+  locale?: string
   /** `'auto'` by default, which is what produces "yesterday" rather than "1
    * day ago" where the language has a word for it. Pass `'always'` for a
    * column where every row should read the same way. */
   numeric?: Intl.RelativeTimeFormatOptions['numeric']
-  /** How the exact moment is written in the `title`. The reader's own format
+  /** How the exact moment is written in the `title`. The application's own format
    * by default. */
   titleOptions?: Intl.DateTimeFormatOptions
 }
@@ -117,6 +118,7 @@ export function RelativeTime({
    * With `now` given, the state is initialised and never read, which is what a
    * product paging a list wants: every row is measured from the same moment. */
   const [mountedAt] = useState(() => Date.now())
+  const language = useLocale(locale)
   const moment = new Date(value)
   const invalid = Number.isNaN(moment.getTime())
 
@@ -132,11 +134,11 @@ export function RelativeTime({
     <time
       dateTime={moment.toISOString()}
       // The fact itself, kept. The phrase above it is the convenience.
-      title={new Intl.DateTimeFormat(locale, titleOptions).format(moment)}
+      title={new Intl.DateTimeFormat(language, titleOptions).format(moment)}
       className={cn('whitespace-nowrap', className)}
       {...props}
     >
-      {formatRelative(moment, now ?? mountedAt, locale, { numeric })}
+      {formatRelative(moment, language, now ?? mountedAt, { numeric })}
     </time>
   )
 }

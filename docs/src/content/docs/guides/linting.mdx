@@ -1,16 +1,18 @@
 ---
 title: The lint rules
-description: Two conventions the system rests on, enforced rather than remembered.
+description: Three conventions the system rests on, enforced rather than remembered.
 ---
 
-Two conventions hold the system together, and both are easy to state and easy
+Three conventions hold the system together, and all are easy to state and easy
 to break:
 
 - **a component never writes a colour down** — it names one from the
   vocabulary, and the theme decides what the name means, in dark, in light and
   in each product's accent;
 - **no screen uses a native `<select>`** — the browser draws that popup itself,
-  in the operating system's chrome, and no CSS reaches inside it.
+  in the operating system's chrome, and no CSS reaches inside it;
+- **no date or number is formatted in the browser's language** — it is written
+  in the language the interface is.
 
 `dowel-ui` ships the rules that enforce them.
 
@@ -127,3 +129,37 @@ This rule is the line's oldest convention, from atlas, where it was written as
 because that is what people search the registry for; the rule is what keeps the
 promise the old name was carrying.
 :::
+
+## `no-implicit-locale`
+
+```tsx
+// ✗ The browser's language, whatever the interface is written in.
+date.toLocaleDateString([], { weekday: 'short' })
+count.toLocaleString()
+new Intl.DateTimeFormat(undefined, { dateStyle: 'long' })
+
+// ✓ The application's language, from one place.
+const locale = useLocale()
+date.toLocaleDateString(locale, { weekday: 'short' })
+new Intl.NumberFormat(locale).format(count)
+```
+
+A call with no locale, with `[]` or with `undefined` asks for the *browser's*
+language. When that differs from the interface's — an English product in a
+browser set to Russian — the screen shows English headings over Russian
+weekdays, and nothing is wrong enough to fail. kasl-server shipped exactly
+that.
+
+`useLocale()` from `dowel-ui` answers the question once: an explicit locale if
+you pass one, else the nearest `LocaleProvider`, else the page's
+`<html lang>`, else English. `<html lang>` is the attribute a screen reader
+already reads the page by, so a product that sets it for accessibility has set
+its date format too; it is watched, so switching language by changing it
+re-renders every date. The dowel primitives that format — `NumberFormat`,
+`RelativeTime`, `Calendar`, the pickers, `TimeField`, `NumberField` — all ask
+`useLocale()`, and their plain helpers (`formatNumber`, `formatRelative`,
+`formatTime`, `sortRows`) take the locale as a required argument.
+
+The rule reports the three `toLocale*String` methods and the `Intl`
+formatters. A variable passed as the locale is not reported: naming one is the
+decision the rule asks for.

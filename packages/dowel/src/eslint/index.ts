@@ -1,13 +1,16 @@
 import type { ESLint, Linter } from 'eslint'
+import { noImplicitLocale } from './no-implicit-locale.js'
 import { noNativeSelect } from './no-native-select.js'
 import { noRawColor } from './no-raw-color.js'
 
 /*
  * The dowel ESLint plugin.
  *
- * Two rules, and both enforce a convention the system rests on: a component
- * names colours from the vocabulary and never writes one down, and no screen
- * uses a native `<select>`, which the browser draws in its own chrome.
+ * Three rules, and each enforces a convention the system rests on: a
+ * component names colours from the vocabulary and never writes one down, no
+ * screen uses a native `<select>`, which the browser draws in its own chrome,
+ * and no date or number is formatted in the browser's language rather than
+ * the application's.
  *
  * It ships from the package rather than the registry because it is not a
  * component - it is not copied into a product and edited there, it is a check
@@ -23,7 +26,11 @@ import { noRawColor } from './no-raw-color.js'
 
 const plugin = {
   meta: { name: 'dowel' },
-  rules: { 'no-raw-color': noRawColor, 'no-native-select': noNativeSelect },
+  rules: {
+    'no-raw-color': noRawColor,
+    'no-native-select': noNativeSelect,
+    'no-implicit-locale': noImplicitLocale,
+  },
 } satisfies ESLint.Plugin
 
 /** The rules, applied where components live. Scoped to TypeScript sources:
@@ -35,6 +42,7 @@ const recommended: Linter.Config[] = [
     rules: {
       'dowel/no-raw-color': 'error',
       'dowel/no-native-select': 'error',
+      'dowel/no-implicit-locale': 'error',
     },
   },
 ]
@@ -48,4 +56,5 @@ const dowel: ESLint.Plugin & { configs: { recommended: Linter.Config[] } } = Obj
 
 export default dowel
 export { noRawColor, findRawColor } from './no-raw-color.js'
+export { noImplicitLocale } from './no-implicit-locale.js'
 export { noNativeSelect } from './no-native-select.js'

@@ -18,6 +18,13 @@
 export { cn } from './cn.js'
 export { lineProducts, lineProduct, type LineProduct } from './line.js'
 export {
+  documentLocale,
+  fallbackLocale,
+  LocaleProvider,
+  useLocale,
+  type LocaleProviderProps,
+} from './locale.js'
+export {
   defaultStorageKey,
   initTheme,
   nextTheme,

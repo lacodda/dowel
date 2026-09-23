@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, useLocale } from 'dowel-ui'
 import { fieldClasses } from './input'
 import { Popover, PopoverPopup, PopoverTrigger } from './popover'
 import { Calendar } from './calendar'
@@ -62,6 +62,7 @@ export function DateRangePicker({
   'aria-label': ariaLabel,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false)
+  const language = useLocale(locale)
 
   const range = value ?? {}
   const waitingForEnd = range.start !== undefined && range.end === undefined
@@ -69,7 +70,7 @@ export function DateRangePicker({
   const shown = useMemo(() => {
     const write = (date: IsoDate) => {
       const [year, month, day] = date.split('-').map(Number) as [number, number, number]
-      return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(
+      return new Intl.DateTimeFormat(language, { dateStyle: 'medium' }).format(
         new Date(year, month - 1, day),
       )
     }
@@ -78,7 +79,7 @@ export function DateRangePicker({
     // An en dash rather than a hyphen: this is a span, and the two read
     // differently at a glance in a row of dates.
     return `${write(range.start)} – ${write(range.end)}`
-  }, [range.start, range.end, locale])
+  }, [range.start, range.end, language])
 
   const choose = (date: IsoDate) => {
     // A fresh click starts a new range whenever there is nothing waiting -
@@ -123,7 +124,7 @@ export function DateRangePicker({
           rangeEnd={range.end}
           min={min}
           max={max}
-          locale={locale}
+          locale={language}
           aria-label={ariaLabel ?? placeholder}
           previousMonthLabel={previousMonthLabel}
           nextMonthLabel={nextMonthLabel}

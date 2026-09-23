@@ -32,7 +32,9 @@ state, not a zero.
 import { sortRows, toggleSort, type Sort } from './table-sort'
 
 const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
+const locale = useLocale()
 const ordered = sortRows(rows, sort, (row, column) => row[column], {
+  locale,
   tiebreak: (row) => row.id,
 })
 ```

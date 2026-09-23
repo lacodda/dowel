@@ -104,9 +104,9 @@ export function weekday(date: IsoDate): number {
  *
  * `getWeekInfo` is the current spelling and `weekInfo` the older one; some
  * engines have neither, and Monday is the majority answer worldwide. */
-export function firstDayOfWeek(locale: string | undefined): number {
+export function firstDayOfWeek(locale: string): number {
   try {
-    const info = new Intl.Locale(locale ?? navigator.language) as Intl.Locale & {
+    const info = new Intl.Locale(locale) as Intl.Locale & {
       getWeekInfo?: () => { firstDay: number }
       weekInfo?: { firstDay: number }
     }
@@ -122,7 +122,7 @@ export function firstDayOfWeek(locale: string | undefined): number {
  * Returned as dates rather than as numbers, so a cell never has to be told
  * which month it belongs to - it knows, and a click on a trailing day works
  * without a special case. */
-export function monthGrid(month: IsoDate, locale?: string): IsoDate[][] {
+export function monthGrid(month: IsoDate, locale: string): IsoDate[][] {
   const { year, month: monthNumber } = parts(month)
   const first = format(year, monthNumber, 1)
   const start = firstDayOfWeek(locale)
@@ -149,7 +149,7 @@ export function monthGrid(month: IsoDate, locale?: string): IsoDate[][] {
 }
 
 /** The weekday initials, in the order this locale lays them out. */
-export function weekdayNames(locale: string | undefined, start: number): string[] {
+export function weekdayNames(locale: string, start: number): string[] {
   const names = new Intl.DateTimeFormat(locale, { weekday: 'short' })
   // Any week works; this one begins on a Monday.
   const monday = Date.UTC(2024, 0, 1)

@@ -62,9 +62,11 @@ export interface SortOptions<Row> {
    * in a different order, and a column of ties reshuffles under the reader
    * with no click. Pass the row's id. */
   tiebreak?: (row: Row) => SortValue
-  /** The locale text is compared in. Passed to `Intl.Collator`, so `ä` sorts
-   * where the reader expects rather than after `z`. */
-  locale?: string
+  /** The language text is compared in - the application's, from
+   * `useLocale()`. Passed to `Intl.Collator`, so `ä` sorts where the reader
+   * expects rather than after `z`. Required: left out, the collator used the
+   * browser's language, which is not the one the table is written in. */
+  locale: string
 }
 
 /** Order the rows. Returns a new array; the input is not touched, because a
@@ -73,7 +75,7 @@ export function sortRows<Row, Column extends string = string>(
   rows: readonly Row[],
   sort: Sort<Column>,
   accessor: SortAccessor<Row, Column>,
-  options: SortOptions<Row> = {},
+  options: SortOptions<Row>,
 ): Row[] {
   const sign = sort.direction === 'asc' ? 1 : -1
   // One collator for the whole sort rather than one `localeCompare` per

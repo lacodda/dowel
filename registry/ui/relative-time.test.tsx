@@ -35,11 +35,11 @@ describe('which unit it chooses', () => {
 
   it('says now rather than reaching for the smallest unit', () => {
     expect(relativeParts(now, now)).toEqual([0, 'second'])
-    expect(formatRelative(now, now, 'en-US')).toBe('now')
+    expect(formatRelative(now, 'en-US', now)).toBe('now')
   })
 
   it('handles the future as well as the past', () => {
-    expect(formatRelative(new Date(now.getTime() + 60 * 60 * 3 * 1000), now, 'en-US')).toBe(
+    expect(formatRelative(new Date(now.getTime() + 60 * 60 * 3 * 1000), 'en-US', now)).toBe(
       'in 3 hours',
     )
   })
@@ -50,8 +50,8 @@ describe('the phrase', () => {
     // The whole reason there is no date library here: the plural rules and
     // the special words are what a hand-written version gets wrong, and it
     // gets them wrong only in the languages its author does not read.
-    expect(formatRelative(ago(60 * 60 * 24), now, 'en-US')).toBe('yesterday')
-    expect(formatRelative(ago(60 * 60 * 24), now, 'de-DE')).toBe('gestern')
+    expect(formatRelative(ago(60 * 60 * 24), 'en-US', now)).toBe('yesterday')
+    expect(formatRelative(ago(60 * 60 * 24), 'de-DE', now)).toBe('gestern')
   })
 
   it('can be made to read the same way in every row', () => {

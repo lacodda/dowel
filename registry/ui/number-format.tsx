@@ -1,13 +1,13 @@
 import type { HTMLAttributes } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, useLocale } from 'dowel-ui'
 
 /*
- * A number, written the way the reader's language writes numbers.
+ * A number, written the way the application's language writes numbers.
  *
  * Two things, and the second is the reason this is a component rather than a
  * call to `toLocaleString` at each site.
  *
- * **The separators are the reader's.** A thousand is `1,000` here, `1 000`
+ * **The separators are the language's.** A thousand is `1,000` here, `1 000`
  * there and `1.000` somewhere else, and the last one is the same string
  * another reader would read as one. `Intl` knows this and a product does not
  * have to.
@@ -26,9 +26,13 @@ import { cn } from 'dowel-ui'
  * choice about how much precision the reader is owed, and it is made by the
  * caller, in `notation`.
  *
- * No locale is defaulted. `undefined` means the reader's own, which is what a
- * product almost always wants; passing `'en-US'` to be safe is how a German
- * reader is shown American separators for the life of the product.
+ * **The language is the application's, not the browser's.** Left unset, the
+ * locale is `useLocale()`'s answer: a `LocaleProvider` above, else the page's
+ * `<html lang>`. It used to be the browser's language, and that is how
+ * kasl-server showed an English interface with Russian week headings to a
+ * reader whose browser happened to speak Russian. `formatNumber` has no
+ * provider to ask, so it takes the locale as a required argument - a call
+ * that forgets it does not compile.
  */
 
 /* `style` belongs to both halves of these props and means opposite things:
@@ -45,17 +49,13 @@ export interface NumberFormatProps
    * Accepting `null` here would put a default answer to it inside a primitive,
    * and the default would be wrong wherever absence means something. */
   value: number
-  /** The reader's own by default. */
-  locale?: string | string[]
+  /** The application's language by default - see `useLocale`. */
+  locale?: string
 }
 
 /** Format a number without rendering it. For a `title`, an `aria-label`, a
  * CSV, or anywhere the string is needed rather than an element. */
-export function formatNumber(
-  value: number,
-  locale?: string | string[],
-  options?: Intl.NumberFormatOptions,
-): string {
+export function formatNumber(value: number, locale: string, options?: Intl.NumberFormatOptions): string {
   return new Intl.NumberFormat(locale, options).format(value)
 }
 
@@ -86,7 +86,8 @@ export function NumberFormat({
   numberingSystem,
   ...props
 }: NumberFormatProps) {
-  const formatted = formatNumber(value, locale, {
+  const language = useLocale(locale)
+  const formatted = formatNumber(value, language, {
     style,
     currency,
     currencyDisplay,

@@ -1,6 +1,6 @@
 ---
 title: NumberFormat
-description: A number written the way the reader's language writes numbers, with figures that line up in a column.
+description: A number written the way the application's language writes numbers, with figures that line up in a column.
 ---
 
 import Stand from '../../../components/Stand.astro'
@@ -13,7 +13,7 @@ $ npx shadcn@latest add https://lacodda.github.io/dowel/r/number-format.json
 
 ## Notes
 
-**The separators are the reader's.** A thousand is `1,000` here, `1 000` there
+**The separators are the language's.** A thousand is `1,000` here, `1 000` there
 and `1.000` somewhere else — and the last one is the same string another reader
 would read as one. `Intl` knows this and a product does not have to.
 
@@ -34,9 +34,13 @@ numbers live. Having it in a component is how it stops being remembered.
 <NumberFormat value={1200000} notation="compact" />   {/* 1.2M */}
 ```
 
-**No locale is defaulted.** `undefined` means the reader's own, which is what a
-product almost always wants. Passing `'en-US'` to be safe is how a German
-reader is shown American separators for the life of the product.
+**The language is the application's, not the browser's.** Left unset, the
+locale is `useLocale()`'s answer — the nearest `LocaleProvider`, else the
+page's `<html lang>`. It used to be the browser's language, which is how
+kasl-server showed an English interface with Russian week headings to a reader
+whose browser spoke Russian. Passing `'en-US'` to be safe is the opposite
+mistake: a German reader shown American separators for the life of the
+product. See [`no-implicit-locale`](/dowel/guides/linting/#no-implicit-locale).
 
 **`Intl`'s options, not a second vocabulary.** Currency, percentages and units
 take the same options object, so those are not three more components. What
@@ -59,9 +63,9 @@ ordering.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `value` | `number` | | Required |
-| `locale` | `string \| string[]` | the reader's | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | …`Intl.NumberFormatOptions` | | | `style`, `currency`, `notation`, `maximumFractionDigits`, … |
 | `className` | `string` | | Merged; `tabular-nums` stays |
 
-`formatNumber(value, locale?, options?)` gives the string alone, for a `title`,
+`formatNumber(value, locale, options?)` gives the string alone, for a `title`,
 an `aria-label` or a CSV.

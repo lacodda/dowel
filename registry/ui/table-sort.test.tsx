@@ -36,7 +36,7 @@ type Column = 'score' | 'name' | 'done'
 const read = (row: Row, column: Column): SortValue => row[column]
 
 const order = (sort: Sort<Column>, from: Row[] = rows) =>
-  sortRows(from, sort, read).map((row) => row.id)
+  sortRows(from, sort, read, { locale: 'en' }).map((row) => row.id)
 
 describe('absence sorts last, whichever way the column points', () => {
   it('puts the row with no value last when ascending', () => {
@@ -114,7 +114,7 @@ describe('what it compares with', () => {
 
   it('leaves the caller its own array', () => {
     const input = [...rows]
-    sortRows(input, { column: 'score', direction: 'desc' }, read)
+    sortRows(input, { column: 'score', direction: 'desc' }, read, { locale: 'en' })
     expect(input.map((row) => row.id)).toEqual(['a', 'b', 'c', 'd'])
   })
 })
@@ -127,6 +127,7 @@ describe('the tiebreaker', () => {
 
   it('decides rows that compare equal', () => {
     const sorted = sortRows(tied, { column: 'score', direction: 'asc' }, read, {
+      locale: 'en',
       tiebreak: (row) => row.id,
     })
     expect(sorted.map((row) => row.id)).toEqual(['first', 'second'])
@@ -137,9 +138,11 @@ describe('the tiebreaker', () => {
     // that tie must not swap places when the arrow flips, or the "stable"
     // order is the one thing that moves on every click.
     const ascending = sortRows(tied, { column: 'score', direction: 'asc' }, read, {
+      locale: 'en',
       tiebreak: (row) => row.id,
     })
     const descending = sortRows(tied, { column: 'score', direction: 'desc' }, read, {
+      locale: 'en',
       tiebreak: (row) => row.id,
     })
     expect(descending.map((row) => row.id)).toEqual(ascending.map((row) => row.id))

@@ -18,13 +18,14 @@ export default tseslint.config(
   ...dowel.configs.recommended,
   // Where a colour is the subject rather than the styling. `line.ts` is the
   // brand-line registry - the products' own hues, which is where they are
-  // supposed to be written down - the rule itself has to name the patterns it
-  // forbids, and a test about colour has to write one to have something to
-  // check, and so does the setup that paints one for it. None of these is a
-  // component.
+  // supposed to be written down - and `marks.ts` is their tiles drawn in them.
+  // The rule itself has to name the patterns it forbids, and a test about
+  // colour has to write one to have something to check, and so does the setup
+  // that paints one for it. None of these is a component.
   {
     files: [
       'packages/dowel/src/line.ts',
+      'packages/dowel/src/marks.ts',
       'packages/dowel/src/eslint/no-raw-color.ts',
       '**/*.test.{ts,tsx}',
       'tests/*.setup.ts',

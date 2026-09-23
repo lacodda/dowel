@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { NumberField as Base } from '@base-ui/react/number-field'
-import { cn } from 'dowel-ui'
+import { cn, useLocale } from 'dowel-ui'
 import { fieldClasses } from './input'
 
 /*
@@ -42,10 +42,10 @@ export interface NumberFieldProps {
   /** How the number reads: `Intl.NumberFormat` options, so a currency or a
    * percentage is a prop rather than a wrapper. */
   format?: Intl.NumberFormatOptions
-  /** Which conventions `format` follows. Left alone it is the reader's own,
-   * which is nearly always right; a product states one only when the figure
+  /** Which conventions `format` follows. Left alone it is the application's
+   * language (see `useLocale`); a product states one only when the figure
    * belongs to a place rather than to a person - a price in a fixed market. */
-  locale?: Intl.LocalesArgument
+  locale?: string
   /** What the number is in - `px`, `kg`, `%`. A caption beside the field, not
    * part of the value. */
   unit?: ReactNode
@@ -77,10 +77,12 @@ export function NumberField({
   className,
   placeholder,
   'aria-label': ariaLabel,
+  locale,
   ...props
 }: NumberFieldProps) {
+  const language = useLocale(locale)
   return (
-    <Base.Root {...props} className={cn('inline-flex items-center gap-2', className)}>
+    <Base.Root {...props} locale={language} className={cn('inline-flex items-center gap-2', className)}>
       <Base.Group
         className={cn(
           fieldClasses,

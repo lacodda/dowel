@@ -1,5 +1,5 @@
 import { useState, type Ref } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, useLocale } from 'dowel-ui'
 import { fieldClasses } from './input'
 
 /*
@@ -73,7 +73,7 @@ export function parseTime(text: string): string | null | undefined {
 
 /** How a time reads here: `21:30` in most of the world, `9:30 PM` in some of
  * it. The stored value does not change - only what is shown. */
-export function formatTime(time: string, locale?: string): string {
+export function formatTime(time: string, locale: string): string {
   const [hours, minutes] = time.split(':').map(Number) as [number, number]
   return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(
     new Date(2024, 0, 1, hours, minutes),
@@ -85,7 +85,7 @@ export interface TimeFieldProps {
   value: string | null
   onValueChange: (value: string | null) => void
   /** How the time is shown while the field is not being typed into. The
-   * reader's own unless stated. */
+   * application's language unless stated - see `useLocale`. */
   locale?: string
   placeholder?: string
   disabled?: boolean
@@ -107,7 +107,8 @@ export function TimeField({
   ref,
   ...props
 }: TimeFieldProps) {
-  const display = (time: string | null) => (time === null ? '' : formatTime(time, locale))
+  const language = useLocale(locale)
+  const display = (time: string | null) => (time === null ? '' : formatTime(time, language))
 
   /* Text while it is being typed, a formatted time the rest of the time -
    * the same arrangement as DurationField, and for the same reason: a field

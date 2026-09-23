@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, useLocale } from 'dowel-ui'
 import { fieldClasses } from './input'
 import { Popover, PopoverPopup, PopoverTrigger } from './popover'
 import { Calendar } from './calendar'
@@ -37,8 +37,8 @@ export interface DatePickerProps {
   /** Names the two month-paging buttons inside the calendar. */
   previousMonthLabel: string
   nextMonthLabel: string
-  /** How the date is written and which day starts the week. The reader's own
-   * unless stated. */
+  /** How the date is written and which day starts the week. The
+   * application's language unless stated - see `useLocale`. */
   locale?: string
   disabled?: boolean
   name?: string
@@ -61,14 +61,15 @@ export function DatePicker({
   'aria-label': ariaLabel,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
+  const language = useLocale(locale)
 
   const shown = useMemo(() => {
     if (value === undefined || !isIsoDate(value)) return undefined
     const [year, month, day] = value.split('-').map(Number) as [number, number, number]
-    return new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(
+    return new Intl.DateTimeFormat(language, { dateStyle: 'long' }).format(
       new Date(year, month - 1, day),
     )
-  }, [value, locale])
+  }, [value, language])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -100,7 +101,7 @@ export function DatePicker({
           value={value}
           min={min}
           max={max}
-          locale={locale}
+          locale={language}
           aria-label={ariaLabel ?? placeholder}
           previousMonthLabel={previousMonthLabel}
           nextMonthLabel={nextMonthLabel}

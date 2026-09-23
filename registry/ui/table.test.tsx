@@ -75,7 +75,7 @@ function Example({
           {data.length === 0 ? (
             <TableEmpty colSpan={2}>Nothing here yet</TableEmpty>
           ) : (
-            sortRows(data, sort, read).map((row) => (
+            sortRows(data, sort, read, { locale: 'en' }).map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.name}</TableCell>
                 <TableCell numeric>{row.score ?? '—'}</TableCell>
