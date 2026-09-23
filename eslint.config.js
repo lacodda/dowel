@@ -20,12 +20,14 @@ export default tseslint.config(
   // brand-line registry - the products' own hues, which is where they are
   // supposed to be written down - the rule itself has to name the patterns it
   // forbids, and a test about colour has to write one to have something to
-  // check. None of these is a component.
+  // check, and so does the setup that paints one for it. None of these is a
+  // component.
   {
     files: [
       'packages/dowel/src/line.ts',
       'packages/dowel/src/eslint/no-raw-color.ts',
       '**/*.test.{ts,tsx}',
+      'tests/*.setup.ts',
     ],
     rules: { 'dowel/no-raw-color': 'off' },
   },

@@ -1,9 +1,9 @@
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, readdirSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, inject, it } from 'vitest'
 import { lineProducts } from '../packages/dowel/src/line'
+import { paintedProducts } from './browser.setup'
 
 /*
  * The resolved palettes - the colours a native product paints with.
@@ -25,16 +25,14 @@ interface Palette {
 const palettes = new Map<string, Palette>()
 
 beforeAll(() => {
-  // Built here rather than trusted from `dist`, for the reason the token test
-  // gives: these checks describe what the next build ships. Into a directory of
-  // its own, because the release gate reads `dist` in a parallel worker, and on
-  // Windows a file cannot be replaced while another process has it open.
-  const dir = mkdtempSync(resolve(tmpdir(), 'dowel-palettes-'))
-  execFileSync('node', ['tools/build-palettes.mjs', dir], { cwd: root })
+  // Built for this run rather than trusted from `dist`, for the reason the
+  // token test gives: these checks describe what the next build ships. The
+  // browser ran once in the global setup, before any worker started.
+  const dir = inject('palettesDir')
   for (const file of readdirSync(dir)) {
     palettes.set(file.replace(/\.json$/, ''), JSON.parse(readFileSync(resolve(dir, file), 'utf8')))
   }
-}, 60_000)
+})
 
 const value = (theme: Theme, name: string): string => {
   expect(theme, `the palette has no \`${name}\``).toHaveProperty(name)
@@ -147,64 +145,35 @@ describe('it asked the right question', () => {
 })
 
 describe('the notation is converted, not changed', () => {
-  it('writes the colour the browser paints', async () => {
+  it('writes the colour the browser paints', () => {
     /*
      * The browser answers in `oklab()` for a mix, and the script converts that
-     * to sRGB itself. The browser is asked again here by a different route - it
-     * paints each opaque colour into a canvas, converting it on its own, and
-     * the pixel is read back - so a wrong matrix or sign in the conversion shows up
-     * as a pixel that disagrees, not as a plausible colour nobody questions.
+     * to sRGB itself. The global setup asked the browser again by a different
+     * route - painting each opaque colour into a canvas, converted on its own -
+     * so a wrong matrix or sign in the conversion shows up here as a pixel that
+     * disagrees, not as a plausible colour nobody questions.
      */
-    const { chromium } = await import('@playwright/test')
-    const theme = readFileSync(resolve(root, 'packages/dowel/src/theme.css'), 'utf8')
-    const browser = await chromium.launch()
-    try {
-      const page = await browser.newPage()
-      for (const { name, accent } of lineProducts.filter((p) => ['nitid', 'kasl', 'hilvan'].includes(p.name))) {
-        for (const mode of ['dark', 'light'] as const) {
-          await page.emulateMedia({ colorScheme: mode })
-          await page.setContent(
-            `<html class="${mode}"><head><style>${theme}</style><style>:root{--accent-base:${accent}}</style></head><body></body></html>`,
-          )
-          const written = palettes.get(name)!.color[mode]
-          const opaque = Object.keys(written).filter((token) => written[token]!.$value.length === 7)
-          const painted: Record<string, number[]> = await page.evaluate((tokens) => {
-            const canvas = document.createElement('canvas')
-            canvas.width = canvas.height = 1
-            const context = canvas.getContext('2d')!
-            const probe = document.body.appendChild(document.createElement('i'))
-            return Object.fromEntries(
-              tokens.map((token) => {
-                // The computed colour, in whatever space the browser keeps it,
-                // goes to the canvas; the canvas does its own conversion to the
-                // sRGB pixel. A value the canvas refuses is assigned silently
-                // and leaves the sentinel in place - reported, not passed.
-                probe.style.color = `var(--${token})`
-                context.fillStyle = '#010203'
-                context.fillStyle = getComputedStyle(probe).color
-                if (context.fillStyle === '#010203') return [token, [-1, -1, -1]]
-                context.clearRect(0, 0, 1, 1)
-                context.fillRect(0, 0, 1, 1)
-                return [token, [...context.getImageData(0, 0, 1, 1).data]]
-              }),
-            )
-          }, opaque)
-          for (const token of opaque) {
-            const hex = written[token]!.$value
-            const expected = [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16))
-            expected.forEach((channel, i) => {
-              expect(
-                Math.abs(channel - painted[token]![i]!),
-                `${name} ${mode} ${token}: written ${hex}, painted ${painted[token]!.slice(0, 3).join(',')}`,
-              ).toBeLessThanOrEqual(1)
-            })
-          }
+    const painted = inject('painted')
+    expect(Object.keys(painted).sort(), 'the canvas painted other products').toEqual([...paintedProducts].sort())
+    for (const name of paintedProducts) {
+      for (const mode of ['dark', 'light'] as const) {
+        const written = palettes.get(name)!.color[mode]
+        const opaque = Object.keys(written).filter((token) => written[token]!.$value.length === 7)
+        expect(Object.keys(painted[name]![mode]).sort(), `${name} ${mode}: painted other tokens`).toEqual(opaque.sort())
+        for (const token of opaque) {
+          const hex = written[token]!.$value
+          const pixel = painted[name]![mode][token]!
+          const expected = [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16))
+          expected.forEach((channel, i) => {
+            expect(
+              Math.abs(channel - pixel[i]!),
+              `${name} ${mode} ${token}: written ${hex}, painted ${pixel.slice(0, 3).join(',')}`,
+            ).toBeLessThanOrEqual(1)
+          })
         }
       }
-    } finally {
-      await browser.close()
     }
-  }, 60_000)
+  })
 })
 
 describe('what the numbers promise', () => {

@@ -38,5 +38,8 @@ export default defineConfig({
     // also finishes sooner than sixteen (81s against 146s): past this point
     // the workers are competing for the same cores, not using more of them.
     maxWorkers: 4,
+    // The browser the palette checks need, run once before the workers start
+    // rather than beside them - see the file for why.
+    globalSetup: ['tests/browser.setup.ts'],
   },
 })

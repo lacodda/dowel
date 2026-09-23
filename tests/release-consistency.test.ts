@@ -1,9 +1,8 @@
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, readdirSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, inject, it } from 'vitest'
 import {
   lineProducts,
   elevationTokens,
@@ -184,11 +183,11 @@ describe('what the package ships', () => {
 
     // The palettes carry the package version, so a build from before the bump
     // is caught here as well as a build from before a theme change. Rebuilt
-    // aside rather than over `dist`, which another worker may be reading.
+    // aside rather than over `dist`, which another worker may be reading - by
+    // the global setup, which runs the browser before any worker starts.
     const palettes = resolve(dist, 'palettes')
     if (!existsSync(palettes)) return
-    const fresh = mkdtempSync(resolve(tmpdir(), 'dowel-palettes-'))
-    execFileSync('node', ['tools/build-palettes.mjs', fresh], { cwd: root })
+    const fresh = inject('palettesDir')
     expect(readdirSync(palettes).sort(), 'the built palettes name other products').toEqual(readdirSync(fresh).sort())
     for (const file of readdirSync(fresh)) {
       expect(text(readFileSync(resolve(palettes, file), 'utf8')), `the built palette ${file} is stale`).toBe(
