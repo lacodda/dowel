@@ -1,4 +1,4 @@
-# dowel 0.30.0
+# dowel 0.31.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -23,11 +23,14 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.30.0.** The theme and its scales, an accent for each of the nineteen
+**v0.31.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
-for a product that does not draw with a browser, and a hundred and five primitives, each with a page of its own
-on [the stand](/dowel/stand/), which remembers the theme, the accent and the
-density you left it in. Size now comes from the scale and is held there by a
+for a product that does not draw with a browser, the line's
+[marks](/dowel/components/product-mark/) at the level their size calls for, and
+a hundred and five primitives, each with a page of its own on
+[the stand](/dowel/stand/), which remembers the theme, the accent and the
+density you left it in, and measures the contrast of whichever you chose. Dates
+and numbers are written in the application's language, never the browser's. Size now comes from the scale and is held there by a
 gate; a pointer target has a floor the set cannot fall under; and density is an
 attribute on a container rather than a prop, so one word on a form reaches
 every control inside it. Components install from the

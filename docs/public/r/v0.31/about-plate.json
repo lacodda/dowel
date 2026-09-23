@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "about-plate",
+  "type": "registry:ui",
+  "title": "AboutPlate",
+  "description": "The about-plate primitive.",
+  "dependencies": [
+    "dowel-ui@^0.31.0"
+  ],
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.31/product-mark.json"
+  ],
+  "files": [
+    {
+      "path": "ui/about-plate.tsx",
+      "target": "@ui/about-plate.tsx",
+      "type": "registry:ui",
+      "content": "import type { ReactNode } from 'react'\nimport { cn } from 'dowel-ui'\nimport type { MarkName } from 'dowel-ui/marks'\nimport { LineMark, ProductMark } from './product-mark'\n\n/*\n * AboutPlate - what a product says about itself on its About screen, in the\n * same shape across the line.\n *\n * Every desktop product has an About box and every one of them was written\n * from scratch: the mark at whatever size came to hand, the version as a\n * string in the middle of a sentence, a line about the family somewhere or\n * nowhere. Read side by side they looked like products of different makers,\n * which is the one thing a line of products is supposed not to look like.\n *\n * The plate is the mark at its largest level (the one with the metaphor - the\n * About screen is where a person has the time to see it), the name, the\n * version in the monospace face a version is read in, the one-line promise,\n * whatever the product adds (licence, links, a build hash) and, under a rule,\n * the λ tile with the words the product gives it: this product belongs to the\n * lacodda line. The words are the product's, like every other string here.\n */\n\nexport interface AboutPlateProps {\n  /** Which product's mark to draw. */\n  product: MarkName\n  /** The product's name, as it is written. */\n  name: string\n  /** The version, as the product shows it: \"v0.31.0\". */\n  version: string\n  /** The one-line promise, as on the product's README. */\n  tagline?: string\n  /** What the product adds: licence, links, where its data lives. */\n  children?: ReactNode\n  /** The words beside λ, e.g. \"Part of the lacodda line\". */\n  lineLabel: string\n  /** Where those words lead, if anywhere. */\n  lineHref?: string\n  className?: string\n}\n\nexport function AboutPlate({\n  product,\n  name,\n  version,\n  tagline,\n  children,\n  lineLabel,\n  lineHref,\n  className,\n}: AboutPlateProps) {\n  const line = (\n    <>\n      <LineMark size={16} />\n      <span>{lineLabel}</span>\n    </>\n  )\n\n  return (\n    <section aria-label={name} className={cn('flex flex-col items-center gap-3 text-center', className)}>\n      <ProductMark product={product} size={96} />\n      <div className=\"flex flex-col items-center gap-1\">\n        <h2 className=\"m-0 text-lg font-semibold text-text\">{name}</h2>\n        <span className=\"font-mono text-xs text-dim\">{version}</span>\n      </div>\n      {tagline && <p className=\"m-0 max-w-prose text-sm text-dim\">{tagline}</p>}\n      {children && <div className=\"flex flex-col items-center gap-1 text-xs text-dim\">{children}</div>}\n      <div className=\"mt-2 flex w-full justify-center border-t border-line pt-3\">\n        {lineHref ? (\n          <a\n            href={lineHref}\n            className={cn(\n              'inline-flex items-center gap-2 rounded-sm text-xs text-dim underline-offset-4 hover:text-text hover:underline',\n              'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',\n            )}\n          >\n            {line}\n          </a>\n        ) : (\n          <span className=\"inline-flex items-center gap-2 text-xs text-dim\">{line}</span>\n        )}\n      </div>\n    </section>\n  )\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page-size",
+  "type": "registry:ui",
+  "title": "PageSize",
+  "description": "Its own file rather than a part of `Pagination`, because the two are needed apart often enough: a list that scrolls for ever wants \"how many to load at a time\" and no page buttons, and a table with a fixed page size wants the buttons and no choice. Together they were also over the size gate, which asked the right question.",
+  "dependencies": [
+    "dowel-ui@^0.31.0"
+  ],
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.31/select.json"
+  ],
+  "files": [
+    {
+      "path": "ui/page-size.tsx",
+      "target": "@ui/page-size.tsx",
+      "type": "registry:ui",
+      "content": "import type { ReactNode } from 'react'\nimport { cn } from 'dowel-ui'\nimport { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from './select'\n\n/*\n * How many rows to a page.\n *\n * Its own file rather than a part of `Pagination`, because the two are needed\n * apart often enough: a list that scrolls for ever wants \"how many to load at\n * a time\" and no page buttons, and a table with a fixed page size wants the\n * buttons and no choice. Together they were also over the size gate, which\n * asked the right question.\n *\n * A `Select`, because the line has no native `<select>` anywhere - and this is\n * the control most likely to reintroduce one, since it is three numbers in a\n * box and looks like the case where it would not matter.\n */\n\nexport interface PageSizeProps {\n  pageSize: number\n  options?: number[]\n  onPageSizeChange: (pageSize: number) => void\n  /** Names the control for a screen reader, e.g. \"Rows per page\". */\n  label: string\n  /** The visible label, when there is room for one. */\n  children?: ReactNode\n  className?: string\n}\n\nexport function PageSize({\n  pageSize,\n  options = [10, 25, 50, 100],\n  onPageSizeChange,\n  label,\n  children,\n  className,\n}: PageSizeProps) {\n  return (\n    <div className={cn('flex items-center gap-2 text-sm text-dim', className)}>\n      {children}\n      <Select\n        value={String(pageSize)}\n        onValueChange={(value: unknown) => onPageSizeChange(Number(value))}\n      >\n        <SelectTrigger aria-label={label} className=\"w-auto min-w-16\">\n          <SelectValue />\n        </SelectTrigger>\n        <SelectPopup>\n          {options.map((option) => (\n            <SelectItem key={option} value={String(option)}>\n              {option}\n            </SelectItem>\n          ))}\n        </SelectPopup>\n      </Select>\n    </div>\n  )\n}\n"
+    }
+  ]
+}
