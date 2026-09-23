@@ -292,6 +292,14 @@ describe('the docs do not miscount the primitives', () => {
       97: 'ninety-seven', 98: 'ninety-eight', 99: 'ninety-nine',
       100: 'a hundred',
     }
+    // Past a hundred the words are "a hundred and" plus the words above, and
+    // the table grows by itself rather than by hand every release.
+    const UNDER_TWENTY = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+      'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen']
+    for (let n = 101; n < 200; n++) {
+      const rest = n - 100
+      WORDS[n] = `a hundred and ${rest < 20 ? UNDER_TWENTY[rest - 1] : WORDS[rest]}`
+    }
 
     const count = readdirSync(resolve(root, 'registry/ui')).filter(
       (file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'),
@@ -302,8 +310,10 @@ describe('the docs do not miscount the primitives', () => {
 
     /* A number-word immediately before "components", "primitives", or "of
      * them" is a count of these. Anything else is somebody counting something
-     * else. */
-    const pattern = /\b([a-z]+(?:-[a-z]+)?)\s+(?:components|primitives|of them)\b/gi
+     * else. "A hundred and five" is several words, and a pattern taking one
+     * word would read it as "five", find no such count in the table and pass
+     * it by - so the hundreds are matched whole. */
+    const pattern = /\b((?:a hundred and )?[a-z]+(?:-[a-z]+)?)\s+(?:components|primitives|of them)\b/gi
 
     const pages = [
       'README.md',

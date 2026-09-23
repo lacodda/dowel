@@ -168,15 +168,46 @@ describe('what a primitive weighs', () => {
         'rows, the ARIA tree, and the leaf drawn as the type it actually is.',
     },
     'window-frame': {
-      ceiling: 5632,
+      ceiling: 6656,
       because:
-        'Four exports that are one frame: the buttons, the title-bar gestures and the ' +
+        'The assembled title bar and the four parts it is made of: the buttons, the title-bar gestures and the ' +
         'resize strips all read the same `useMaximized` and go through the same guard ' +
         'for a window that is not there. Split, a product installs three files that have ' +
         'to agree on when the window is maximised - and the strip along the top edge that ' +
         'must vanish then is in one of them while the button that says so is in another. ' +
         'The buttons were already folded into one map; what is left is the eight-entry ' +
-        'geometry table, which is the only honest way to write eight positions.',
+        'geometry table, which is the only honest way to write eight positions. `TitleBar` ' +
+        'is the parts put together once, so no product lays the handle out wrong.',
+    },
+    splitter: {
+      ceiling: 8704,
+      because:
+        'pointer drag, the keyboard and collapse are one gesture done three ways over the ' +
+        'same clamped arithmetic, and the three parts are already separate components; ' +
+        'moving the arithmetic into its own item would add four files a product must keep ' +
+        'in step for a module nothing else imports',
+    },
+    stepper: {
+      ceiling: 6912,
+      because:
+        'the state of each step is said three ways - the mark, a glyph, and a word for a ' +
+        'reader - because meaning does not rest on colour, and the narrow layout keeps ' +
+        'every mark while showing one label; the wizard, which was half of it, is its own item',
+    },
+    wizard: {
+      ceiling: 8192,
+      because:
+        'one order of checks for Next, Enter and a click on the stepper - the browser field ' +
+        'constraints, then canAdvance, then an async onNext - with focus moved to each new ' +
+        'step and visited steps kept mounted so Back loses nothing; split further, a product ' +
+        'would wire the order itself and get it wrong the way the stepper click once did',
+    },
+    tabs: {
+      ceiling: 5632,
+      because:
+        'the document tab that closes is what the bar shape is for: the cross drawn beside ' +
+        'the tab rather than inside it, Delete and the middle click, and the unsaved dot with ' +
+        'its words. A separate item for it would be a tab list with two ways of drawing a tab',
     },
     calendar: {
       ceiling: 8192,
@@ -219,6 +250,25 @@ describe('what a primitive drags in', () => {
    * it, and a product installing any of them already has the theme.
    */
   const ALLOWED: Record<string, string[]> = {
+    // The line's signs. The marks are the package's own (`dowel-ui/marks`);
+    // the plate and the switcher draw them through ProductMark rather than
+    // each placing the masters themselves, and the switcher is a Menu.
+    'product-mark': [],
+    'about-plate': ['product-mark'],
+    'product-switcher': ['menu', 'product-mark'],
+    // Base UI's parts, clothed. The accordion's trigger wears the
+    // collapsible's classes, so a disclosure looks the same alone or in a set.
+    collapsible: ['@base-ui/react'],
+    accordion: ['@base-ui/react', 'collapsible'],
+    tabs: ['@base-ui/react', 'class-variance-authority'],
+    'scroll-area': ['@base-ui/react', 'class-variance-authority'],
+    // Written by hand: resizing two panes is arithmetic, not a dependency.
+    splitter: ['class-variance-authority'],
+    image: ['class-variance-authority'],
+    // Progress, and the form that walks it. The wizard is the stepper plus
+    // its steps' content and the Button actions under them.
+    stepper: ['class-variance-authority'],
+    wizard: ['button', 'stepper'],
     alert: ['class-variance-authority'],
     // The grid and the screen inside it. `cva` is the screen's: where it
     // scrolls and what margins it has are two independent variants, and the
@@ -528,7 +578,9 @@ describe('what a primitive drags in', () => {
         continue
       }
       if (specifier === 'react' || specifier === 'react-dom') continue
-      if (specifier === 'dowel-ui') continue
+      // The package, at its root or a subpath: `dowel-ui/marks` is the same
+      // install as `dowel-ui`, not another cost.
+      if (specifier === 'dowel-ui' || specifier.startsWith('dowel-ui/')) continue
       // `@scope/name/deep/path` counts as `@scope/name`.
       const parts = specifier.split('/')
       found.add(specifier.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0]!)

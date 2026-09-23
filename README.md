@@ -60,14 +60,13 @@ npx shadcn@latest add https://lacodda.github.io/dowel/r/button.json
 npx shadcn@latest add https://lacodda.github.io/dowel/r/app.json   # or a whole set
 ```
 
-Ninety-four primitives so far - the everyday controls, forms, overlays built on
-[Base UI](https://base-ui.com), menus and selection, the command palette,
-tables and long lists, charts, the screens between asking for data and showing
-it, markdown, code and diffs, the frame a screen sits in, a desktop window's
-own chrome and the three abilities of a catalogue table. Each is
-written in the vocabulary - no raw
-colours, no `dark:` utilities - and runs its own gate before it ships: axe, the
-keyboard, a dependency budget and a picture in both themes.
+A hundred and five primitives so far - controls and forms, overlays on
+[Base UI](https://base-ui.com), menus, the command palette, tables and long
+lists, charts, loading and empty screens, markdown, code and diffs, a screen's
+frame and how it divides, a desktop window's own chrome, and the line's marks.
+Each is written in the vocabulary - no raw colours, no `dark:` utilities, no
+date in the browser's language - and runs its own gate: axe, the keyboard, a
+dependency budget and a picture in both themes.
 
 The full catalogue, live: **[the stand](https://lacodda.github.io/dowel/stand/)**.
 One page per component: **[components](https://lacodda.github.io/dowel/components/button/)**.
@@ -153,7 +152,7 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 
 ## Status
 
-The theme, the scales, an accent per product, and ninety-four primitives are
+The theme, the scales, an accent per product, and a hundred and five primitives are
 in daily use across two products of the line. Every component installs from a
 versioned registry and passes its own gate - axe, the keyboard, a dependency
 budget, a scale that refuses a length nobody argued for, a floor under every
