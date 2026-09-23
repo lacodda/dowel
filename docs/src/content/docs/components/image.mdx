@@ -1,0 +1,82 @@
+---
+title: Image
+description: A box that reserves its shape before a picture arrives - a placeholder while it loads, a fade once it has, and a quiet fallback instead of the browser's broken-image glyph.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/image.json
+```
+
+<Stand component="image" caption="A ratio box with a picture inside, a broken source showing its fallback, and a source that never resolves showing the placeholder." />
+
+## Notes
+
+A loading picture's layout jump is not a styling defect - it is a missing
+number. The browser has nowhere to put the box until the file arrives and
+says how big it is, so everything below the picture slides down and back up.
+`AspectRatio` is that number, given up front by the caller instead of
+discovered by the browser: a plain box on CSS `aspect-ratio` that reserves
+its space the instant it is in the tree.
+
+```tsx
+<AspectRatio ratio="video" className="rounded-lg">
+  <Image src={cover} alt={work.title} className="absolute inset-0" fallback={<ImageOffIcon />} />
+</AspectRatio>
+```
+
+**`Image` carries the same three states `Avatar`'s picture already does** -
+loading, loaded, failed - because a face and a photograph fail to load for
+the same reasons. While loading it shows `Skeleton`'s own look
+(`animate-pulse bg-soft`) rather than a second grey rectangle invented for
+this one component, so the set has one loading language rather than two that
+drift apart. Once loaded it fades in over `--duration-base`; a sudden
+picture reads as a flash the eye has to catch, and the theme's own
+reduced-motion media query already cuts every duration near zero for a
+reader who asked for that, so nothing extra had to be wired up here.
+
+**On error it shows `fallback` instead of the browser's own broken-image
+icon.** A blank product-branded slot reads as "the picture is missing"; the
+browser's glyph reads as "the product is broken." `fallback` is a prop
+because the right text or icon is the product's word, never a default this
+component would have to pick in one language.
+
+**A cached picture is the state a naive version gets wrong.** An `<img>`
+already in the browser's cache is already `complete` the instant it mounts
+and fires no `load` event at all - there is nothing left to load. Without
+checking `img.complete && naturalWidth` in a layout effect on mount, that
+picture's placeholder would sit forever, waiting for an event that already
+happened. `useLayoutEffect` rather than `useEffect`, so a cached picture
+never paints its placeholder for even one frame.
+
+**`alt` is required, with no default.** A decorative picture says so
+explicitly with `alt=""`; there is no third option that means "nobody
+decided yet," because that option is how a picture ships with no
+description at all.
+
+**Not Base UI.** Base UI's `Avatar` package is not installed in this
+workspace, and this line's own `Avatar` already reimplements the same
+loaded/failed state by hand for the same reason: a picture is common enough,
+and the state small enough, that a dependency would cost more than the
+`useState` it replaces. `Image` follows that precedent instead of adding a
+second one.
+
+## Props
+
+### `AspectRatio`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `ratio` | `'square' \| 'video' \| number` | | A named step, or width / height as a raw number |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `Image`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `alt` | `string` | | Required - `""` for a decorative picture |
+| `src` | `string` | | |
+| `fit` | `'cover' \| 'contain'` | `cover` | |
+| `fallback` | `ReactNode` | | Shown instead of the broken-image glyph on error |
+| `className` | `string` | | Merged so the caller wins a conflict |
