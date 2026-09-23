@@ -5,9 +5,13 @@
 // `prose.css` travels the same way and for a stronger reason: it is nothing
 // but declarations, and a product that wants a different measure or a tighter
 // rhythm overrides them with ordinary CSS.
-import { copyFileSync } from 'node:fs'
+import { copyFileSync, cpSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 for (const name of ['theme.css', 'prose.css']) {
   copyFileSync(fileURLToPath(new URL(`../packages/dowel/src/${name}`, import.meta.url)), `dist/${name}`)
 }
+
+// The marks go as files too, for what cannot run React: a favicon step, a
+// window icon, a native product reading its own tile.
+cpSync(fileURLToPath(new URL('../assets/marks', import.meta.url)), 'dist/marks', { recursive: true })

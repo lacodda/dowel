@@ -1,0 +1,51 @@
+---
+title: ProductSwitcher
+description: The way from one product of the line to the next - the current product on the trigger, the others in a menu by their own tiles, at addresses the caller gives.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/product-switcher.json
+```
+
+<Stand component="product-switcher" caption="A switcher on a web product's header, with links and one action." />
+
+## Notes
+
+The line's products are meant to be used together, and a person moving
+between them was typing addresses from memory.
+
+```tsx
+<ProductSwitcher
+  current="kasl-server"
+  currentName="kasl-server"
+  label={t('switchProduct')}
+  products={[
+    { product: 'rigger', name: 'rigger', href: config.riggerUrl },
+    { product: 'kasl', name: 'kasl', description: t('kasl.what'), onSelect: openKasl },
+  ]}
+/>
+```
+
+**It knows no addresses.** Which products a person has, and on which host, is
+the deployment's to say, so the list, its order and every address come from
+the caller.
+
+**A place is a link, an action is an action.** An entry with `href` renders
+as an `<a>`, so a middle click opens it in a new tab the way a person moving
+between web products expects. An entry with `onSelect` runs it — a desktop
+product opening another by launching it.
+
+**The current product is not in the menu.** It is on the trigger; listing it
+again offers a choice that changes nothing.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `current` | `MarkName` | | The product this is |
+| `currentName` | `string` | | Its name, on the trigger |
+| `products` | `SwitcherProduct[]` | | `{ product, name, description?, href?, onSelect? }` |
+| `label` | `string` | | What the trigger does, for a reader |
+| `className` | `string` | | Merged so the caller wins a conflict |

@@ -5,7 +5,10 @@
     "moduleResolution": "bundler",
     "module": "ESNext",
     "types": ["node"],
-    "paths": { "dowel-ui": ["./packages/dowel/src/index.ts"] }
+    "paths": {
+      "dowel-ui": ["./packages/dowel/src/index.ts"],
+      "dowel-ui/marks": ["./packages/dowel/src/marks.ts"]
+    }
   },
   "include": [
     "registry/**/*.tsx",
@@ -16,7 +19,8 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "playwright.config.ts",
-    // The type of the one function a gate imports from a generator.
-    "tools/build-llms.d.ts"
+    // The types of the functions the gates import from generators.
+    "tools/build-llms.d.ts",
+    "tools/marks-module.d.ts"
   ]
 }

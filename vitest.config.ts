@@ -29,7 +29,12 @@ export default defineConfig({
       'tests/**/*.test.ts',
     ],
     // `dowel-ui` is what a copied component imports; here it is the source.
-    alias: { 'dowel-ui': new URL('./packages/dowel/src/index.ts', import.meta.url).pathname },
+    // The subpath first: a string alias also matches `dowel-ui/...` as a
+    // prefix, and would send it into the index file.
+    alias: {
+      'dowel-ui/marks': new URL('./packages/dowel/src/marks.ts', import.meta.url).pathname,
+      'dowel-ui': new URL('./packages/dowel/src/index.ts', import.meta.url).pathname,
+    },
     // A ceiling on workers, because the default is one per core and every one
     // of them carries its own jsdom and its own axe. On a sixteen-core machine
     // that starved the axe checks until they hit the five-second timeout, and

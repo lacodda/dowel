@@ -36,6 +36,9 @@ export default defineConfig({
   resolve: {
     alias: {
       // What a copied component imports; here it is the source next door.
+      // The subpath first: a string alias also matches `dowel-ui/...` as a
+      // prefix, and would send it into the index file.
+      'dowel-ui/marks': new URL('../packages/dowel/src/marks.ts', import.meta.url).pathname,
       'dowel-ui': new URL('../packages/dowel/src/index.ts', import.meta.url).pathname,
     },
   },
