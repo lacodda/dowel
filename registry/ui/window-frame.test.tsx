@@ -3,7 +3,8 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
-import { ResizeEdges, WindowButtons, useTitleBarGestures } from './window-frame'
+import { Tabs, TabsList, TabsTab } from './tabs'
+import { ResizeEdges, TitleBar, WindowButtons, useTitleBarGestures } from './window-frame'
 
 /*
  * What has to be true of a window's own frame.
@@ -21,6 +22,7 @@ const tauri = vi.hoisted(() => ({
   minimize: vi.fn(() => Promise.resolve()),
   toggleMaximize: vi.fn(() => Promise.resolve()),
   close: vi.fn(() => Promise.resolve()),
+  destroy: vi.fn(() => Promise.resolve()),
   startDragging: vi.fn(() => Promise.resolve()),
   startResizeDragging: vi.fn(() => Promise.resolve()),
   onResized: vi.fn(() => Promise.resolve(() => undefined)),
@@ -197,5 +199,73 @@ describe('ResizeEdges', () => {
     )
     expect(container.innerHTML).not.toMatch(/\bdark:/)
     expect(container.innerHTML).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+})
+
+/** The bar as a document window writes it: mark, open documents, an action. */
+function DocumentBar() {
+  return (
+    <TitleBar
+      labels={labels}
+      mark={<svg aria-hidden width="18" height="18" />}
+      actions={<button type="button">Share</button>}
+    >
+      <Tabs defaultValue="notes.md">
+        <TabsList variant="bar" aria-label="Open documents">
+          <TabsTab value="notes.md" onClose={() => undefined} closeLabel="Close notes.md">
+            notes.md
+          </TabsTab>
+          <TabsTab value="plan.md">plan.md</TabsTab>
+        </TabsList>
+      </Tabs>
+    </TitleBar>
+  )
+}
+
+describe('TitleBar', () => {
+  it('holds the documents, the actions and the buttons', () => {
+    render(<DocumentBar />)
+    expect(screen.getByRole('tablist', { name: 'Open documents' })).toBeDefined()
+    expect(screen.getByRole('button', { name: 'Share' })).toBeDefined()
+    expect(screen.getByRole('button', { name: 'Close' })).toBeDefined()
+  })
+
+  it('moves the window from the stretch left for it', () => {
+    const { container } = render(<DocumentBar />)
+    const handle = container.querySelector('[data-titlebar-handle]')!
+    press(handle, 10, 10)
+    fireEvent.pointerMove(window, { clientX: 30, clientY: 10 })
+    expect(tauri.startDragging).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not move the window from a tab', () => {
+    // A tab is pressed to be chosen, and dragged - one day - to be reordered;
+    // neither is moving the window.
+    render(<DocumentBar />)
+    const tab = screen.getByRole('tab', { name: 'plan.md' })
+    press(tab, 10, 10)
+    fireEvent.pointerMove(window, { clientX: 30, clientY: 10 })
+    expect(tauri.startDragging).not.toHaveBeenCalled()
+
+    fireEvent.doubleClick(tab)
+    expect(tauri.toggleMaximize).not.toHaveBeenCalled()
+  })
+
+  it('asks the window to close, so a guard on the request still runs', async () => {
+    // `close()` emits `closeRequested`; `destroy()` would skip it and lose
+    // whatever the product was about to ask the reader to save.
+    render(<DocumentBar />)
+    await userEvent.click(screen.getByRole('button', { name: 'Close' }))
+    expect(tauri.close).toHaveBeenCalledTimes(1)
+    expect(tauri.destroy).not.toHaveBeenCalled()
+  })
+
+  it('keeps the handle out of the reading', () => {
+    const { container } = render(<DocumentBar />)
+    expect(container.querySelector('[data-titlebar-handle]')?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('passes the accessibility gate', async () => {
+    await expectNoA11yViolations(<DocumentBar />)
   })
 })
