@@ -75,6 +75,6 @@ the string:
 | `onMonthChange` | `(month) => void` | | |
 | `min`, `max` | `IsoDate` | | Bounds, inclusive |
 | `rangeEnd` | `IsoDate` | | Shades the days between, for a range |
-| `locale` | `string` | reader's own | Names and first day of the week |
+| `locale` | `string` | the application's (`useLocale`) | Names and first day of the week |
 | `previousMonthLabel` | `string` | | Required — the buttons are icons |
 | `nextMonthLabel` | `string` | | Required |

@@ -25,7 +25,7 @@ the steps it has, what a component will and will not do for you.
 
 **v0.30.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
-for a product that does not draw with a browser, and ninety-four primitives, each with a page of its own
+for a product that does not draw with a browser, and a hundred and five primitives, each with a page of its own
 on [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in. Size now comes from the scale and is held there by a
 gate; a pointer target has a floor the set cannot fall under; and density is an
@@ -572,7 +572,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. Ninety-four of them.
+A single component: Button, Dialog, Select. A hundred and five of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -639,6 +639,168 @@ exists here at all rather than a folder of components in one application.
 
 *dowel* is a woodworking dowel: the hidden peg that joins two pieces so the seam
 does not show. The system is meant to be invisible while it works.
+
+---
+
+# AboutPlate
+
+Source: https://lacodda.github.io/dowel/components/about-plate
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#about-plate
+
+Two products' plates side by side, one with a licence and links added.
+
+## Notes
+
+Every desktop product has an About box, and every one was written from
+scratch: the mark at whatever size came to hand, the version inside a
+sentence, a line about the family somewhere or nowhere. Side by side they
+looked like products of different makers — the one thing a line is supposed
+not to look like.
+
+```tsx
+<Dialog>
+  <AboutPlate
+    product="nitid"
+    name="nitid"
+    version={`v${version}`}
+    tagline={t('tagline')}
+    lineLabel={t('partOfTheLine')}
+    lineHref="https://github.com/lacodda"
+  >
+    <span>{t('licence')}</span>
+  </AboutPlate>
+</Dialog>
+```
+
+**The mark is drawn at its largest level**, the one with the metaphor: the
+About screen is where a person has the time to see it. The version is in the
+monospace face a version is read in, never inside a sentence.
+
+**The line is named under a rule**, with the λ tile and the words the product
+gives it. The plate has no English of its own.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `product` | `MarkName` | | Whose mark |
+| `name` | `string` | | The product's name, as a heading |
+| `version` | `string` | | As the product shows it |
+| `tagline` | `string` | | The one-line promise |
+| `children` | `ReactNode` | | Licence, links, a build hash |
+| `lineLabel` | `string` | | The words beside λ |
+| `lineHref` | `string` | | Makes those words a link |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
+# Accordion
+
+Source: https://lacodda.github.io/dowel/components/accordion
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#accordion
+
+Single-open by default, then the same list with multiple sections open at once.
+
+## Notes
+
+Each section is [Collapsible](/dowel/components/collapsible/)'s shape - a
+header, a trigger, a panel - repeated inside a group that also decides
+`single` or `multiple`, which is the one thing a lone `Collapsible` has no
+opinion about because it has nothing to be exclusive with.
+
+```tsx
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+
+<Accordion defaultValue={['shipping']}>
+  <AccordionItem value="shipping">
+    <AccordionHeader>
+      <AccordionTrigger>{t('shipping')}</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>{t('shipping.body')}</AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="returns">
+    <AccordionHeader>
+      <AccordionTrigger>{t('returns')}</AccordionTrigger>
+    </AccordionHeader>
+    <AccordionPanel>{t('returns.body')}</AccordionPanel>
+  </AccordionItem>
+</Accordion>
+```
+
+**The trigger sits inside `AccordionHeader`, an `<h3>` - never beside it.**
+That is the ARIA accordion pattern, and it is the commonest hand-rolled
+accordion bug: a section title that exists only as a button's accessible name
+is not a heading a reader can navigate to, and the gap is invisible until
+someone actually moves by heading and finds none. A test in this primitive
+checks the trigger is inside the heading for exactly that reason.
+
+**`multiple` decides whether opening one section shuts the others.** `false`
+(the default, `single`) suits an FAQ, where one answer at a time keeps the
+page short; `true` suits a settings page, where every group is independent
+of the rest.
+
+**Each trigger is an ordinary tab stop, not one cursor moved by arrow
+keys.** Older accordion implementations give the group roving focus - Up and
+Down between headers, Home and End to the ends - but the ARIA APG dropped
+that pattern in a 2024 guidance update, and the installed Base UI has already
+followed it: its trigger carries no keydown handling beyond the native
+button's own Enter and Space. [TreeView](/dowel/components/tree-view/), by
+contrast, still owns one cursor for its whole tree, because that update did
+not touch trees. A reader moves between headers with Tab.
+
+**The trigger's class list is shared, not copied.** `Collapsible` exports
+`collapsibleTriggerClasses`, and this primitive reuses it as
+`accordionTriggerClasses` rather than restating it, because a header row and
+a lone trigger are the same control in two places.
+
+## Props
+
+### `Accordion` (root)
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` / `onValueChange` | | | Controlled |
+| `defaultValue` | `any[]` | | Uncontrolled - the values initially open |
+| `multiple` | `boolean` | `false` | Lets more than one section stay open |
+| `disabled` | `boolean` | `false` | Reaches every item |
+
+### `AccordionItem`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `any` | generated | Identifies the section; needed to set it open by default |
+| `disabled` | `boolean` | `false` | This section only |
+
+### `AccordionHeader`
+
+The `<h3>` the trigger belongs inside. Passes its props to Base UI
+unchanged, plus `className` merged so the caller wins a conflict.
+
+### `AccordionTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words on the button |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `AccordionPanel`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The section's content |
+| `className` | `string` | | Merged so the caller wins a conflict |
 
 ---
 
@@ -1679,7 +1841,7 @@ the string:
 | `onMonthChange` | `(month) => void` | | |
 | `min`, `max` | `IsoDate` | | Bounds, inclusive |
 | `rangeEnd` | `IsoDate` | | Shades the days between, for a range |
-| `locale` | `string` | reader's own | Names and first day of the week |
+| `locale` | `string` | the application's (`useLocale`) | Names and first day of the week |
 | `previousMonthLabel` | `string` | | Required — the buttons are icons |
 | `nextMonthLabel` | `string` | | Required |
 
@@ -1983,6 +2145,80 @@ interface CodeToken {
 
 `kind` is left out for text the highlighter had no opinion about, which then
 takes the ordinary foreground.
+
+---
+
+# Collapsible
+
+Source: https://lacodda.github.io/dowel/components/collapsible
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#collapsible
+
+Closed and open, with content of a different length in each.
+
+## Notes
+
+One trigger, one panel, no group deciding how many can be open - because there
+is only ever one. That is the whole difference from
+[Accordion](/dowel/components/accordion/): a single light switch versus a
+panel of them.
+
+```tsx
+import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from '@/components/ui/collapsible'
+
+<Collapsible defaultOpen>
+  <CollapsibleTrigger>{t('releaseNotes')}</CollapsibleTrigger>
+  <CollapsiblePanel>{t('releaseNotes.v1_4')}</CollapsiblePanel>
+</Collapsible>
+```
+
+**The trigger is a real `<button>`**, wired to the panel by `aria-controls`
+and reporting `aria-expanded`. That pair is what lets a reader who cannot see
+the panel appear still know that it did - the chevron rotating is drawing for
+everyone else.
+
+**The panel animates by its own measured height**, not by `display` or a
+fixed max-height guess. Base UI measures the content and publishes
+`--collapsible-panel-height`; the panel transitions `height` between `0` and
+that variable, so a one-line panel and a page-long one both open by their real
+size rather than a number picked to be "big enough". Under
+`prefers-reduced-motion` the theme's own global rule cuts every
+`transition-duration` to near-zero, so nothing extra is wired up here for
+it - the panel still opens and closes, just without the motion.
+
+**Closed content stays in the DOM.** That is Base UI's default and this
+primitive does not change it: a collapsible whose content vanishes on close
+cannot be found by the browser's own page search. A product that genuinely
+wants it gone can leave `CollapsiblePanel` out of the tree itself.
+
+## Props
+
+### `Collapsible` (root)
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `open` / `onOpenChange` | | | Controlled |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled |
+| `disabled` | `boolean` | `false` | Reaches the trigger and the panel both |
+
+### `CollapsibleTrigger`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The words on the button |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `CollapsiblePanel`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The content that opens and shuts |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`collapsibleTriggerClasses` is exported too - the trigger's own class list,
+reused by [Accordion](/dowel/components/accordion/) rather than copied.
 
 ---
 
@@ -2913,7 +3149,7 @@ The value, the arithmetic and the keyboard are the
 | `placeholder` | `string` | | Required — what the trigger says when empty |
 | `previousMonthLabel` | `string` | | Required |
 | `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | reader's own | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `name` | `string` | | Puts the value in the form |
 | `disabled` | `boolean` | `false` | |
 
@@ -2969,7 +3205,7 @@ clicking a third time.
 | `placeholder` | `string` | | Required |
 | `previousMonthLabel` | `string` | | Required |
 | `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | reader's own | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `disabled` | `boolean` | `false` | |
 
 ---
@@ -3826,6 +4062,88 @@ Built on [Popover](/dowel/components/popover/) and
 
 ---
 
+# Image
+
+Source: https://lacodda.github.io/dowel/components/image
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#image
+
+A ratio box with a picture inside, a broken source showing its fallback, and a source that never resolves showing the placeholder.
+
+## Notes
+
+A loading picture's layout jump is not a styling defect - it is a missing
+number. The browser has nowhere to put the box until the file arrives and
+says how big it is, so everything below the picture slides down and back up.
+`AspectRatio` is that number, given up front by the caller instead of
+discovered by the browser: a plain box on CSS `aspect-ratio` that reserves
+its space the instant it is in the tree.
+
+```tsx
+<AspectRatio ratio="video" className="rounded-lg">
+  <Image src={cover} alt={work.title} className="absolute inset-0" fallback={<ImageOffIcon />} />
+</AspectRatio>
+```
+
+**`Image` carries the same three states `Avatar`'s picture already does** -
+loading, loaded, failed - because a face and a photograph fail to load for
+the same reasons. While loading it shows `Skeleton`'s own look
+(`animate-pulse bg-soft`) rather than a second grey rectangle invented for
+this one component, so the set has one loading language rather than two that
+drift apart. Once loaded it fades in over `--duration-base`; a sudden
+picture reads as a flash the eye has to catch, and the theme's own
+reduced-motion media query already cuts every duration near zero for a
+reader who asked for that, so nothing extra had to be wired up here.
+
+**On error it shows `fallback` instead of the browser's own broken-image
+icon.** A blank product-branded slot reads as "the picture is missing"; the
+browser's glyph reads as "the product is broken." `fallback` is a prop
+because the right text or icon is the product's word, never a default this
+component would have to pick in one language.
+
+**A cached picture is the state a naive version gets wrong.** An `<img>`
+already in the browser's cache is already `complete` the instant it mounts
+and fires no `load` event at all - there is nothing left to load. Without
+checking `img.complete && naturalWidth` in a layout effect on mount, that
+picture's placeholder would sit forever, waiting for an event that already
+happened. `useLayoutEffect` rather than `useEffect`, so a cached picture
+never paints its placeholder for even one frame.
+
+**`alt` is required, with no default.** A decorative picture says so
+explicitly with `alt=""`; there is no third option that means "nobody
+decided yet," because that option is how a picture ships with no
+description at all.
+
+**Not Base UI.** Base UI's `Avatar` package is not installed in this
+workspace, and this line's own `Avatar` already reimplements the same
+loaded/failed state by hand for the same reason: a picture is common enough,
+and the state small enough, that a dependency would cost more than the
+`useState` it replaces. `Image` follows that precedent instead of adding a
+second one.
+
+## Props
+
+### `AspectRatio`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `ratio` | `'square' \| 'video' \| number` | | A named step, or width / height as a raw number |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `Image`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `alt` | `string` | | Required - `""` for a decorative picture |
+| `src` | `string` | | |
+| `fit` | `'cover' \| 'contain'` | `cover` | |
+| `fallback` | `ReactNode` | | Shown instead of the broken-image glyph on error |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
 # Input
 
 Source: https://lacodda.github.io/dowel/components/input
@@ -4655,7 +4973,9 @@ be typed into and the value stays a number.
 <NumberField value={total} format={{ style: 'currency', currency: 'EUR' }} />
 ```
 
-`locale` is left alone by default, which means the reader's own — state one
+`locale` is left alone by default, which means the application's language —
+the nearest `LocaleProvider` or the page's `<html lang>` (see
+[`no-implicit-locale`](/dowel/guides/linting/#no-implicit-locale)). State one
 only when the figure belongs to a place rather than to a person.
 
 **The stepper's buttons are `aria-hidden`.** The field already announces its
@@ -4674,7 +4994,7 @@ an invitation to click sixty times.
 | `step` | `number` | `1` | What the arrows change it by |
 | `largeStep` | `number` | | What PageUp and PageDown change it by |
 | `format` | `Intl.NumberFormatOptions` | | Currency, percent, precision |
-| `locale` | `Intl.LocalesArgument` | reader's own | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `unit` | `ReactNode` | | A caption beside the field |
 | `hideStepper` | `boolean` | `false` | |
 
@@ -4692,7 +5012,7 @@ The same number in four languages, money and percentages, and a column with and 
 
 ## Notes
 
-**The separators are the reader's.** A thousand is `1,000` here, `1 000` there
+**The separators are the language's.** A thousand is `1,000` here, `1 000` there
 and `1.000` somewhere else — and the last one is the same string another reader
 would read as one. `Intl` knows this and a product does not have to.
 
@@ -4713,9 +5033,13 @@ numbers live. Having it in a component is how it stops being remembered.
 <NumberFormat value={1200000} notation="compact" />   {/* 1.2M */}
 ```
 
-**No locale is defaulted.** `undefined` means the reader's own, which is what a
-product almost always wants. Passing `'en-US'` to be safe is how a German
-reader is shown American separators for the life of the product.
+**The language is the application's, not the browser's.** Left unset, the
+locale is `useLocale()`'s answer — the nearest `LocaleProvider`, else the
+page's `<html lang>`. It used to be the browser's language, which is how
+kasl-server showed an English interface with Russian week headings to a reader
+whose browser spoke Russian. Passing `'en-US'` to be safe is the opposite
+mistake: a German reader shown American separators for the life of the
+product. See [`no-implicit-locale`](/dowel/guides/linting/#no-implicit-locale).
 
 **`Intl`'s options, not a second vocabulary.** Currency, percentages and units
 take the same options object, so those are not three more components. What
@@ -4738,11 +5062,11 @@ ordering.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `value` | `number` | | Required |
-| `locale` | `string \| string[]` | the reader's | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | …`Intl.NumberFormatOptions` | | | `style`, `currency`, `notation`, `maximumFractionDigits`, … |
 | `className` | `string` | | Merged; `tabular-nums` stays |
 
-`formatNumber(value, locale?, options?)` gives the string alone, for a `title`,
+`formatNumber(value, locale, options?)` gives the string alone, for a `title`,
 an `aria-label` or a CSV.
 
 ---
@@ -5272,6 +5596,121 @@ anywhere in it.
 
 ---
 
+# ProductMark
+
+Source: https://lacodda.github.io/dowel/components/product-mark
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#product-mark
+
+Every mark of the line at the three levels, and the line's own λ.
+
+## Notes
+
+Every product of the line has one mark — a hexagonal tile with a two-letter
+code — in three levels that are a rule, not options:
+
+| Size | Level | What is drawn |
+| --- | --- | --- |
+| 64px and up | L | the tile, the code, and the product's metaphor under it |
+| 28–63px | M | the tile and a larger code, no metaphor |
+| 27px and under | S | the tile filled with the product's colour, a heavy code |
+
+```tsx
+<ProductMark product="kilna" size={18} />            {/* a title bar: S */}
+<ProductMark product="kilna" size={96} label="kilna" /> {/* an About screen: L */}
+<LineMark size={16} />                               {/* λ, the line itself */}
+```
+
+**The size is the only input.** A product that drew its own mark picked one
+level and used it everywhere, so the same mark was a smudge in a tab strip and
+a bare tile on an About screen. Here the level follows the size, and the
+boundaries are tested on both sides.
+
+**The masters are the line's, not redrawn.** They are drawn by the line's mark
+generator and ship in the package: as markup in `dowel-ui/marks`, which this
+component draws from, and as files in `dowel-ui/marks/<product>-<L|M|S>.svg`
+for whatever cannot run React — a favicon step, a window icon. The release
+gate regenerates the module from the files and compares, and checks each small
+tile against the accent the theme uses.
+
+**The tile is dark in both themes**, as the line draws it everywhere. A mark is
+the product's signature, not part of the screen's palette.
+
+**Two-colour marks get a gradient of their own.** SVG ids are global to the
+document; the masters name the gradient of a pair, and two such marks on one
+screen would share the first one's. The component gives each instance its own
+id.
+
+**A mark beside a name is decoration.** It is hidden from a reader, who
+already has the name. With `label` it becomes an image with that name, for a
+mark that stands alone.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `product` | `MarkName` | | A product of the line, or `lacodda` |
+| `size` | `number` | `24` | Width and height in CSS pixels; chooses the level |
+| `label` | `string` | | Makes it an image with this name |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`LineMark` takes the same props without `product`.
+
+---
+
+# ProductSwitcher
+
+Source: https://lacodda.github.io/dowel/components/product-switcher
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#product-switcher
+
+A switcher on a web product's header, with links and one action.
+
+## Notes
+
+The line's products are meant to be used together, and a person moving
+between them was typing addresses from memory.
+
+```tsx
+<ProductSwitcher
+  current="kasl-server"
+  currentName="kasl-server"
+  label={t('switchProduct')}
+  products={[
+    { product: 'rigger', name: 'rigger', href: config.riggerUrl },
+    { product: 'kasl', name: 'kasl', description: t('kasl.what'), onSelect: openKasl },
+  ]}
+/>
+```
+
+**It knows no addresses.** Which products a person has, and on which host, is
+the deployment's to say, so the list, its order and every address come from
+the caller.
+
+**A place is a link, an action is an action.** An entry with `href` renders
+as an `<a>`, so a middle click opens it in a new tab the way a person moving
+between web products expects. An entry with `onSelect` runs it — a desktop
+product opening another by launching it.
+
+**The current product is not in the menu.** It is on the trigger; listing it
+again offers a choice that changes nothing.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `current` | `MarkName` | | The product this is |
+| `currentName` | `string` | | Its name, on the trigger |
+| `products` | `SwitcherProduct[]` | | `{ product, name, description?, href?, onSelect? }` |
+| `label` | `string` | | What the trigger does, for a reader |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
 # Progress
 
 Source: https://lacodda.github.io/dowel/components/progress
@@ -5704,11 +6143,12 @@ reader can act on and which looks like a value; an empty `<time>` with no
 | --- | --- | --- | --- |
 | `value` | `Date \| number \| string` | | Whatever the data already holds |
 | `now` | `Date \| number` | read once at mount | What counts as now. Given, every row measures from the same moment |
-| `locale` | `string \| string[]` | the reader's | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `numeric` | `'auto' \| 'always'` | `'auto'` | `auto` gives "yesterday" where the language has the word |
 | `titleOptions` | `Intl.DateTimeFormatOptions` | medium date, short time | How the exact moment is written |
 
-`formatRelative(value, now?, locale?, options?)` gives the phrase alone, and
+`formatRelative(value, locale, now?, options?)` gives the phrase alone (the
+locale is required: a plain function has no provider to ask), and
 `relativeParts(value, now?)` the count and unit behind it.
 
 ---
@@ -5853,6 +6293,70 @@ learn to turn a screen reader's verbosity down.
 
 **The words are yours.** A primitive with a string of its own cannot be
 translated.
+
+---
+
+# Scroll area
+
+Source: https://lacodda.github.io/dowel/components/scroll-area
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#scroll-area
+
+A list taller than its box, the same list with edge fades, and a log that scrolls on both axes.
+
+## Notes
+
+```tsx
+<ScrollArea label={t('activity')} fade className="h-64">
+  <ActivityList />
+</ScrollArea>
+```
+
+**Only an overlay bar.** The line's rule is a thin bar laid over the content
+and never a gutter. A gutter is a column of the layout that comes and goes
+with the length of the content, so a list growing past the fold pushes
+everything beside it sideways. The theme's global rules make the native bar
+thin, but thin is still a gutter wherever the platform draws one; the only
+bar that can promise to take no room is one the browser does not draw. The
+viewport hides its native bars and the thumb is drawn by Base UI's
+ScrollArea from the scroll position.
+
+**Hidden at rest, grabbable on hover.** The bar appears while the pointer is
+over the area or while it scrolls, and fades out after. The track is wider
+than the thumb, and the thumb thickens under the pointer: four pixels read as
+a hint and are hopeless as a grip. A bar is mounted only for an axis that
+actually overflows, so a list that fits draws nothing.
+
+**The keyboard still scrolls, and that is why `label` is required.** A box
+that scrolls has to be reachable, or a reader without a pointer never sees
+what is below the fold (axe's `scrollable-region-focusable`). The viewport
+becomes a tab stop exactly when its content overflows, and a tab stop has to
+be called something. Whether the content will overflow is not known when the
+product is written, so the name cannot be left for the long case - it is a
+required prop with no default, like every word in the set.
+
+**Fades follow the distance left.** `fade` masks the content at the edges
+where there is more to see, reading Base UI's overflow distances, so an edge
+already at its end stays sharp and a fade grows in as scrolling starts
+rather than switching on. A mask rather than a painted gradient, because a
+gradient would have to be the colour of whatever sits behind the area.
+
+**The height goes on the root.** `className` sizes the area; the viewport
+fills it. A product that needs the scrolling element - to set its position,
+or to feed a virtual list - takes it through `viewportRef`.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required. Names the viewport when it is a tab stop |
+| `fade` | `boolean` | `false` | Fade the edges that have more past them |
+| `viewportRef` | `Ref<HTMLDivElement>` | | The scrolling element |
+| `className` | `string` | | On the root: its size is the area's size |
+| `viewportClassName` | `string` | | On the scrolling element |
+| `children` | `ReactNode` | | The content |
 
 ---
 
@@ -6700,6 +7204,109 @@ twice.
 
 ---
 
+# Splitter
+
+Source: https://lacodda.github.io/dowel/components/splitter
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#splitter
+
+A collapsible file list beside an editor, two stacked panes, and three panes with a handle between each two.
+
+## Notes
+
+```tsx
+<Splitter defaultSizes={saved ?? [25, 75]} onSizesChange={save}>
+  <SplitterPane min={15} max={45} collapsible>
+    <FileList />
+  </SplitterPane>
+  <SplitterHandle label={t('resize.files')} />
+  <SplitterPane min={30}>
+    <Editor />
+  </SplitterPane>
+</Splitter>
+```
+
+**Three parts, not a two-pane component.** A `first` and `second` prop shape
+is the one every product outgrows on the day it wants a third pane, and the
+rewrite is every call site. Here a third pane is two more lines. Each handle
+moves only the boundary it sits on: the panes on either side of it trade
+size and the rest stay put.
+
+Panes and handles must be direct children of the `Splitter` - not wrapped in
+a fragment or a component of the product's own - because that is how each
+learns its place and how the splitter reads the panes' limits.
+
+**Percent, not pixels.** Sizes are shares of the splitter, so a window
+resized to half its width keeps the sidebar at the same share instead of
+eating the editor. A pane's share is its flex grow over a zero basis, which is
+what lets the one-pixel handles sit between the panes without the shares
+adding up to more than the box.
+
+**The product keeps the sizes; the component never stores them.**
+`onSizesChange` fires once when a change settles - a drag let go, a key
+pressed - not on every pointer move, so persisting there is one write per
+gesture. What was saved comes back as `defaultSizes`. Adding or removing a
+pane starts again from equal shares, since the old ones no longer describe
+the row.
+
+**The handle is the ARIA window splitter.** A focusable `separator` with
+`aria-orientation` across the layout, `aria-controls` pointing at the pane
+before it, and that pane's size as `aria-valuenow` between the bounds both
+neighbours allow. Arrows along the axis move it by `step` percent, Shift by
+five steps, Home and End to the bounds. Its name is a required prop: there is
+no English default.
+
+**Collapse is a state, not a small size.** A pane marked `collapsible` below
+its minimum is either collapsed or at its minimum, never between: a drag goes
+to the nearer of the two, an arrow past the minimum collapses it, and an
+arrow back opens it at the minimum. Enter collapses the pane before the
+handle if it can, else the one after it - a right-hand sidebar is the second
+pane of its handle - and Enter again restores the size it had. A pane
+collapsed to nothing is `inert`, so Tab does not walk into controls nobody can
+see; `collapsedSize` keeps a rail of icons instead.
+
+**A pixel to see, the floor to hit.** The visible line is one pixel and the
+hit area is `target-min`, the theme's way of growing a target to 24px without
+growing what is drawn - the same reason `ColumnResizeHandle` is wider to hit
+than to see. Pointer events with capture, not HTML5 drag-and-drop, which a
+desktop shell that takes file drops never delivers to the page.
+
+The arithmetic is exported as `moveBoundary` and `boundsOf`, plain functions
+a product can test or reuse without rendering anything.
+
+## Props
+
+### `Splitter`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `orientation` | `horizontal \| vertical` | `horizontal` | `horizontal` is side by side |
+| `defaultSizes` | `number[]` | equal shares | One percentage per pane, summing to 100 |
+| `onSizesChange` | `(sizes: number[]) => void` | | Once per settled change: persist here |
+| `step` | `number` | `2` | Percent per arrow press; Shift moves five |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `SplitterPane`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `min` | `number` | `0` | Smallest share, in percent |
+| `max` | `number` | `100` | Largest share, in percent |
+| `collapsible` | `boolean` | `false` | May shrink past `min` to `collapsedSize` |
+| `collapsedSize` | `number` | `0` | Its share when collapsed |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `SplitterHandle`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required. What it resizes: "Resize the sidebar" |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
 # StatTile
 
 Source: https://lacodda.github.io/dowel/components/stat-tile
@@ -6892,6 +7499,80 @@ and [Timeline](/dowel/components/timeline/), which takes the same vocabulary.
 
 ---
 
+# Stepper
+
+Source: https://lacodda.github.io/dowel/components/stepper
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#stepper
+
+Done, current, upcoming and failed steps; clickable steps; the fold in a narrow container; a vertical stepper.
+
+## Notes
+
+Base UI has no stepper, so this one is written rather than wrapped. It is a
+picture of progress on its own. When the steps are a form, the
+[`Wizard`](/dowel/components/wizard/) puts one on top of the step's content
+and the Back / Next / Finish row. The two are separate because a product can
+show how far along something is without owning the form that moves it.
+
+```tsx
+<Stepper
+  label={t('import.steps')}
+  steps={steps}
+  current={job.step}
+  stateLabels={{ done: t('step.done'), error: t('step.error') }}
+  summary={(position, total) => t('step.position', { position, total })}
+/>
+```
+
+**An ordered list, and `aria-current="step"`.** Like
+[`Breadcrumbs`](/dowel/components/breadcrumbs/), the order is the meaning, so
+the steps are an `<ol>`. The step you are on is the one marked current, so a
+reader hears which of the names is in front of them.
+
+**Meaning does not rest on colour.** A done step draws a tick, a failed step
+an exclamation mark, the current one a filled number, the ones ahead an
+outlined number. The same states are written out for a screen reader in the
+words the product passes as `stateLabels`. The component has no strings of
+its own, so every word it shows or speaks comes from a prop.
+
+**Narrow, it keeps the marks and drops the words.** A horizontal stepper in a
+container narrower than `@xl` (36rem) shows every mark but only the current
+step's label. The other labels leave the screen but stay in the accessibility
+tree. `summary` adds the position in words, such as "Step 2 of 5", in the
+narrow form only. The fold uses the container's width, not the viewport's,
+because a wizard in a dialog is narrow on a wide screen. A vertical stepper
+never folds.
+
+**Going ahead is a decision.** Steps are buttons only when `onStepSelect` is
+given, and then only the steps already reached: done, failed and current.
+Clicking a step ahead is the usual way a wizard's validation gets skipped, so
+`reach="any"` has to be chosen on purpose. The Wizard goes further: a click
+forward still runs every check in between.
+
+## Props
+
+### `Stepper`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required. The list's name for a reader |
+| `steps` | `StepperStep[]` | | Required. `{ id, label, description?, status? }` |
+| `current` | `string` | | Required. The id of the step being shown |
+| `stateLabels` | `{ done, error, upcoming? }` | | Required. The words a reader hears for each state |
+| `summary` | `(position, total) => ReactNode` | | "Step 2 of 5", shown only in the narrow form |
+| `orientation` | `horizontal \| vertical` | `horizontal` | Only horizontal folds |
+| `onStepSelect` | `(id) => void` | | Makes reachable steps buttons, and the list a `nav` |
+| `reach` | `visited \| any` | `visited` | `any` opens the steps ahead |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`StepperStep.status` is `done` or `error`. Without it, a step's state comes
+from its position: before the current step is done, after it is upcoming.
+
+---
+
 # Switch
 
 Source: https://lacodda.github.io/dowel/components/switch
@@ -6986,7 +7667,7 @@ const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
       </TableRow>
     </TableHead>
     <TableBody>
-      {sortRows(rows, sort, read).map((row) => (
+      {sortRows(rows, sort, read, { locale }).map((row) => (
         <TableRow key={row.id} selected={row.id === picked}>
           <TableCell>{row.title}</TableCell>
           <TableCell numeric><NumberFormat value={row.words} /></TableCell>
@@ -7075,7 +7756,9 @@ state, not a zero.
 import { sortRows, toggleSort, type Sort } from './table-sort'
 
 const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
+const locale = useLocale()
 const ordered = sortRows(rows, sort, (row, column) => row[column], {
+  locale,
   tiebreak: (row) => row.id,
 })
 ```
@@ -7120,6 +7803,111 @@ table into a recital.
 | --- | --- | --- |
 | `tiebreak` | `(row) => SortValue` | What decides rows that compare equal. Pass the row's id |
 | `locale` | `string` | Passed to `Intl.Collator`, so `ä` sorts where the reader expects |
+
+---
+
+# Tabs
+
+Source: https://lacodda.github.io/dowel/components/tabs
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tabs
+
+Line tabs over their panels, vertical tabs, and a window bar of open documents - one unsaved, each closable.
+
+## Notes
+
+Two shapes, because the line needs two things that look nothing alike.
+
+```tsx
+<Tabs defaultValue="general">
+  <TabsList aria-label={t('settings')}>
+    <TabsTab value="general">{t('general')}</TabsTab>
+    <TabsTab value="storage">{t('storage')}</TabsTab>
+  </TabsList>
+  <TabsPanel value="general"><General /></TabsPanel>
+  <TabsPanel value="storage"><Storage /></TabsPanel>
+</Tabs>
+```
+
+**`line`** is the row of words over a panel, the active one underlined in the
+accent. The rule slides between tabs because Base UI measures the active tab
+and hands its box over as CSS variables.
+
+**`bar`** is the strip of open documents that lives inside a frameless
+window's [title bar](/dowel/components/window-frame/). A separate tab row
+under a system title bar spends about sixty pixels of a laptop screen twice;
+scheda made that trade first. A bar tab is as tall as the bar, the active one
+takes the page's ground so it reads as joined to the document below, and a
+two-pixel accent rule on its top edge marks it where an underline would sit
+against the window's edge. The strip scrolls sideways instead of squeezing
+names.
+
+```tsx
+<TitleBar labels={t('window', { returnObjects: true })} mark={<ProductMark />}>
+  <Tabs value={active} onValueChange={select}>
+    <TabsList variant="bar" aria-label={t('openDocuments')}>
+      {documents.map((doc) => (
+        <TabsTab
+          key={doc.id}
+          value={doc.id}
+          modified={doc.dirty}
+          modifiedLabel={t('unsaved')}
+          onClose={() => close(doc.id)}
+          closeLabel={t('close', { name: doc.name })}
+        >
+          {doc.name}
+        </TabsTab>
+      ))}
+    </TabsList>
+  </Tabs>
+</TitleBar>
+```
+
+**The close is not inside the tab.** The obvious markup puts a close button
+inside the `tab`, which is an interactive element nested in another: a screen
+reader flattens the two into one control and a keyboard cannot reach the
+second. axe reports it as `nested-interactive`, and the test for this
+component fails on exactly that. So the cross is a sibling drawn over the tab,
+for the pointer only, out of the tab order and out of the reading. The
+keyboard closes the focused tab with **Delete**, which the tab announces
+through `aria-keyshortcuts`. A middle click closes too.
+
+**The cross is always drawn**, faintly, rather than revealed on hover. A
+button that appears under the pointer is one the pointer was not aiming for.
+Its hit area meets the line's target floor through `target-min` while the
+glyph stays small.
+
+**Unsaved changes are words, not only a dot.** `modified` draws a dot in the
+accent; `modifiedLabel` is what a reader hears, as part of the tab's name
+("plan.md unsaved changes"). The types will not accept one without the other,
+and the same goes for `onClose` and `closeLabel`: the component has no English
+of its own to fall back on.
+
+## Props
+
+### `TabsList`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `line` \| `bar` | `line` | `bar` is for a window's title bar |
+| `aria-label` | `string` | | Name the list when nothing on screen does |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `TabsTab`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `any` | | Which panel it shows |
+| `modified` | `boolean` | | Draws the unsaved dot; needs `modifiedLabel` |
+| `modifiedLabel` | `string` | | What a reader hears for the dot |
+| `onClose` | `() => void` | | Makes the tab closable; needs `closeLabel` |
+| `closeLabel` | `string` | | The cross's tooltip |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`Tabs` takes Base UI's root props (`value`, `defaultValue`, `onValueChange`,
+`orientation`); `TabsPanel` takes `value`.
 
 ---
 
@@ -7376,7 +8164,7 @@ of the product's own fields would have one that is visibly not.
 | --- | --- | --- | --- |
 | `value` | `string \| null` | | `HH:MM`; `null` is empty |
 | `onValueChange` | `(value) => void` | | Fires on blur and Enter, not per key |
-| `locale` | `string` | reader's own | How the time is shown |
+| `locale` | `string` | the application's (`useLocale`) | How the time is shown |
 | `placeholder` | `string` | | |
 | `disabled`, `readOnly`, `required` | `boolean` | `false` | |
 
@@ -8252,7 +9040,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#window-frame
 
-The three buttons and the eight resize strips, drawn inside a frame - the stand runs in a browser, so they render and stay inert.
+A title bar holding its open documents, and the eight resize strips, drawn inside a frame - the stand runs in a browser, so they render and stay inert.
 
 ## Notes
 
@@ -8264,35 +9052,48 @@ take them on at all is that a system title bar over an application title bar
 costs a strip of every laptop screen for nothing — scheda made the trade
 first, kilna copied it, and this is the copy.
 
-Four exports, used together:
+`TitleBar` is the bar, assembled; `ResizeEdges` goes once at the root beside
+it.
 
 ```tsx
-import { ResizeEdges, WindowButtons, useTitleBarGestures } from '@/components/ui/window-frame'
-
-function Titlebar() {
-  const gestures = useTitleBarGestures()
-  return (
-    <header className="flex h-9 items-center border-b border-line bg-bg" {...gestures}>
-      <Brand />
-      <Trail />
-      <div className="ml-auto flex h-full items-center">
-        <Bell />
-        <WindowButtons labels={t('shell', { returnObjects: true })} />
-      </div>
-    </header>
-  )
-}
+import { ResizeEdges, TitleBar } from '@/components/ui/window-frame'
+import { Tabs, TabsList, TabsTab } from '@/components/ui/tabs'
 
 function Shell() {
   return (
     <>
       <ResizeEdges />
-      <Titlebar />
+      <TitleBar labels={t('window', { returnObjects: true })} mark={<ProductMark />} actions={<Bell />}>
+        <Tabs value={active} onValueChange={select}>
+          <TabsList variant="bar" aria-label={t('openDocuments')}>
+            {documents.map((doc) => (
+              <TabsTab key={doc.id} value={doc.id} onClose={() => close(doc.id)} closeLabel={t('close', { name: doc.name })}>
+                {doc.name}
+              </TabsTab>
+            ))}
+          </TabsList>
+        </Tabs>
+      </TitleBar>
       <Outlet />
     </>
   )
 }
 ```
+
+The bar holds, left to right: the product's mark, where the system put the
+icon; whatever the window shows at the top — its open documents as
+[`Tabs`](/dowel/components/tabs/) with `variant="bar"`, a trail, or a title;
+a stretch that exists only to be grabbed; the product's own actions; and the
+three buttons. Inside [`AppShell`](/dowel/components/app-shell/) it goes in
+the `titlebar` slot, whose row is `--spacing-titlebar` tall.
+
+**The stretch never closes.** A window with twenty documents open would
+otherwise have no bar left to drag by, so the handle keeps a minimum width
+and the tabs scroll instead.
+
+For a bar the assembled one does not fit, the parts are exported:
+`WindowButtons`, `useTitleBarGestures()` to spread on your own bar, and
+`useMaximized()` for anything else that changes shape with the window.
 
 **Everything in the bar that is not a control is a handle.** The gestures
 ignore a press that lands on a button, a link, a field, a menu, a tab or a
@@ -8319,6 +9120,12 @@ the corners), positioned by inline style, invisible, above everything. They
 are `fixed` to the viewport, which is where a window's edges are; pass
 `className="absolute"` to put them on a box instead, as the stand does.
 
+**Close asks; it does not destroy.** Tauri's `close()` emits
+`closeRequested` before anything happens, so an unsaved-work guard listening
+for that request sees the button exactly as it sees the system's own close.
+There is no `onClose` to override it with, on purpose: a second way to close
+is a second place for the guard to be missed.
+
 **Outside Tauri it renders and does nothing.** Every call goes through a check
 for the Tauri bridge (`window.__TAURI_INTERNALS__`), so a browser, a test or
 a storybook gets the chrome without a thrown error on the first click. The
@@ -8326,6 +9133,16 @@ labels are the only thing it needs from you, and all four are required so
 they can be translated.
 
 ## Props
+
+### `TitleBar`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `labels` | `{ minimize, maximize, restore, close }` | | Required; passed to `WindowButtons` |
+| `mark` | `ReactNode` | | The product's mark, at the left edge |
+| `children` | `ReactNode` | | Tabs, a trail or a title |
+| `actions` | `ReactNode` | | The product's controls, before the window buttons |
+| `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `WindowButtons`
 
@@ -8347,6 +9164,111 @@ Returns `{ onPointerDown, onDoubleClick }` to spread on the bar.
 ### `useMaximized()`
 
 Returns `boolean`, kept current as the window resizes. `false` outside Tauri.
+
+---
+
+# Wizard
+
+Source: https://lacodda.github.io/dowel/components/wizard
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#wizard
+
+A workspace-setup wizard that checks each step, waits on a slow check, keeps what was typed on Back - above and beside its stepper.
+
+## Notes
+
+The [`Stepper`](/dowel/components/stepper/) on top, the current step's
+content under it, and a Back / Next / Finish row. It installs the Stepper
+with it.
+
+```tsx
+<Wizard
+  stepperLabel={t('setup.steps')}
+  stateLabels={{ done: t('step.done'), error: t('step.error') }}
+  summary={(position, total) => t('step.position', { position, total })}
+  backLabel={t('back')}
+  nextLabel={t('next')}
+  finishLabel={t('setup.create')}
+  onFinish={createWorkspace}
+  steps={[
+    { id: 'name', label: t('setup.name'), canAdvance: () => name !== '', content: <NameStep /> },
+    { id: 'storage', label: t('setup.storage'), onNext: checkFolder, content: <StorageStep /> },
+    { id: 'review', label: t('setup.review'), content: <Review /> },
+  ]}
+/>
+```
+
+**Clicking a step.** Clicking a step behind you is free. Clicking a completed
+step ahead runs every check between here and there, and stops on the first
+step that fails. The Stepper's default `reach` applies, so steps never reached
+cannot be clicked.
+
+**A step counts as done only once it passes.** When you go back, a step you
+have seen but never completed stays upcoming. It is not a way forward.
+
+**Every step is checked in the same order.** Next, Enter in a field, and a
+click on a step ahead all run the same checks: the browser's own constraints
+on the step's fields (`required`, `pattern`), then `canAdvance`, then the
+async `onNext`. If any returns `false` or throws, the user stays on the step
+and it is marked failed. While `onNext` runs, the controls are disabled, so
+a second press does not run it twice. A thrown error goes to `onError`, or is
+rethrown if there is none, so it is never swallowed. The form is `noValidate`
+because the browser would otherwise check the hidden fields of earlier steps
+too.
+
+**Enter is Next, never Finish.** Enter in a field goes through the same checks
+as Next. On the last step Enter does nothing: finishing creates something, so
+it takes a press of the button that says so.
+
+**Focus moves to the new step's heading.** When the step changes, the
+keyboard lands on the step's `h2`, which is focusable by script only. Without
+that, focus would stay on the Next button with a new page above it, and a
+screen reader would say nothing. The Wizard does not take focus when it first
+renders.
+
+**Back keeps what was typed.** A step's panel stays mounted once visited and
+is hidden rather than unmounted. Going Back finds text, choices and toggles
+as they were left, whether or not the product lifted that state out.
+
+**Every word is the product's.** The button labels and the stepper's words
+are required props. There are no English defaults.
+
+**Controlled or not.** `defaultStep` covers the common case. `step` with
+`onStepChange` is for a step kept in the URL or restored from storage. A
+controlled product decides whether to move. It never decides whether to
+check: `onStepChange` is called only after the checks pass.
+
+## Props
+
+### `Wizard`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `steps` | `WizardStep[]` | | Required. A `StepperStep` plus `content`, `canAdvance?`, `onNext?`, `error?` |
+| `step` | `string` | | The step shown, controlled |
+| `defaultStep` | `string` | first step | The step shown first, uncontrolled |
+| `onStepChange` | `(id) => void` | | Called after the checks pass |
+| `onFinish` | `() => void \| Promise<void>` | | Required. Called when Finish is pressed and the last step passes |
+| `onError` | `(error, stepId) => void` | | Receives a thrown `onNext`. Without it the error is rethrown |
+| `stepperLabel` | `string` | | Required |
+| `stateLabels` | `{ done, error, upcoming? }` | | Required |
+| `summary` | `(position, total) => ReactNode` | | Passed to the stepper |
+| `backLabel` | `ReactNode` | | Required |
+| `nextLabel` | `ReactNode` | | Required |
+| `finishLabel` | `ReactNode` | | Required |
+| `orientation` | `horizontal \| vertical` | `horizontal` | Stepper above the content, or beside it |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+### `WizardStep`
+
+| Field | Type | |
+| --- | --- | --- |
+| `content` | `ReactNode` | The step itself. Stays mounted once visited |
+| `canAdvance` | `() => boolean` | A synchronous check, run first |
+| `onNext` | `() => boolean \| void \| Promise<…>` | Run after `canAdvance`. `false` or a throw blocks |
+| `error` | `boolean` | Marks the step failed from outside |
 
 ---
 
@@ -8439,14 +9361,16 @@ every accent of the line; what a picture catches is shape.
 
 Source: https://lacodda.github.io/dowel/guides/linting
 
-Two conventions hold the system together, and both are easy to state and easy
+Three conventions hold the system together, and all are easy to state and easy
 to break:
 
 - **a component never writes a colour down** — it names one from the
   vocabulary, and the theme decides what the name means, in dark, in light and
   in each product's accent;
 - **no screen uses a native `<select>`** — the browser draws that popup itself,
-  in the operating system's chrome, and no CSS reaches inside it.
+  in the operating system's chrome, and no CSS reaches inside it;
+- **no date or number is formatted in the browser's language** — it is written
+  in the language the interface is.
 
 `dowel-ui` ships the rules that enforce them.
 
@@ -8563,6 +9487,40 @@ This rule is the line's oldest convention, from atlas, where it was written as
 because that is what people search the registry for; the rule is what keeps the
 promise the old name was carrying.
 :::
+
+## `no-implicit-locale`
+
+```tsx
+// ✗ The browser's language, whatever the interface is written in.
+date.toLocaleDateString([], { weekday: 'short' })
+count.toLocaleString()
+new Intl.DateTimeFormat(undefined, { dateStyle: 'long' })
+
+// ✓ The application's language, from one place.
+const locale = useLocale()
+date.toLocaleDateString(locale, { weekday: 'short' })
+new Intl.NumberFormat(locale).format(count)
+```
+
+A call with no locale, with `[]` or with `undefined` asks for the *browser's*
+language. When that differs from the interface's — an English product in a
+browser set to Russian — the screen shows English headings over Russian
+weekdays, and nothing is wrong enough to fail. kasl-server shipped exactly
+that.
+
+`useLocale()` from `dowel-ui` answers the question once: an explicit locale if
+you pass one, else the nearest `LocaleProvider`, else the page's
+`<html lang>`, else English. `<html lang>` is the attribute a screen reader
+already reads the page by, so a product that sets it for accessibility has set
+its date format too; it is watched, so switching language by changing it
+re-renders every date. The dowel primitives that format — `NumberFormat`,
+`RelativeTime`, `Calendar`, the pickers, `TimeField`, `NumberField` — all ask
+`useLocale()`, and their plain helpers (`formatNumber`, `formatRelative`,
+`formatTime`, `sortRows`) take the locale as a required argument.
+
+The rule reports the three `toLocale*String` methods and the `Intl`
+formatters. A variable passed as the locale is not reported: naming one is the
+decision the rule asks for.
 
 ---
 

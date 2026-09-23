@@ -53,6 +53,6 @@ The value, the arithmetic and the keyboard are the
 | `placeholder` | `string` | | Required — what the trigger says when empty |
 | `previousMonthLabel` | `string` | | Required |
 | `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | reader's own | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `name` | `string` | | Puts the value in the form |
 | `disabled` | `boolean` | `false` | |

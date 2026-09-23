@@ -54,9 +54,10 @@ reader can act on and which looks like a value; an empty `<time>` with no
 | --- | --- | --- | --- |
 | `value` | `Date \| number \| string` | | Whatever the data already holds |
 | `now` | `Date \| number` | read once at mount | What counts as now. Given, every row measures from the same moment |
-| `locale` | `string \| string[]` | the reader's | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `numeric` | `'auto' \| 'always'` | `'auto'` | `auto` gives "yesterday" where the language has the word |
 | `titleOptions` | `Intl.DateTimeFormatOptions` | medium date, short time | How the exact moment is written |
 
-`formatRelative(value, now?, locale?, options?)` gives the phrase alone, and
+`formatRelative(value, locale, now?, options?)` gives the phrase alone (the
+locale is required: a plain function has no provider to ask), and
 `relativeParts(value, now?)` the count and unit behind it.

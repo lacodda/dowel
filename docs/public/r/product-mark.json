@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "product-mark",
+  "type": "registry:ui",
+  "title": "ProductMark",
+  "description": "The product-mark primitive.",
+  "dependencies": [
+    "dowel-ui@^0.30.0"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "ui/product-mark.tsx",
+      "target": "@ui/product-mark.tsx",
+      "type": "registry:ui",
+      "content": "import { useId } from 'react'\nimport { cn } from 'dowel-ui'\nimport { markLevel, marks, type MarkName } from 'dowel-ui/marks'\n\n/*\n * ProductMark - a product's mark from the lacodda line, drawn at the level its\n * size calls for.\n *\n * Every product of the line has one mark, a hexagonal tile with a two-letter\n * code, in three levels that are a rule rather than options: from 64px it\n * carries the product's metaphor under the code, from 28px it is the code\n * alone and larger, and at 27px and under it is the tile filled with the\n * product's colour and a heavy code - a metaphor at sixteen pixels is noise,\n * and a thin outline disappears. A product that drew its own mark picked one\n * level and used it at every size, so the same mark was a smudge in the tab\n * strip and a bare tile on the About screen. Here the size is the only input,\n * and the level follows.\n *\n * The masters are the line's, drawn by its mark generator and shipped in the\n * package (`dowel-ui/marks`); nothing is redrawn here. The tile is dark in\n * both themes, as the line draws it everywhere - the mark is the product's\n * signature, not part of the screen's palette.\n *\n * A mark beside the product's name is decoration and is hidden from a reader,\n * who already has the name. Given `label`, it becomes an image with that name,\n * for the places where the mark stands alone.\n */\n\nexport interface ProductMarkProps {\n  /** Which mark: a product of the line, or `lacodda` for the line itself. */\n  product: MarkName\n  /** Its width and height in CSS pixels, which also choose its level. */\n  size?: number\n  /** Its name, when nothing next to it says which product it is. */\n  label?: string\n  className?: string\n}\n\nexport function ProductMark({ product, size = 24, label, className }: ProductMarkProps) {\n  // SVG ids are global to the document, and a two-colour mark names its\n  // gradient: two such marks on one screen would share the first one's. The\n  // id React makes is unique, but carries characters an `url(#...)` reference\n  // does not tolerate everywhere.\n  const id = `mark-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`\n  const markup = marks[product][markLevel(size)].replaceAll('{{id}}', id)\n\n  return (\n    <svg\n      width={size}\n      height={size}\n      viewBox=\"0 0 100 100\"\n      role={label ? 'img' : undefined}\n      aria-label={label}\n      aria-hidden={label ? undefined : true}\n      data-mark={product}\n      data-level={markLevel(size)}\n      className={cn('shrink-0', className)}\n      dangerouslySetInnerHTML={{ __html: markup }}\n    />\n  )\n}\n\n/** The line's own mark - λ on a graphite tile - for the places that say a\n * product belongs to the lacodda line. */\nexport function LineMark(props: Omit<ProductMarkProps, 'product'>) {\n  return <ProductMark product=\"lacodda\" {...props} />\n}\n"
+    }
+  ]
+}

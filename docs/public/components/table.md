@@ -36,7 +36,7 @@ const [sort, setSort] = useState<Sort>({ column: 'title', direction: 'asc' })
       </TableRow>
     </TableHead>
     <TableBody>
-      {sortRows(rows, sort, read).map((row) => (
+      {sortRows(rows, sort, read, { locale }).map((row) => (
         <TableRow key={row.id} selected={row.id === picked}>
           <TableCell>{row.title}</TableCell>
           <TableCell numeric><NumberFormat value={row.words} /></TableCell>

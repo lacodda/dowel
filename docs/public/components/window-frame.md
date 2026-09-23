@@ -6,7 +6,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#window-frame
 
-The three buttons and the eight resize strips, drawn inside a frame - the stand runs in a browser, so they render and stay inert.
+A title bar holding its open documents, and the eight resize strips, drawn inside a frame - the stand runs in a browser, so they render and stay inert.
 
 ## Notes
 
@@ -18,35 +18,48 @@ take them on at all is that a system title bar over an application title bar
 costs a strip of every laptop screen for nothing — scheda made the trade
 first, kilna copied it, and this is the copy.
 
-Four exports, used together:
+`TitleBar` is the bar, assembled; `ResizeEdges` goes once at the root beside
+it.
 
 ```tsx
-import { ResizeEdges, WindowButtons, useTitleBarGestures } from '@/components/ui/window-frame'
-
-function Titlebar() {
-  const gestures = useTitleBarGestures()
-  return (
-    <header className="flex h-9 items-center border-b border-line bg-bg" {...gestures}>
-      <Brand />
-      <Trail />
-      <div className="ml-auto flex h-full items-center">
-        <Bell />
-        <WindowButtons labels={t('shell', { returnObjects: true })} />
-      </div>
-    </header>
-  )
-}
+import { ResizeEdges, TitleBar } from '@/components/ui/window-frame'
+import { Tabs, TabsList, TabsTab } from '@/components/ui/tabs'
 
 function Shell() {
   return (
     <>
       <ResizeEdges />
-      <Titlebar />
+      <TitleBar labels={t('window', { returnObjects: true })} mark={<ProductMark />} actions={<Bell />}>
+        <Tabs value={active} onValueChange={select}>
+          <TabsList variant="bar" aria-label={t('openDocuments')}>
+            {documents.map((doc) => (
+              <TabsTab key={doc.id} value={doc.id} onClose={() => close(doc.id)} closeLabel={t('close', { name: doc.name })}>
+                {doc.name}
+              </TabsTab>
+            ))}
+          </TabsList>
+        </Tabs>
+      </TitleBar>
       <Outlet />
     </>
   )
 }
 ```
+
+The bar holds, left to right: the product's mark, where the system put the
+icon; whatever the window shows at the top — its open documents as
+[`Tabs`](/dowel/components/tabs/) with `variant="bar"`, a trail, or a title;
+a stretch that exists only to be grabbed; the product's own actions; and the
+three buttons. Inside [`AppShell`](/dowel/components/app-shell/) it goes in
+the `titlebar` slot, whose row is `--spacing-titlebar` tall.
+
+**The stretch never closes.** A window with twenty documents open would
+otherwise have no bar left to drag by, so the handle keeps a minimum width
+and the tabs scroll instead.
+
+For a bar the assembled one does not fit, the parts are exported:
+`WindowButtons`, `useTitleBarGestures()` to spread on your own bar, and
+`useMaximized()` for anything else that changes shape with the window.
 
 **Everything in the bar that is not a control is a handle.** The gestures
 ignore a press that lands on a button, a link, a field, a menu, a tab or a
@@ -73,6 +86,12 @@ the corners), positioned by inline style, invisible, above everything. They
 are `fixed` to the viewport, which is where a window's edges are; pass
 `className="absolute"` to put them on a box instead, as the stand does.
 
+**Close asks; it does not destroy.** Tauri's `close()` emits
+`closeRequested` before anything happens, so an unsaved-work guard listening
+for that request sees the button exactly as it sees the system's own close.
+There is no `onClose` to override it with, on purpose: a second way to close
+is a second place for the guard to be missed.
+
 **Outside Tauri it renders and does nothing.** Every call goes through a check
 for the Tauri bridge (`window.__TAURI_INTERNALS__`), so a browser, a test or
 a storybook gets the chrome without a thrown error on the first click. The
@@ -80,6 +99,16 @@ labels are the only thing it needs from you, and all four are required so
 they can be translated.
 
 ## Props
+
+### `TitleBar`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `labels` | `{ minimize, maximize, restore, close }` | | Required; passed to `WindowButtons` |
+| `mark` | `ReactNode` | | The product's mark, at the left edge |
+| `children` | `ReactNode` | | Tabs, a trail or a title |
+| `actions` | `ReactNode` | | The product's controls, before the window buttons |
+| `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `WindowButtons`
 

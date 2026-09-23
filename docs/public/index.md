@@ -19,7 +19,7 @@ the steps it has, what a component will and will not do for you.
 
 **v0.30.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
-for a product that does not draw with a browser, and ninety-four primitives, each with a page of its own
+for a product that does not draw with a browser, and a hundred and five primitives, each with a page of its own
 on [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in. Size now comes from the scale and is held there by a
 gate; a pointer target has a floor the set cannot fall under; and density is an

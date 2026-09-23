@@ -54,7 +54,7 @@ of the product's own fields would have one that is visibly not.
 | --- | --- | --- | --- |
 | `value` | `string \| null` | | `HH:MM`; `null` is empty |
 | `onValueChange` | `(value) => void` | | Fires on blur and Enter, not per key |
-| `locale` | `string` | reader's own | How the time is shown |
+| `locale` | `string` | the application's (`useLocale`) | How the time is shown |
 | `placeholder` | `string` | | |
 | `disabled`, `readOnly`, `required` | `boolean` | `false` | |
 

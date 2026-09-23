@@ -39,7 +39,9 @@ be typed into and the value stays a number.
 <NumberField value={total} format={{ style: 'currency', currency: 'EUR' }} />
 ```
 
-`locale` is left alone by default, which means the reader's own — state one
+`locale` is left alone by default, which means the application's language —
+the nearest `LocaleProvider` or the page's `<html lang>` (see
+[`no-implicit-locale`](/dowel/guides/linting/#no-implicit-locale)). State one
 only when the figure belongs to a place rather than to a person.
 
 **The stepper's buttons are `aria-hidden`.** The field already announces its
@@ -58,6 +60,6 @@ an invitation to click sixty times.
 | `step` | `number` | `1` | What the arrows change it by |
 | `largeStep` | `number` | | What PageUp and PageDown change it by |
 | `format` | `Intl.NumberFormatOptions` | | Currency, percent, precision |
-| `locale` | `Intl.LocalesArgument` | reader's own | |
+| `locale` | `string` | the application's (`useLocale`) | |
 | `unit` | `ReactNode` | | A caption beside the field |
 | `hideStepper` | `boolean` | `false` | |

@@ -1,0 +1,61 @@
+# ProductMark
+
+Source: https://lacodda.github.io/dowel/components/product-mark
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#product-mark
+
+Every mark of the line at the three levels, and the line's own λ.
+
+## Notes
+
+Every product of the line has one mark — a hexagonal tile with a two-letter
+code — in three levels that are a rule, not options:
+
+| Size | Level | What is drawn |
+| --- | --- | --- |
+| 64px and up | L | the tile, the code, and the product's metaphor under it |
+| 28–63px | M | the tile and a larger code, no metaphor |
+| 27px and under | S | the tile filled with the product's colour, a heavy code |
+
+```tsx
+<ProductMark product="kilna" size={18} />            {/* a title bar: S */}
+<ProductMark product="kilna" size={96} label="kilna" /> {/* an About screen: L */}
+<LineMark size={16} />                               {/* λ, the line itself */}
+```
+
+**The size is the only input.** A product that drew its own mark picked one
+level and used it everywhere, so the same mark was a smudge in a tab strip and
+a bare tile on an About screen. Here the level follows the size, and the
+boundaries are tested on both sides.
+
+**The masters are the line's, not redrawn.** They are drawn by the line's mark
+generator and ship in the package: as markup in `dowel-ui/marks`, which this
+component draws from, and as files in `dowel-ui/marks/<product>-<L|M|S>.svg`
+for whatever cannot run React — a favicon step, a window icon. The release
+gate regenerates the module from the files and compares, and checks each small
+tile against the accent the theme uses.
+
+**The tile is dark in both themes**, as the line draws it everywhere. A mark is
+the product's signature, not part of the screen's palette.
+
+**Two-colour marks get a gradient of their own.** SVG ids are global to the
+document; the masters name the gradient of a pair, and two such marks on one
+screen would share the first one's. The component gives each instance its own
+id.
+
+**A mark beside a name is decoration.** It is hidden from a reader, who
+already has the name. With `label` it becomes an image with that name, for a
+mark that stands alone.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `product` | `MarkName` | | A product of the line, or `lacodda` |
+| `size` | `number` | `24` | Width and height in CSS pixels; chooses the level |
+| `label` | `string` | | Makes it an image with this name |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`LineMark` takes the same props without `product`.
