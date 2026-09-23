@@ -2,7 +2,10 @@
 
 All notable changes to this project are documented in this file.
 
-## [0.30.0] - 2026-09-22
+## [0.30.0] - 2026-09-23
+
+### Bug Fixes
+- Tell the linter the probe runs in the page
 
 ### Documentation
 - Name the frame a screen sits in
@@ -13,6 +16,7 @@ All notable changes to this project are documented in this file.
 
 ### Testing
 - Record the baselines for the five shell sections
+- Run the browser once, before the workers start
 
 ## [0.29.1] - 2026-09-20
 
