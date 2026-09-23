@@ -1,0 +1,74 @@
+---
+title: Stepper
+description: The steps of a task too long for one screen and where you stand in them - drawn in shapes as well as colour, folding its labels when narrow.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/stepper.json
+```
+
+<Stand component="stepper" caption="Done, current, upcoming and failed steps; clickable steps; the fold in a narrow container; a vertical stepper." />
+
+## Notes
+
+Base UI has no stepper, so this one is written rather than wrapped. It is a
+picture of progress on its own. When the steps are a form, the
+[`Wizard`](/dowel/components/wizard/) puts one on top of the step's content
+and the Back / Next / Finish row. The two are separate because a product can
+show how far along something is without owning the form that moves it.
+
+```tsx
+<Stepper
+  label={t('import.steps')}
+  steps={steps}
+  current={job.step}
+  stateLabels={{ done: t('step.done'), error: t('step.error') }}
+  summary={(position, total) => t('step.position', { position, total })}
+/>
+```
+
+**An ordered list, and `aria-current="step"`.** Like
+[`Breadcrumbs`](/dowel/components/breadcrumbs/), the order is the meaning, so
+the steps are an `<ol>`. The step you are on is the one marked current, so a
+reader hears which of the names is in front of them.
+
+**Meaning does not rest on colour.** A done step draws a tick, a failed step
+an exclamation mark, the current one a filled number, the ones ahead an
+outlined number. The same states are written out for a screen reader in the
+words the product passes as `stateLabels`. The component has no strings of
+its own, so every word it shows or speaks comes from a prop.
+
+**Narrow, it keeps the marks and drops the words.** A horizontal stepper in a
+container narrower than `@xl` (36rem) shows every mark but only the current
+step's label. The other labels leave the screen but stay in the accessibility
+tree. `summary` adds the position in words, such as "Step 2 of 5", in the
+narrow form only. The fold uses the container's width, not the viewport's,
+because a wizard in a dialog is narrow on a wide screen. A vertical stepper
+never folds.
+
+**Going ahead is a decision.** Steps are buttons only when `onStepSelect` is
+given, and then only the steps already reached: done, failed and current.
+Clicking a step ahead is the usual way a wizard's validation gets skipped, so
+`reach="any"` has to be chosen on purpose. The Wizard goes further: a click
+forward still runs every check in between.
+
+## Props
+
+### `Stepper`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Required. The list's name for a reader |
+| `steps` | `StepperStep[]` | | Required. `{ id, label, description?, status? }` |
+| `current` | `string` | | Required. The id of the step being shown |
+| `stateLabels` | `{ done, error, upcoming? }` | | Required. The words a reader hears for each state |
+| `summary` | `(position, total) => ReactNode` | | "Step 2 of 5", shown only in the narrow form |
+| `orientation` | `horizontal \| vertical` | `horizontal` | Only horizontal folds |
+| `onStepSelect` | `(id) => void` | | Makes reachable steps buttons, and the list a `nav` |
+| `reach` | `visited \| any` | `visited` | `any` opens the steps ahead |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+`StepperStep.status` is `done` or `error`. Without it, a step's state comes
+from its position: before the current step is done, after it is upcoming.
