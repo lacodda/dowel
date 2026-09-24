@@ -135,9 +135,8 @@ test.describe('Dialog', () => {
     await page.goto('./dialog')
     await page.getByRole('button', { name: 'Edit the style' }).click()
     const actions = probe(page, 'dialog-actions')
-    const [remove, cancel, save] = await Promise.all(
-      ['Delete', 'Cancel', 'Save'].map((name) => box(actions.getByRole('button', { name, exact: true }))),
-    )
+    const named = (name: string) => box(actions.getByRole('button', { name, exact: true }))
+    const [remove, cancel, save] = [await named('Delete'), await named('Cancel'), await named('Save')]
     expect(remove.x + remove.width).toBeLessThan(cancel.x - 100)
     expect(cancel.x).toBeLessThan(save.x)
   })

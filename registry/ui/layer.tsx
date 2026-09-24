@@ -3,7 +3,7 @@ import {
   useContext,
   useLayoutEffect,
   useMemo,
-  useRef,
+  useState,
   type ReactNode,
   type RefObject,
 } from 'react'
@@ -117,25 +117,27 @@ export function LayerProvider({ above, mount, children }: LayerProviderProps) {
   // The nodes are made during the first render rather than in the effect. A
   // popup reads its `container` as it mounts, and a host that only appeared
   // on a second pass would let the first paint go to the body - the one frame
-  // in which the bug is still there. Refs and not state for the same reason:
-  // nothing renders because of them, so nothing should re-render for them.
-  const frame = useRef<HTMLElement | null>(null)
-  const host = useRef<HTMLElement | null>(null)
-  if (frame.current === null && typeof document !== 'undefined') {
-    frame.current = document.createElement('div')
-    host.current = document.createElement('div')
-    frame.current.append(host.current)
-  }
+  // in which the bug is still there. A lazy state initialiser rather than a
+  // ref filled in during render: it runs once, and nothing is read or written
+  // through a ref while rendering. The pair never changes, so nothing ever
+  // re-renders because of it.
+  const [layer] = useState<Layer & { frame: HTMLElement | null }>(() => {
+    if (typeof document === 'undefined') return { frame: null, host: { current: null } }
+    const frame = document.createElement('div')
+    const host = document.createElement('div')
+    frame.append(host)
+    return { frame, host: { current: host } }
+  })
 
   // A layout effect, so the host is in the document before the browser paints
   // anything portalled into it. A child's effect runs before its parent's,
   // which is fine: the parent's host already exists from its render, and the
   // parent attaches the whole branch when its own effect runs.
   useLayoutEffect(() => {
-    const outer = frame.current
-    const inner = host.current
+    const outer = layer.frame
+    const inner = layer.host.current
     if (outer === null || inner === null) return
-    outer.dataset.dowelLayer = above
+    outer.setAttribute('data-dowel-layer', above)
     // Marked as a portal host, which is what it is - and what keeps a reader
     // able to reach it. A modal overlay hides every sibling of its popup from
     // assistive technology when it opens, inside its own portal as much as
@@ -150,8 +152,8 @@ export function LayerProvider({ above, mount, children }: LayerProviderProps) {
     for (const rung of POPUP_RUNGS) inner.style.setProperty(rung, 'var(--z-layer-next)')
     ;(mount?.current ?? parent?.host.current ?? document.body).append(outer)
     return () => outer.remove()
-  }, [above, mount, parent])
+  }, [above, layer, mount, parent])
 
-  const value = useMemo<Layer>(() => ({ host }), [])
+  const value = useMemo<Layer>(() => ({ host: layer.host }), [layer])
   return <LayerContext.Provider value={value}>{children}</LayerContext.Provider>
 }
