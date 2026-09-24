@@ -56,6 +56,21 @@ pixels, and no reader could tell any of them apart.
   tokens={['tracking-caption', 'tracking-tight']}
 />
 
+The page itself is set in `base`: the theme gives `body` that size and its line
+height, so text nobody gave a class reads at the scale's own body size rather
+than the browser's 16px.
+
+<ScaleTable
+  kind="stroke"
+  caption="The weight of an icon's line. lucide draws at 2, tuned for its own 24px; at the 14 and 16px the line draws icons at, 2 reads heavier than the text beside it."
+  tokens={['icon-stroke']}
+/>
+
+The theme applies it to every lucide icon still on lucide's default width
+(`svg.lucide[stroke-width='2']`), in the base layer. An icon given a width of
+its own keeps it - a `strokeWidth` at the call site, `absoluteStrokeWidth`, or a
+`stroke-*` utility - and an icon from another set is not touched.
+
 ## Motion
 
 <ScaleTable
@@ -133,6 +148,20 @@ visible over whatever caused it.
 `h-9` used to appear in nine primitives — every field the set has — each
 spelling it out, which is why `Input` could not be made compact without editing
 `Input`. One decision made nine times gets one name.
+
+**What stands on the rows:**
+
+| Row | Fields | Controls |
+| --- | --- | --- |
+| `h-control` | `Input`, `DatePicker`, and `Select` and `Combobox` at `md` | `Button` at `md` |
+| `h-control-sm` | `Select` and `Combobox` at `sm` | `Button` at `sm`, a `line` tab of `Tabs` |
+| `h-control-lg` | `Select` and `Combobox` at `lg` | — |
+
+So a button beside a field of the same size is the same height at every
+density. `Button` at `xs` and the three icon sizes are deliberately off the
+rows: they sit inside something — a chat line, a chip, a table cell, a title
+bar — and are sized by it, with `target-min` keeping the hit area at the
+pointer floor.
 
 **Density is an attribute on a container, not a prop on a component:**
 

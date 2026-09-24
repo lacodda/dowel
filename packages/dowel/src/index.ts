@@ -149,8 +149,9 @@ export const radiusTokens = [
   'radius-inner',
 ] as const
 
-/** Type: sizes with their line heights, weights, and the two tracking steps
- * the products actually need. */
+/** Type: sizes with their line heights, weights, the two tracking steps the
+ * products actually need, and the weight of an icon's line - which is drawn
+ * beside the text and has to read at the same weight as it. */
 export const typeTokens = [
   'font-sans',
   'font-mono',
@@ -166,6 +167,7 @@ export const typeTokens = [
   'font-weight-semibold',
   'tracking-caption',
   'tracking-tight',
+  'icon-stroke',
 ] as const
 
 /** Motion. The durations are read directly rather than through a utility -

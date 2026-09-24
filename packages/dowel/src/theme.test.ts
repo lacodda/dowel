@@ -193,6 +193,24 @@ describe('base layer', () => {
   it('draws the focus ring in the accent', () => {
     expect(blockBody(':focus-visible')).toContain('var(--accent)')
   })
+
+  it('sets the page in the base step, not the browser default', () => {
+    // Without it, text nobody gave a class inherited 16px - a step and a half
+    // above the 12px beside it, in every product of the line.
+    const body = blockBody('\nbody {')
+    expect(body).toContain('font-size: var(--text-base);')
+    expect(body).toContain('line-height: var(--text-base--line-height);')
+  })
+
+  it("draws lucide's lines at the line's weight, and only where lucide chose none", () => {
+    expect(declarationsOf('--icon-stroke')).toEqual(['1.75'])
+    // Keyed on lucide's default attribute, so an icon given its own width -
+    // or one lucide computed for `absoluteStrokeWidth` - keeps it.
+    const layered = blockBody('@layer base {\n  svg.lucide')
+    expect(layered).toMatch(/svg\.lucide\[stroke-width='2'\]\s*\{\s*stroke-width: var\(--icon-stroke\);/)
+    // Unlayered, it would beat a `stroke-*` utility written on the icon.
+    expect(withoutComments).not.toMatch(/^svg\.lucide/m)
+  })
 })
 
 /*

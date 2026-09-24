@@ -14,7 +14,7 @@ interface Props {
   /** Custom-property names without the `--`, in the order they should read. */
   tokens: string[]
   /** What the swatch demonstrates. */
-  kind: 'radius' | 'shadow' | 'text' | 'tracking' | 'weight' | 'layer' | 'duration' | 'easing'
+  kind: 'radius' | 'shadow' | 'text' | 'tracking' | 'weight' | 'stroke' | 'layer' | 'duration' | 'easing'
   /** Shown above the rows. */
   caption?: string
 }
@@ -55,6 +55,12 @@ const themed = kind === 'shadow'
                 </span>
               )}
               {kind === 'weight' && <span style={`font-weight: var(--${name}); font-size: 14px`}>The quick brown fox</span>}
+              {kind === 'stroke' && (
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style={`stroke-width: var(--${name})`} aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+              )}
               {kind === 'duration' && <span class="bar" style={`transition-duration: var(--${name})`} />}
               {kind === 'easing' && <span class="bar" style={`transition-timing-function: var(--${name})`} />}
               {kind === 'layer' && <span class="layer-bar" style={`width: calc(${value} * 1.1%)`} />}

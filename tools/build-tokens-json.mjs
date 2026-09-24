@@ -208,6 +208,13 @@ const tokens = {
     semibold: number('font-weight-semibold'),
   },
 
+  icon: {
+    $type: 'number',
+    $description:
+      "The weight of an icon's line, in the icon's own units (lucide draws on a 24-unit grid). Lighter than lucide's default 2, because the line draws its icons at 14 and 16px, where 2 reads heavier than the text beside it.",
+    stroke: number('icon-stroke'),
+  },
+
   duration: {
     $type: 'duration',
     $description: 'Motion. Cut to nothing under `prefers-reduced-motion`.',

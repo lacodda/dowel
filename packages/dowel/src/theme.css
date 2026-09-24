@@ -901,7 +901,38 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  /* The base step, so text nobody gave a class reads at the scale's own body
+   * size. Without it that text inherited the browser's 16px - an empty
+   * state's heading and a card's name came out a step and a half above the
+   * 12px beside them, in every product of the line. */
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * How heavy an icon's line is.
+ *
+ * lucide draws at 2 by default, which is tuned for its own 24px; at the 14 and
+ * 16 the line actually uses, a 2px stroke reads heavier than the text beside
+ * it. 1.75 is the owner's call for the whole line (24.09), made here once
+ * rather than as a `strokeWidth` at every one of a few hundred call sites.
+ *
+ * Only an icon still on lucide's default is changed. `[stroke-width='2']` is
+ * how lucide writes the default, and an icon given another width - by a call
+ * site, or by `absoluteStrokeWidth`, which computes one - keeps it. In
+ * `@layer base` so a `stroke-*` utility on the icon wins too. A product that
+ * draws with some other icon set is untouched: the rule keys off lucide's own
+ * class.
+ */
+:root {
+  --icon-stroke: 1.75;
+}
+
+@layer base {
+  svg.lucide[stroke-width='2'] {
+    stroke-width: var(--icon-stroke);
+  }
 }
 
 /*
