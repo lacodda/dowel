@@ -139,6 +139,68 @@ describe('diff with nothing to compare', () => {
   })
 })
 
+describe('diff sees the whole directory of copies', () => {
+  const component = "import { cn } from 'dowel-ui'\nimport { days } from './calendar-math'\nexport const Calendar = () => null\n"
+  const helper = 'export function days() {\n  return 7\n}\n'
+
+  function catalogue() {
+    installPackage([
+      { name: 'calendar', type: 'registry:ui', files: [{ path: 'ui/calendar.tsx', content: component }] },
+      { name: 'calendar-math', type: 'registry:ui', files: [{ path: 'ui/calendar-math.tsx', content: helper }] },
+    ])
+  }
+
+  it('compares a helper that imports nothing from the package', () => {
+    // calendar-math is pure functions. Recognised by the package import alone,
+    // it was never compared, and kilna's copy drifted with nothing saying so.
+    catalogue()
+    file('src/ui/calendar.tsx', component)
+    file('src/ui/calendar-math.tsx', helper.replace('7', '8'))
+    run(['diff', '--json', '--cwd', directory])
+    const parsed = JSON.parse(printed()) as { changed: { name: string }[] }
+    expect(parsed.changed.map((entry) => entry.name)).toEqual(['calendar-math'])
+  })
+
+  it('does not claim a file that only shares a name, away from the copies', () => {
+    // The package import is what proves a copy; a helper borrows that proof
+    // from the copies beside it, and a file with neither is the product's own.
+    catalogue()
+    file('src/ui/calendar.tsx', component)
+    file('src/pages/calendar-math.tsx', 'export const page = 1\n')
+    run(['diff', '--json', '--cwd', directory])
+    expect((JSON.parse(printed()) as { changed: unknown[] }).changed).toEqual([])
+  })
+
+  it('names a file among the copies that has no twin in the registry', () => {
+    catalogue()
+    file('src/ui/calendar.tsx', component)
+    file('src/ui/calendar-math.tsx', helper)
+    file('src/ui/layer.tsx', 'export const layer = 1\n')
+    expect(run(['diff', '--cwd', directory])).toBe(0)
+    expect(printed()).toContain('Unchanged')
+    expect(printed()).toContain('Not from the registry')
+    expect(printed()).toContain('src/ui/layer.tsx')
+  })
+
+  it("leaves the product's own components and tests out of that list", () => {
+    catalogue()
+    file('src/ui/calendar.tsx', component)
+    file('src/ui/calendar.test.tsx', 'test file\n')
+    file('src/ui/AppSelect.tsx', 'export const AppSelect = 1\n')
+    file('src/views/layer.tsx', 'export const layer = 1\n')
+    run(['diff', '--json', '--cwd', directory])
+    expect((JSON.parse(printed()) as { local: string[] }).local).toEqual([])
+  })
+
+  it('keeps the list out of an answer about one component', () => {
+    catalogue()
+    file('src/ui/calendar.tsx', component)
+    file('src/ui/layer.tsx', 'export const layer = 1\n')
+    run(['diff', 'calendar', '--cwd', directory])
+    expect(printed()).not.toContain('Not from the registry')
+  })
+})
+
 describe('codemod writes only when asked', () => {
   it('leaves the file alone without --write', () => {
     file('src/a.tsx', '<div className="bg-muted" />')

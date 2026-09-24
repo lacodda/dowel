@@ -237,6 +237,53 @@ function commandCodemod(options: Options): Outcome {
   return 0
 }
 
+/** What has been copied in from the registry, and what sits among the copies
+ * looking like one without being one.
+ *
+ * A copy is recognised by its file name matching a catalogue item, and then by
+ * one of two things. Either it imports the package - the name alone would
+ * claim every `button.tsx` ever written - or it sits in a directory that holds
+ * a copy which does. The second half is what the first missed: `calendar-math`
+ * is pure functions and imports nothing from `dowel-ui`, and neither do ten
+ * other helpers the set ships, so a project's copy of one drifted from the
+ * registry and `diff` never said so. A helper is copied into the same
+ * directory as the component that imports it, which is how it is known.
+ *
+ * `local` is the other direction: a file named the way the registry names
+ * things - lower case, hyphenated - in a directory of copies, with no twin in
+ * the catalogue. kilna kept its popup layer that way, as `layer.tsx` beside
+ * the copies, and seven of them were patched to import it. Such a file is
+ * allowed; not being told it is there is how the copies it patched came to
+ * differ from the registry with no one able to say why. */
+function findCopies(
+  root: string,
+  catalogue: Catalogue,
+): { installed: { name: string; source: string }[]; local: string[] } {
+  const componentNames = new Set(
+    catalogue.items.filter((item) => item.type === 'registry:ui').map((item) => item.name),
+  )
+  const files = collectFiles(root).filter((path) => path.endsWith('.tsx'))
+  const baseOf = (path: string) => path.slice(path.lastIndexOf(sep) + 1).replace(/\.tsx$/, '')
+  const dirOf = (path: string) => path.slice(0, path.lastIndexOf(sep))
+
+  const named = files
+    .filter((path) => componentNames.has(baseOf(path)))
+    .map((path) => ({ path, name: baseOf(path), source: readFileSync(path, 'utf8') }))
+  const copyDirs = new Set(named.filter((copy) => copy.source.includes('dowel-ui')).map((copy) => dirOf(copy.path)))
+
+  const installed = named
+    .filter((copy) => copy.source.includes('dowel-ui') || copyDirs.has(dirOf(copy.path)))
+    .map(({ name, source }) => ({ name, source }))
+
+  const local = files
+    .filter((path) => copyDirs.has(dirOf(path)))
+    .filter((path) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(baseOf(path)) && !componentNames.has(baseOf(path)))
+    .map((path) => relative(root, path).split(sep).join('/'))
+    .sort()
+
+  return { installed, local }
+}
+
 /** Gather what `doctor` needs from a project on disk. */
 function readProject(root: string): ProjectFacts {
   const readJson = (path: string): Record<string, unknown> | undefined => {
@@ -263,23 +310,7 @@ function readProject(root: string): ProjectFacts {
 
   const catalogue = readCatalogue(root)
 
-  /* What has been copied in. A registry component is recognised by the file
-   * name matching a catalogue item and the file importing the package - the
-   * name alone would claim every `button.tsx` ever written. */
-  const installedComponents: { name: string; source: string }[] = []
-  if (catalogue) {
-    const componentNames = new Set(
-      catalogue.items.filter((item) => item.type === 'registry:ui').map((item) => item.name),
-    )
-    for (const path of collectFiles(root)) {
-      if (!path.endsWith('.tsx')) continue
-      const base = path.slice(path.lastIndexOf(sep) + 1).replace(/\.tsx$/, '')
-      if (!componentNames.has(base)) continue
-      const source = readFileSync(path, 'utf8')
-      if (!source.includes('dowel-ui')) continue
-      installedComponents.push({ name: base, source })
-    }
-  }
+  const installedComponents = catalogue ? findCopies(root, catalogue).installed : []
 
   return {
     root,
@@ -351,9 +382,27 @@ function commandDiff(options: Options): Outcome {
     changed.push({ name: component.name, hunks: hunks(diffLines(upstream, component.source)) })
   }
 
+  // Asked about one component, the answer is about that one; the files
+  // around it are a question about the whole directory.
+  const local = wanted ? [] : findCopies(root, catalogue).local
+
   if (options.json) {
-    process.stdout.write(`${JSON.stringify({ changed }, null, 2)}\n`)
+    process.stdout.write(`${JSON.stringify({ changed, local }, null, 2)}\n`)
     return 0
+  }
+
+  /* Printed whatever the diff says, including when every copy matches: a
+   * local file among the copies is exactly what makes "unchanged" true of the
+   * copies and misleading about the directory. */
+  const reportLocal = () => {
+    if (local.length === 0) return
+    process.stdout.write(
+      `\n${yellow('Not from the registry')} - named like a copy, with no twin in the catalogue:\n`,
+    )
+    for (const path of local) process.stdout.write(`  ${bold(path)}\n`)
+    process.stdout.write(
+      `${dim('Yours to keep. A copy that imports one of these differs from the registry because of it.')}\n`,
+    )
   }
 
   /* Nothing to compare is not the same as nothing differing. "0 components
@@ -370,6 +419,7 @@ function commandDiff(options: Options): Outcome {
   if (changed.length === 0) {
     const scope = wanted ? bold(wanted) : `${targets.length} component${targets.length === 1 ? '' : 's'}`
     process.stdout.write(`${green('Unchanged')}: ${scope} ${targets.length === 1 ? 'matches' : 'match'} the registry.\n`)
+    reportLocal()
     return 0
   }
 
@@ -391,6 +441,7 @@ function commandDiff(options: Options): Outcome {
     } from the registry.\n` +
       `${dim('That is allowed - a copied component is yours. Nothing here merges anything.')}\n`,
   )
+  reportLocal()
   return 0
 }
 

@@ -147,6 +147,26 @@ came with your installed package. It does not merge and will not offer to: the
 file is yours, and a tool that reconciled it would be taking back what the
 registry gave.
 
+**What counts as a copy.** A file named like a catalogue item that imports
+`dowel-ui` - or that sits in the same directory as one that does. The second
+half is for the helpers: `calendar-math`, `table-sort`, `diff-lines` and the
+rest are plain functions and import nothing from the package, so a copy of one
+could drift without `diff` ever looking at it.
+
+**What sits among the copies without being one.** A file named the way the
+registry names things - lower case, hyphenated - in a directory of copies, with
+no twin in the catalogue, is listed under *Not from the registry*. It is
+allowed; it is also the usual reason a copy differs. kilna kept its popup layer
+that way before the registry had one, and patched seven copies to import it:
+seven differences, and this is the line that says why.
+
+```console
+$ npx dowel diff --json | jq '.local'
+[
+  "src/components/ui/use-hotkeys.tsx"
+]
+```
+
 ## Machine-readable output
 
 Every command takes `--json`, and `--cwd <dir>` to look somewhere other than
