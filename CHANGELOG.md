@@ -2,6 +2,39 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.32.0] - 2026-09-24
+
+### Breaking Changes
+
+- **Stand on the control rows and size the icon at every size**
+Button sm is 32px tall at default density (28 under
+data-density="compact"); pin a height at the call site to keep 28. An
+explicit size-* on an icon inside icon-sm/icon-md now wins.
+
+- **A layer for popups inside overlays, a body that scrolls alone**
+DialogPopup, DrawerPopup and ConfirmDialogPopup no
+longer pad or scroll their content. Put the title and description in
+DialogHeader, the content in DialogBody and the buttons in
+DialogActions (Drawer*/ConfirmDialog* for the other two).
+
+### Bug Fixes
+- Let an icon keep the size it is given, across the set
+- Make the host once without reading a ref during render
+- Inherit the body's line height as a ratio, not a length
+
+### Build
+- Regenerate the registry, the docs mirror and llms.txt
+
+### Features
+- Stand on the control rows and size the icon at every size
+- Set the page in the base step and lighten lucide's line
+- A layer for popups inside overlays, a body that scrolls alone
+- Diff compares the helpers and names local files among copies
+- Measure the buttons, the dialog anatomy and the layers
+
+### Testing
+- Record the baselines for the new layer section and the resized controls
+
 ## [0.31.0] - 2026-09-23
 
 ### Breaking Changes
