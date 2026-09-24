@@ -199,7 +199,14 @@ describe('base layer', () => {
     // above the 12px beside it, in every product of the line.
     const body = blockBody('\nbody {')
     expect(body).toContain('font-size: var(--text-base);')
-    expect(body).toContain('line-height: var(--text-base--line-height);')
+    // A ratio, so an element that sets only its own size inherits a line
+    // height in proportion to it rather than the body's 20px - and the ratio
+    // is the base step's own pair, not a number of its own.
+    const ratio = body.match(/line-height: calc\((\d+) \/ (\d+)\);/)
+    expect(ratio, 'the line height is not a ratio').not.toBeNull()
+    const size = Number(declarationsOf('--text-base')[0]!.replace('px', ''))
+    const line = Number(declarationsOf('--text-base--line-height')[0]!.replace('px', ''))
+    expect([Number(ratio![1]), Number(ratio![2])]).toEqual([line, size])
   })
 
   it("draws lucide's lines at the line's weight, and only where lucide chose none", () => {

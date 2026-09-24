@@ -904,9 +904,17 @@ body {
   /* The base step, so text nobody gave a class reads at the scale's own body
    * size. Without it that text inherited the browser's 16px - an empty
    * state's heading and a card's name came out a step and a half above the
-   * 12px beside them, in every product of the line. */
+   * 12px beside them, in every product of the line.
+   *
+   * The line height is the base step's own 20 over 14, written as a ratio
+   * rather than read from `--text-base--line-height`, and that is deliberate.
+   * A length is inherited as a length: with 20px here, every element that
+   * sets a size of its own without a line height - a 10px chart label -
+   * inherited 20px and stood five pixels taller, found in the pictures of
+   * the stand. A ratio is inherited as a ratio. The theme test holds the two
+   * numbers to the tokens. */
   font-size: var(--text-base);
-  line-height: var(--text-base--line-height);
+  line-height: calc(20 / 14);
   -webkit-font-smoothing: antialiased;
 }
 
