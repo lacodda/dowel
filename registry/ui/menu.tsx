@@ -52,7 +52,7 @@ export const menuItemVariants = cva(
     // so one rule covers both and they cannot disagree.
     'data-[highlighted]:bg-soft data-[highlighted]:text-text',
     'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-    '[&_svg]:size-3.5 [&_svg]:shrink-0',
+    '[&_svg:not([class*=size-])]:size-3.5 [&_svg]:shrink-0',
   ],
   {
     variants: {

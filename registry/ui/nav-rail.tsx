@@ -153,7 +153,7 @@ function NavRailEntry({
       onClick: soon ? undefined : () => onSelect?.(item.id),
       className: cn(
         entryClasses[layout],
-        '[&_svg]:size-4 [&_svg]:shrink-0',
+        '[&_svg:not([class*=size-])]:size-4 [&_svg]:shrink-0',
         'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
         soon
           ? 'cursor-default text-faint'

@@ -78,7 +78,7 @@ export const selectItemVariants = cva([
   // it, so the row reads as chosen at a glance and not only under the eye.
   'data-[selected]:font-medium data-[selected]:text-accent',
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-  '[&_svg]:size-3.5 [&_svg]:shrink-0',
+  '[&_svg:not([class*=size-])]:size-3.5 [&_svg]:shrink-0',
 ])
 
 /** The root. `multiple` turns `value` into an array; otherwise controlled with

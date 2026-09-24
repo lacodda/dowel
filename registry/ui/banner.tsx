@@ -25,7 +25,7 @@ import { cn } from 'dowel-ui'
 export const bannerVariants = cva(
   [
     'flex w-full items-center gap-3 border-b px-4 py-2 text-sm',
-    '[&_svg]:size-4 [&_svg]:shrink-0',
+    '[&_svg:not([class*=size-])]:size-4 [&_svg]:shrink-0',
   ],
   {
     variants: {

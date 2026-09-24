@@ -85,7 +85,7 @@ function SectionNavRow({
       onClick: () => onSelect?.(item.id),
       className: cn(
         'flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-sm text-dim no-underline transition-colors',
-        'hover:bg-soft hover:text-text [&_svg]:size-4 [&_svg]:shrink-0',
+        'hover:bg-soft hover:text-text [&_svg:not([class*=size-])]:size-4 [&_svg]:shrink-0',
         'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
         active && 'bg-accent-soft text-text [&_svg]:text-accent',
       ),
