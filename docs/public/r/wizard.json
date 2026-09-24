@@ -5,7 +5,7 @@
   "title": "Wizard",
   "description": "A Stepper with the current step's content under it and the Back / Next / Finish row that walks through the steps - checking each one before it lets the user past. The Stepper alone shows progress; this is the form that makes it, and a product that only needs the picture should not install the form.",
   "dependencies": [
-    "dowel-ui@^0.31.0"
+    "dowel-ui@^0.32.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/button.json",

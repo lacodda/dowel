@@ -6,7 +6,7 @@
   "description": "The question this answers is \"how did this read before, and how does it read now\" - a version against the one before it, a proposal against what is there, a file against what is on disk. Not a code review: there is no staging, no comment, nothing to accept. It is for looking.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.31.0"
+    "dowel-ui@^0.32.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/copy-button.json",

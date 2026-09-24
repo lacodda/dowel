@@ -5,7 +5,7 @@
   "title": "NotificationBell",
   "description": "A bell that is always lit is a bell nobody reads, so the count is the product's decision and this draws it: nothing at zero, the number past that, `9+` past nine. Pressing it does not leave the screen - the last few entries open under it and the whole history is one more click, which is the shape every product converged on once the first one tried a page.",
   "dependencies": [
-    "dowel-ui@^0.31.0"
+    "dowel-ui@^0.32.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/button.json",
