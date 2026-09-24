@@ -27,7 +27,7 @@ the steps it has, what a component will and will not do for you.
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and five primitives, each with a page of its own on
+a hundred and six primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose. Dates
 and numbers are written in the application's language, never the browser's. Size now comes from the scale and is held there by a
@@ -575,7 +575,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and five of them.
+A single component: Button, Dialog, Select. A hundred and six of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -1717,8 +1717,52 @@ a red button is not a warning if everything is red.
 
 ## Sizes
 
-Two text sizes and two icon sizes. An icon button is square by construction
-rather than by a padding that happens to match.
+Three text sizes and three icon sizes. An icon button is square by
+construction rather than by a padding that happens to match.
+
+| Size | Height | Icon | For |
+| --- | --- | --- | --- |
+| `md` | `h-control` — 36px, 32 compact, 40 comfortable | 16px | the default: a toolbar, a form, a dialog's actions |
+| `sm` | `h-control-sm` — 32px, 28 compact, 36 comfortable | 14px | beside a field at `sm`, a dense toolbar |
+| `xs` | 24px | 12px | inside something — a chat line, a chip, a table cell |
+| `icon-md` | 32px square | 16px | |
+| `icon-sm` | 28px square | 14px | a title bar, a panel header |
+| `icon-xs` | 20px square | 12px | inside a row; the hit area stays 24px |
+
+**`md` and `sm` stand on the control rows**, the same rows every field of the
+set stands on, so a button beside a field of the same size is the same height
+— and `data-density` on a container reaches the button along with the field.
+They used to be `h-9` and `h-7` literally, and a compact form came out with
+32px fields beside 36px buttons. See
+[control height and density](/dowel/reference/scales/#control-height-and-density).
+
+**`xs` and `icon-xs` are below the pointer floor on purpose** and grow their
+hit area to 24px with `target-min`, so the glyph stays small and the target
+does not.
+
+## An icon in a text button
+
+Put the icon in and give it no size: **every size sizes the icon inside it** —
+16px at `md`, 14 at `sm`, 12 at `xs`.
+
+```tsx
+<Button variant="primary">
+  <Plus />
+  New style
+</Button>
+```
+
+A lucide icon draws at its own 24px unless something sizes it, and a text
+button used to size nothing — so every icon in a text button across the line
+was taller than the text beside it, fixed at each call site by a `size-4` that
+the next call site forgot.
+
+**An icon with a size of its own keeps it.** The button sizes only an svg with
+no `size-*` class: `[&_svg:not([class*=size-])]:size-4`. Without the guard the
+rule is a descendant selector — one class and one element — and it outranks
+the single class on the icon, so `<Plus className="size-2.5" />` in an icon
+button drew at 14px and nothing said why. The same guard is on every primitive
+of the set that sizes its icons, and a gate holds it.
 
 ## States
 
@@ -1740,7 +1784,7 @@ a link does none of that.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `variant` | `primary \| ghost \| soft \| danger \| icon` | `ghost` | What the button is for |
-| `size` | `sm \| md \| icon-sm \| icon-md` | `md` | |
+| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `md` | See [Sizes](#sizes) |
 | `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
@@ -2807,10 +2851,12 @@ accident would be a loss.
     Delete project
   </ConfirmDialogTrigger>
   <ConfirmDialogPopup>
-    <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
-    <ConfirmDialogDescription>
-      Everything in it goes too. This cannot be undone.
-    </ConfirmDialogDescription>
+    <ConfirmDialogHeader>
+      <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
+      <ConfirmDialogDescription>
+        Everything in it goes too. This cannot be undone.
+      </ConfirmDialogDescription>
+    </ConfirmDialogHeader>
     <ConfirmDialogActions>
       <Button render={<ConfirmDialogClose />}>Cancel</Button>
       <Button variant="danger" onClick={remove}>Delete</Button>
@@ -2822,6 +2868,13 @@ accident would be a loss.
 The parts are exposed rather than wrapped in one component with `title` and
 `footer` props — a dialog that owns its own close button owns a word for it,
 and that is a word the product cannot translate.
+
+The anatomy is [Dialog's](/dowel/components/dialog/#anatomy), taken from it:
+`ConfirmDialogHeader` for the question, `ConfirmDialogBody` when what the
+answer takes with it runs long enough to scroll, and `ConfirmDialogActions`
+pinned to the bottom. The popup is capped at the window, which it did not
+promise before — a long list of what a deletion takes pushed both answers off
+the bottom edge.
 
 ## Props
 
@@ -2840,7 +2893,7 @@ both on for an alert dialog, which is the whole difference from Dialog.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's |
+| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's - and it has none of Dialog's large ones: a question that needs an editor's width is an editor, and belongs in a Dialog |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 It renders its own portal and its own backdrop, so there is nothing to arrange
@@ -2851,9 +2904,11 @@ around it.
 | Part | | |
 | --- | --- | --- |
 | `ConfirmDialogTrigger` | | What opens it. `render` to use your own button |
+| `ConfirmDialogHeader` | `action` | The question and what it costs |
 | `ConfirmDialogTitle` | | The question. The popup's `aria-labelledby` points at it |
 | `ConfirmDialogDescription` | | What the answer costs. The popup's `aria-describedby` |
-| `ConfirmDialogActions` | | Right-aligned row for the two answers |
+| `ConfirmDialogBody` | | What the answer takes with it, scrolling if it runs long |
+| `ConfirmDialogActions` | `start` | Pinned to the bottom, right-aligned row for the two answers |
 | `ConfirmDialogClose` | | Closes it. `render` to use your own button |
 
 ## Notes
@@ -3246,18 +3301,57 @@ reader returns to. A drawer can be left open; a dialog is answered and gone.
 
 ```tsx
 <Dialog open={open} onOpenChange={setOpen}>
-  <DialogPopup size="sm">
-    <DialogTitle>{t('deleteDraft')}</DialogTitle>
-    <DialogDescription>{t('deleteDraftHint')}</DialogDescription>
-    <DialogActions>
+  <DialogPopup size="xl">
+    <DialogHeader
+      action={
+        <DialogClose render={<Button variant="icon" size="icon-sm" aria-label={t('close')} />}>
+          <X />
+        </DialogClose>
+      }
+    >
+      <DialogTitle>{t('editStyle')}</DialogTitle>
+      <DialogDescription>{t('editStyleHint')}</DialogDescription>
+    </DialogHeader>
+    <DialogBody>{/* the form */}</DialogBody>
+    <DialogActions start={<Button variant="danger" onClick={remove}>{t('delete')}</Button>}>
       <DialogClose render={<Button>{t('cancel')}</Button>} />
-      <Button variant="danger" onClick={remove}>
-        {t('delete')}
+      <Button variant="primary" onClick={save}>
+        {t('save')}
       </Button>
     </DialogActions>
   </DialogPopup>
 </Dialog>
 ```
+
+## Anatomy
+
+The popup is a column of three parts, and **only the body scrolls**:
+
+| Part | What it does |
+| --- | --- |
+| `DialogHeader` | The title and the line under it, with an `action` beside them — a close button, a menu. It stays at the top. |
+| `DialogBody` | Takes the height the other two leave, and scrolls inside it when there is more than fits. |
+| `DialogActions` | Pinned to the bottom. The answer sits on the right; `start` holds the action that is not the answer — "Delete" on an editor whose question is "Save?" — at the other end of the row. |
+
+The popup scrolled as a whole before, and a dialog with more in it than the
+window is tall took its own buttons with it: on a 1280×720 window, the "Save"
+of kilna's style editor stood 137px below the bottom edge. Now the column is
+capped at the window, the header and the actions do not shrink, and the body
+alone gives way.
+
+The popup has no padding of its own — each part carries it — so the body's
+scroll runs edge to edge. A dialog without a header or without actions still
+has its edges: a body that is first or last in the popup takes the padding the
+missing part would have given.
+
+## Popups inside it
+
+A select, a menu, a date picker or a tooltip opened inside the dialog opens
+**above** it, and is not clipped by the body's scroll. The content sits in a
+[layer](/dowel/components/layer/): the popup portals into a host raised one
+rung above the modal, inside the dialog's own portal, so the focus trap counts
+it as the dialog's and a screen reader can reach it. Nothing to do at the call
+site — every popup of the set takes the layer it was opened in.
 
 ## Notes
 
@@ -3272,9 +3366,8 @@ popup to its own title. What is ours is the clothes and the motion.
 **It never grows taller than the window.** A dialog with more in it than the
 window is tall would otherwise centre itself and hang off both ends — the
 title out of reach above the viewport, the buttons below it. The popup is
-capped at the viewport height and scrolls inside itself, and that scroll does
-not reach the page behind. Found on a release editor in a consuming product,
-which is the shape that does it: half a dozen fields and a row of actions.
+capped at the viewport height at every size, the body scrolls inside it, and
+that scroll does not reach the page behind.
 
 **Give it a title.** `DialogTitle` is what names the dialog to a screen
 reader; without one the popup is announced as an unlabelled region. If the
@@ -3287,14 +3380,16 @@ visually hidden.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm` \| `md` \| `lg` | `md` | Width; the height is capped at the viewport in every one |
+| `size` | `sm` \| `md` \| `lg` \| `xl` \| `full` | `md` | Width: 24, 28, 40 and 48rem, and the window less a margin. The height is capped at the viewport in every one; `full` sets it, so the body fills the window while its content loads |
 | `backdrop` | `boolean` | `true` | The popup draws the scrim itself. Turn it off only where the dialog is shown alongside other things on purpose - a gallery, a screenshot |
 | `container` | `Element` | `document.body` | Where to portal to |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
-`Dialog`, `DialogTrigger`, `DialogClose`, `DialogTitle`, `DialogDescription`
-and `DialogActions` take the props their Base UI parts take; `render` composes
-each with your own element. `DialogBackdrop` is exported for the rare case of
+`DialogHeader` takes `action`, and `DialogActions` takes `start` - both a
+`ReactNode`; with `DialogBody` they are plain elements and take a `div`'s props.
+`Dialog`, `DialogTrigger`, `DialogClose`, `DialogTitle` and `DialogDescription`
+take the props their Base UI parts take; `render` composes each with your own
+element. `DialogBackdrop` is exported for the rare case of
 drawing the scrim yourself, and is not needed otherwise.
 
 ---
@@ -3585,11 +3680,11 @@ swiped away.
 <Drawer swipeDirection="right">
   <DrawerTrigger render={<Button />}>Filters</DrawerTrigger>
   <DrawerPopup side="right">
-    <DrawerTitle>Filters</DrawerTitle>
-    <DrawerDescription>Narrow the list down.</DrawerDescription>
-
-    {/* the controls */}
-
+    <DrawerHeader>
+      <DrawerTitle>Filters</DrawerTitle>
+      <DrawerDescription>Narrow the list down.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerBody>{/* the controls */}</DrawerBody>
     <DrawerActions>
       <Button render={<DrawerClose />}>Cancel</Button>
       <Button variant="primary">Apply</Button>
@@ -3600,6 +3695,15 @@ swiped away.
 
 `DrawerPopup` renders its own portal, backdrop and viewport, so there is
 nothing to arrange around it.
+
+The anatomy is [Dialog's](/dowel/components/dialog/#anatomy), taken from it
+rather than copied: `DrawerHeader` stays at the top, `DrawerBody` scrolls,
+and `DrawerActions` is pinned to the bottom edge with a `start` slot for the
+action that is not the answer. The panel used to scroll as a whole and took
+its buttons with it. A menu, a select or a tooltip opened inside the drawer
+opens above it: the content sits in a [layer](/dowel/components/layer/) — the
+menu on a row of kilna's assistant chat opened underneath the drawer until it
+did.
 
 ### Match the swipe to the side
 
@@ -3634,6 +3738,7 @@ another.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `side` | `right \| left \| bottom` | `right` | The edge it comes from, and the axis it slides along |
+| `size` | `sm \| md \| lg \| xl \| full` | `md` | Across the edge it comes from: the width of a side panel (20, 24, 32, 48rem, the window less a margin), the height cap of a sheet (40, 80, 90vh, the window) - `full` sets the sheet's height |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### The rest
@@ -3641,9 +3746,11 @@ another.
 | Part | | |
 | --- | --- | --- |
 | `DrawerTrigger` | | What opens it. `render` to use your own button |
+| `DrawerHeader` | `action` | The title and the line under it, with an action beside them; stays put |
 | `DrawerTitle` | | The popup's `aria-labelledby` points at it |
 | `DrawerDescription` | | The popup's `aria-describedby` |
-| `DrawerActions` | | Pushed to the bottom of the panel, right-aligned |
+| `DrawerBody` | | The part that scrolls |
+| `DrawerActions` | `start` | Pinned to the bottom of the panel, right-aligned; `start` at the other end |
 | `DrawerClose` | | Closes it. `render` to use your own button |
 
 ## Notes
@@ -3665,8 +3772,9 @@ forgotten, because a drawer covers only one edge and the rest of the page looks
 usable. It is not — Base UI marks it inert, so Tab cannot walk off into a page
 the user cannot see they are editing.
 
-**`DrawerActions` sits at the bottom.** `mt-auto`, so the buttons stay at the
-foot of a tall panel rather than wandering up it when there is little content.
+**`DrawerActions` sits at the bottom.** `mt-auto` and `shrink-0`, so the
+buttons stay at the foot of a tall panel whether there is little in it or more
+than fits.
 
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
@@ -4456,6 +4564,110 @@ is a component rather than something the caller assembles.
 | `label` | `ReactNode` | | The name of the fact |
 | `children` | `ReactNode` | | What it is |
 | `className` | `string` | | Dresses the pair when stacked, the term in rows |
+
+---
+
+# Layer
+
+Source: https://lacodda.github.io/dowel/components/layer
+
+FENCE0 
+
+It lands in `components/ui/layer.tsx`. Every overlay and every popup of the set
+imports it, so it arrives with the first of them you install - there is
+nothing to wire by hand.
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#layer
+
+A select in a dialog, a select in a popover, and a popover in a dialog with a select and a tooltip in it - each opening above what opened it.
+
+## What it solves
+
+The [stacking scale](/dowel/reference/scales/#stacking-order) is a flat
+ladder, and every popup portals to the document body, so the ladder alone
+decides who covers whom. It has nothing to say about a popup opened *inside*
+an overlay: a date picker in a dialog is a 40 beside a 60, and the month draws
+under the dialog that asked for it.
+
+Two fixes look right and are not. Portalling the popup *into* the overlay puts
+it inside a box that scrolls, and a scroll box clips it - a month with one row
+of days showing. Raising the popup's own number works exactly once: it is then
+above every overlay, including the ones it is not in.
+
+So the popup stays where nothing clips it and the **layer** travels. An
+overlay opens a host inside its own portal and raises the popup rungs there; a
+popup opened anywhere within the overlay portals into that host and reads the
+raised value through ordinary CSS inheritance.
+
+## Usage
+
+The set's overlays - Dialog, Drawer, ConfirmDialog, Popover, CommandPalette -
+open a layer for their content, and its popups - Select, Combobox, Menu,
+ContextMenu, Popover, PreviewCard, Tooltip - portal into the layer they were
+opened in. A product writes nothing for them.
+
+A product's own overlay does the same, with the rung it stands on:
+
+```tsx
+function Stage({ children }: { children: ReactNode }) {
+  return (
+    <div className="fixed inset-0 bg-bg [z-index:var(--z-overlay)]">
+      <LayerProvider above="overlay">{children}</LayerProvider>
+    </div>
+  )
+}
+```
+
+A product's own popup takes the host the same way the set's do:
+
+```tsx
+const host = usePopupContainer()
+return <Base.Portal container={container ?? host}>…</Base.Portal>
+```
+
+## Notes
+
+**The floor is worked out by the stylesheet.** A layer's floor is
+`calc(max(var(--z-modal), var(--z-layer, 0)) + 1)` - read from the theme where
+the ladder is declared. Renumbering the ladder moves every floor with it, and
+there is no second copy of the numbers to drift.
+
+**A layer inside a layer keeps climbing.** A popover opened in a dialog is a
+layer of its own, so a select inside it clears the popover and not only the
+dialog: 60 for the dialog, 61 for the popover, 62 for the select.
+
+**The layer lives inside the overlay's portal**, and that is for a reader, not
+for the stacking. A modal marks everything outside its portal `aria-hidden`,
+and a layer beside the portal was hidden with the page: the menu in a drawer
+worked for a pointer and did not exist for a screen reader. Inside the portal,
+the popups count as the overlay's own. An overlay passes its portal as
+`mount`; without it the layer goes into the layer it was opened in, or onto
+the body.
+
+**Two nodes, not one.** The floor is computed from the rung the host inherits,
+and the host then redefines that rung - on one element that is a cycle, which
+CSS answers by making both values invalid. An outer frame works the floor out
+and an inner host publishes it. Neither draws anything or makes a stacking
+context.
+
+## API
+
+### `LayerProvider`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `above` | `popup \| menu \| floating \| overlay \| modal \| palette` | | The rung the overlay stands on |
+| `mount` | `RefObject<HTMLElement \| null>` | | The overlay's own portal node. Without it, the layer it was opened in, or the body |
+
+### `usePopupContainer()`
+
+Where a popup opened here should portal to: the host of the layer it is in, or
+`undefined` outside every overlay - which a portal reads as the body.
+
+### `layerFloor(rung)`
+
+The CSS expression a layer's floor is declared with, for a product that needs
+to place something of its own on it.
 
 ---
 
@@ -9675,12 +9887,32 @@ came with your installed package. It does not merge and will not offer to: the
 file is yours, and a tool that reconciled it would be taking back what the
 registry gave.
 
+**What counts as a copy.** A file named like a catalogue item that imports
+`dowel-ui` - or that sits in the same directory as one that does. The second
+half is for the helpers: `calendar-math`, `table-sort`, `diff-lines` and the
+rest are plain functions and import nothing from the package, so a copy of one
+could drift without `diff` ever looking at it.
+
+**What sits among the copies without being one.** A file named the way the
+registry names things - lower case, hyphenated - in a directory of copies, with
+no twin in the catalogue, is listed under *Not from the registry*. It is
+allowed; it is also the usual reason a copy differs. kilna kept its popup layer
+that way before the registry had one, and patched seven copies to import it:
+seven differences, and this is the line that says why.
+
+```console
+$ npx dowel diff --json | jq '.local'
+[
+  "src/components/ui/use-hotkeys.tsx"
+]
+```
+
 ## Machine-readable output
 
 Every command takes `--json`, and `--cwd <dir>` to look somewhere other than
 here. `NO_COLOR` is honoured.
 
- FENCE6
+ FENCE7
 
 ---
 
@@ -9789,6 +10021,20 @@ Overlays sit on named layers rather than on numbers picked in the moment:
 A component reads these directly — `[z-index:var(--z-modal)]` — because
 Tailwind has no z-index namespace and `z-50` would be a literal fifty with
 nothing to say about what it covers.
+
+### A popup inside an overlay
+
+The ladder answers "who covers whom" for things on the page, and has nothing to
+say about a popup opened *inside* an overlay: a select in a dialog is a 30
+beside a 60, a menu in a drawer the same, a select in a popover a 30 beside a
+40. Each opens underneath the thing that asked for it.
+
+So every overlay opens a [layer](/dowel/components/layer/) for its content — a
+host inside its own portal where the popup rungs are raised one above the
+overlay, worked out by the stylesheet from the ladder — and every popup
+portals into the layer it was opened in. A select in a popover in a dialog
+climbs to 62 without anyone writing a number. Nothing to do at the call site;
+a product's own full-screen stage takes `LayerProvider above="overlay"`.
 
 ---
 
@@ -10142,6 +10388,19 @@ Letter spacing, for the two cases that need it: the uppercase caption, and a lar
 - `--tracking-caption`
 - `--tracking-tight`
 
+The page itself is set in `base`: the theme gives `body` that size and its line
+height, so text nobody gave a class reads at the scale's own body size rather
+than the browser's 16px.
+
+The weight of an icon's line. lucide draws at 2, tuned for its own 24px; at the 14 and 16px the line draws icons at, 2 reads heavier than the text beside it.
+
+- `--icon-stroke`
+
+The theme applies it to every lucide icon still on lucide's default width
+(`svg.lucide[stroke-width='2']`), in the base layer. An icon given a width of
+its own keeps it - a `strokeWidth` at the call site, `absoluteStrokeWidth`, or a
+`stroke-*` utility - and an icon from another set is not touched.
+
 ## Motion
 
 `quick` for a colour or an opacity that should feel immediate, `base` for something that moves, `slow` for something arriving from off-screen.
@@ -10223,6 +10482,20 @@ visible over whatever caused it.
 `h-9` used to appear in nine primitives — every field the set has — each
 spelling it out, which is why `Input` could not be made compact without editing
 `Input`. One decision made nine times gets one name.
+
+**What stands on the rows:**
+
+| Row | Fields | Controls |
+| --- | --- | --- |
+| `h-control` | `Input`, `DatePicker`, and `Select` and `Combobox` at `md` | `Button` at `md` |
+| `h-control-sm` | `Select` and `Combobox` at `sm` | `Button` at `sm`, a `line` tab of `Tabs` |
+| `h-control-lg` | `Select` and `Combobox` at `lg` | — |
+
+So a button beside a field of the same size is the same height at every
+density. `Button` at `xs` and the three icon sizes are deliberately off the
+rows: they sit inside something — a chat line, a chip, a table cell, a title
+bar — and are sized by it, with `target-min` keeping the hit area at the
+pointer floor.
 
 **Density is an attribute on a container, not a prop on a component:**
 

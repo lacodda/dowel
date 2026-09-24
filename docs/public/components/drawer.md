@@ -33,11 +33,11 @@ swiped away.
 <Drawer swipeDirection="right">
   <DrawerTrigger render={<Button />}>Filters</DrawerTrigger>
   <DrawerPopup side="right">
-    <DrawerTitle>Filters</DrawerTitle>
-    <DrawerDescription>Narrow the list down.</DrawerDescription>
-
-    {/* the controls */}
-
+    <DrawerHeader>
+      <DrawerTitle>Filters</DrawerTitle>
+      <DrawerDescription>Narrow the list down.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerBody>{/* the controls */}</DrawerBody>
     <DrawerActions>
       <Button render={<DrawerClose />}>Cancel</Button>
       <Button variant="primary">Apply</Button>
@@ -48,6 +48,15 @@ swiped away.
 
 `DrawerPopup` renders its own portal, backdrop and viewport, so there is
 nothing to arrange around it.
+
+The anatomy is [Dialog's](/dowel/components/dialog/#anatomy), taken from it
+rather than copied: `DrawerHeader` stays at the top, `DrawerBody` scrolls,
+and `DrawerActions` is pinned to the bottom edge with a `start` slot for the
+action that is not the answer. The panel used to scroll as a whole and took
+its buttons with it. A menu, a select or a tooltip opened inside the drawer
+opens above it: the content sits in a [layer](/dowel/components/layer/) — the
+menu on a row of kilna's assistant chat opened underneath the drawer until it
+did.
 
 ### Match the swipe to the side
 
@@ -82,6 +91,7 @@ another.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `side` | `right \| left \| bottom` | `right` | The edge it comes from, and the axis it slides along |
+| `size` | `sm \| md \| lg \| xl \| full` | `md` | Across the edge it comes from: the width of a side panel (20, 24, 32, 48rem, the window less a margin), the height cap of a sheet (40, 80, 90vh, the window) - `full` sets the sheet's height |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### The rest
@@ -89,9 +99,11 @@ another.
 | Part | | |
 | --- | --- | --- |
 | `DrawerTrigger` | | What opens it. `render` to use your own button |
+| `DrawerHeader` | `action` | The title and the line under it, with an action beside them; stays put |
 | `DrawerTitle` | | The popup's `aria-labelledby` points at it |
 | `DrawerDescription` | | The popup's `aria-describedby` |
-| `DrawerActions` | | Pushed to the bottom of the panel, right-aligned |
+| `DrawerBody` | | The part that scrolls |
+| `DrawerActions` | `start` | Pinned to the bottom of the panel, right-aligned; `start` at the other end |
 | `DrawerClose` | | Closes it. `render` to use your own button |
 
 ## Notes
@@ -113,8 +125,9 @@ forgotten, because a drawer covers only one edge and the rest of the page looks
 usable. It is not — Base UI marks it inert, so Tab cannot walk off into a page
 the user cannot see they are editing.
 
-**`DrawerActions` sits at the bottom.** `mt-auto`, so the buttons stay at the
-foot of a tall panel rather than wandering up it when there is little content.
+**`DrawerActions` sits at the bottom.** `mt-auto` and `shrink-0`, so the
+buttons stay at the foot of a tall panel whether there is little in it or more
+than fits.
 
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities

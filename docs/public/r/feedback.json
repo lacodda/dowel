@@ -9,6 +9,8 @@
     "https://lacodda.github.io/dowel/r/alert.json",
     "https://lacodda.github.io/dowel/r/banner.json",
     "https://lacodda.github.io/dowel/r/confirm-dialog.json",
+    "https://lacodda.github.io/dowel/r/dialog.json",
+    "https://lacodda.github.io/dowel/r/layer.json",
     "https://lacodda.github.io/dowel/r/toast.json"
   ],
   "docs": "Which of the four to reach for is the harder question: see https://lacodda.github.io/dowel/guides/overlays/"

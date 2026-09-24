@@ -65,6 +65,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [JsonViewer](https://lacodda.github.io/dowel/components/json-viewer.md): A JSON value read rather than parsed by eye - folding, typed, and reachable from the keyboard.
 - [Kbd](https://lacodda.github.io/dowel/components/kbd.md): A key, as printed in a menu or a hint.
 - [KeyValue](https://lacodda.github.io/dowel/components/key-value.md): A list of facts - a name and what it is - in the element that says which belongs to which.
+- [Layer](https://lacodda.github.io/dowel/components/layer.md): Which layer a popup opened inside an overlay lands on - so a select in a dialog, a menu in a drawer and a date picker in a popover open above what opened them.
 - [LineChart](https://lacodda.github.io/dowel/components/line-chart.md): A quantity over time, where it continues between the readings - with a hole drawn as a hole.
 - [line-scale](https://lacodda.github.io/dowel/components/line-scale.md): Bounds, runs and round-number ticks for a line - the arithmetic, with no React in it.
 - [MarkedText](https://lacodda.github.io/dowel/components/marked-text.md): Text with marks on it - a span of characters or a whole line - to read, or to type into with the marks under the letters.
