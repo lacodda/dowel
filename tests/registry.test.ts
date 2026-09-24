@@ -165,6 +165,7 @@ describe('every item', () => {
     'shortcut',
     'reorderable-list',
     'tier',
+    'layer',
   ])
 
   it('names a component the way a consumer types it', () => {

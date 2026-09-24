@@ -7,12 +7,35 @@ import { Button } from './button'
 import {
   Dialog,
   DialogActions,
+  DialogBody,
   DialogClose,
   DialogDescription,
+  DialogHeader,
   DialogPopup,
   DialogTitle,
   dialogPopupVariants,
 } from './dialog'
+
+const SIZES = ['sm', 'md', 'lg', 'xl', 'full'] as const
+
+/** A dialog with every part in it, the shape kilna's style editor has. */
+function Editor() {
+  return (
+    <Dialog open>
+      <DialogPopup>
+        <DialogHeader action={<DialogClose aria-label="Close">×</DialogClose>}>
+          <DialogTitle>Edit style</DialogTitle>
+          <DialogDescription>What the image is made of.</DialogDescription>
+        </DialogHeader>
+        <DialogBody data-testid="body">A long form</DialogBody>
+        <DialogActions data-testid="actions" start={<Button variant="danger">Delete</Button>}>
+          <Button>Cancel</Button>
+          <Button variant="primary">Save</Button>
+        </DialogActions>
+      </DialogPopup>
+    </Dialog>
+  )
+}
 
 /*
  * Dialog.
@@ -232,7 +255,7 @@ describe('Dialog', () => {
 
   it('draws every size, and draws each one differently', () => {
     const base = dialogPopupVariants({ size: 'nonexistent' as never })
-    const sizes = ['sm', 'md', 'lg'] as const
+    const sizes = SIZES
     const drawn = new Map(sizes.map((size) => [size, dialogPopupVariants({ size })]))
 
     for (const [size, classes] of drawn) {
@@ -247,19 +270,73 @@ describe('Dialog', () => {
   // editor in a consuming product, which is the shape that does it — half a
   // dozen fields and a row of actions.
   it('never grows taller than the window, at any size', () => {
-    for (const size of ['sm', 'md', 'lg'] as const) {
+    for (const size of SIZES) {
       const classes = dialogPopupVariants({ size })
-      expect(classes, `\`${size}\` has no height cap`).toMatch(/max-h-/)
-      expect(classes, `\`${size}\` cannot scroll what it cannot show`).toMatch(
-        /overflow-y-auto/,
-      )
+      expect(classes, `\`${size}\` has no height cap`).toMatch(/(?:max-)?h-\[calc\(100dvh/)
     }
+  })
+
+  /*
+   * Only the body scrolls. The popup scrolled as a whole, and the actions went
+   * with it: at a 1280x720 window kilna's style editor had "Save" 137px below
+   * the bottom edge. What keeps them in view is a column - the popup does not
+   * scroll, the header and the actions do not shrink, and the body alone gives
+   * way and scrolls. Each is a class a later edit could drop, so each is held
+   * here; that it adds up to a footer on screen is measured in a browser
+   * (`tests/visual/measured.spec.ts`).
+   */
+  it('scrolls the body and nothing else', () => {
+    render(<Editor />)
+    const popup = screen.getByRole('dialog').className.split(/\s+/)
+    expect(popup, 'the popup scrolls as a whole again').not.toContain('overflow-y-auto')
+    expect(popup).toEqual(expect.arrayContaining(['flex', 'flex-col', 'overflow-hidden']))
+
+    const body = screen.getByTestId('body').className.split(/\s+/)
+    expect(body).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-y-auto']))
+
+    expect(screen.getByTestId('actions').className.split(/\s+/)).toContain('shrink-0')
+    const header = screen.getByRole('heading', { name: 'Edit style' }).closest('.shrink-0')
+    expect(header, 'the header gives way to the body').not.toBeNull()
   })
 
   // A dialog is the top of its own stack: a flick that runs past the end of it
   // must not scroll the page behind, which is still there under the backdrop.
   it('keeps a scroll of its own from reaching the page behind', () => {
-    expect(dialogPopupVariants({})).toMatch(/overscroll-contain/)
+    render(<Editor />)
+    expect(screen.getByTestId('body').className).toMatch(/overscroll-contain/)
+  })
+
+  it('keeps the action that is not the answer at the other end of the row', () => {
+    // "Delete" sat between "Cancel" and "Save" in five of kilna's dialogs, one
+    // slip away from the answer the reader was reaching for.
+    render(<Editor />)
+    const buttons = [...screen.getByTestId('actions').querySelectorAll('button')].map(
+      (button) => button.textContent,
+    )
+    expect(buttons).toEqual(['Delete', 'Cancel', 'Save'])
+    const start = screen.getByRole('button', { name: 'Delete' }).parentElement!
+    expect(start.className.split(/\s+/)).toContain('mr-auto')
+  })
+
+  it('puts an action beside the title, and the title stays whole', () => {
+    render(<Editor />)
+    const close = screen.getByRole('button', { name: 'Close' })
+    const title = screen.getByRole('heading', { name: 'Edit style' })
+    // The title and the description wrap in a column of their own, so the
+    // description does not flow under the button; the button is its sibling.
+    const column = title.parentElement!
+    expect(column.className.split(/\s+/)).toContain('flex-1')
+    expect(column.contains(close)).toBe(false)
+    expect(column.parentElement!.contains(close)).toBe(true)
+  })
+
+  it('pads the parts rather than the popup', () => {
+    // The popup carries none, so the body's scroll runs edge to edge; a body
+    // that is first or last takes the edge the missing part would have given.
+    render(<Editor />)
+    expect(screen.getByRole('dialog').className.split(/\s+/)).not.toContain('p-5')
+    const body = screen.getByTestId('body').className.split(/\s+/)
+    expect(body).toEqual(expect.arrayContaining(['px-5', 'first:pt-5', 'last:pb-5']))
   })
 
   it('lets the caller win a conflict', () => {
@@ -274,7 +351,7 @@ describe('Dialog', () => {
   })
 
   it('carries no colour outside the vocabulary', () => {
-    const all = (['sm', 'md', 'lg'] as const).map((size) => dialogPopupVariants({ size })).join(' ')
+    const all = SIZES.map((size) => dialogPopupVariants({ size })).join(' ')
     expect(all).not.toMatch(/\bdark:/)
     expect(all).not.toMatch(/#[0-9a-f]{3,8}\b/i)
   })
@@ -283,8 +360,10 @@ describe('Dialog', () => {
     await expectNoA11yViolations(
       <Dialog open>
         <DialogPopup>
-          <DialogTitle>Delete the draft?</DialogTitle>
-          <DialogDescription>This cannot be undone.</DialogDescription>
+          <DialogHeader>
+            <DialogTitle>Delete the draft?</DialogTitle>
+            <DialogDescription>This cannot be undone.</DialogDescription>
+          </DialogHeader>
           <DialogActions>
             <Button>Cancel</Button>
             <Button variant="danger">Delete</Button>
@@ -292,5 +371,9 @@ describe('Dialog', () => {
         </DialogPopup>
       </Dialog>,
     )
+  })
+
+  it('passes axe with every part in it', async () => {
+    await expectNoA11yViolations(<Editor />)
   })
 })

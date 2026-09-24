@@ -4,11 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
+import { DialogActions, DialogBody, DialogHeader } from './dialog'
 import {
   ConfirmDialog,
   ConfirmDialogActions,
+  ConfirmDialogBody,
   ConfirmDialogClose,
   ConfirmDialogDescription,
+  ConfirmDialogHeader,
   ConfirmDialogPopup,
   ConfirmDialogTitle,
   confirmDialogPopupVariants,
@@ -208,6 +211,22 @@ describe('ConfirmDialog', () => {
     expect(new Set(drawn.values()).size, 'two sizes draw the same').toBe(sizes.length)
   })
 
+  it('never grows taller than the window, at any size', () => {
+    // It did not promise this before: a long list of what a deletion takes
+    // with it pushed both answers off the bottom edge.
+    for (const size of ['sm', 'md', 'lg'] as const) {
+      const classes = confirmDialogPopupVariants({ size }).split(/\s+/)
+      expect(classes, 'no height cap: ' + size).toContain('max-h-[calc(100dvh-2rem)]')
+      expect(classes).toEqual(expect.arrayContaining(['flex', 'flex-col', 'overflow-hidden']))
+    }
+  })
+
+  it("takes the dialog's parts rather than drawing its own", () => {
+    expect(ConfirmDialogHeader).toBe(DialogHeader)
+    expect(ConfirmDialogBody).toBe(DialogBody)
+    expect(ConfirmDialogActions).toBe(DialogActions)
+  })
+
   it('lets the caller win a conflict', () => {
     render(
       <ConfirmDialog open>
@@ -231,8 +250,11 @@ describe('ConfirmDialog', () => {
     await expectNoA11yViolations(
       <ConfirmDialog open>
         <ConfirmDialogPopup>
-          <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
-          <ConfirmDialogDescription>Everything in it goes too.</ConfirmDialogDescription>
+          <ConfirmDialogHeader>
+            <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
+            <ConfirmDialogDescription>Everything in it goes too.</ConfirmDialogDescription>
+          </ConfirmDialogHeader>
+          <ConfirmDialogBody>Twelve works and their releases.</ConfirmDialogBody>
           <ConfirmDialogActions>
             <Button render={<ConfirmDialogClose />}>Cancel</Button>
             <Button variant="danger">Delete</Button>

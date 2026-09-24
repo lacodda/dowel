@@ -104,3 +104,17 @@ Overlays sit on named layers rather than on numbers picked in the moment:
 A component reads these directly — `[z-index:var(--z-modal)]` — because
 Tailwind has no z-index namespace and `z-50` would be a literal fifty with
 nothing to say about what it covers.
+
+### A popup inside an overlay
+
+The ladder answers "who covers whom" for things on the page, and has nothing to
+say about a popup opened *inside* an overlay: a select in a dialog is a 30
+beside a 60, a menu in a drawer the same, a select in a popover a 30 beside a
+40. Each opens underneath the thing that asked for it.
+
+So every overlay opens a [layer](/dowel/components/layer/) for its content — a
+host inside its own portal where the popup rungs are raised one above the
+overlay, worked out by the stylesheet from the ladder — and every popup
+portals into the layer it was opened in. A select in a popover in a dialog
+climbs to 62 without anyone writing a number. Nothing to do at the call site;
+a product's own full-screen stage takes `LayerProvider above="overlay"`.

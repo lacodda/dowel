@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { Combobox as Base } from '@base-ui/react/combobox'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
 import { comboboxItemVariants } from './combobox'
 import { Kbd } from './kbd'
+import { LayerProvider } from './layer'
 
 /*
  * CommandPalette.
@@ -120,8 +121,10 @@ export function CommandPalettePopup({
   children,
   ...props
 }: CommandPalettePopupProps) {
+  const portal = useRef<HTMLDivElement>(null)
+
   return (
-    <Base.Portal container={container}>
+    <Base.Portal ref={portal} container={container}>
       <Base.Backdrop
         className={cn(
           'fixed inset-0 bg-black/55 backdrop-blur-[2px]',
@@ -161,7 +164,9 @@ export function CommandPalettePopup({
           className={cn(commandPalettePopupVariants({ size }), className)}
           {...props}
         >
-          {children}
+          {/* A tooltip or a menu opened from a result rides above the palette,
+            * which stands above every modal. See `layer.tsx`. */}
+          <LayerProvider above="palette" mount={portal}>{children}</LayerProvider>
         </Base.Popup>
       </Base.Positioner>
     </Base.Portal>

@@ -4,11 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
+import { DialogActions, DialogBody, DialogHeader } from './dialog'
 import {
   Drawer,
   DrawerActions,
+  DrawerBody,
   DrawerClose,
   DrawerDescription,
+  DrawerHeader,
   DrawerPopup,
   DrawerTitle,
   drawerPopupVariants,
@@ -189,6 +192,33 @@ describe('Drawer', () => {
     expect(drawerPopupVariants({ side: 'bottom' })).toContain('translateY(100%)')
   })
 
+  it('draws every size on every side, and each one differently', () => {
+    // A size is a width for a side panel and a height for a sheet, so it is
+    // checked per side: a size that drew nothing on one of them would be a
+    // prop that silently does nothing there.
+    const sizes = ['sm', 'md', 'lg', 'xl', 'full'] as const
+    for (const side of ['right', 'left', 'bottom'] as const) {
+      const drawn = new Set(sizes.map((size) => drawerPopupVariants({ side, size })))
+      expect(drawn.size, 'two sizes of one side draw the same: ' + side).toBe(sizes.length)
+    }
+  })
+
+  it('keeps the width and the sheet height it had before sizes', () => {
+    // `md` is the default, and it is what every drawer already drew.
+    expect(drawerPopupVariants({ side: 'right' })).toContain('w-[min(24rem,calc(100vw-3rem))]')
+    expect(drawerPopupVariants({ side: 'bottom' })).toContain('max-h-[80vh]')
+  })
+
+  it("is the dialog's anatomy, not a copy of it", () => {
+    // One decision about which part scrolls, not two that drift apart.
+    expect(DrawerHeader).toBe(DialogHeader)
+    expect(DrawerBody).toBe(DialogBody)
+    expect(DrawerActions).toBe(DialogActions)
+    const panel = drawerPopupVariants({}).split(/\s+/)
+    expect(panel, 'the panel scrolls as a whole again').not.toContain('overflow-y-auto')
+    expect(panel).toEqual(expect.arrayContaining(['flex', 'flex-col', 'overflow-hidden']))
+  })
+
   it('comes from the right unless told otherwise', () => {
     expect(drawerPopupVariants({})).toBe(drawerPopupVariants({ side: 'right' }))
   })
@@ -216,8 +246,11 @@ describe('Drawer', () => {
     await expectNoA11yViolations(
       <Drawer open>
         <DrawerPopup>
-          <DrawerTitle>Filters</DrawerTitle>
-          <DrawerDescription>Narrow the list down.</DrawerDescription>
+          <DrawerHeader>
+            <DrawerTitle>Filters</DrawerTitle>
+            <DrawerDescription>Narrow the list down.</DrawerDescription>
+          </DrawerHeader>
+          <DrawerBody>Status, owner, date.</DrawerBody>
           <DrawerActions>
             <Button render={<DrawerClose />}>Cancel</Button>
             <Button variant="primary">Apply</Button>

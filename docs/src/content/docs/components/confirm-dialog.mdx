@@ -37,10 +37,12 @@ accident would be a loss.
     Delete project
   </ConfirmDialogTrigger>
   <ConfirmDialogPopup>
-    <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
-    <ConfirmDialogDescription>
-      Everything in it goes too. This cannot be undone.
-    </ConfirmDialogDescription>
+    <ConfirmDialogHeader>
+      <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
+      <ConfirmDialogDescription>
+        Everything in it goes too. This cannot be undone.
+      </ConfirmDialogDescription>
+    </ConfirmDialogHeader>
     <ConfirmDialogActions>
       <Button render={<ConfirmDialogClose />}>Cancel</Button>
       <Button variant="danger" onClick={remove}>Delete</Button>
@@ -52,6 +54,13 @@ accident would be a loss.
 The parts are exposed rather than wrapped in one component with `title` and
 `footer` props — a dialog that owns its own close button owns a word for it,
 and that is a word the product cannot translate.
+
+The anatomy is [Dialog's](/dowel/components/dialog/#anatomy), taken from it:
+`ConfirmDialogHeader` for the question, `ConfirmDialogBody` when what the
+answer takes with it runs long enough to scroll, and `ConfirmDialogActions`
+pinned to the bottom. The popup is capped at the window, which it did not
+promise before — a long list of what a deletion takes pushed both answers off
+the bottom edge.
 
 ## Props
 
@@ -70,7 +79,7 @@ both on for an alert dialog, which is the whole difference from Dialog.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's |
+| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's - and it has none of Dialog's large ones: a question that needs an editor's width is an editor, and belongs in a Dialog |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 It renders its own portal and its own backdrop, so there is nothing to arrange
@@ -81,9 +90,11 @@ around it.
 | Part | | |
 | --- | --- | --- |
 | `ConfirmDialogTrigger` | | What opens it. `render` to use your own button |
+| `ConfirmDialogHeader` | `action` | The question and what it costs |
 | `ConfirmDialogTitle` | | The question. The popup's `aria-labelledby` points at it |
 | `ConfirmDialogDescription` | | What the answer costs. The popup's `aria-describedby` |
-| `ConfirmDialogActions` | | Right-aligned row for the two answers |
+| `ConfirmDialogBody` | | What the answer takes with it, scrolling if it runs long |
+| `ConfirmDialogActions` | `start` | Pinned to the bottom, right-aligned row for the two answers |
 | `ConfirmDialogClose` | | Closes it. `render` to use your own button |
 
 ## Notes

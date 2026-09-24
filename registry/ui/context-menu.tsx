@@ -1,6 +1,7 @@
 import { ContextMenu as Base } from '@base-ui/react/context-menu'
 import { menuItemVariants, menuPopupVariants } from './menu'
 import { cn } from 'dowel-ui'
+import { usePopupContainer } from './layer'
 
 /*
  * ContextMenu.
@@ -42,8 +43,11 @@ export const ContextMenuSub = Base.SubmenuRoot
 export interface ContextMenuPopupProps extends Base.Popup.Props {
   /** How wide the popup starts. The same three as Menu's. */
   size?: 'sm' | 'md' | 'lg'
-  /** Where to portal to. Defaults to the document body, which keeps the menu
-   * from being clipped by the very row it was opened over. */
+  /** Where to portal to. Defaults to the raised host of the overlay this is
+   * opened inside (`layer.tsx`), and to the document body when there is none -
+   * either way not the element it was opened from, whose `overflow` would clip
+   * it. Pass an element to put it somewhere else, such as a container being
+   * screenshotted. */
   container?: Base.Portal.Props['container']
 }
 
@@ -56,8 +60,13 @@ export function ContextMenuPopup({
   children,
   ...props
 }: ContextMenuPopupProps) {
+  // Inside an overlay, the overlay's raised host rather than the body - or
+  // this popup draws under the dialog, drawer or popover that opened it. See
+  // `layer.tsx`. Outside every overlay the hook gives `undefined`: the body.
+  const host = usePopupContainer()
+
   return (
-    <Base.Portal container={container}>
+    <Base.Portal container={container ?? host}>
       <Base.Positioner className="[z-index:var(--z-menu)]">
         <Base.Popup className={cn(menuPopupVariants({ size }), className)} {...props}>
           {children}

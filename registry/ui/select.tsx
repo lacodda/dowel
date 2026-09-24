@@ -1,6 +1,7 @@
 import { Select as Base } from '@base-ui/react/select'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
+import { usePopupContainer } from './layer'
 import { fieldClasses } from './input'
 
 /*
@@ -133,8 +134,11 @@ export interface SelectPopupProps
   align?: Base.Positioner.Props['align']
   /** Distance from the trigger, in pixels. */
   sideOffset?: Base.Positioner.Props['sideOffset']
-  /** Where to portal to. Defaults to the document body, which keeps the list
-   * from being clipped by a form with `overflow: hidden`. */
+  /** Where to portal to. Defaults to the raised host of the overlay this is
+   * opened inside (`layer.tsx`), and to the document body when there is none -
+   * either way not the element it was opened from, whose `overflow` would clip
+   * it. Pass an element to put it somewhere else, such as a container being
+   * screenshotted. */
   container?: Base.Portal.Props['container']
 }
 
@@ -154,8 +158,13 @@ export function SelectPopup({
   children,
   ...props
 }: SelectPopupProps) {
+  // Inside an overlay, the overlay's raised host rather than the body - or
+  // this popup draws under the dialog, drawer or popover that opened it. See
+  // `layer.tsx`. Outside every overlay the hook gives `undefined`: the body.
+  const host = usePopupContainer()
+
   return (
-    <Base.Portal container={container}>
+    <Base.Portal container={container ?? host}>
       <Base.Positioner
         side={side}
         align={align}

@@ -53,6 +53,11 @@ describe('what a primitive weighs', () => {
    * below asks for, and the reason has to say why splitting it would be
    * worse than the size. */
   const RAISED: Record<string, { ceiling: number; because: string }> = {
+    drawer: {
+      ceiling: 4864,
+      because:
+        'a side and a size that compose - the width of a side panel, the height of a sheet - on top of the swipe-aware transforms; splitting side from size would be two props that only mean anything together',
+    },
     'column-resize-handle': {
       ceiling: 5120,
       because:
@@ -297,17 +302,21 @@ describe('what a primitive drags in', () => {
     // A Select you can type in, and it says so in its imports: the field
     // clothes from Input, the popup and row clothes from Select. Only the
     // input, the chips and the empty state are its own.
-    combobox: ['@base-ui/react', 'class-variance-authority', 'input', 'select'],
+    // The layer: a popup portals into the host of the overlay it was opened
+    // in, or it draws underneath it. See `layer.tsx`.
+    combobox: ['@base-ui/react', 'class-variance-authority', 'input', 'layer', 'select'],
     // A Combobox with the input inside the popup, which is what makes the
     // popup a dialog. The rows are Combobox's - a palette is a list of
     // choices, and two lists of choices in one product should not differ -
     // and the hint at the right of the field is Kbd's, so what is bound and
     // what is shown are drawn by the same rule.
-    'command-palette': ['@base-ui/react', 'class-variance-authority', 'combobox', 'kbd'],
-    'confirm-dialog': ['@base-ui/react', 'class-variance-authority'],
+    'command-palette': ['@base-ui/react', 'class-variance-authority', 'combobox', 'kbd', 'layer'],
+    // The dialog's anatomy rather than a copy of it, and a layer for the
+    // popups inside.
+    'confirm-dialog': ['@base-ui/react', 'class-variance-authority', 'dialog', 'layer'],
     // Wears Menu's clothes rather than its own: the popup below the root is
     // literally Menu's, so two `cva` calls would only drift apart.
-    'context-menu': ['@base-ui/react', 'menu'],
+    'context-menu': ['@base-ui/react', 'layer', 'menu'],
     copyable: [],
     // The whole component is the wiring Base UI does: the label's `for`, the
     // `aria-describedby` for hint and error, and the invalid state. Without
@@ -317,7 +326,7 @@ describe('what a primitive drags in', () => {
     // The tick and the dash are drawn here; Base UI carries the role, the
     // keyboard and the indeterminate state a native input cannot express.
     checkbox: ['@base-ui/react'],
-    dialog: ['@base-ui/react', 'class-variance-authority'],
+    dialog: ['@base-ui/react', 'class-variance-authority', 'layer'],
     // Its own element rather than Base UI's Separator, which renders no
     // `role` at all - the one thing a separator is for. See the component.
     divider: ['class-variance-authority'],
@@ -335,10 +344,14 @@ describe('what a primitive drags in', () => {
     // Popover for the panel, and the calendar inside it.
     'date-picker': ['input', 'popover', 'calendar', 'calendar-math'],
     'date-range-picker': ['input', 'popover', 'calendar', 'calendar-math'],
-    drawer: ['@base-ui/react', 'class-variance-authority'],
+    // The dialog's anatomy rather than a copy of it, and a layer for the
+    // popups inside.
+    drawer: ['@base-ui/react', 'class-variance-authority', 'dialog', 'layer'],
     input: [],
+    // React and nothing else: two nodes and a context.
+    layer: [],
     kbd: [],
-    menu: ['@base-ui/react', 'class-variance-authority'],
+    menu: ['@base-ui/react', 'class-variance-authority', 'layer'],
     // `useRender` for the entry, which is the product's own link, and `cva`
     // for the three shapes the same list takes.
     'nav-rail': ['@base-ui/react', 'class-variance-authority'],
@@ -346,11 +359,11 @@ describe('what a primitive drags in', () => {
     // The group is the control - one tab stop, arrows within it - and that is
     // Base UI's roving focus rather than anything drawn here.
     'radio-group': ['@base-ui/react', 'class-variance-authority'],
-    popover: ['@base-ui/react', 'class-variance-authority'],
+    popover: ['@base-ui/react', 'class-variance-authority', 'layer'],
     // The trigger is a field, so it wears Input's field clothes: a select and
     // a text input sit next to each other in every form there is.
-    select: ['@base-ui/react', 'class-variance-authority', 'input'],
-    'preview-card': ['@base-ui/react', 'class-variance-authority'],
+    select: ['@base-ui/react', 'class-variance-authority', 'input', 'layer'],
+    'preview-card': ['@base-ui/react', 'class-variance-authority', 'layer'],
     // Base UI parses what is typed and runs the keyboard; Input's clothes so
     // a number and a text field sit next to each other without looking like
     // two different controls.
@@ -396,7 +409,7 @@ describe('what a primitive drags in', () => {
     // What is here is the clothes and the tone vocabulary, so the manager a
     // product already has is the one it keeps.
     toast: ['@base-ui/react', 'class-variance-authority'],
-    tooltip: ['@base-ui/react', 'class-variance-authority'],
+    tooltip: ['@base-ui/react', 'class-variance-authority', 'layer'],
     truncate: [],
     // The sums a column is ordered by, with no React in them - the same split
     // `calendar-math` is. Nothing at all: `Intl.Collator` is the platform's.
