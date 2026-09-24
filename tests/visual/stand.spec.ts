@@ -46,6 +46,7 @@ const SECTIONS = [
   'dialog',
   'confirm-dialog',
   'drawer',
+  'layer',
   'popover',
   'preview-card',
   'tooltip',

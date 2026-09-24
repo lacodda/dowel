@@ -63,15 +63,6 @@ import { QueryState } from '../../registry/ui/query-state'
 import { Button } from '../../registry/ui/button'
 import { Chip } from '../../registry/ui/chip'
 import {
-  ConfirmDialog,
-  ConfirmDialogActions,
-  ConfirmDialogClose,
-  ConfirmDialogDescription,
-  ConfirmDialogPopup,
-  ConfirmDialogTitle,
-  ConfirmDialogTrigger,
-} from '../../registry/ui/confirm-dialog'
-import {
   Combobox,
   ComboboxChip,
   ComboboxChipRemove,
@@ -100,24 +91,6 @@ import {
   CommandPaletteRow,
 } from '../../registry/ui/command-palette'
 import { Copyable } from '../../registry/ui/copyable'
-import {
-  Dialog,
-  DialogActions,
-  DialogClose,
-  DialogDescription,
-  DialogPopup,
-  DialogTitle,
-  DialogTrigger,
-} from '../../registry/ui/dialog'
-import {
-  Drawer,
-  DrawerActions,
-  DrawerClose,
-  DrawerDescription,
-  DrawerPopup,
-  DrawerTitle,
-  DrawerTrigger,
-} from '../../registry/ui/drawer'
 import { Calendar } from '../../registry/ui/calendar'
 import { addDays, addMonths, daysInMonth, isIsoDate, today } from '../../registry/ui/calendar-math'
 import { Checkbox, CheckboxGroup } from '../../registry/ui/checkbox'
@@ -195,6 +168,11 @@ import { NotificationBell } from '../../registry/ui/notification-bell'
 import { ResizeEdges, TitleBar } from '../../registry/ui/window-frame'
 import { Tabs, TabsList, TabsTab } from '../../registry/ui/tabs'
 import { TabsSection } from './sections/tabs'
+import { ButtonSection } from './sections/button'
+import { DialogSection } from './sections/dialog'
+import { ConfirmDialogSection } from './sections/confirm-dialog'
+import { DrawerSection } from './sections/drawer'
+import { LayerSection } from './sections/layer'
 import { CollapsibleSection } from './sections/collapsible'
 import { AccordionSection } from './sections/accordion'
 import { ScrollAreaSection } from './sections/scroll-area'
@@ -327,6 +305,7 @@ const sections = [
     render: () => <ConfirmDialogSection />,
   },
   { id: 'drawer', title: 'Drawer', docs: '/dowel/components/drawer/', render: () => <DrawerSection /> },
+  { id: 'layer', title: 'Layer', docs: '/dowel/components/layer/', render: () => <LayerSection /> },
   { id: 'popover', title: 'Popover', docs: '/dowel/components/popover/', render: () => <PopoverSection /> },
   {
     id: 'preview-card',
@@ -1037,59 +1016,6 @@ function Overview({ navigate }: { navigate: (to: string) => void }) {
   )
 }
 
-function ButtonSection() {
-  return (
-    <>
-      <Row label="variants">
-        <Button variant="primary">Save</Button>
-        <Button variant="ghost">Cancel</Button>
-        <Button variant="soft">Selected</Button>
-        <Button variant="danger">Delete</Button>
-        <Button variant="icon" size="icon-md" aria-label="More">
-          <Dots />
-        </Button>
-      </Row>
-
-      <Row label="sizes, text and icon">
-        <Button variant="primary" size="sm">
-          Small
-        </Button>
-        <Button variant="primary" size="md">
-          Medium
-        </Button>
-        <Button variant="icon" size="icon-sm" aria-label="Add">
-          <Plus />
-        </Button>
-        <Button variant="icon" size="icon-md" aria-label="Add">
-          <Plus />
-        </Button>
-      </Row>
-
-      <Row label="states">
-        <Button variant="primary" disabled>
-          Disabled
-        </Button>
-        <Button variant="ghost" disabled>
-          Disabled
-        </Button>
-        <Button render={<a href="#button" />} variant="primary">
-          As a link
-        </Button>
-      </Row>
-
-      <Row label="with an icon">
-        <Button variant="primary">
-          <Plus />
-          New
-        </Button>
-        <Button variant="ghost">
-          <Dots />
-          More
-        </Button>
-      </Row>
-    </>
-  )
-}
 
 function InputSection() {
   return (
@@ -1906,80 +1832,8 @@ function Dots() {
  * real thing, in the real place, with the real scrim.
  */
 
-function DialogSection() {
-  return (
-    <Row label="click to open">
-      <Dialog>
-        <DialogTrigger render={<Button variant="primary" />}>Delete the draft</DialogTrigger>
-        <DialogPopup>
-          <DialogTitle>Delete the draft?</DialogTitle>
-          <DialogDescription>
-            The version stays in the history. Only this draft goes.
-          </DialogDescription>
-          <DialogActions>
-            <Button render={<DialogClose />}>Cancel</Button>
-            <Button variant="danger" render={<DialogClose />}>
-              Delete
-            </Button>
-          </DialogActions>
-        </DialogPopup>
-      </Dialog>
-    </Row>
-  )
-}
 
-function ConfirmDialogSection() {
-  return (
-    <Row label="click to open - clicking away will not dismiss it">
-      <ConfirmDialog>
-        <ConfirmDialogTrigger render={<Button variant="danger" />}>Revoke the key</ConfirmDialogTrigger>
-        <ConfirmDialogPopup>
-          <ConfirmDialogTitle>Revoke the key?</ConfirmDialogTitle>
-          <ConfirmDialogDescription>
-            Every machine using it loses access at once. This cannot be undone.
-          </ConfirmDialogDescription>
-          <ConfirmDialogActions>
-            <Button render={<ConfirmDialogClose />}>Keep it</Button>
-            <Button variant="danger" render={<ConfirmDialogClose />}>
-              Revoke
-            </Button>
-          </ConfirmDialogActions>
-        </ConfirmDialogPopup>
-      </ConfirmDialog>
-    </Row>
-  )
-}
 
-function DrawerSection() {
-  return (
-    <Row label="from an edge">
-      <Drawer>
-        <DrawerTrigger render={<Button variant="ghost" />}>From the right</DrawerTrigger>
-        <DrawerPopup side="right">
-          <DrawerTitle>Settings</DrawerTitle>
-          <DrawerDescription>What this profile calls things.</DrawerDescription>
-          <DrawerActions>
-            <Button render={<DrawerClose />}>Close</Button>
-            <Button variant="primary" render={<DrawerClose />}>
-              Save
-            </Button>
-          </DrawerActions>
-        </DrawerPopup>
-      </Drawer>
-
-      <Drawer>
-        <DrawerTrigger render={<Button variant="ghost" />}>From the bottom</DrawerTrigger>
-        <DrawerPopup side="bottom">
-          <DrawerTitle>Add a version</DrawerTitle>
-          <DrawerDescription>Paste the text, or drop a file.</DrawerDescription>
-          <DrawerActions>
-            <Button render={<DrawerClose />}>Close</Button>
-          </DrawerActions>
-        </DrawerPopup>
-      </Drawer>
-    </Row>
-  )
-}
 
 function PopoverSection() {
   return (
