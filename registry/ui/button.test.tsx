@@ -3,7 +3,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
+import { compileClasses, utilityRules } from '../../tests/compile'
 import { Button, buttonVariants } from './button'
+
+const SIZES = ['xs', 'sm', 'md', 'icon-xs', 'icon-sm', 'icon-md'] as const
 
 /*
  * Button.
@@ -131,7 +134,7 @@ describe('styling', () => {
     }
     expect(new Set(added.values()).size, 'two variants draw the same').toBe(variants.length)
 
-    const sizes = ['sm', 'md', 'icon-sm', 'icon-md'] as const
+    const sizes = SIZES
     const sized = new Map(
       sizes.map((size) => [size, buttonVariants({ variant: 'nonexistent' as never, size })]),
     )
@@ -157,7 +160,7 @@ describe('styling', () => {
     // token underneath instead.
     const everyCombination = (['primary', 'ghost', 'soft', 'danger', 'icon'] as const)
       .flatMap((variant) =>
-        (['sm', 'md', 'icon-sm', 'icon-md'] as const).map((size) => buttonVariants({ variant, size })),
+        SIZES.map((size) => buttonVariants({ variant, size })),
       )
       .join(' ')
 
@@ -172,6 +175,79 @@ describe('styling', () => {
     // A primitive with a string in it cannot be translated.
     const { container } = render(<Button>Save</Button>)
     expect(container.textContent).toBe('Save')
+  })
+})
+
+describe('the icon inside', () => {
+  /*
+   * What each size draws an icon at, in pixels. The failure this exists for
+   * is the one the whole line shipped: a text button that sized nothing, so a
+   * lucide icon inside it drew at its own 24px - taller than the text it sat
+   * beside - and every call site either remembered `size-4` or did not.
+   */
+  const ICON: Record<(typeof SIZES)[number], number> = {
+    xs: 12,
+    sm: 14,
+    md: 16,
+    'icon-xs': 12,
+    'icon-sm': 14,
+    'icon-md': 16,
+  }
+
+  /** The one compiled rule that sizes an svg inside a button of this size. */
+  async function iconRule(size: (typeof SIZES)[number]) {
+    const css = await compileClasses(buttonVariants({ size }).split(/\s+/))
+    return utilityRules(css).filter((rule) => /\bsvg\b/.test(rule.selector) && /\bwidth:/.test(rule.body))
+  }
+
+  const svg = (className?: string) => {
+    const element = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    if (className) element.setAttribute('class', className)
+    return element
+  }
+
+  it.each(SIZES)('%s sizes an icon that has no size of its own', async (size) => {
+    const rules = await iconRule(size)
+    expect(rules, `\`${size}\` sizes no svg - an icon inside draws at its own 24px`).toHaveLength(1)
+    const step = Number(rules[0]!.body.match(/width:\s*calc\(var\(--spacing\)\s*\*\s*([\d.]+)\)/)?.[1])
+    // A spacing step is 0.25rem; at the browser's 16px that is 4px.
+    expect(step * 4).toBe(ICON[size])
+  })
+
+  it.each(SIZES)('%s leaves an icon with its own size alone', async (size) => {
+    // A descendant selector outranks the single class written on the icon,
+    // so without the guard `size-5` at the call site is silently overruled.
+    // The selector the compiler wrote is matched against two real svgs: one
+    // it must reach, and one it must not.
+    const [rule] = await iconRule(size)
+    const target = rule!.selector.slice(rule!.selector.lastIndexOf(' ') + 1)
+    expect(svg('lucide lucide-plus').matches(target), `\`${size}\` does not reach a bare icon`).toBe(true)
+    expect(svg('lucide lucide-plus size-5').matches(target), `\`${size}\` overrules an icon's own size`).toBe(false)
+  })
+
+  it('stands md and sm on the control rows, so density reaches them', async () => {
+    // A literal `h-9` compiles to 36px and nothing on a container can move
+    // it; the row is a custom property an ancestor redefines.
+    for (const [size, row] of [
+      ['md', '--row-control'],
+      ['sm', '--row-control-sm'],
+    ] as const) {
+      const css = await compileClasses(buttonVariants({ size }).split(/\s+/))
+      // The button's own height, not the icon's.
+      const heights = utilityRules(css).filter(
+        (rule) => !/\bsvg\b/.test(rule.selector) && /(?:^|;)\s*height:/.test(rule.body),
+      )
+      expect(heights.map((rule) => rule.body), `\`${size}\` is not on its control row`).toEqual([
+        `height: var(${row});`,
+      ])
+    }
+  })
+
+  it('grows the hit area of the sizes below the pointer floor', () => {
+    // 24px is the floor (WCAG 2.5.8). `xs` is 24 tall and may be narrower;
+    // `icon-xs` is 20 square. Both keep the glyph and grow the target.
+    expect(buttonVariants({ size: 'xs' }).split(/\s+/)).toContain('target-min')
+    expect(buttonVariants({ size: 'icon-xs' }).split(/\s+/)).toContain('target-min')
   })
 })
 

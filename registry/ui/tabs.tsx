@@ -90,6 +90,9 @@ export function TabsList({ variant, className, children, ...props }: TabsListPro
 
 const tabBase = cn(
   'flex cursor-default items-center gap-1.5 whitespace-nowrap text-dim outline-none select-none',
+  // An icon beside a tab's name is sized like one in a small button: at its
+  // own 24px it stood taller than the text it labels.
+  '[&_svg:not([class*=size-])]:size-3.5 [&_svg]:shrink-0',
   'transition-colors duration-quick',
   'hover:text-text data-[active]:text-text',
   'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent',
@@ -98,7 +101,7 @@ const tabBase = cn(
 
 /** The shape of a tab, told by the list it sits in. */
 const tabShape: Record<Variant, string> = {
-  line: 'h-9 rounded-md px-3 text-sm',
+  line: 'h-control-sm rounded-md px-3 text-sm',
   bar: cn(
     'h-full border-r border-line pl-3 text-xs',
     'hover:bg-soft data-[active]:bg-bg data-[active]:shadow-[inset_0_2px_0_var(--accent)]',

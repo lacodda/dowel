@@ -153,6 +153,22 @@ describe('a document tab', () => {
 })
 
 describe('the shapes', () => {
+  it('stands a line tab on the small control row, so density reaches it', () => {
+    // It said `h-9` literally, and a compact screen kept 36px tabs over 28px
+    // buttons.
+    render(<Sections />)
+    const tab = screen.getByRole('tab', { name: 'General' })
+    expect(tab.className.split(/\s+/)).toContain('h-control-sm')
+    expect(tab.className).not.toMatch(/\bh-\d/)
+  })
+
+  it('sizes an icon beside the name, and leaves a sized one alone', () => {
+    render(<Sections />)
+    expect(screen.getByRole('tab', { name: 'General' }).className).toContain(
+      '[&_svg:not([class*=size-])]:size-3.5',
+    )
+  })
+
   it('lets the caller win a conflict', () => {
     render(
       <Tabs defaultValue="a">
