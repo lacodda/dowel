@@ -125,7 +125,7 @@ describe('styling', () => {
     // to the base, and no two may add the same thing.
     const base = buttonVariants({ variant: 'nonexistent' as never, size: 'nonexistent' as never })
 
-    const variants = ['primary', 'ghost', 'soft', 'danger', 'icon'] as const
+    const variants = ['primary', 'ghost', 'soft', 'danger', 'icon', 'link'] as const
     const added = new Map(
       variants.map((variant) => [variant, buttonVariants({ variant, size: 'nonexistent' as never })]),
     )
@@ -144,14 +144,27 @@ describe('styling', () => {
     expect(new Set(sized.values()).size, 'two sizes draw the same').toBe(sizes.length)
   })
 
-  it('stops the pointer reaching a disabled button', () => {
+  it('does not light up under the pointer while disabled', async () => {
     // React will not fire the click either way, so a click test passes
-    // regardless. What this guards is the rest of it: without
-    // `pointer-events-none` a disabled button still takes the cursor and
-    // still lights up on hover, which says "press me" to the one person who
-    // cannot.
+    // regardless. What this guards is the rest of it: a disabled button that
+    // lights up on hover says "press me" to the one person who cannot. The
+    // pointer is no longer stopped - that killed the `title` - so every hover
+    // is scoped away from `data-disabled`, which both kinds of disabled set.
     render(<Button disabled>Save</Button>)
-    expect(screen.getByRole('button').className).toContain('disabled:pointer-events-none')
+    const button = screen.getByRole('button')
+    expect(button.hasAttribute('data-disabled')).toBe(true)
+    for (const variant of ['primary', 'ghost', 'soft', 'danger', 'icon', 'link'] as const) {
+      const hovers = buttonVariants({ variant }).split(/\s+/).filter((c) => c.includes('hover:'))
+      expect(hovers.length, `\`${variant}\` has no hover at all`).toBeGreaterThan(0)
+      for (const hover of hovers) {
+        expect(hover, `\`${variant}\` lights up while disabled`).toMatch(/^not-data-disabled:hover:/)
+      }
+    }
+  })
+
+  it('no longer stops the pointer, so a title on a disabled button can show', () => {
+    render(<Button disabled>Save</Button>)
+    expect(screen.getByRole('button').className).not.toContain('pointer-events-none')
   })
 
   it('carries no colour outside the vocabulary', () => {
@@ -309,5 +322,114 @@ describe('Button, for a reader and a keyboard', () => {
       </Button>,
     )
     expect(screen.getByRole('link')).toBeDefined()
+  })
+})
+
+describe('the link variant', () => {
+  it('takes no size, so it sits in the text it is in', () => {
+    render(
+      <Button variant="link" size="md">
+        Show all
+      </Button>,
+    )
+    const className = screen.getByRole('button').className
+    // No control row and no padding: a link in a line of text that stood
+    // 36 pixels tall would push the line apart.
+    expect(className).not.toContain('h-control')
+    expect(className).not.toContain('px-3.5')
+    expect(className).toContain('h-auto')
+  })
+
+  it('sizes its icon in ems, with the text', () => {
+    expect(buttonVariants({ variant: 'link' })).toContain('[&_svg:not([class*=size-])]:size-[1em]')
+  })
+
+  it('is still a button that acts, not a link that goes', () => {
+    render(<Button variant="link">Undo</Button>)
+    expect(screen.getByRole('button', { name: 'Undo' }).getAttribute('type')).toBe('button')
+  })
+})
+
+describe('a disabled button that says why', () => {
+  const reason = 'The work it belonged to is gone'
+
+  it('stays in the tab order, so the reason can be reached', async () => {
+    render(
+      <Button disabled disabledReason={reason}>
+        Restore
+      </Button>,
+    )
+    await userEvent.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Restore' }))
+  })
+
+  it('is announced as disabled, with the reason as its description', () => {
+    render(
+      <Button disabled disabledReason={reason}>
+        Restore
+      </Button>,
+    )
+    const button = screen.getByRole('button', { name: 'Restore' })
+    expect(button.getAttribute('aria-disabled')).toBe('true')
+    // The reason is the description, not part of the name: the button is
+    // still called "Restore".
+    expect(screen.getByRole('button', { description: reason })).toBe(button)
+  })
+
+  it('shows the reason under the pointer', () => {
+    render(
+      <Button disabled disabledReason={reason}>
+        Restore
+      </Button>,
+    )
+    expect(screen.getByRole('button').getAttribute('title')).toBe(reason)
+  })
+
+  it('does nothing when pressed, by pointer or by keyboard', async () => {
+    const onClick = vi.fn()
+    render(
+      <Button disabled disabledReason={reason} onClick={onClick}>
+        Restore
+      </Button>,
+    )
+    await userEvent.click(screen.getByRole('button'))
+    await userEvent.tab()
+    await userEvent.keyboard('{Enter} ')
+    expect(onClick).not.toHaveBeenCalled()
+  })
+
+  it('does not submit its form', async () => {
+    const onSubmit = vi.fn((event: SubmitEvent) => event.preventDefault())
+    render(
+      <form onSubmit={(event) => onSubmit(event.nativeEvent as SubmitEvent)}>
+        <Button type="submit" disabled disabledReason={reason}>
+          Save
+        </Button>
+      </form>,
+    )
+    await userEvent.click(screen.getByRole('button'))
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('is an ordinary button again once enabled, reason or not', async () => {
+    const onClick = vi.fn()
+    render(
+      <Button disabledReason={reason} onClick={onClick}>
+        Restore
+      </Button>,
+    )
+    const button = screen.getByRole('button')
+    expect(button.hasAttribute('aria-disabled')).toBe(false)
+    expect(button.hasAttribute('title')).toBe(false)
+    await userEvent.click(button)
+    expect(onClick).toHaveBeenCalledOnce()
+  })
+
+  it('passes axe', async () => {
+    await expectNoA11yViolations(
+      <Button disabled disabledReason={reason}>
+        Restore
+      </Button>,
+    )
   })
 })
