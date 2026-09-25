@@ -1,7 +1,9 @@
-import type { HTMLAttributes, ReactNode } from 'react'
+import { Fragment, type HTMLAttributes, type ReactNode, type Ref } from 'react'
+import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
+import { Tooltip, TooltipPopup, TooltipTrigger } from './tooltip'
 
 /*
  * NavRail.
@@ -23,6 +25,15 @@ import { cn } from 'dowel-ui'
  * `NavGroup` is the small uppercase caption between runs of entries, and
  * `NavSpacer` pushes what follows to the far end - the settings, the theme
  * switch, the profile, which every rail in the line keeps at its foot.
+ *
+ * **`collapsed` is the column with only its icons.** A work open on screen
+ * wants the width, and the destinations are still needed - so the rail keeps
+ * them as a column of icons at `--spacing-rail-compact`, and each one's name
+ * moves into a tooltip beside it. The name does not leave the entry: it stays
+ * in the accessibility tree, off the screen, so a reader hears "Catalogue,
+ * current page" whether the rail is wide or narrow. The product passes the
+ * same `collapsed` to every NavRail and NavGroup it assembles its rail from,
+ * and sets the shell's rail width to the compact token.
  */
 
 export const navRailVariants = cva('flex', {
@@ -76,6 +87,10 @@ export interface NavRailProps
   render?: (item: NavRailItem) => useRender.RenderProp
   /** Pressed, whatever the entry is drawn as. */
   onSelect?: (id: string) => void
+  /** Icons only, with each name in a tooltip. The column shape only - a row
+   * of tabs and a bottom bar have no narrow form, because their names are
+   * what they are made of. */
+  collapsed?: boolean
 }
 
 export function NavRail({
@@ -85,21 +100,42 @@ export function NavRail({
   activeId,
   render,
   onSelect,
+  collapsed = false,
   className,
   ...props
 }: NavRailProps) {
+  const shape = layout ?? 'column'
+  const narrow = collapsed && shape === 'column'
+
   return (
-    <nav aria-label={label} className={cn(navRailVariants({ layout }), className)} {...props}>
-      {items.map((item) => (
-        <NavRailEntry
-          key={item.id}
-          item={item}
-          layout={layout ?? 'column'}
-          active={item.id === activeId}
-          render={item.soon === true ? undefined : render?.(item)}
-          onSelect={onSelect}
-        />
-      ))}
+    <nav
+      aria-label={label}
+      className={cn(navRailVariants({ layout }), narrow && 'items-center px-2', className)}
+      {...props}
+    >
+      {items.map((item) => {
+        const entry = (
+          <NavRailEntry
+            item={item}
+            layout={shape}
+            collapsed={narrow}
+            active={item.id === activeId}
+            render={item.soon === true ? undefined : render?.(item)}
+            onSelect={onSelect}
+          />
+        )
+        if (!narrow) return <Fragment key={item.id}>{entry}</Fragment>
+        // The name, beside the icon it no longer sits next to. The trigger is
+        // the entry itself, so the tooltip opens on hover and on keyboard
+        // focus alike - a name only the pointer can find is a name half the
+        // rail's readers never get.
+        return (
+          <Tooltip key={item.id}>
+            <TooltipTrigger render={entry} />
+            <TooltipPopup side="right">{item.label}</TooltipPopup>
+          </Tooltip>
+        )
+      })}
     </nav>
   )
 }
@@ -121,29 +157,42 @@ const entryClasses = {
   bar: 'target-min flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-2 text-2xs no-underline transition-colors',
 } as const
 
+/** A collapsed entry is a square around its icon, sized like an icon button
+ * in the title bar so the two strips of chrome read as one set. */
+const collapsedEntry = 'size-9 shrink-0 justify-center gap-0 p-0'
+
 function NavRailEntry({
   item,
   layout,
   active,
   render,
   onSelect,
+  collapsed = false,
+  ref,
+  ...trigger
 }: {
   item: NavRailItem
   layout: NonNullable<NavRailProps['layout']>
   active: boolean
   render?: useRender.RenderProp
   onSelect?: (id: string) => void
-}) {
+  collapsed?: boolean
+  ref?: Ref<HTMLElement>
+} & Omit<HTMLAttributes<HTMLElement>, 'onSelect'>) {
   const soon = item.soon === true
 
   return useRender({
     render,
+    ref,
     // A destination is a link when the product gives it one and a button when
     // it does not; one that is not built yet is neither, and `span` says so -
     // a disabled button is still in the tab order on some browsers, and
     // tabbing onto a screen that does not exist is a dead end.
     defaultTagName: soon ? 'span' : 'button',
-    props: {
+    // What a tooltip trigger hands down when the entry is wrapped in one -
+    // its hover and focus handlers - merged under the entry's own, so the
+    // entry's click and clothes are never overridden by the wrapper's.
+    props: mergeProps<'button'>(trigger, {
       ...(render === undefined && !soon ? { type: 'button' } : {}),
       // Named as the current page, which is how a reader learns which of six
       // identical links is where they stand. Colour alone says it to nobody
@@ -153,6 +202,7 @@ function NavRailEntry({
       onClick: soon ? undefined : () => onSelect?.(item.id),
       className: cn(
         entryClasses[layout],
+        collapsed && collapsedEntry,
         '[&_svg:not([class*=size-])]:size-4 [&_svg]:shrink-0',
         'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
         soon
@@ -170,25 +220,39 @@ function NavRailEntry({
       ),
       children: (
         <>
-          {item.icon === undefined ? null : (
+          {item.icon !== undefined ? (
             <span aria-hidden className="contents">
               {item.icon}
             </span>
-          )}
+          ) : collapsed ? (
+            // Collapsed, an entry with no icon would be an empty square - a
+            // button nobody can see. Its initial stands in, the way an avatar
+            // stands in for a face; the name is still the entry's, off screen.
+            <span aria-hidden className="text-xs font-semibold uppercase">
+              {typeof item.label === 'string' ? item.label.charAt(0) : '•'}
+            </span>
+          ) : null}
           {/* Truncated, in one line. A rail is a fixed-width column, and a
               label that wraps onto a second line makes the row taller than
               every other - which in a two-language product happens to one
               entry and not the rest. `min-w-0` because a flex child refuses
               to shrink below its content without it. */}
-          <span className={cn('min-w-0 truncate', layout === 'bar' ? 'w-full text-center' : 'flex-1')}>
+          <span
+            className={cn(
+              'min-w-0 truncate',
+              layout === 'bar' ? 'w-full text-center' : 'flex-1',
+              // Off the screen, still the entry's name.
+              collapsed && 'sr-only',
+            )}
+          >
             {item.label}
           </span>
-          {item.end === undefined || layout !== 'column' ? null : (
+          {item.end === undefined || layout !== 'column' || collapsed ? null : (
             <span className="ml-auto shrink-0 text-2xs text-faint">{item.end}</span>
           )}
         </>
       ),
-    },
+    }),
   })
 }
 
@@ -196,16 +260,29 @@ function NavRailEntry({
  *
  * A `div` rather than a heading: a rail's groups are not the page's outline,
  * and six `h3`s inside a nav put six entries into a reader's document map
- * that lead nowhere. */
-export function NavGroup({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+ * that lead nowhere.
+ *
+ * Collapsed, a caption has no room, and a word cut to three letters is worse
+ * than none - so the run is marked by a short hairline instead, and the word
+ * stays for a reader. */
+export function NavGroup({
+  collapsed = false,
+  className,
+  children,
+  ...props
+}: HTMLAttributes<HTMLDivElement> & { collapsed?: boolean }) {
+  if (collapsed) {
+    return (
+      <div className={cn('mx-auto my-2 h-px w-5 shrink-0 bg-line', className)} {...props}>
+        <span className="sr-only">{children}</span>
+      </div>
+    )
+  }
+
   return (
-    <div
-      className={cn(
-        'px-2.5 pt-3 pb-1 text-2xs font-medium uppercase tracking-caption text-faint',
-        className,
-      )}
-      {...props}
-    />
+    <div className={cn('caption px-2.5 pt-3 pb-1', className)} {...props}>
+      {children}
+    </div>
   )
 }
 

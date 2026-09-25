@@ -60,6 +60,20 @@ the `titlebar` slot, whose row is `--spacing-titlebar` tall.
 otherwise have no bar left to drag by, so the handle keeps a minimum width
 and the tabs scroll instead.
 
+**A centre is held at the window's centre.** `center` takes what belongs to
+the whole window rather than to either end — the search box, most often. A
+search placed between the two ends of a row moves every time a tab opens, and a
+thing the hand reaches for without looking has to stay where it was. So with a
+centre the bar is three columns, two equal sides around the middle, and each
+side keeps a handle of its own. Without one it stays a single row and the
+documents keep the whole width.
+
+```tsx
+<TitleBar labels={labels} mark={<ProductMark />} center={<SearchField aria-label={t('search')} value={query} onValueChange={setQuery} shortcut={['Mod', 'K']} />}>
+  …
+</TitleBar>
+```
+
 For a bar the assembled one does not fit, the parts are exported:
 `WindowButtons`, `useTitleBarGestures()` to spread on your own bar, and
 `useMaximized()` for anything else that changes shape with the window.
@@ -111,6 +125,7 @@ they can be translated.
 | `mark` | `ReactNode` | | The product's mark, at the left edge |
 | `children` | `ReactNode` | | Tabs, a trail or a title |
 | `actions` | `ReactNode` | | The product's controls, before the window buttons |
+| `center` | `ReactNode` | | Held at the window's centre — the search box, most often |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `WindowButtons`

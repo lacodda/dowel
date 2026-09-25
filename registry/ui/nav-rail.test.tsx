@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -168,7 +168,7 @@ describe('NavGroup and NavSpacer', () => {
     // that lead nowhere.
     render(<NavGroup>Library</NavGroup>)
     expect(screen.getByText('Library').tagName).toBe('DIV')
-    expect(screen.getByText('Library').className).toContain('tracking-caption')
+    expect(screen.getByText('Library').className).toContain('caption')
   })
 
   it('pushes the foot of the rail to the bottom', () => {
@@ -196,5 +196,88 @@ describe('NavRail, for a reader', () => {
         render={(item) => <a href={`/${item.id}`} />}
       />,
     )
+  })
+})
+
+describe('NavRail, collapsed', () => {
+  it('keeps every name in the entry, off the screen', () => {
+    // A reader hears the same rail wide or narrow.
+    render(<NavRail label="Screens" items={items} activeId="catalogue" collapsed />)
+    const entry = screen.getByRole('button', { name: 'Catalogue' })
+    expect(entry.getAttribute('aria-current')).toBe('page')
+    expect(screen.getByText('Catalogue').className).toContain('sr-only')
+  })
+
+  it('draws each entry as a square around its icon', () => {
+    render(<NavRail label="Screens" items={items} collapsed />)
+    expect(screen.getByRole('button', { name: 'Dashboard' }).className).toContain('size-9')
+  })
+
+  it('shows the name in a tooltip on keyboard focus, not only on hover', async () => {
+    render(<NavRail label="Screens" items={items} collapsed />)
+    expect(screen.getAllByText('Dashboard')).toHaveLength(1)
+    await userEvent.tab()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Dashboard' }))
+    // The entry's own hidden name, and now the visible one beside it.
+    await waitFor(() => expect(screen.getAllByText('Dashboard')).toHaveLength(2))
+  })
+
+  it('still selects on a press through the tooltip wrapper', async () => {
+    const onSelect = vi.fn()
+    render(<NavRail label="Screens" items={items} collapsed onSelect={onSelect} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Calendar' }))
+    expect(onSelect).toHaveBeenCalledWith('calendar')
+  })
+
+  it('keeps the product link as the entry', () => {
+    render(
+      <NavRail label="Screens" items={items} collapsed render={(item) => <a href={`/${item.id}`} />} />,
+    )
+    const link = screen.getByRole('link', { name: 'Calendar' })
+    expect(link.getAttribute('href')).toBe('/calendar')
+    expect(link.hasAttribute('type')).toBe(false)
+  })
+
+  it('drops the end slot, which has no room', () => {
+    render(<NavRail label="Screens" items={[{ id: 'journal', label: 'Journal', end: '12' }]} collapsed />)
+    expect(screen.queryByText('12')).toBeNull()
+  })
+
+  it('has no narrow form of a row or a bar', () => {
+    // Tabs and a phone bar are made of their names.
+    render(<NavRail layout="row" label="Screens" items={items} collapsed />)
+    expect(screen.getByText('Dashboard').className).not.toContain('sr-only')
+  })
+
+  it('marks a group with a hairline and keeps its word for a reader', () => {
+    render(<NavGroup collapsed>Library</NavGroup>)
+    const word = screen.getByText('Library')
+    expect(word.className).toContain('sr-only')
+    expect(word.parentElement?.className).toContain('h-px')
+  })
+
+  it('passes axe', async () => {
+    await expectNoA11yViolations(
+      <div>
+        <NavRail label="Screens" items={items} activeId="catalogue" collapsed />
+        <NavGroup collapsed>Library</NavGroup>
+      </div>,
+    )
+  })
+})
+
+describe('NavRail, collapsed, with an entry that has no icon', () => {
+  it('draws the initial rather than an empty square', () => {
+    // Measured on the stand: a foot entry with no icon collapsed into a 36px
+    // button with nothing in it.
+    render(<NavRail label="Settings" items={[{ id: 'settings', label: 'Settings' }]} collapsed />)
+    const entry = screen.getByRole('button', { name: 'Settings' })
+    const initial = entry.querySelector('[aria-hidden]')
+    expect(initial?.textContent).toBe('S')
+  })
+
+  it('draws no initial while the rail is wide', () => {
+    render(<NavRail label="Settings" items={[{ id: 'settings', label: 'Settings' }]} />)
+    expect(screen.getByRole('button', { name: 'Settings' }).querySelector('[aria-hidden]')).toBeNull()
   })
 })

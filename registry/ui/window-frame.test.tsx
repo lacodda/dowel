@@ -269,3 +269,51 @@ describe('TitleBar', () => {
     await expectNoA11yViolations(<DocumentBar />)
   })
 })
+
+describe('TitleBar with a centre', () => {
+  function SearchBar() {
+    return (
+      <TitleBar labels={labels} mark={<svg aria-hidden width="18" height="18" />} center={<input aria-label="Search" />}>
+        <span>Catalogue</span>
+      </TitleBar>
+    )
+  }
+
+  it('holds the centre between two equal sides', () => {
+    // Equal sides are what keep the search at the window's centre however
+    // many tabs are open on the left.
+    const { container } = render(<SearchBar />)
+    const header = container.querySelector('header')!
+    expect(header.className).toContain('grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]')
+    expect(header.children).toHaveLength(3)
+    expect(header.children[1]!.hasAttribute('data-titlebar-center')).toBe(true)
+    expect(screen.getByRole('textbox', { name: 'Search' }).closest('[data-titlebar-center]')).toBe(header.children[1])
+  })
+
+  it('leaves a handle on each side of the centre', () => {
+    const { container } = render(<SearchBar />)
+    const handles = container.querySelectorAll('[data-titlebar-handle]')
+    expect(handles).toHaveLength(2)
+    press(handles[1]!, 10, 10)
+    fireEvent.pointerMove(window, { clientX: 30, clientY: 10 })
+    expect(tauri.startDragging).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not move the window from the search', () => {
+    render(<SearchBar />)
+    const search = screen.getByRole('textbox', { name: 'Search' })
+    press(search, 10, 10)
+    fireEvent.pointerMove(window, { clientX: 30, clientY: 10 })
+    expect(tauri.startDragging).not.toHaveBeenCalled()
+  })
+
+  it('stays one row without a centre, so the documents keep the width', () => {
+    const { container } = render(<DocumentBar />)
+    expect(container.querySelector('header')!.className).not.toContain('grid')
+    expect(container.querySelectorAll('[data-titlebar-handle]')).toHaveLength(1)
+  })
+
+  it('passes the accessibility gate', async () => {
+    await expectNoA11yViolations(<SearchBar />)
+  })
+})

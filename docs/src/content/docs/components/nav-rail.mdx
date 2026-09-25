@@ -58,6 +58,26 @@ does not exist is a dead end. Put the version in `end` to say when it arrives.
 wraps makes one row taller than the rest — which in a two-language product
 happens to one entry and not the others.
 
+**Collapsed, the column keeps only its icons.** A work open on screen wants the
+width, and the destinations are still needed — so `collapsed` draws the column
+as squares around the icons, at `--spacing-rail-compact` (56px), and each
+entry's name moves into a [Tooltip](/dowel/components/tooltip/) beside it. The
+tooltip's trigger is the entry itself, so it opens on keyboard focus as well as
+on hover, and the name stays in the entry off the screen: a reader hears
+"Catalogue, current page" whether the rail is wide or narrow.
+
+```tsx
+<AppShell sideWidth={collapsed ? 'var(--spacing-rail-compact)' : 'var(--spacing-rail)'} side={
+  <NavRail label="Screens" items={screens} activeId={screen} collapsed={collapsed} />
+}>
+```
+
+The product passes the same `collapsed` to every NavRail and NavGroup it builds
+its rail from — one boolean in the one place the rail is assembled. A collapsed
+NavGroup is a short hairline, with its word kept for a reader, and an entry with
+no icon shows its initial rather than an empty square. The row and bar
+shapes have no narrow form: they are made of their names.
+
 **The narrow shapes clear the pointer target floor.** A `row` tab and a `bar`
 cell carry `target-min`, so they are at least 24 CSS pixels however small the
 text is. A `column` entry is already taller than that.
@@ -74,11 +94,12 @@ text is. A `column` entry is already taller than that.
 | `activeId` | `string` | | The open screen |
 | `render` | `(item) => ReactElement` | | The element each entry is drawn as |
 | `onSelect` | `(id) => void` | | Pressed, whatever the entry is drawn as |
+| `collapsed` | `boolean` | `false` | Icons only, names in tooltips; `column` only |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `NavGroup`, `NavSpacer`
 
 | | |
 | --- | --- |
-| `NavGroup` | The caption over a run of entries: Library, Team, Admin |
+| `NavGroup` | The caption over a run of entries: Library, Team, Admin. `collapsed` draws a hairline instead |
 | `NavSpacer` | Pushes what follows to the far end — settings, theme, profile |

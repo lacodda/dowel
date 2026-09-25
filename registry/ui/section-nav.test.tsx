@@ -119,3 +119,39 @@ describe('SectionHeading', () => {
     unmount()
   })
 })
+
+describe('SectionNav, told more', () => {
+  const described = [
+    { id: 'general', label: 'General', description: 'Theme, language, start screen' },
+    { id: 'data', label: 'Data', description: 'Backups and the trash' },
+  ]
+
+  it('keeps its caption as the name when the caption is hidden', () => {
+    // A screen headed "Settings" over a list captioned "Settings" names
+    // itself twice; the landmark still needs the name.
+    render(<SectionNav label="Settings" items={items} labelHidden />)
+    expect(screen.getByRole('navigation', { name: 'Settings' })).toBeDefined()
+    expect(screen.getByText('Settings').className).toContain('sr-only')
+  })
+
+  it('says what each section holds under its label', () => {
+    render(<SectionNav label="Settings" items={described} activeId="general" />)
+    expect(screen.getByText('Theme, language, start screen')).toBeDefined()
+    // Part of the row, so a reader hears it with the section's name.
+    expect(screen.getByRole('button', { name: /General.*Theme, language/ })).toBeDefined()
+  })
+
+  it('cuts a description at two lines, so the rows stay a list', () => {
+    render(<SectionNav label="Settings" items={described} />)
+    expect(screen.getByText('Backups and the trash').className).toContain('line-clamp-2')
+  })
+
+  it('offers a cut label whole, on hover', () => {
+    render(<SectionNav label="Settings" items={[{ id: 'a', label: 'A section name longer than the column' }]} />)
+    expect(screen.getByRole('button').getAttribute('title')).toBe('A section name longer than the column')
+  })
+
+  it('passes axe with descriptions and a hidden caption', async () => {
+    await expectNoA11yViolations(<SectionNav label="Settings" items={described} activeId="data" labelHidden />)
+  })
+})
