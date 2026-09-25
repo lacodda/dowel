@@ -113,3 +113,45 @@ describe('the rest', () => {
     expect(className).not.toContain('p-8')
   })
 })
+
+describe('plain, inside something that already has a frame', () => {
+  it('draws no frame and no mark', () => {
+    // A dashed box and a watermark inside a widget is a frame inside a frame.
+    const { container } = render(<EmptyState plain title="Not scored yet" />)
+    const root = container.firstElementChild!
+    expect(root.className).not.toContain('border')
+    expect(root.className).not.toContain('p-8')
+    expect(container.querySelector('svg')).toBeNull()
+  })
+
+  it('ignores a mark of its own too', () => {
+    const { container } = render(<EmptyState plain title="Not scored yet" mark={<svg data-testid="own" />} />)
+    expect(container.querySelector('[data-testid="own"]')).toBeNull()
+  })
+
+  it('sits in the flow on the left, where the content would have started', () => {
+    const { container } = render(<EmptyState plain title="Not scored yet" />)
+    expect(container.firstElementChild?.className).toContain('text-left')
+    expect(container.firstElementChild?.className).toContain('items-start')
+  })
+
+  it('keeps the words and the way out', () => {
+    render(
+      <EmptyState plain title="Not scored yet" body="Score it to see it here." action={<button type="button">Score</button>} />,
+    )
+    expect(screen.getByText('Not scored yet')).toBeDefined()
+    expect(screen.getByText('Score it to see it here.')).toBeDefined()
+    expect(screen.getByRole('button', { name: 'Score' })).toBeDefined()
+  })
+
+  it('still says a failure in the failure colour', () => {
+    render(<EmptyState plain variant="error" title="Could not read the score" />)
+    expect(screen.getByText('Could not read the score').className).toContain('text-bad')
+  })
+
+  it('passes axe in all three kinds', async () => {
+    for (const variant of ['empty', 'filtered', 'error'] as const) {
+      await expectNoA11yViolations(<EmptyState plain variant={variant} title="Nothing" action={<button type="button">Do</button>} />)
+    }
+  })
+})

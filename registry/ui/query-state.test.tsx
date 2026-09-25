@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { EmptyState } from './empty-state'
 import { QueryState } from './query-state'
@@ -169,6 +170,74 @@ describe('what it says to a screen reader', () => {
 
     await expectNoA11yViolations(
       <QueryState empty emptyState={<EmptyState title="Nothing yet" />}>
+        <Content />
+      </QueryState>,
+    )
+  })
+})
+
+describe('a way out of a failure', () => {
+  it('puts a retry on the default error screen, in the product words', async () => {
+    const onRetry = vi.fn()
+    render(
+      <QueryState error="the server said no" onRetry={onRetry} retryLabel="Try again">
+        <Content />
+      </QueryState>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Try again' }))
+    expect(onRetry).toHaveBeenCalledOnce()
+  })
+
+  it('has no retry when there is nothing to retry with', () => {
+    render(
+      <QueryState error="the server said no">
+        <Content />
+      </QueryState>,
+    )
+    expect(screen.queryByRole('button')).toBeNull()
+  })
+
+  it('hands the retry to a screen the caller draws', async () => {
+    const onRetry = vi.fn()
+    render(
+      <QueryState
+        error="boom"
+        onRetry={onRetry}
+        retryLabel="Try again"
+        errorState={(message, retry) => (
+          <button type="button" onClick={retry}>
+            {message}, again
+          </button>
+        )}
+      >
+        <Content />
+      </QueryState>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'boom, again' }))
+    expect(onRetry).toHaveBeenCalledOnce()
+  })
+
+  it('does not take a retry without a word for it', () => {
+    // The union refuses it at compile time; this fails the typecheck if it
+    // ever stops doing so.
+    // @ts-expect-error - onRetry needs retryLabel
+    const state = <QueryState error="x" onRetry={() => {}}>{null}</QueryState>
+    expect(state).toBeDefined()
+  })
+
+  it('draws the error without a frame when plain', () => {
+    const { container } = render(
+      <QueryState error="the server said no" plain onRetry={() => {}} retryLabel="Try again">
+        <Content />
+      </QueryState>,
+    )
+    expect(container.querySelector('svg')).toBeNull()
+    expect(container.innerHTML).not.toContain('border-dashed')
+  })
+
+  it('passes axe with a retry', async () => {
+    await expectNoA11yViolations(
+      <QueryState error="the server said no" onRetry={() => {}} retryLabel="Try again">
         <Content />
       </QueryState>,
     )

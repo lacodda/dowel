@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Button } from './button'
 import { EmptyState } from './empty-state'
 import { SkeletonList } from './skeleton'
 
@@ -29,9 +30,29 @@ import { SkeletonList } from './skeleton'
  * What it deliberately does not do is fetch, retry or cache. Those belong to
  * whatever owns the data - and a component that guessed at them would be
  * wrong for the product that owns them differently.
+ *
+ * **But it offers the retry it is handed.** A failed load with no way to try
+ * again is a dead end, and kilna had nineteen of them - every one wrote
+ * "could not load" and none called the `refetch` it already had. `onRetry`
+ * puts a button on the default error screen, and hands itself to a custom
+ * one, so a product passes `works.refetch` once and every failure has a way
+ * out.
  */
 
-export interface QueryStateProps {
+/*
+ * A retry, with the word for it.
+ *
+ * The two travel together as a union, the way Chip's remove does: a retry
+ * button exists only where there is a word for it, and the word is the
+ * product's - a string invented here could not be translated.
+ */
+type Retry =
+  | { onRetry: () => void; retryLabel: string }
+  | { onRetry?: never; retryLabel?: never }
+
+export type QueryStateProps = QueryStateOwnProps & Retry
+
+interface QueryStateOwnProps {
   /** Nothing has arrived yet. */
   pending?: boolean
   /** It failed. Anything with a `message`, which is what every error library
@@ -48,12 +69,16 @@ export interface QueryStateProps {
   /** What is shown when nothing came back. */
   emptyState?: ReactNode
   /** What is shown when it failed. Given the message, so a product can put it
-   * where it likes - or ignore it. */
-  errorState?: (message: string) => ReactNode
+   * where it likes - or ignore it - and the retry, when there is one. */
+  errorState?: (message: string, retry?: () => void) => ReactNode
   /** The words on the default error screen. Required only in the sense that
    * the default screen needs them; pass `errorState` instead and they are
    * never read. */
   errorLabels?: { title: string; body?: string }
+  /** Draw the default error screen without its frame, for a list inside a
+   * panel or a widget that already has one. The empty screen is the
+   * caller's, and says for itself whether it is plain. */
+  plain?: boolean
   children: ReactNode
 }
 
@@ -65,6 +90,9 @@ export function QueryState({
   emptyState,
   errorState,
   errorLabels,
+  plain = false,
+  onRetry,
+  retryLabel,
   children,
 }: QueryStateProps) {
   /* `aria-busy` on the wrapper, in every state.
@@ -82,15 +110,23 @@ export function QueryState({
 
   if (error) {
     const message = typeof error === 'string' ? error : error.message
-    if (errorState) return wrap(errorState(message))
+    if (errorState) return wrap(errorState(message, onRetry))
     return wrap(
       <EmptyState
         variant="error"
+        plain={plain}
         title={errorLabels?.title ?? message}
         // The message is shown as the body when there is a title above it, and
         // as the title when there is not - so it is never lost, and never
         // printed twice.
         body={errorLabels?.title ? (errorLabels.body ?? message) : errorLabels?.body}
+        action={
+          onRetry === undefined ? undefined : (
+            <Button size="sm" onClick={onRetry}>
+              {retryLabel}
+            </Button>
+          )
+        }
       />,
     )
   }

@@ -57,6 +57,28 @@ by hand:
 **`empty` is computed by the caller**, because only the caller knows whether
 empty means `[]`, `null`, or a count of zero.
 
+**It offers the retry it is handed.** A failed load with no way to try again
+is a dead end, and kilna had nineteen of them — every one wrote "could not
+load" and none called the `refetch` it already had. Pass `onRetry` with the
+word for it, and the default error screen gets the button; a screen you draw
+yourself is handed the retry as its second argument.
+
+```tsx
+<QueryState
+  pending={works.isPending}
+  error={works.error}
+  onRetry={() => works.refetch()}
+  retryLabel={t('retry')}
+  errorLabels={{ title: t('works.loadFailed') }}
+>
+  …
+</QueryState>
+```
+
+`onRetry` and `retryLabel` travel together in the type: a retry button exists
+only where there is a word for it, and the word is the product's. `plain` draws
+the default error screen without its frame, for a list inside a panel.
+
 **What it does not do:** fetch, retry or cache. Those belong to whatever owns
 the data, and a component that guessed at them would be wrong for the product
 that owns them differently. A crash while rendering is
@@ -71,5 +93,8 @@ that owns them differently. A crash while rendering is
 | `empty` | `boolean` | `false` | Something arrived, and it was nothing |
 | `skeleton` | `ReactNode` | `<SkeletonList />` | What stands in while pending |
 | `emptyState` | `ReactNode` | | Shown when nothing came back |
-| `errorState` | `(message) => ReactNode` | | Draw the failure yourself |
+| `errorState` | `(message, retry?) => ReactNode` | | Draw the failure yourself |
 | `errorLabels` | `{ title, body? }` | | Words for the default failure screen |
+| `onRetry` | `() => void` | | A way out of a failure — requires `retryLabel` |
+| `retryLabel` | `string` | **required with `onRetry`** | What the retry button is called |
+| `plain` | `boolean` | `false` | The default error screen without its frame |

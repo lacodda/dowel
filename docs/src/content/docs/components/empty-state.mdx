@@ -48,6 +48,21 @@ empty panel shouts. It is inlined so it costs no request and can take the
 theme's colour, and it is `aria-hidden`, because it says nothing a reader
 needs. Pass `mark` to put a product's own illustration there instead.
 
+**`plain` is the same three kinds with no frame.** The framed panel is for a
+screen or a region that is empty. Inside something that already has a frame —
+a widget, a card, a panel's list — a dashed box and a watermark are a frame
+inside a frame, and products drew those empties as bare text instead, without
+the way out. Plain keeps the words and the action and drops the rest: no
+border, no mark, set in the flow on the left, where the content would have
+started.
+
+```tsx
+<Panel>
+  <SectionLabel>Score</SectionLabel>
+  <EmptyState plain title="Not scored yet." action={<Button size="sm">Score it</Button>} />
+</Panel>
+```
+
 **Where it is used automatically:**
 [QueryState](/dowel/components/query-state/) draws it for a failure, and
 [ErrorBoundary](/dowel/components/error-boundary/) for a crash.
@@ -57,10 +72,11 @@ needs. Pass `mark` to put a product's own illustration there instead.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `variant` | `empty \| filtered \| error` | `empty` | Which kind of nothing |
+| `plain` | `boolean` | `false` | No frame and no mark, for a place that has a frame already |
 | `title` | `ReactNode` | | What is not here |
 | `body` | `ReactNode` | | Why, or what to do |
 | `action` | `ReactNode` | | The one thing worth doing |
-| `mark` | `ReactNode` | | A product's own illustration |
+| `mark` | `ReactNode` | | A product's own illustration; not drawn when `plain` |
 
 `EmptyMark`, `FilteredMark` and `ErrorMark` are exported for a product
 composing its own panel.
