@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-kasl",
+  "type": "registry:file",
+  "title": "kasl accent",
+  "description": "lime #A9C23F - the colour of the kasl mark (ka). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/kasl.css",
+      "target": "~/dowel/accents/kasl.css",
+      "type": "registry:file",
+      "content": "/*\n * kasl - lime #A9C23F, the colour of its mark (ka).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #A9C23F;\n}\n"
+    }
+  ]
+}

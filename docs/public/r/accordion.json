@@ -6,7 +6,7 @@
   "description": "A stack of collapsible sections that share one rule about how many can be open at once - an FAQ, the groups in a long settings page, the filters in a sidebar. Each section is `Collapsible`'s shape (a header, a trigger, a panel) repeated inside a group that also decides `single` or `multiple`, which is the one thing a lone `Collapsible` has no opinion about because it has nothing to be exclusive with.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.32.0"
+    "dowel-ui@^0.33.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/collapsible.json"

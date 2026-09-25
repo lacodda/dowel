@@ -17,7 +17,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.32.0.** The theme and its scales, an accent for each of the nineteen
+**v0.33.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
@@ -29,7 +29,9 @@ gate; a pointer target has a floor the set cannot fall under; and density is an
 attribute on a container rather than a prop, so one word on a form reaches
 every control inside it, buttons included. A dialog scrolls in its body and
 keeps its actions in the window, and a popup opened inside any overlay opens
-above it. Components install from the
+above it. The [lint rules](/dowel/guides/linting/) hold a product to the same
+scale and to Button rather than a raw `<button>`, and rewrite a size written the
+long way on their own. Components install from the
 registry with `npx shadcn add`, singly or as a
 [set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also
 carries the [migration tools](/dowel/guides/migration/) a project crossing from
