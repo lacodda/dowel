@@ -63,8 +63,8 @@ export const tooltipPopupVariants = cva(
        * behaviour to gain a width.
        */
       size: {
-        sm: 'max-w-[16rem]',
-        wide: 'max-w-[24rem]',
+        sm: 'max-w-64',
+        wide: 'max-w-96',
       },
     },
     defaultVariants: { size: 'sm' },

@@ -135,7 +135,7 @@ export function LineChart({
               <div className="h-px w-full bg-chart-grid" />
               {/* Outside the plot, in the gutter the variant reserves: a label
                 * drawn over the series is a label crossed out by it. */}
-              <span className="absolute -top-1.5 left-full pl-1.5 text-[10px] leading-none text-faint tabular-nums">
+              <span className="absolute -top-1.5 left-full pl-1.5 text-2xs leading-none text-faint tabular-nums">
                 {formatTick ? formatTick(tick) : tick}
               </span>
             </div>
@@ -168,7 +168,7 @@ export function LineChart({
       </div>
 
       {footer !== undefined && (
-        <div className="mt-1 flex justify-between text-[10px] text-faint tabular-nums">{footer}</div>
+        <div className="mt-1 flex justify-between text-2xs text-faint tabular-nums">{footer}</div>
       )}
     </div>
   )

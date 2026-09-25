@@ -42,7 +42,7 @@ export const barChartVariants = cva('flex items-end gap-1 border-b border-chart-
   defaultVariants: { size: 'md' },
 })
 
-export const barVariants = cva('mx-auto w-3/5 max-w-6 rounded-t-[4px]', {
+export const barVariants = cva('mx-auto w-3/5 max-w-6 rounded-t-xs', {
   variants: {
     tone: {
       accent: 'bg-accent',
@@ -111,7 +111,7 @@ export function BarChart({ bars, max, label, size, className, ...props }: BarCha
                * from a bar that did not render, and closing the gap up would
                * turn an absence into continuity - the one thing a trend must
                * not do. */
-              <div className="mx-auto h-1 w-3/5 max-w-6 rounded-t-[4px] border-x border-t border-line-2" />
+              <div className="mx-auto h-1 w-3/5 max-w-6 rounded-t-xs border-x border-t border-line-2" />
             ) : (
               <div
                 className={cn(barVariants({ tone: bar.tone }))}
@@ -119,7 +119,7 @@ export function BarChart({ bars, max, label, size, className, ...props }: BarCha
               />
             )}
           </div>
-          <span className="w-full truncate text-center text-[10px] text-faint tabular-nums">
+          <span className="w-full truncate text-center text-2xs text-faint tabular-nums">
             {bar.label}
           </span>
         </div>
@@ -161,7 +161,7 @@ export function Baseline({ value, max, children, className, ...props }: Baseline
         * hairline crossing its own caption reads as a strikethrough. */}
       <div className="h-px flex-1 bg-chart-grid" />
       {children !== undefined && (
-        <span className="shrink-0 text-[10px] leading-none text-faint tabular-nums">{children}</span>
+        <span className="shrink-0 text-2xs leading-none text-faint tabular-nums">{children}</span>
       )}
     </div>
   )

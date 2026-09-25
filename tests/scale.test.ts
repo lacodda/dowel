@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { findArbitraryScale } from '../packages/dowel/src/eslint/no-arbitrary-scale'
 
 /*
  * Size and spacing come from the scale, or they are argued for by name.
@@ -41,32 +42,22 @@ const components = readdirSync(componentDir)
     source: readFileSync(resolve(componentDir, file), 'utf8'),
   }))
 
-/** Utilities that take a length from the spacing or sizing scale. Colour,
- * border width and the rest have their own gates or their own scales. */
-const SIZING =
-  '(?:size|w|h|min-w|min-h|max-w|max-h|p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|space-x|space-y|top|bottom|left|right|inset|inset-x|inset-y|translate-x|translate-y|basis)'
-
-/**
- * Fixed lengths written by hand, as `utility-[12px]`.
+/*
+ * What counts as off the scale is the lint rule's to say - `findArbitraryScale`
+ * from `dowel/no-arbitrary-scale` - so the set and the products it ships to
+ * are held to one definition. Products get it as a lint error; the set gets it
+ * here, where each exception keeps its argument beside it and a stale one is
+ * caught (the repository's lint config leaves `registry/ui` to this gate).
  *
- * A negative utility (`-ml-[2px]`) counts: the sign is a direction, not a
- * different kind of measurement.
+ * The rule reads type, radius and tracking as well as length, which this gate
+ * did not: `text-[10px]` sat in six primitives because only sizing was read.
  */
-function fixedLengths(source: string): Array<{ at: number; text: string }> {
-  const found: Array<{ at: number; text: string }> = []
-  const pattern = new RegExp(`-?\\b${SIZING}-\\[([^\\]]+)\\]`, 'g')
-
-  for (const match of source.matchAll(pattern)) {
-    const value = match[1]!
-    // Computed, relative or proportional - a relationship rather than a
-    // measurement somebody chose.
-    if (/calc|min\(|max\(|clamp|var\(|%|vw|vh|dvh|dvw|lh|ch|em\b|fr\b|auto|100/.test(value)) continue
-    // What is left is a plain length: `22px`, `1.5rem`, `13`.
-    if (!/^-?[\d.]+(px|rem)?$/.test(value)) continue
-    found.push({ at: match.index, text: match[0] })
-  }
-
-  return found
+function fixedLengths(source: string): Array<{ at: number; text: string; message: string }> {
+  return findArbitraryScale(source).map((finding) => ({
+    at: finding.index,
+    text: finding.text,
+    message: finding.message,
+  }))
 }
 
 /*
@@ -77,11 +68,15 @@ function fixedLengths(source: string): Array<{ at: number; text: string }> {
  * is what every drifted number says about itself.
  */
 const ALLOWED: Record<string, Record<string, string>> = {
-  sparkline: {
-    'w-[52px]':
-      'the width of the sparkline beside a figure in a row. Not a box in the layout but a drawing surface: it is the viewBox the line is plotted into, and a step of the spacing scale would change the aspect the data is read at',
-    'w-[120px]':
-      'the same surface at the size meant to be read rather than glanced at',
+  'activity-heatmap': {
+    'rounded-[3px]':
+      'a heatmap cell is a pixel of data, ten or twelve pixels across, not a control. The radius scale starts at 4, which rounds a cell that small towards a dot and turns a grid of days into a grid of beads',
+  },
+  splash: {
+    'text-[26px]':
+      "the product's name on the splash is the mark's wordmark, set to the mark above it - not text in the interface. The type scale stops at 21 because nothing on a working screen is larger; this is the one thing that is not on a working screen",
+    'tracking-[0.02em]':
+      'the wordmark is tracked open the way the brand-line wordmarks are, and no interface text is: `tracking-caption` is for 10px capitals and would space a 26px name apart',
   },
 }
 
@@ -93,7 +88,7 @@ describe('size comes from the scale', () => {
 
       const unexplained = fixedLengths(source)
         .filter((found) => allowed[found.text] === undefined)
-        .map((found) => `line ${source.slice(0, found.at).split('\n').length}: ${found.text}`)
+        .map((found) => `line ${source.slice(0, found.at).split('\n').length}: ${found.message}`)
 
       expect(
         unexplained,
@@ -121,5 +116,22 @@ describe('size comes from the scale', () => {
       }
     }
     expect(stale, `stale allowances:\n  ${stale.join('\n  ')}`).toEqual([])
+  })
+})
+
+describe('the caption is one utility', () => {
+  /*
+   * The small uppercase label had seven recipes in the set - with and without
+   * `font-medium`, with and without a weight at all - so a Field's label and
+   * the SectionLabel above it were two weights of one thing, and kilna's
+   * screens copied whichever they saw first, thirty-one times. It is
+   * `caption` now, and a recipe written out by hand is the drift starting
+   * again.
+   */
+  it.each(components.map((c) => [c.name, c.source] as const))('%s writes no caption by hand', (name, source) => {
+    const byHand = [...source.matchAll(/['"`][^'"`]*\buppercase\b[^'"`]*\btracking-caption\b[^'"`]*['"`]/g)].map(
+      (match) => match[0],
+    )
+    expect(byHand, `\`${name}\` spells out the caption; use the \`caption\` utility`).toEqual([])
   })
 })

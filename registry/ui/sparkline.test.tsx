@@ -51,7 +51,7 @@ describe('the geometry, which is where a line lies without breaking', () => {
     const svg = container.querySelector('svg')!
     expect(svg.getAttribute('viewBox')).toBe('0 0 52 16')
     expect(svg.getAttribute('class')).toContain('h-4')
-    expect(svg.getAttribute('class')).toContain('w-[52px]')
+    expect(svg.getAttribute('class')).toContain('w-13')
   })
 
   it('puts a larger value higher up, because SVG grows downward', () => {

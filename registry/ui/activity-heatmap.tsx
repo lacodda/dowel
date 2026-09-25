@@ -123,7 +123,7 @@ export function ActivityHeatmap({
       <div className="flex gap-[var(--gap)]" role="img" aria-label={label}>
         {weekdayLabel !== undefined && (
           <div
-            className="mr-1 flex flex-col gap-[var(--gap)] text-[10px] leading-[var(--cell)] text-faint"
+            className="mr-1 flex flex-col gap-[var(--gap)] text-2xs leading-[var(--cell)] text-faint"
             aria-hidden
           >
             {rows.map((weekday) => (

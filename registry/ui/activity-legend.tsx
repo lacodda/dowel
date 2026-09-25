@@ -35,7 +35,7 @@ export function ActivityLegend({
 }: ActivityLegendProps) {
   return (
     <div
-      className={cn('flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-faint', className)}
+      className={cn('flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-faint', className)}
       {...props}
     >
       <span className="flex items-center gap-1.5">

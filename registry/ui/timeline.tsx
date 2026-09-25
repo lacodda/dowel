@@ -140,7 +140,7 @@ export function TimelineItem({
             timelineMarkerVariants({ status, pending }),
             // Room for a glyph when there is one; a bare dot stays small
             // enough to read as a point on a line rather than as a bullet.
-            icon ? 'mt-0.5 size-5 text-[10px]' : 'mt-1.5 size-2.5',
+            icon ? 'mt-0.5 size-5 text-2xs' : 'mt-1.5 size-2.5',
           )}
           // The marker is decorative when the state is not named. When it is,
           // the name is what a reader gets in place of the colour.

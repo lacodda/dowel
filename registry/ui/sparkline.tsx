@@ -17,7 +17,7 @@ import { cn } from 'dowel-ui'
  * than a `className`, and each variant states the same numbers twice on
  * purpose - once for the geometry, once for the element - from one place. The
  * donor took a `size` object *and* a class, and every call site repeated
- * itself: `size={{ width: 52, height: 16 }} className="h-4 w-[52px]"`.
+ * itself: a size of 52 by 16, and then a class saying the same width again.
  *
  * **The scale comes from outside.** `max` is what the axis allows, not what
  * this line happens to reach, so two works can be compared by eye. Normalised
@@ -48,10 +48,10 @@ export const sparklineVariants = cva('shrink-0 overflow-visible', {
   variants: {
     size: {
       /* Beside a figure in a row - an axis of a rubric, a cell in a table. */
-      sm: 'h-4 w-[52px]',
+      sm: 'h-4 w-13',
       /* Beside a total, where the shape is meant to be read rather than
        * glanced at. */
-      md: 'h-7 w-[120px]',
+      md: 'h-7 w-30',
     },
   },
   defaultVariants: { size: 'md' },

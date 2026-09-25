@@ -188,7 +188,7 @@ export interface TrackScaleProps extends HTMLAttributes<HTMLDivElement> {
 export function TrackScale({ className, ...props }: TrackScaleProps) {
   return (
     <div
-      className={cn('flex justify-between text-[10px] text-faint', className)}
+      className={cn('flex justify-between text-2xs text-faint', className)}
       {...props}
     />
   )
