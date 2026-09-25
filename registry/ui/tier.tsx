@@ -1,4 +1,4 @@
-import type { HTMLAttributes, KeyboardEvent, ReactNode } from 'react'
+import { useId, type HTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
 
@@ -301,6 +301,11 @@ export interface AxisBarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onCh
   /** What to say instead of the bare number - "unjudged", in the product's
    * word, when there is no mark. */
   valueText?: string
+  /** The mark under the pointer, and `undefined` when the pointer leaves -
+   * so a product can say what a mark means while it is being weighed, before
+   * anyone commits to it. The question while scoring is about the mark being
+   * considered, not the one already given. */
+  onPreview?: (mark: number | undefined) => void
 }
 
 /**
@@ -327,11 +332,16 @@ export function AxisBar({
   onChange,
   threshold,
   valueText,
+  onPreview,
   className,
   ...props
 }: AxisBarProps) {
   const marks = Math.max(1, Math.round(scale))
   const interactive = onChange !== undefined
+  const thresholdId = useId()
+  // Drawn only where it is true, and said only where it is drawn: a mark
+  // past the end of the scale is no threshold at all.
+  const reachable = threshold !== undefined && threshold.mark >= 1 && threshold.mark <= marks
 
   const step = (delta: number) => {
     if (!onChange) return
@@ -384,7 +394,13 @@ export function AxisBar({
       aria-valuemax={marks}
       aria-valuenow={value}
       aria-valuetext={valueText}
+      // The threshold is a ring on a segment and a `title` on it, and both
+      // are pointer-only: the segments are `aria-hidden`, and a title on a
+      // span is never shown to the keyboard. So the row itself carries it as
+      // its description, and a reader hears "a clip from 8" with the value.
+      aria-describedby={reachable ? thresholdId : undefined}
       onKeyDown={interactive ? onKeyDown : undefined}
+      onPointerLeave={onPreview ? () => onPreview(undefined) : undefined}
       className={cn(
         'flex gap-hair rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent',
         className,
@@ -398,7 +414,8 @@ export function AxisBar({
         // the segment rather than on its leading edge: a rule beside the last
         // mark reads as the end of the scale, which is exactly when the
         // threshold matters most.
-        const crosses = threshold !== undefined && threshold.mark === mark
+        const crosses = reachable && threshold.mark === mark
+        const preview = onPreview ? () => onPreview(mark) : undefined
 
         const shared = cn(
           'relative h-5 flex-1 rounded-sm transition-colors',
@@ -422,13 +439,19 @@ export function AxisBar({
             // Clicking the mark already set clears the axis, which is the only
             // way back to unjudged with a pointer.
             onClick={() => onChange?.(value === mark ? undefined : mark)}
+            onPointerEnter={preview}
             title={crosses ? threshold.label : undefined}
             className={cn(shared, 'cursor-pointer', filled ? 'hover:bg-accent-2' : 'hover:bg-line-2')}
           />
         ) : (
-          <span key={mark} aria-hidden className={shared} />
+          <span key={mark} aria-hidden onPointerEnter={preview} className={shared} />
         )
       })}
+      {reachable ? (
+        <span id={thresholdId} hidden>
+          {threshold.label}
+        </span>
+      ) : null}
     </div>
   )
 }

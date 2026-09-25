@@ -263,3 +263,44 @@ describe('AxisBar', () => {
     )
   })
 })
+
+describe('AxisBar, while a mark is being weighed', () => {
+  it('names the mark under the pointer, and lets go when the pointer leaves', async () => {
+    const onPreview = vi.fn()
+    const { container } = render(
+      <AxisBar label="Melody" scale={10} value={4} onChange={() => {}} onPreview={onPreview} />,
+    )
+    const segments = container.querySelectorAll('span[aria-hidden]')
+    await userEvent.hover(segments[6]!)
+    expect(onPreview).toHaveBeenLastCalledWith(7)
+    await userEvent.unhover(screen.getByRole('slider'))
+    expect(onPreview).toHaveBeenLastCalledWith(undefined)
+  })
+
+  it('previews on a reading too, where nothing can be set', async () => {
+    const onPreview = vi.fn()
+    const { container } = render(<AxisBar label="Melody" scale={5} value={2} onPreview={onPreview} />)
+    await userEvent.hover(container.querySelectorAll('span[aria-hidden]')[2]!)
+    expect(onPreview).toHaveBeenLastCalledWith(3)
+  })
+
+  it('says the threshold to a reader, not only to a pointer', () => {
+    // The ring and its title are pointer-only: the segments are hidden from
+    // assistive technology, and a title on a span never reaches the keyboard.
+    render(
+      <AxisBar label="Melody" scale={10} value={4} onChange={() => {}} threshold={{ mark: 8, label: 'A clip from 8' }} />,
+    )
+    expect(screen.getByRole('slider', { description: 'A clip from 8' })).toBeDefined()
+  })
+
+  it('says no threshold the axis cannot reach', () => {
+    render(<AxisBar label="Melody" scale={5} value={4} onChange={() => {}} threshold={{ mark: 8, label: 'A clip from 8' }} />)
+    expect(screen.getByRole('slider').hasAttribute('aria-describedby')).toBe(false)
+  })
+
+  it('passes axe with a threshold', async () => {
+    await expectNoA11yViolations(
+      <AxisBar label="Melody" scale={10} value={4} onChange={() => {}} threshold={{ mark: 8, label: 'A clip from 8' }} />,
+    )
+  })
+})
