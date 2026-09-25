@@ -34,10 +34,11 @@ describe('Panel', () => {
 })
 
 describe('SectionLabel', () => {
-  it('uses the one tracking the products argued about', () => {
-    // 0.08em in six files and 0.09em in three, for the same visual element.
+  it('is the one caption the set has', () => {
+    // 0.08em in six files and 0.09em in three, and two weights, for the same
+    // visual element - which is why it is one utility now.
     render(<SectionLabel>Details</SectionLabel>)
-    expect(screen.getByText('Details').className).toContain('tracking-caption')
+    expect(screen.getByText('Details').className.split(/\s+/)).toContain('caption')
   })
 })
 

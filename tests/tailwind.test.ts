@@ -75,6 +75,18 @@ describe('the theme compiles', () => {
     }
   })
 
+  it('turns the caption role into one utility, at 600 in faint capitals', async () => {
+    // One role, seven recipes in the set before this; the weight is the part
+    // that drifted, so it is the part checked.
+    const css = await build(['caption'])
+    const rule = css.slice(css.indexOf('.caption {'))
+    const body = rule.slice(0, rule.indexOf('}'))
+    expect(body).toContain('font-weight: 600')
+    expect(body).toContain('text-transform: uppercase')
+    expect(body).toContain('color: var(--faint)')
+    expect(body).toContain('font-size: 10px')
+  })
+
   it('gives every type step the theme\'s own line height', async () => {
     // A size with no companion still compiles: Tailwind falls back to its own
     // default line height, so the rule looks complete and the text is set on a

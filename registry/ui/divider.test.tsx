@@ -72,7 +72,7 @@ describe('Divider', () => {
 
   it('keeps the caption in the caption type the set already has', () => {
     render(<Divider label="Archived" />)
-    expect(screen.getByText('Archived').className).toContain('tracking-caption')
+    expect(screen.getByText('Archived').className).toContain('caption')
   })
 
   it('lets the caller win a conflict', () => {

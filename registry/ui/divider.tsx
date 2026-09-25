@@ -109,7 +109,7 @@ export function Divider({
         {...props}
       >
         <span aria-hidden className="h-px flex-1 bg-line" />
-        <span className="shrink-0 text-2xs font-medium uppercase tracking-caption text-faint">
+        <span className="caption shrink-0">
           {label}
         </span>
         <span aria-hidden className="h-px flex-1 bg-line" />

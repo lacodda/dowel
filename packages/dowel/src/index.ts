@@ -217,6 +217,7 @@ export const sizeTokens = [
 export const chromeTokens = [
   'spacing-titlebar',
   'spacing-rail',
+  'spacing-rail-compact',
   'spacing-window-button',
   'spacing-resize-edge',
   'spacing-resize-corner',

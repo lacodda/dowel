@@ -711,6 +711,15 @@
   --spacing-window-button: 46px;
 
   /*
+   * The rail with only its icons: `NavRail collapsed`. 56 is a 36px entry -
+   * the size of an icon button in the bar above it - with 10px of air on each
+   * side, which is the same inset the wide rail gives its entries. Narrower,
+   * and the active entry's tint touches the rail's border; wider, and the
+   * column reads as a sidebar that forgot its words.
+   */
+  --spacing-rail-compact: 56px;
+
+  /*
    * How much of a frameless window's edge can be grabbed to resize it.
    *
    * The system used to own this and gave about 4 pixels plus whatever the
@@ -749,6 +758,26 @@
  * would need a compensating negative margin. This changes nothing about
  * layout.
  */
+/*
+ * `caption` - the small uppercase label: a field's name, a panel's section, a
+ * group of menu items, a rail's group.
+ *
+ * One role, and the set wrote it seven ways: with and without `font-medium`,
+ * with and without a weight at all, so a Field's label and the SectionLabel
+ * above it were two weights of the same thing. kilna's screens added
+ * thirty-one more by hand. The weight is 600, the mockup's `.lbl` - at 10px
+ * a caption lighter than that reads as a smudge rather than a word.
+ *
+ * A utility rather than a component because it is a role text plays inside
+ * things that are already components: a `<legend>`, a `<th>`, a `<label>`.
+ * Its colour is `faint` - verified against the grounds at body size; at 10px
+ * it is below AA in the light theme, which is a finding about `faint` at every
+ * small size and is owned by the contrast work, not by this recipe.
+ */
+@utility caption {
+  @apply text-2xs font-semibold uppercase tracking-caption text-faint;
+}
+
 @utility target-min {
   position: relative;
 
