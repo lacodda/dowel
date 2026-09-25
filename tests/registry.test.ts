@@ -166,6 +166,8 @@ describe('every item', () => {
     'reorderable-list',
     'tier',
     'layer',
+    // A hook and the pure step under it - the rules a field is typed by.
+    'field-draft',
   ])
 
   it('names a component the way a consumer types it', () => {
