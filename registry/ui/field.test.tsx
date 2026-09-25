@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
-import { Field } from './field'
+import { Field, FieldGroup } from './field'
 import { Input } from './input'
 
 /*
@@ -130,6 +131,106 @@ describe('Field', () => {
       <Field label="Email" error="That address is not valid.">
         <Input />
       </Field>,
+    )
+  })
+})
+
+describe('Field and FieldGroup share one caption', () => {
+  it('sets the label in the caption role, at 600', () => {
+    // The two kinds of field sit in one form; their names must be one kind.
+    render(
+      <>
+        <Field label="Title">
+          <Input />
+        </Field>
+        <FieldGroup label="Type">
+          <button type="button">Pose</button>
+        </FieldGroup>
+      </>,
+    )
+    expect(screen.getByText('Title').className).toContain('caption')
+    expect(screen.getByText('Type').className).toContain('caption')
+  })
+})
+
+describe('FieldGroup', () => {
+  function Kinds({ onPick }: { onPick: (kind: string) => void }) {
+    return (
+      <FieldGroup label="Type" help="What the style describes.">
+        <div className="flex gap-1">
+          <button type="button" onClick={() => onPick('image')}>
+            Image
+          </button>
+          <button type="button" onClick={() => onPick('pose')}>
+            Pose
+          </button>
+        </div>
+      </FieldGroup>
+    )
+  }
+
+  it('is a group named by its caption', () => {
+    render(<Kinds onPick={() => {}} />)
+    expect(screen.getByRole('group', { name: 'Type' })).toBeDefined()
+  })
+
+  it('describes the group with its hint', () => {
+    render(<Kinds onPick={() => {}} />)
+    expect(screen.getByRole('group', { description: 'What the style describes.' })).toBeDefined()
+  })
+
+  it('does not forward a click on its caption to the first control inside', async () => {
+    // The defect this exists for, measured in kilna: a caption that was a
+    // `<label>` around a row of buttons pressed the first of them - setting
+    // a value, or deleting a picture - whenever someone clicked the words.
+    const onPick = vi.fn()
+    render(<Kinds onPick={onPick} />)
+    await userEvent.click(screen.getByText('Type'))
+    await userEvent.click(screen.getByText('What the style describes.'))
+    expect(onPick).not.toHaveBeenCalled()
+  })
+
+  it('has no label element at all', () => {
+    const { container } = render(<Kinds onPick={() => {}} />)
+    expect(container.querySelector('label')).toBeNull()
+  })
+
+  it('shows the error instead of the hint, as the description', () => {
+    render(
+      <FieldGroup label="Type" help="What the style describes." error="Choose one.">
+        <button type="button">Pose</button>
+      </FieldGroup>,
+    )
+    expect(screen.queryByText('What the style describes.')).toBeNull()
+    expect(screen.getByRole('group', { description: 'Choose one.' })).toBeDefined()
+  })
+
+  it('disables every control inside when disabled', () => {
+    render(
+      <FieldGroup label="Type" disabled>
+        <button type="button">Pose</button>
+      </FieldGroup>,
+    )
+    // A `<fieldset disabled>` disables its descendants natively.
+    expect((screen.getByRole('button', { name: 'Pose' }) as HTMLButtonElement).matches(':disabled')).toBe(true)
+  })
+
+  it('keeps a hidden caption as the group name', () => {
+    render(
+      <FieldGroup label="Type" labelHidden>
+        <button type="button">Pose</button>
+      </FieldGroup>,
+    )
+    expect(screen.getByText('Type').className).toContain('sr-only')
+    expect(screen.getByRole('group', { name: 'Type' })).toBeDefined()
+  })
+
+  it('passes axe with a hint and with an error', async () => {
+    await expectNoA11yViolations(<Kinds onPick={() => {}} />)
+    await expectNoA11yViolations(
+      <FieldGroup label="Type" error="Choose one." required>
+        <button type="button">Pose</button>
+      </FieldGroup>,
     )
   })
 })
