@@ -1,6 +1,6 @@
 ---
 title: Chip
-description: 'A badge you can act on: removable, or with a count.'
+description: 'A badge you can act on: removable, switchable, or with a count - and a row of them that switch together.'
 ---
 
 import Stand from '../../../components/Stand.astro'
@@ -9,13 +9,16 @@ import Stand from '../../../components/Stand.astro'
 $ npx shadcn@latest add https://lacodda.github.io/dowel/r/chip.json
 ```
 
-<Stand component="chip" caption="Plain, with a count, and removable." />
+<Stand component="chip" caption="Plain, with a count, removable, in every tone, and switching alone and in a group." />
 
 ## Notes
 
 **The difference from a Badge is whether something happens when you click it.**
-If something does, that part is a real `<button>` with a real label — not a
-decorative cross. Every product wrote the removable tag and every one made the
+If something does, that part is a real `<button>` with a real name — not a
+decorative cross, and not a `<span>` with a click handler. A chip is acted on in
+two ways, taken away or switched, and each has its own shape.
+
+**Removable.** Every product wrote the removable tag and every one made the
 cross a `<span>`, which the keyboard cannot reach and a screen reader does not
 announce.
 
@@ -25,20 +28,78 @@ announce.
 </Chip>
 ```
 
-**`removeLabel` is yours, and required.** The two props travel together in the
-type: a remove button exists only where there is a word for it, so a chip that
-can be removed but not named will not compile. A primitive with a string of its own cannot be
-translated, so the word for "remove" comes from the product.
+`removeLabel` is yours, and required: the two props travel together in the
+type, so a chip that can be removed but not named will not compile. The remove
+click does not reach what the chip sits in — removing a tag should not also open
+the row it was on.
 
-**The remove click does not reach what the chip sits in.** Chips usually live
-inside something else that is also clickable, and removing a tag should not
-also open the row it was on.
+**Switchable.** kilna drew twenty-three switchable chips by hand, in three sizes
+and five recipes, and not one of them told a screen reader whether it was on.
+Give a chip `pressed`, `defaultPressed` or `onPressedChange` and it is Base UI's
+Toggle: a `<button>` with `aria-pressed`. "On" is the accent fill in semibold,
+drawn from the same attribute that announces it, so the look and the
+announcement cannot disagree.
+
+```tsx
+<Chip pressed={onlyScored} onPressedChange={setOnlyScored}>
+  Scored
+</Chip>
+```
+
+**Never both.** A chip that switches and also holds a cross is a button inside a
+button: the cross is a nested control no reader can reach on its own, and a
+press on it would switch the chip as well. The type refuses the combination.
+
+**A row of switches is a ChipGroup.** Base UI's ToggleGroup underneath: the row
+is one stop on the Tab key and the arrows walk the chips — a filter bar of eight
+kinds is not eight Tab presses long. `multiple` decides whether pressing one lets
+go of the others. The value is an array in both modes, which is Base UI's shape;
+a single group holds at most one.
+
+```tsx
+<ChipGroup aria-label={t('kind')} value={kinds} onValueChange={setKinds} multiple>
+  <Chip value="song" count={42}>Song</Chip>
+  <Chip value="clip" count={12}>Clip</Chip>
+  <Chip value="short">Short</Chip>
+</ChipGroup>
+```
+
+For one of a few that must always hold a choice — a theme, a view — reach for
+[SegmentedControl](/dowel/components/segmented-control/) instead: a toggle row
+lets the last pressed chip go.
+
+**Tones are the Badge's.** `accent`, `good`, `warn`, `bad` and `info` are the
+same fill-and-ink pairs Badge uses, so a chip and a badge in one row agree about
+what a tone looks like. `dashed` is the outline with a broken border, for a chip
+that stands for something not there yet — "+ Tag", "Any kind".
+
+**A switch grows its hit area, not itself.** A chip is 21 pixels tall by design;
+as a switch it carries `target-min`, so the pointer target reaches the 24px
+floor while the chip stays the size it is.
 
 ## Props
 
+### `Chip`
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `outline \| accent \| soft` | `outline` | |
+| `variant` | `outline \| dashed \| soft \| accent \| good \| warn \| bad \| info` | `outline` | |
 | `count` | `number` | | Shown after the label |
 | `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
 | `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |
+| `pressed` | `boolean` | | Makes the chip a switch; controlled |
+| `defaultPressed` | `boolean` | | A switch nobody else needs to know about |
+| `onPressedChange` | `(pressed) => void` | | |
+| `value` | `string` | | Which member of a ChipGroup this is |
+| `disabled` | `boolean` | | A switch only |
+
+### `ChipGroup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `aria-label` | `string` | | What the row chooses — a group without a name is a riddle |
+| `value` | `string[]` | | The chips that are on; controlled |
+| `defaultValue` | `string[]` | | |
+| `onValueChange` | `(value: string[]) => void` | | |
+| `multiple` | `boolean` | `false` | Several on at once |
+| `disabled` | `boolean` | | |
