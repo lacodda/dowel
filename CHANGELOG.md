@@ -2,6 +2,38 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.33.0] - 2026-09-25
+
+### Breaking Changes
+
+- **No-raw-button and no-arbitrary-scale**
+dowel.configs.recommended turns both rules on as
+errors. A product upgrading runs eslint --fix for the exact steps, then
+takes a step or writes a reasoned disable for what is left, and moves
+screen buttons onto Button, RowButton, Chip or SegmentedControl.
+
+### Build
+- Regenerate the registry, the docs mirror and llms.txt
+
+### Features
+- One caption utility and the compact rail width
+- Switch alone and in a group, in the tones of Badge
+- One of a few, as a radio group
+- Rows that state a fact and rows that are a choice
+- Values edited where they are shown
+- A link variant, and a disabled button that says why
+- A group of controls named by one caption
+- Plain empty states and a retry for a failed load
+- Preview the mark under the pointer and say the threshold
+- A collapsed rail, a centred title bar, described sections
+- No-raw-button and no-arbitrary-scale
+- Show the new primitives and the new forms of the old
+
+### Testing
+- Declare the new components' costs and count them
+- Photograph the four new sections of the stand
+- Record the baselines for the new sections and the caption weight
+
 ## [0.32.0] - 2026-09-24
 
 ### Breaking Changes
