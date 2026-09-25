@@ -45,12 +45,20 @@ identical links is where you are.
 
 **The caption names the landmark.** `label` is drawn above the list and the
 `<nav>` is labelled by it, so the same word serves the eye and the reader.
+`labelHidden` keeps the name and takes the caption off the screen — for a
+screen whose own title already says it, where a list captioned "Settings" under
+a heading "Settings" names the screen twice.
 
 **A long name stays on one line.** The column is a fixed width, and a label
 that wraps makes one row taller than every other — which in a two-language
 product happens to one section and not the rest, so the column reads as ragged
-and the line height stops meaning anything. Pass `title` on your own link
-element if the full text should be available on hover.
+and the line height stops meaning anything. A label given as a string is the
+row's `title` as well, so the whole name is there on hover.
+
+**A section can say what it holds.** `description` is a line under the label —
+"Theme, language, start screen" — so a reader chooses a section by its
+contents rather than guessing from one word. It is cut at two lines, for the
+same reason the label is cut at one.
 
 **The heading is the other half.** `SectionHeading` is the title and the
 one-line hint above a section's body, so the column and the page it opens are
@@ -63,10 +71,11 @@ set in the same type.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `label` | `string` | | Required — the caption and the landmark's name |
-| `items` | `{ id, label, icon? }[]` | | Required |
+| `items` | `{ id, label, icon?, description? }[]` | | Required |
 | `activeId` | `string` | | The current page |
 | `render` | `(item) => ReactElement` | | The element each row is drawn as |
 | `onSelect` | `(id) => void` | | Pressed, whatever the row is drawn as |
+| `labelHidden` | `boolean` | `false` | Keep the caption as the name, off the screen |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `SectionHeading`

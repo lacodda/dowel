@@ -27,7 +27,7 @@ the steps it has, what a component will and will not do for you.
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and six primitives, each with a page of its own on
+a hundred and ten primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose. Dates
 and numbers are written in the application's language, never the browser's. Size now comes from the scale and is held there by a
@@ -577,7 +577,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and six of them.
+A single component: Button, Dialog, Select. A hundred and ten of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -1241,7 +1241,9 @@ are the line's, so four products that each draw their own chrome stop each
 picking their own number — which is how one ended up at 40px and another at
 2.4rem. Override `topHeight` and `sideWidth` where a product genuinely
 differs; a number is pixels and a string is any CSS track size, for a rail
-that collapses or is dragged.
+that is dragged. A rail that collapses to its icons is
+`sideWidth="var(--spacing-rail-compact)"` — 56px, the width
+[NavRail](/dowel/components/nav-rail/)'s `collapsed` column is drawn for.
 
 **Leave out what you do not have.** Without `side` the shell is a one-column
 grid rather than a two-column grid with an empty column still eating its
@@ -1715,7 +1717,21 @@ Every variant, size and state - in either theme, and in the accent of any produc
 `primary` is the one action a screen is about — one per screen, or it is not
 primary. `ghost` is the default and the quiet one. `soft` is for something
 already chosen. `danger` is destructive, and stays quiet until hovered, because
-a red button is not a warning if everything is red.
+a red button is not a warning if everything is red. `icon` is a glyph alone,
+and needs an `aria-label`.
+
+`link` reads as a link — "Show all", "Undo", "Open →" in a widget's header or a
+line of text — and still acts rather than goes. **It takes no size**: it sits in
+the text it is in, at that text's size and height, with no box of its own, and
+an icon inside it is sized in ems so it follows the line. A `size` passed to it
+is ignored rather than fighting the text. For one that goes somewhere, render
+the link itself: `render={<a href="…" />}`.
+
+```tsx
+<p className="text-sm text-dim">
+  Twelve works have no score. <Button variant="link">Show them</Button>
+</p>
+```
 
 ## Sizes
 
@@ -1768,8 +1784,34 @@ of the set that sizes its icons, and a gate holds it.
 
 ## States
 
-Disabled keeps the button's own colour and loses contact instead, so it reads
-the same whatever the product's accent is.
+Disabled keeps the button's own colour and fades, so it reads the same
+whatever the product's accent is. It is drawn from `data-disabled`, and every
+hover is scoped away from it — so a disabled button does not light up under the
+pointer, and the pointer still reaches it.
+
+**A disabled button can say why.** Give it `disabledReason` and it stays in the
+tab order and under the pointer, a press does nothing (and does not submit its
+form), and the reason is both its `title` and its accessible description:
+
+```tsx
+<Button disabled={orphaned} disabledReason={t('trash.cannotRestore')}>
+  {t('trash.restore')}
+</Button>
+```
+
+A plain disabled button is a wall: skipped by Tab, silent to a reader, and —
+while it was `pointer-events: none` — deaf to its own `title`, which is how
+kilna's trash came to explain in a tooltip nobody could ever raise why a row
+could not be restored. With a reason it is an instruction. It is
+`aria-disabled` rather than `disabled` for exactly that: a native disabled
+control cannot be focused, so the one reader who most needs the reason could
+never reach it.
+
+The reason is not inside the button — text inside a button is part of its
+name, and the button is still called "Restore". It sits beside it, `hidden`,
+where `aria-describedby` reads it. For a styled bubble rather than the
+browser's, wrap the button in a [Tooltip](/dowel/components/tooltip/): it can
+open, because the button is still reachable.
 
 A link rendered with `render` is still a link: it navigates, it opens in a new
 tab, and a screen reader announces it as one. A `<button>` painted to look like
@@ -1785,8 +1827,9 @@ a link does none of that.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `primary \| ghost \| soft \| danger \| icon` | `ghost` | What the button is for |
-| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `md` | See [Sizes](#sizes) |
+| `variant` | `primary \| ghost \| soft \| danger \| icon \| link` | `ghost` | What the button is for |
+| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `md` | See [Sizes](#sizes); ignored by `link` |
+| `disabledReason` | `string` | | Why it cannot be pressed — read while `disabled`; keeps it focusable, see [States](#states) |
 | `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
@@ -1796,7 +1839,7 @@ Everything else goes to the `<button>`: `onClick`, `disabled`, `type`,
 ## Notes
 
 **It is a real button.** Enter and Space activate it, Tab reaches it, and a
-disabled one is skipped by the keyboard and ignores the pointer. None of that
+disabled one without a reason is skipped by the keyboard and does nothing. None of that
 is written into the component — it comes free with the element, and is exactly
 what a `<div onClick>` throws away.
 
@@ -2045,13 +2088,16 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#chip
 
-Plain, with a count, and removable.
+Plain, with a count, removable, in every tone, and switching alone and in a group.
 
 ## Notes
 
 **The difference from a Badge is whether something happens when you click it.**
-If something does, that part is a real `<button>` with a real label — not a
-decorative cross. Every product wrote the removable tag and every one made the
+If something does, that part is a real `<button>` with a real name — not a
+decorative cross, and not a `<span>` with a click handler. A chip is acted on in
+two ways, taken away or switched, and each has its own shape.
+
+**Removable.** Every product wrote the removable tag and every one made the
 cross a `<span>`, which the keyboard cannot reach and a screen reader does not
 announce.
 
@@ -2061,23 +2107,81 @@ announce.
 </Chip>
 ```
 
-**`removeLabel` is yours, and required.** The two props travel together in the
-type: a remove button exists only where there is a word for it, so a chip that
-can be removed but not named will not compile. A primitive with a string of its own cannot be
-translated, so the word for "remove" comes from the product.
+`removeLabel` is yours, and required: the two props travel together in the
+type, so a chip that can be removed but not named will not compile. The remove
+click does not reach what the chip sits in — removing a tag should not also open
+the row it was on.
 
-**The remove click does not reach what the chip sits in.** Chips usually live
-inside something else that is also clickable, and removing a tag should not
-also open the row it was on.
+**Switchable.** kilna drew twenty-three switchable chips by hand, in three sizes
+and five recipes, and not one of them told a screen reader whether it was on.
+Give a chip `pressed`, `defaultPressed` or `onPressedChange` and it is Base UI's
+Toggle: a `<button>` with `aria-pressed`. "On" is the accent fill in semibold,
+drawn from the same attribute that announces it, so the look and the
+announcement cannot disagree.
+
+```tsx
+<Chip pressed={onlyScored} onPressedChange={setOnlyScored}>
+  Scored
+</Chip>
+```
+
+**Never both.** A chip that switches and also holds a cross is a button inside a
+button: the cross is a nested control no reader can reach on its own, and a
+press on it would switch the chip as well. The type refuses the combination.
+
+**A row of switches is a ChipGroup.** Base UI's ToggleGroup underneath: the row
+is one stop on the Tab key and the arrows walk the chips — a filter bar of eight
+kinds is not eight Tab presses long. `multiple` decides whether pressing one lets
+go of the others. The value is an array in both modes, which is Base UI's shape;
+a single group holds at most one.
+
+```tsx
+<ChipGroup aria-label={t('kind')} value={kinds} onValueChange={setKinds} multiple>
+  <Chip value="song" count={42}>Song</Chip>
+  <Chip value="clip" count={12}>Clip</Chip>
+  <Chip value="short">Short</Chip>
+</ChipGroup>
+```
+
+For one of a few that must always hold a choice — a theme, a view — reach for
+[SegmentedControl](/dowel/components/segmented-control/) instead: a toggle row
+lets the last pressed chip go.
+
+**Tones are the Badge's.** `accent`, `good`, `warn`, `bad` and `info` are the
+same fill-and-ink pairs Badge uses, so a chip and a badge in one row agree about
+what a tone looks like. `dashed` is the outline with a broken border, for a chip
+that stands for something not there yet — "+ Tag", "Any kind".
+
+**A switch grows its hit area, not itself.** A chip is 21 pixels tall by design;
+as a switch it carries `target-min`, so the pointer target reaches the 24px
+floor while the chip stays the size it is.
 
 ## Props
 
+### `Chip`
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `outline \| accent \| soft` | `outline` | |
+| `variant` | `outline \| dashed \| soft \| accent \| good \| warn \| bad \| info` | `outline` | |
 | `count` | `number` | | Shown after the label |
 | `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
 | `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |
+| `pressed` | `boolean` | | Makes the chip a switch; controlled |
+| `defaultPressed` | `boolean` | | A switch nobody else needs to know about |
+| `onPressedChange` | `(pressed) => void` | | |
+| `value` | `string` | | Which member of a ChipGroup this is |
+| `disabled` | `boolean` | | A switch only |
+
+### `ChipGroup`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `aria-label` | `string` | | What the row chooses — a group without a name is a riddle |
+| `value` | `string[]` | | The chips that are on; controlled |
+| `defaultValue` | `string[]` | | |
+| `onValueChange` | `(value: string[]) => void` | | |
+| `multiple` | `boolean` | `false` | Several on at once |
+| `disabled` | `boolean` | | |
 
 ---
 
@@ -3893,6 +3997,21 @@ empty panel shouts. It is inlined so it costs no request and can take the
 theme's colour, and it is `aria-hidden`, because it says nothing a reader
 needs. Pass `mark` to put a product's own illustration there instead.
 
+**`plain` is the same three kinds with no frame.** The framed panel is for a
+screen or a region that is empty. Inside something that already has a frame —
+a widget, a card, a panel's list — a dashed box and a watermark are a frame
+inside a frame, and products drew those empties as bare text instead, without
+the way out. Plain keeps the words and the action and drops the rest: no
+border, no mark, set in the flow on the left, where the content would have
+started.
+
+```tsx
+<Panel>
+  <SectionLabel>Score</SectionLabel>
+  <EmptyState plain title="Not scored yet." action={<Button size="sm">Score it</Button>} />
+</Panel>
+```
+
 **Where it is used automatically:**
 [QueryState](/dowel/components/query-state/) draws it for a failure, and
 [ErrorBoundary](/dowel/components/error-boundary/) for a crash.
@@ -3902,10 +4021,11 @@ needs. Pass `mark` to put a product's own illustration there instead.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `variant` | `empty \| filtered \| error` | `empty` | Which kind of nothing |
+| `plain` | `boolean` | `false` | No frame and no mark, for a place that has a frame already |
 | `title` | `ReactNode` | | What is not here |
 | `body` | `ReactNode` | | Why, or what to do |
 | `action` | `ReactNode` | | The one thing worth doing |
-| `mark` | `ReactNode` | | A product's own illustration |
+| `mark` | `ReactNode` | | A product's own illustration; not drawn when `plain` |
 
 `EmptyMark`, `FilteredMark` and `ErrorMark` are exported for a product
 composing its own panel.
@@ -3986,7 +4106,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#field
 
-A field with a hint, a field with an error, and a field whose label is only for screen readers.
+A field with a hint, a field with an error, a field whose label is only for screen readers, and a group of chips named by one caption.
 
 ## Notes
 
@@ -4030,6 +4150,37 @@ that name the moment someone types, and a placeholder was never a label to
 anything reading the page aloud. `labelHidden` takes it off the screen with
 `sr-only` and leaves it in the accessibility tree.
 
+**The label is a `caption`** — the theme's one utility for the small uppercase
+label, at 600. A panel's SectionLabel, a rail's group and a menu's group are the
+same utility, so the names in one form are one kind of thing.
+
+## FieldGroup — one name for several controls
+
+`Field` labels exactly one control, and it has to: its label points at an id the
+control carries. A row of chips, a segmented control or a grid of pictures has
+no single control to point at — and the obvious workaround, a `<label>` wrapped
+around the row, is a trap. A label with no `for` labels the first labelable
+element inside it, and a click on any plain part of the label is forwarded
+there. kilna measured what that does in its style dialog: a click on the
+caption "Type" silently set the first type, and a click on "References" pressed
+the hidden remove cross of the first picture — which deleted it for good.
+
+`FieldGroup` is a `<fieldset>` with a legend (through Base UI's Fieldset). The
+group is announced by its name as a reader enters it, the hint or error is its
+description, and a caption has nothing a click could be forwarded to.
+
+```tsx
+<FieldGroup label="Type" help="What the style describes." error={errors.type}>
+  <ChipGroup aria-label="Type" value={type} onValueChange={setType}>
+    <Chip value="image">Image</Chip>
+    <Chip value="pose">Pose</Chip>
+  </ChipGroup>
+</FieldGroup>
+```
+
+`disabled` disables every native control inside it, which is what a fieldset
+does on its own.
+
 ## Props
 
 | Prop | Type | Default | |
@@ -4042,6 +4193,98 @@ anything reading the page aloud. `labelHidden` takes it off the screen with
 | `required` | `boolean` | `false` | Adds the mark a reader looks for |
 | `name` | `string` | | So a `Form` can attach a server error by name |
 | `disabled` | `boolean` | `false` | |
+
+### FieldGroup
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | Required. The legend |
+| `children` | `ReactNode` | | The controls — anything |
+| `help` | `ReactNode` | | The group's description, hidden while an error shows |
+| `error` | `ReactNode` | | What is wrong with the group as a whole |
+| `labelHidden` | `boolean` | `false` | Keep the legend for readers, not the screen |
+| `required` | `boolean` | `false` | |
+| `disabled` | `boolean` | `false` | Disables every native control inside |
+
+---
+
+# FieldDraft
+
+Source: https://lacodda.github.io/dowel/components/field-draft
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#field-draft
+
+An input and a textarea over a stored value, with the stored value beside them and a write from outside.
+
+## Notes
+
+**A field that writes somewhere holds two things at once** — what is stored and
+what is in the box — and every product that wrote one by hand broke a different
+rule between them. kilna broke all of them, one screen at a time:
+
+- **Leaving writes only a change.** The Overview wrote on every blur, so tabbing
+  through twelve fields was twelve operations in the history and twelve toasts.
+- **While nobody is typing, the box follows the stored value.** The fields were
+  uncontrolled, so a value a plugin wrote kept showing the old one — and the
+  next blur wrote the old one back over it.
+- **While someone is typing, their words win until they leave.** A refetch in
+  the middle of a sentence does not take it away from them.
+- **Escape puts back what is stored and writes nothing** — and stops there, so a
+  screen-level Escape (closing a panel, a dialog) does not also fire.
+- **Enter on something unreadable keeps the words and says so**, with
+  `aria-invalid`. Leaving with them puts the stored value back.
+
+`useFieldDraft` is those rules wired to an input: spread what it returns onto an
+[Input](/dowel/components/input/) or a [Textarea](/dowel/components/textarea/).
+[InlineField](/dowel/components/inline-field/) is built on it; this is for a
+field of your own.
+
+```tsx
+const title = useFieldDraft(work.title, (text) => save({ title: text }))
+<Input aria-label={t('title')} {...title} />
+
+const notes = useFieldDraft(work.notes, (text) => save({ notes: text }), { multiline: true })
+<Textarea aria-label={t('notes')} {...notes} />
+```
+
+**The value is text on both sides.** The hook compares what is typed with what
+is stored as strings, so a value that is not text is spelled first —
+`format(value)` in, `parse(text)` in `onCommit`. `readable` says which texts can
+be written at all; unreadable text is never handed to `onCommit`.
+
+**`onCommit` can refuse** by returning `false` — a server that said no — and the
+box goes back to what is stored.
+
+**Enter leaves the field**, which writes it — except with `multiline`, where
+Enter is a new line, and never while an input method is composing, where Enter
+picks the candidate.
+
+**`stepDraft` is the whole of it, pure.** The rules are a function from a state
+and an event to the next state and the text to write, tested without a DOM;
+the hook only wires it. Use it directly for a field the hook does not fit.
+
+## API
+
+```ts
+useFieldDraft(
+  value: string,
+  onCommit: (text: string) => boolean | void,
+  options?: { multiline?: boolean; readable?: (text: string) => boolean },
+): { value, 'aria-invalid', onFocus, onChange, onBlur, onKeyDown }
+
+stepDraft(state: DraftState, event: DraftEvent): { state: DraftState; commit: string | null }
+startDraft(stored: string): DraftState
+```
+
+| Event | |
+| --- | --- |
+| `stored` | The stored value moved underneath — a refetch, a plugin, an undo |
+| `focus` / `type` | Someone is in the field, typing |
+| `refuse` | Enter on unreadable text: keep it, mark it |
+| `escape` | Put back what is stored |
+| `leave` | Write the text if it changed |
 
 ---
 
@@ -4254,6 +4497,85 @@ second one.
 | `fit` | `'cover' \| 'contain'` | `cover` | |
 | `fallback` | `ReactNode` | | Shown instead of the broken-image glyph on error |
 | `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
+# InlineField
+
+Source: https://lacodda.github.io/dowel/components/inline-field
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#inline-field
+
+A work's fields - a number, a key, a timecode, an empty one - and cells named only by their column.
+
+## Notes
+
+**For a board read far more often than it is edited.** The numbers on a work's
+overview, the cells of a storyboard: every value sits as text until it is
+touched. A modal to change one BPM is a lost context and a click too many, and
+a column of always-on boxes is a form nobody asked to fill in. kilna had nine of
+these editors, each with its own idea of what Enter and Escape mean; this is one
+idea, and its rules are [FieldDraft](/dowel/components/field-draft/)'s:
+
+- **Enter or leaving keeps a change** — and only a change: tabbing through
+  twelve untouched fields writes nothing.
+- **Escape takes it back** and writes nothing.
+- **While nobody is typing, the field follows the stored value**; while someone
+  is, their words win until they leave.
+- **Enter on something unreadable keeps the words and marks them** — "1:75" is a
+  typo one key from right. Leaving with them puts the stored value back, because
+  a box showing a value that was not saved is a second truth.
+
+```tsx
+<InlineField label={t('bpm')} codec={numberCodec} value={work.bpm} placeholder="—" onCommit={(bpm) => save({ bpm })} />
+<InlineField label={t('key')} value={work.key} onCommit={(key) => save({ key })} />
+<InlineField label={t('length')} codec={timecodeCodec} value={work.seconds} onCommit={(seconds) => save({ seconds })} />
+```
+
+**It is always an `<input>`.** Not text that swaps to an input on click: a swap
+loses the caret position, costs a render, and leaves the value unreachable by
+Tab. The box is undressed until it is hovered or focused — a border under the
+pointer, the accent when you are in it — and pulled left by its own padding, so
+the text lines up with the caption above it.
+
+**What a value is, is a codec.** `parse` reads what was typed and `format`
+spells the stored value, so the field can never show one thing and store
+another. `parse` answers `null` for an empty box — a value cleared, not a value
+of zero — and `undefined` for text it cannot read, which the field refuses
+rather than guesses at. Text needs no codec; a number without one does not
+compile.
+
+| Codec | Reads | Writes |
+| --- | --- | --- |
+| `textCodec` | the text as typed | the same |
+| `numberCodec` | `120`, `3,5`, `-2`; empty is `null` | `120`, `3.5` |
+| `timecodeCodec` | `83`, `1:23`, `0:04.5`, `1:00:00` — seconds; `1:75` is refused | `m:ss`, a tenth only when there is one |
+
+A product's own — a key signature, a tempo range — is two functions:
+`{ parse, format }`, with `mono: true` for figures that should line up and an
+`inputMode` for the keyboard a phone offers.
+
+**`onCommit` can refuse.** Return `false` — a server that said no — and the
+field goes back to the stored value.
+
+**A cell under a column header** takes `labelHidden`: the caption stays the
+input's name for a reader and leaves the screen, because the header already
+says it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | Required — the caption above, and the input's name |
+| `value` | `T \| null` | | The stored value |
+| `onCommit` | `(value: T \| null) => boolean \| void` | | Called once per kept change; `false` refuses it |
+| `codec` | `Codec<T>` | `textCodec` | Required for anything but text |
+| `placeholder` | `string` | | What an empty value shows — a dash reads as "nothing yet" |
+| `labelHidden` | `boolean` | `false` | For a cell under a column header |
+| `disabled` | `boolean` | | |
+| `className` | `string` | | On the wrapper |
 
 ---
 
@@ -4820,6 +5142,95 @@ ceiling.
 
 ---
 
+# ListRow
+
+Source: https://lacodda.github.io/dowel/components/list-row
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#list-row
+
+Releases as facts in a panel, versions as choices with one open, and a long title cut to its line.
+
+## Notes
+
+**Every screen has a list, and every product drew its own row.** kilna alone had
+six list-and-detail layouts with five row recipes, and the open row was tinted
+four ways. A row is three slots and a rule about truncation — small enough to
+get wrong every time, which is why it is here.
+
+**A row is a fact or a choice, and they are two components.**
+
+- `ListRow` is a fact — "Clip, 02.09" in a list of releases. It is not pressable
+  and has no hover; rows in a run are divided by a hairline the last one does not
+  draw, so a list inside a panel ends at the panel's edge.
+- `RowButton` is a choice — a version in the list beside the editor, an item in
+  a queue. It is a real `<button>` (or your link, through `render`), it answers
+  the pointer, and the open one is tinted on `accent-soft` and named as current.
+
+```tsx
+<ul>
+  {releases.map((release) => (
+    <ListRow key={release.id} render={<li />} start={<StatusDot status={release.status} />} end={<time>{release.date}</time>}>
+      {release.title}
+    </ListRow>
+  ))}
+</ul>
+
+{versions.map((version) => (
+  <RowButton
+    key={version.id}
+    selected={version.id === open}
+    description={version.author}
+    end={<RelativeTime value={version.updatedAt} />}
+    onClick={() => setOpen(version.id)}
+  >
+    {version.title}
+  </RowButton>
+))}
+```
+
+**Three slots, the same in both.** `start` identifies the row at a glance — an
+icon, a status dot, a cover. The row's words, with an optional `description`
+under them. `end` is what is measured about it — a date, a count, a chip, set in
+tabular figures so a column of them lines up.
+
+**The words truncate; the slots keep their size.** A list whose rows grow to two
+lines in one language and not the other stops being a list you can scan.
+
+**The open row is announced, not only tinted.** `RowButton` sets
+`aria-current="true"`, which is what a list beside an editor is: where you are,
+not a value you are submitting. A product that puts rows in a `listbox` passes
+`aria-selected` and `aria-current={undefined}`, and what it passes wins.
+
+**A ListRow's height follows density.** It stands on `py-row`, the same rhythm a
+[Table](/dowel/components/table/) row does, so `data-density="compact"` tightens
+a list and a table together.
+
+## Props
+
+### `ListRow`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The row's words |
+| `start` | `ReactNode` | | What identifies it at a glance |
+| `description` | `ReactNode` | | A quieter second line |
+| `end` | `ReactNode` | | What is measured about it |
+| `render` | `ReactElement` | `<div>` | `<li />` in a list |
+
+### `RowButton`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | | The row's words, in semibold |
+| `start`, `description`, `end` | `ReactNode` | | As for ListRow |
+| `selected` | `boolean` | `false` | The open one — tinted, and `aria-current` |
+| `render` | `ReactElement` | `<button>` | Your router's link |
+| `disabled` | `boolean` | | |
+
+---
+
 # MarkedText
 
 Source: https://lacodda.github.io/dowel/components/marked-text
@@ -5049,6 +5460,26 @@ does not exist is a dead end. Put the version in `end` to say when it arrives.
 wraps makes one row taller than the rest — which in a two-language product
 happens to one entry and not the others.
 
+**Collapsed, the column keeps only its icons.** A work open on screen wants the
+width, and the destinations are still needed — so `collapsed` draws the column
+as squares around the icons, at `--spacing-rail-compact` (56px), and each
+entry's name moves into a [Tooltip](/dowel/components/tooltip/) beside it. The
+tooltip's trigger is the entry itself, so it opens on keyboard focus as well as
+on hover, and the name stays in the entry off the screen: a reader hears
+"Catalogue, current page" whether the rail is wide or narrow.
+
+```tsx
+<AppShell sideWidth={collapsed ? 'var(--spacing-rail-compact)' : 'var(--spacing-rail)'} side={
+  <NavRail label="Screens" items={screens} activeId={screen} collapsed={collapsed} />
+}>
+```
+
+The product passes the same `collapsed` to every NavRail and NavGroup it builds
+its rail from — one boolean in the one place the rail is assembled. A collapsed
+NavGroup is a short hairline, with its word kept for a reader, and an entry with
+no icon shows its initial rather than an empty square. The row and bar
+shapes have no narrow form: they are made of their names.
+
 **The narrow shapes clear the pointer target floor.** A `row` tab and a `bar`
 cell carry `target-min`, so they are at least 24 CSS pixels however small the
 text is. A `column` entry is already taller than that.
@@ -5065,13 +5496,14 @@ text is. A `column` entry is already taller than that.
 | `activeId` | `string` | | The open screen |
 | `render` | `(item) => ReactElement` | | The element each entry is drawn as |
 | `onSelect` | `(id) => void` | | Pressed, whatever the entry is drawn as |
+| `collapsed` | `boolean` | `false` | Icons only, names in tooltips; `column` only |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `NavGroup`, `NavSpacer`
 
 | | |
 | --- | --- |
-| `NavGroup` | The caption over a run of entries: Library, Team, Admin |
+| `NavGroup` | The caption over a run of entries: Library, Team, Admin. `collapsed` draws a hairline instead |
 | `NavSpacer` | Pushes what follows to the far end — settings, theme, profile |
 
 ---
@@ -6153,6 +6585,28 @@ by hand:
 **`empty` is computed by the caller**, because only the caller knows whether
 empty means `[]`, `null`, or a count of zero.
 
+**It offers the retry it is handed.** A failed load with no way to try again
+is a dead end, and kilna had nineteen of them — every one wrote "could not
+load" and none called the `refetch` it already had. Pass `onRetry` with the
+word for it, and the default error screen gets the button; a screen you draw
+yourself is handed the retry as its second argument.
+
+```tsx
+<QueryState
+  pending={works.isPending}
+  error={works.error}
+  onRetry={() => works.refetch()}
+  retryLabel={t('retry')}
+  errorLabels={{ title: t('works.loadFailed') }}
+>
+  …
+</QueryState>
+```
+
+`onRetry` and `retryLabel` travel together in the type: a retry button exists
+only where there is a word for it, and the word is the product's. `plain` draws
+the default error screen without its frame, for a list inside a panel.
+
 **What it does not do:** fetch, retry or cache. Those belong to whatever owns
 the data, and a component that guessed at them would be wrong for the product
 that owns them differently. A crash while rendering is
@@ -6167,8 +6621,11 @@ that owns them differently. A crash while rendering is
 | `empty` | `boolean` | `false` | Something arrived, and it was nothing |
 | `skeleton` | `ReactNode` | `<SkeletonList />` | What stands in while pending |
 | `emptyState` | `ReactNode` | | Shown when nothing came back |
-| `errorState` | `(message) => ReactNode` | | Draw the failure yourself |
+| `errorState` | `(message, retry?) => ReactNode` | | Draw the failure yourself |
 | `errorLabels` | `{ title, body? }` | | Words for the default failure screen |
+| `onRetry` | `() => void` | | A way out of a failure — requires `retryLabel` |
+| `retryLabel` | `string` | **required with `onRetry`** | What the retry button is called |
+| `plain` | `boolean` | `false` | The default error screen without its frame |
 
 ---
 
@@ -6724,12 +7181,20 @@ identical links is where you are.
 
 **The caption names the landmark.** `label` is drawn above the list and the
 `<nav>` is labelled by it, so the same word serves the eye and the reader.
+`labelHidden` keeps the name and takes the caption off the screen — for a
+screen whose own title already says it, where a list captioned "Settings" under
+a heading "Settings" names the screen twice.
 
 **A long name stays on one line.** The column is a fixed width, and a label
 that wraps makes one row taller than every other — which in a two-language
 product happens to one section and not the rest, so the column reads as ragged
-and the line height stops meaning anything. Pass `title` on your own link
-element if the full text should be available on hover.
+and the line height stops meaning anything. A label given as a string is the
+row's `title` as well, so the whole name is there on hover.
+
+**A section can say what it holds.** `description` is a line under the label —
+"Theme, language, start screen" — so a reader chooses a section by its
+contents rather than guessing from one word. It is cut at two lines, for the
+same reason the label is cut at one.
 
 **The heading is the other half.** `SectionHeading` is the title and the
 one-line hint above a section's body, so the column and the page it opens are
@@ -6742,10 +7207,11 @@ set in the same type.
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `label` | `string` | | Required — the caption and the landmark's name |
-| `items` | `{ id, label, icon? }[]` | | Required |
+| `items` | `{ id, label, icon?, description? }[]` | | Required |
 | `activeId` | `string` | | The current page |
 | `render` | `(item) => ReactElement` | | The element each row is drawn as |
 | `onSelect` | `(id) => void` | | Pressed, whatever the row is drawn as |
+| `labelHidden` | `boolean` | `false` | Keep the caption as the name, off the screen |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `SectionHeading`
@@ -6755,6 +7221,77 @@ set in the same type.
 | `title` | `ReactNode` | | Required, an `h2` |
 | `description` | `ReactNode` | | The line under it |
 | `className` | `string` | | |
+
+---
+
+# SegmentedControl
+
+Source: https://lacodda.github.io/dowel/components/segmented-control
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#segmented-control
+
+A theme picker, options with icons, a disabled control, and one at compact density beside a button.
+
+## Notes
+
+**For a choice you can see whole.** The theme, a list shown as rows or cards,
+"all / mine / shared". The shape settles three things a
+[Select](/dowel/components/select/) cannot: every option is on screen, the choice
+is one press rather than two, and switching back and forth is the same press
+again. kilna put a Select where a segment belongs — the theme in its settings —
+and drew the segment by hand where it had one.
+
+```tsx
+<SegmentedControl aria-label={t('theme')} value={theme} onValueChange={setTheme}>
+  <Segment value="light">{t('light')}</Segment>
+  <Segment value="dark">{t('dark')}</Segment>
+  <Segment value="system">{t('system')}</Segment>
+</SegmentedControl>
+```
+
+**It is a radio group, not a row of toggles.** Exactly one option is ever
+chosen, which is what a radio says and a toggle does not: a toggle group lets
+the last pressed button go, and "no theme" is not a theme. Base UI's RadioGroup
+underneath gives the rest — one stop on the Tab key, the arrows move and choose
+at once, and a reader hears "Dark, radio button, 2 of 3". For filters that can
+all be off, use a [ChipGroup](/dowel/components/chip/).
+
+**The chosen segment is lifted, not filled.** A sunken track, and the chosen
+option raised out of it on the raised surface in semibold — the mockup's `.seg`.
+An accent fill reads as "press me", which the chosen option is the one thing you
+need not. The weight carries the choice too, so it survives a screen where the
+two greys look alike.
+
+**It stands on the small control row.** Its height is `h-control-sm`, so it sits
+level with the small buttons and fields beside it and follows `data-density` with
+them.
+
+**An icon alone needs a name.** A segment's words are its accessible name; a
+segment that is only an icon takes `aria-label`.
+
+## Props
+
+### `SegmentedControl`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `aria-label` | `string` | | What is being chosen |
+| `value` | `string` | | Controlled |
+| `defaultValue` | `string` | | |
+| `onValueChange` | `(value: string) => void` | | |
+| `disabled` | `boolean` | | |
+| `name` | `string` | | For a form that posts it |
+
+### `Segment`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` | `string` | | Required |
+| `children` | `ReactNode` | | The option's words |
+| `aria-label` | `string` | | For an icon alone |
+| `disabled` | `boolean` | | |
 
 ---
 
@@ -8279,6 +8816,18 @@ or tabbing past one axis would take ten presses. They are spans rather than
 buttons: a focusable control inside a `role="slider"` is a nested interactive
 element, and `tabindex="-1"` does not undo that.
 
+**A mark can be weighed before it is given.** `onPreview` reports the mark under
+the pointer, and `undefined` when the pointer leaves, so a product can say what
+a seven means while someone is deciding between a seven and an eight. The
+question while scoring is about the mark being considered, not the one already
+set.
+
+**The threshold is said, not only drawn.** The ring and its `title` reach a
+pointer and nobody else — the segments are hidden from assistive technology,
+and a title on a span is never shown to the keyboard — so the row carries the
+threshold's words as its description, and a reader hears "a clip from 8" with
+the value.
+
 **A band's colour is `accent` by default**, because a band is a position on
 the product's own scale and not a judgement in the
 [status vocabulary](/dowel/components/status-dot/). A product that means "this
@@ -8313,8 +8862,9 @@ one is bad" says so.
 | `scale` | `number` | | Required — one segment per whole point |
 | `value` | `number \| undefined` | | `undefined` is unjudged, not zero |
 | `onChange` | `(value) => void` | | Given, the row becomes a slider |
-| `threshold` | `{ mark, label }` | | The mark that crosses into the next band |
+| `threshold` | `{ mark, label }` | | The mark that crosses into the next band; also the row's accessible description |
 | `valueText` | `string` | | |
+| `onPreview` | `(mark \| undefined) => void` | | The mark under the pointer, and `undefined` when it leaves |
 
 ### Helpers
 
@@ -9308,6 +9858,20 @@ the `titlebar` slot, whose row is `--spacing-titlebar` tall.
 otherwise have no bar left to drag by, so the handle keeps a minimum width
 and the tabs scroll instead.
 
+**A centre is held at the window's centre.** `center` takes what belongs to
+the whole window rather than to either end — the search box, most often. A
+search placed between the two ends of a row moves every time a tab opens, and a
+thing the hand reaches for without looking has to stay where it was. So with a
+centre the bar is three columns, two equal sides around the middle, and each
+side keeps a handle of its own. Without one it stays a single row and the
+documents keep the whole width.
+
+```tsx
+<TitleBar labels={labels} mark={<ProductMark />} center={<SearchField aria-label={t('search')} value={query} onValueChange={setQuery} shortcut={['Mod', 'K']} />}>
+  …
+</TitleBar>
+```
+
 For a bar the assembled one does not fit, the parts are exported:
 `WindowButtons`, `useTitleBarGestures()` to spread on your own bar, and
 `useMaximized()` for anything else that changes shape with the window.
@@ -9359,6 +9923,7 @@ they can be translated.
 | `mark` | `ReactNode` | | The product's mark, at the left edge |
 | `children` | `ReactNode` | | Tabs, a trail or a title |
 | `actions` | `ReactNode` | | The product's controls, before the window buttons |
+| `center` | `ReactNode` | | Held at the window's centre — the search box, most often |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `WindowButtons`
@@ -9578,7 +10143,7 @@ every accent of the line; what a picture catches is shape.
 
 Source: https://lacodda.github.io/dowel/guides/linting
 
-Three conventions hold the system together, and all are easy to state and easy
+Five conventions hold the system together, and all are easy to state and easy
 to break:
 
 - **a component never writes a colour down** — it names one from the
@@ -9587,7 +10152,11 @@ to break:
 - **no screen uses a native `<select>`** — the browser draws that popup itself,
   in the operating system's chrome, and no CSS reaches inside it;
 - **no date or number is formatted in the browser's language** — it is written
-  in the language the interface is.
+  in the language the interface is;
+- **sizes come from the scale** — a type step, a radius, a spacing step — not
+  from the eye;
+- **a screen presses Buttons, not `<button>`s** — the primitive knows the
+  focus ring, the form semantics, the disabled reason and the height.
 
 `dowel-ui` ships the rules that enforce them.
 
@@ -9738,6 +10307,83 @@ re-renders every date. The dowel primitives that format — `NumberFormat`,
 The rule reports the three `toLocale*String` methods and the `Intl`
 formatters. A variable passed as the locale is not reported: naming one is the
 decision the rule asks for.
+
+## `no-arbitrary-scale`
+
+```tsx
+// ✗ A step of the scale, written the long way - rewritten by --fix.
+<p className="text-[12px]" />          // → text-sm
+<div className="rounded-[9px] h-[22px]" />  // → rounded-md h-5.5
+<span className="tracking-[0.085em]" />     // → tracking-caption
+
+// ✗ Off the scale - reported with the steps either side, left for you.
+<p className="text-[13px]" />   // text-sm (12px) or text-base (14px)
+<div className="h-[13px]" />
+
+// ✓ Relationships, not lengths.
+<div className="w-[min(22rem,calc(100vw-2rem))] max-w-[44ch] h-[var(--plot)]" />
+```
+
+`h-[22px]` compiles perfectly and looks deliberate, which is how a product
+drifts into nine sizes inside four pixels. kilna had 160 of them in its
+screens, and half were literally a step of the scale written the long way —
+which nobody reading the code could tell from the other half, the ones really
+off it.
+
+So the rule reads every class string and splits them in two:
+
+- **the same length as a named step** is fixed automatically — the type scale,
+  the radii, `tracking-caption`, and spacing to the half step (2px, so `22px` is
+  `5.5`). Nothing is decided by writing it the long way, and `--fix` clears a
+  codebase of them in one pass.
+- **a length between steps** is reported with the neighbouring steps and never
+  fixed: choosing is a decision the rule has no right to make. Take a step, or
+  disable the line and say why none can carry it:
+
+```tsx
+{/* eslint-disable-next-line dowel/no-arbitrary-scale -- the wordmark, set to the mark above it */}
+<div className="text-[26px]">{name}</div>
+```
+
+Anything computed or proportional is left alone — `calc()`, `min()`, `var()`,
+percentages, viewport units, `ch`, `em`, `fr` — because those are relationships,
+not measurements: "as wide as it wants but never off the screen" is not a step.
+
+The set is held to the same finder by its own gate, which keeps each of its few
+exceptions with the argument beside it.
+
+## `no-raw-button`
+
+```tsx
+// ✗ A button that forgets what Button knows.
+<button className="rounded-full border px-2 text-xs" onClick={toggle}>Clips</button>
+
+// ✓ The primitive for the shape it is.
+<Chip pressed={clips} onPressedChange={setClips}>Clips</Chip>
+<Button variant="icon" aria-label={t('more')}><More /></Button>
+<RowButton selected={open === id} onClick={() => setOpen(id)}>{title}</RowButton>
+<MenuTrigger render={<Button variant="ghost" />}>…</MenuTrigger>
+```
+
+A raw `<button className="…">` looks like the cheap way to a small control, and
+it quietly drops everything Button knows: `type="button"`, so it does not submit
+the form it is in; the focus ring; the disabled look and a
+[disabled reason](/dowel/components/button/#states) a keyboard can reach; the
+size of an icon inside it; the control row that makes it the height of the field
+beside it. kilna had 95 of them in 42 files, each getting a different part of
+that wrong.
+
+The set has a primitive for each shape those buttons were — Button in six
+variants (`icon` for a glyph, `link` for one that reads as a link), RowButton
+for a row of a list, Chip with `pressed` for a switch,
+[SegmentedControl](/dowel/components/segmented-control/) for one of a few — and
+a primitive that wants a trigger takes `render={<Button />}`.
+
+**Your `ui/` directory is left alone.** The primitives are made of `<button>`s —
+that is where the one `<button>` a screen should not write gets written, once —
+so the recommended config turns the rule on for `**/*.tsx` except `**/ui/**`,
+shadcn's `components/ui`. Keep your own primitives there and they are exempt
+too.
 
 ---
 
@@ -10393,6 +11039,25 @@ Letter spacing, for the two cases that need it: the uppercase caption, and a lar
 The page itself is set in `base`: the theme gives `body` that size and its line
 height, so text nobody gave a class reads at the scale's own body size rather
 than the browser's 16px.
+
+### The caption
+
+The small uppercase label — a field's name, a panel's section, a group of menu
+items, a rail's group — is one utility, `caption`: `text-2xs`, `semibold`,
+uppercase, `tracking-caption`, in `faint`.
+
+```tsx
+<legend className="caption">Type</legend>
+<th className="caption">Released</th>
+```
+
+It is a utility rather than a component because it is a role text plays inside
+things that are already elements — a `<legend>`, a `<th>`, a `<label>`. The set
+wrote it seven ways before it had a name, with and without a weight, so a
+Field's label and the SectionLabel above it were two weights of one thing; a
+gate now refuses a caption written out by hand in a primitive, and
+[`no-arbitrary-scale`](/dowel/guides/linting/#no-arbitrary-scale) rewrites
+`tracking-[0.085em]` in a product to `tracking-caption`.
 
 The weight of an icon's line. lucide draws at 2, tuned for its own 24px; at the 14 and 16px the line draws icons at, 2 reads heavier than the text beside it.
 

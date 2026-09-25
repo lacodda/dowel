@@ -15,7 +15,21 @@ Every variant, size and state - in either theme, and in the accent of any produc
 `primary` is the one action a screen is about — one per screen, or it is not
 primary. `ghost` is the default and the quiet one. `soft` is for something
 already chosen. `danger` is destructive, and stays quiet until hovered, because
-a red button is not a warning if everything is red.
+a red button is not a warning if everything is red. `icon` is a glyph alone,
+and needs an `aria-label`.
+
+`link` reads as a link — "Show all", "Undo", "Open →" in a widget's header or a
+line of text — and still acts rather than goes. **It takes no size**: it sits in
+the text it is in, at that text's size and height, with no box of its own, and
+an icon inside it is sized in ems so it follows the line. A `size` passed to it
+is ignored rather than fighting the text. For one that goes somewhere, render
+the link itself: `render={<a href="…" />}`.
+
+```tsx
+<p className="text-sm text-dim">
+  Twelve works have no score. <Button variant="link">Show them</Button>
+</p>
+```
 
 ## Sizes
 
@@ -68,8 +82,34 @@ of the set that sizes its icons, and a gate holds it.
 
 ## States
 
-Disabled keeps the button's own colour and loses contact instead, so it reads
-the same whatever the product's accent is.
+Disabled keeps the button's own colour and fades, so it reads the same
+whatever the product's accent is. It is drawn from `data-disabled`, and every
+hover is scoped away from it — so a disabled button does not light up under the
+pointer, and the pointer still reaches it.
+
+**A disabled button can say why.** Give it `disabledReason` and it stays in the
+tab order and under the pointer, a press does nothing (and does not submit its
+form), and the reason is both its `title` and its accessible description:
+
+```tsx
+<Button disabled={orphaned} disabledReason={t('trash.cannotRestore')}>
+  {t('trash.restore')}
+</Button>
+```
+
+A plain disabled button is a wall: skipped by Tab, silent to a reader, and —
+while it was `pointer-events: none` — deaf to its own `title`, which is how
+kilna's trash came to explain in a tooltip nobody could ever raise why a row
+could not be restored. With a reason it is an instruction. It is
+`aria-disabled` rather than `disabled` for exactly that: a native disabled
+control cannot be focused, so the one reader who most needs the reason could
+never reach it.
+
+The reason is not inside the button — text inside a button is part of its
+name, and the button is still called "Restore". It sits beside it, `hidden`,
+where `aria-describedby` reads it. For a styled bubble rather than the
+browser's, wrap the button in a [Tooltip](/dowel/components/tooltip/): it can
+open, because the button is still reachable.
 
 A link rendered with `render` is still a link: it navigates, it opens in a new
 tab, and a screen reader announces it as one. A `<button>` painted to look like
@@ -85,8 +125,9 @@ a link does none of that.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `primary \| ghost \| soft \| danger \| icon` | `ghost` | What the button is for |
-| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `md` | See [Sizes](#sizes) |
+| `variant` | `primary \| ghost \| soft \| danger \| icon \| link` | `ghost` | What the button is for |
+| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `md` | See [Sizes](#sizes); ignored by `link` |
+| `disabledReason` | `string` | | Why it cannot be pressed — read while `disabled`; keeps it focusable, see [States](#states) |
 | `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
@@ -96,7 +137,7 @@ Everything else goes to the `<button>`: `onClick`, `disabled`, `type`,
 ## Notes
 
 **It is a real button.** Enter and Space activate it, Tab reaches it, and a
-disabled one is skipped by the keyboard and ignores the pointer. None of that
+disabled one without a reason is skipped by the keyboard and does nothing. None of that
 is written into the component — it comes free with the element, and is exactly
 what a `<div onClick>` throws away.
 

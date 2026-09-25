@@ -31,11 +31,11 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
 - [BarChart](https://lacodda.github.io/dowel/components/bar-chart.md): Columns over a baseline - one period, one bar - with the plot height stated in pixels.
 - [Breadcrumbs](https://lacodda.github.io/dowel/components/breadcrumbs.md): Where you are, as a trail rather than a word - the way back as links, the place you stand as text, and the middle folded away when it will not fit.
-- [Button](https://lacodda.github.io/dowel/components/button.md): The five buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
+- [Button](https://lacodda.github.io/dowel/components/button.md): The six buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
 - [Calendar](https://lacodda.github.io/dowel/components/calendar.md): A month of days, built on Intl rather than on a date library - and a value that is a string, never a Date.
 - [calendar-math](https://lacodda.github.io/dowel/components/calendar-math.md): The date arithmetic under the Calendar, importable on its own - strings in, strings out, no Date and no library.
 - [Checkbox](https://lacodda.github.io/dowel/components/checkbox.md): A box, its tick, and the words next to it - including the dash that means "some of these".
-- [Chip](https://lacodda.github.io/dowel/components/chip.md): A badge you can act on: removable, or with a count.
+- [Chip](https://lacodda.github.io/dowel/components/chip.md): A badge you can act on: removable, switchable, or with a count - and a row of them that switch together.
 - [CodeBlock](https://lacodda.github.io/dowel/components/code-block.md): Code shown inside a product - the frame, the gutter, the copy button. The highlighter is deliberately yours.
 - [Collapsible](https://lacodda.github.io/dowel/components/collapsible.md): One region of a screen that a reader shows or hides by choice, its panel opening and closing by its own measured height.
 - [ColorField](https://lacodda.github.io/dowel/components/color-field.md): Picking a colour for something the product stores: a tag, a project, a calendar.
@@ -57,9 +57,11 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [EmptyState](https://lacodda.github.io/dowel/components/empty-state.md): What a screen says when there is nothing on it - and the three kinds of nothing that need different answers.
 - [ErrorBoundary](https://lacodda.github.io/dowel/components/error-boundary.md): The screen that appears instead of a crash - and the narrow thing it actually catches.
 - [Field](https://lacodda.github.io/dowel/components/field.md): The label, the control, and what the form has to say about it - wired together rather than merely stacked.
+- [FieldDraft](https://lacodda.github.io/dowel/components/field-draft.md): The rules between a value stored somewhere and the text someone is typing over it, as a hook to spread on an input.
 - [FileDrop](https://lacodda.github.io/dowel/components/file-drop.md): A place to put files: drag them onto it, or press it and pick them.
 - [FilterPopover](https://lacodda.github.io/dowel/components/filter-popover.md): A funnel in a column header that opens a small panel for narrowing by that column, filled while the filter holds something, with Clear inside.
 - [Image](https://lacodda.github.io/dowel/components/image.md): A box that reserves its shape before a picture arrives - a placeholder while it loads, a fade once it has, and a quiet fallback instead of the browser's broken-image glyph.
+- [InlineField](https://lacodda.github.io/dowel/components/inline-field.md): A value edited where it is shown - click, type, Enter or leave to keep, Escape to take it back.
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.
 - [json-rows](https://lacodda.github.io/dowel/components/json-rows.md): A JSON value flattened into rows, with the paths that name them - the arithmetic, with no React in it.
 - [JsonViewer](https://lacodda.github.io/dowel/components/json-viewer.md): A JSON value read rather than parsed by eye - folding, typed, and reachable from the keyboard.
@@ -68,6 +70,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Layer](https://lacodda.github.io/dowel/components/layer.md): Which layer a popup opened inside an overlay lands on - so a select in a dialog, a menu in a drawer and a date picker in a popover open above what opened them.
 - [LineChart](https://lacodda.github.io/dowel/components/line-chart.md): A quantity over time, where it continues between the readings - with a hole drawn as a hole.
 - [line-scale](https://lacodda.github.io/dowel/components/line-scale.md): Bounds, runs and round-number ticks for a line - the arithmetic, with no React in it.
+- [ListRow](https://lacodda.github.io/dowel/components/list-row.md): A row of a list, one thing said in a line - ListRow for a fact, RowButton for a choice.
 - [MarkedText](https://lacodda.github.io/dowel/components/marked-text.md): Text with marks on it - a span of characters or a whole line - to read, or to type into with the marks under the letters.
 - [Menu](https://lacodda.github.io/dowel/components/menu.md): A list of actions that opens from a button, with the keyboard already handled.
 - [NavRail](https://lacodda.github.io/dowel/components/nav-rail.md): A product's destinations, drawn as the product's own links - a column down the left, a row of tabs in a header, or a bar along the bottom of a phone.
@@ -94,6 +97,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Scroll area](https://lacodda.github.io/dowel/components/scroll-area.md): A box that scrolls with the line's overlay scrollbar - a thin bar drawn over the content, never a gutter that takes width - reachable and named for the keyboard.
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
 - [SectionNav](https://lacodda.github.io/dowel/components/section-nav.md): The left-hand list of a screen with sections, drawn as the product's own links, and the heading each section opens under.
+- [SegmentedControl](https://lacodda.github.io/dowel/components/segmented-control.md): Two to five options, one of them chosen, all of them in view - a radio group in a segment's clothes.
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
 - [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
 - [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
@@ -129,7 +133,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 ## Guides
 
 - [What a component has to pass](https://lacodda.github.io/dowel/guides/gates.md): The checks every primitive runs through, and what each one is there to catch.
-- [The lint rules](https://lacodda.github.io/dowel/guides/linting.md): Three conventions the system rests on, enforced rather than remembered.
+- [The lint rules](https://lacodda.github.io/dowel/guides/linting.md): Five conventions the system rests on, enforced rather than remembered.
 - [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration.md): The four commands that read a project, rewrite the token names that can be rewritten, and say what is left.
 - [Choosing an overlay](https://lacodda.github.io/dowel/guides/overlays.md): Six components that all float above the page, and the question each one answers.
 - [Installing from the registry](https://lacodda.github.io/dowel/guides/registry.md): Sets that install in one command, and how to pin a version of the registry so an install can be repeated.

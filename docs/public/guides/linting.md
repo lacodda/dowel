@@ -2,7 +2,7 @@
 
 Source: https://lacodda.github.io/dowel/guides/linting
 
-Three conventions hold the system together, and all are easy to state and easy
+Five conventions hold the system together, and all are easy to state and easy
 to break:
 
 - **a component never writes a colour down** — it names one from the
@@ -11,7 +11,11 @@ to break:
 - **no screen uses a native `<select>`** — the browser draws that popup itself,
   in the operating system's chrome, and no CSS reaches inside it;
 - **no date or number is formatted in the browser's language** — it is written
-  in the language the interface is.
+  in the language the interface is;
+- **sizes come from the scale** — a type step, a radius, a spacing step — not
+  from the eye;
+- **a screen presses Buttons, not `<button>`s** — the primitive knows the
+  focus ring, the form semantics, the disabled reason and the height.
 
 `dowel-ui` ships the rules that enforce them.
 
@@ -162,3 +166,80 @@ re-renders every date. The dowel primitives that format — `NumberFormat`,
 The rule reports the three `toLocale*String` methods and the `Intl`
 formatters. A variable passed as the locale is not reported: naming one is the
 decision the rule asks for.
+
+## `no-arbitrary-scale`
+
+```tsx
+// ✗ A step of the scale, written the long way - rewritten by --fix.
+<p className="text-[12px]" />          // → text-sm
+<div className="rounded-[9px] h-[22px]" />  // → rounded-md h-5.5
+<span className="tracking-[0.085em]" />     // → tracking-caption
+
+// ✗ Off the scale - reported with the steps either side, left for you.
+<p className="text-[13px]" />   // text-sm (12px) or text-base (14px)
+<div className="h-[13px]" />
+
+// ✓ Relationships, not lengths.
+<div className="w-[min(22rem,calc(100vw-2rem))] max-w-[44ch] h-[var(--plot)]" />
+```
+
+`h-[22px]` compiles perfectly and looks deliberate, which is how a product
+drifts into nine sizes inside four pixels. kilna had 160 of them in its
+screens, and half were literally a step of the scale written the long way —
+which nobody reading the code could tell from the other half, the ones really
+off it.
+
+So the rule reads every class string and splits them in two:
+
+- **the same length as a named step** is fixed automatically — the type scale,
+  the radii, `tracking-caption`, and spacing to the half step (2px, so `22px` is
+  `5.5`). Nothing is decided by writing it the long way, and `--fix` clears a
+  codebase of them in one pass.
+- **a length between steps** is reported with the neighbouring steps and never
+  fixed: choosing is a decision the rule has no right to make. Take a step, or
+  disable the line and say why none can carry it:
+
+```tsx
+{/* eslint-disable-next-line dowel/no-arbitrary-scale -- the wordmark, set to the mark above it */}
+<div className="text-[26px]">{name}</div>
+```
+
+Anything computed or proportional is left alone — `calc()`, `min()`, `var()`,
+percentages, viewport units, `ch`, `em`, `fr` — because those are relationships,
+not measurements: "as wide as it wants but never off the screen" is not a step.
+
+The set is held to the same finder by its own gate, which keeps each of its few
+exceptions with the argument beside it.
+
+## `no-raw-button`
+
+```tsx
+// ✗ A button that forgets what Button knows.
+<button className="rounded-full border px-2 text-xs" onClick={toggle}>Clips</button>
+
+// ✓ The primitive for the shape it is.
+<Chip pressed={clips} onPressedChange={setClips}>Clips</Chip>
+<Button variant="icon" aria-label={t('more')}><More /></Button>
+<RowButton selected={open === id} onClick={() => setOpen(id)}>{title}</RowButton>
+<MenuTrigger render={<Button variant="ghost" />}>…</MenuTrigger>
+```
+
+A raw `<button className="…">` looks like the cheap way to a small control, and
+it quietly drops everything Button knows: `type="button"`, so it does not submit
+the form it is in; the focus ring; the disabled look and a
+[disabled reason](/dowel/components/button/#states) a keyboard can reach; the
+size of an icon inside it; the control row that makes it the height of the field
+beside it. kilna had 95 of them in 42 files, each getting a different part of
+that wrong.
+
+The set has a primitive for each shape those buttons were — Button in six
+variants (`icon` for a glyph, `link` for one that reads as a link), RowButton
+for a row of a list, Chip with `pressed` for a switch,
+[SegmentedControl](/dowel/components/segmented-control/) for one of a few — and
+a primitive that wants a trigger takes `render={<Button />}`.
+
+**Your `ui/` directory is left alone.** The primitives are made of `<button>`s —
+that is where the one `<button>` a screen should not write gets written, once —
+so the recommended config turns the rule on for `**/*.tsx` except `**/ui/**`,
+shadcn's `components/ui`. Keep your own primitives there and they are exempt
+too.

@@ -63,6 +63,25 @@ The page itself is set in `base`: the theme gives `body` that size and its line
 height, so text nobody gave a class reads at the scale's own body size rather
 than the browser's 16px.
 
+### The caption
+
+The small uppercase label — a field's name, a panel's section, a group of menu
+items, a rail's group — is one utility, `caption`: `text-2xs`, `semibold`,
+uppercase, `tracking-caption`, in `faint`.
+
+```tsx
+<legend className="caption">Type</legend>
+<th className="caption">Released</th>
+```
+
+It is a utility rather than a component because it is a role text plays inside
+things that are already elements — a `<legend>`, a `<th>`, a `<label>`. The set
+wrote it seven ways before it had a name, with and without a weight, so a
+Field's label and the SectionLabel above it were two weights of one thing; a
+gate now refuses a caption written out by hand in a primitive, and
+[`no-arbitrary-scale`](/dowel/guides/linting/#no-arbitrary-scale) rewrites
+`tracking-[0.085em]` in a product to `tracking-caption`.
+
 The weight of an icon's line. lucide draws at 2, tuned for its own 24px; at the 14 and 16px the line draws icons at, 2 reads heavier than the text beside it.
 
 - `--icon-stroke`

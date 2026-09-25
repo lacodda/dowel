@@ -59,6 +59,18 @@ or tabbing past one axis would take ten presses. They are spans rather than
 buttons: a focusable control inside a `role="slider"` is a nested interactive
 element, and `tabindex="-1"` does not undo that.
 
+**A mark can be weighed before it is given.** `onPreview` reports the mark under
+the pointer, and `undefined` when the pointer leaves, so a product can say what
+a seven means while someone is deciding between a seven and an eight. The
+question while scoring is about the mark being considered, not the one already
+set.
+
+**The threshold is said, not only drawn.** The ring and its `title` reach a
+pointer and nobody else — the segments are hidden from assistive technology,
+and a title on a span is never shown to the keyboard — so the row carries the
+threshold's words as its description, and a reader hears "a clip from 8" with
+the value.
+
 **A band's colour is `accent` by default**, because a band is a position on
 the product's own scale and not a judgement in the
 [status vocabulary](/dowel/components/status-dot/). A product that means "this
@@ -93,8 +105,9 @@ one is bad" says so.
 | `scale` | `number` | | Required — one segment per whole point |
 | `value` | `number \| undefined` | | `undefined` is unjudged, not zero |
 | `onChange` | `(value) => void` | | Given, the row becomes a slider |
-| `threshold` | `{ mark, label }` | | The mark that crosses into the next band |
+| `threshold` | `{ mark, label }` | | The mark that crosses into the next band; also the row's accessible description |
 | `valueText` | `string` | | |
+| `onPreview` | `(mark \| undefined) => void` | | The mark under the pointer, and `undefined` when it leaves |
 
 ### Helpers
 

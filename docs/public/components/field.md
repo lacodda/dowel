@@ -6,7 +6,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#field
 
-A field with a hint, a field with an error, and a field whose label is only for screen readers.
+A field with a hint, a field with an error, a field whose label is only for screen readers, and a group of chips named by one caption.
 
 ## Notes
 
@@ -50,6 +50,37 @@ that name the moment someone types, and a placeholder was never a label to
 anything reading the page aloud. `labelHidden` takes it off the screen with
 `sr-only` and leaves it in the accessibility tree.
 
+**The label is a `caption`** — the theme's one utility for the small uppercase
+label, at 600. A panel's SectionLabel, a rail's group and a menu's group are the
+same utility, so the names in one form are one kind of thing.
+
+## FieldGroup — one name for several controls
+
+`Field` labels exactly one control, and it has to: its label points at an id the
+control carries. A row of chips, a segmented control or a grid of pictures has
+no single control to point at — and the obvious workaround, a `<label>` wrapped
+around the row, is a trap. A label with no `for` labels the first labelable
+element inside it, and a click on any plain part of the label is forwarded
+there. kilna measured what that does in its style dialog: a click on the
+caption "Type" silently set the first type, and a click on "References" pressed
+the hidden remove cross of the first picture — which deleted it for good.
+
+`FieldGroup` is a `<fieldset>` with a legend (through Base UI's Fieldset). The
+group is announced by its name as a reader enters it, the hint or error is its
+description, and a caption has nothing a click could be forwarded to.
+
+```tsx
+<FieldGroup label="Type" help="What the style describes." error={errors.type}>
+  <ChipGroup aria-label="Type" value={type} onValueChange={setType}>
+    <Chip value="image">Image</Chip>
+    <Chip value="pose">Pose</Chip>
+  </ChipGroup>
+</FieldGroup>
+```
+
+`disabled` disables every native control inside it, which is what a fieldset
+does on its own.
+
 ## Props
 
 | Prop | Type | Default | |
@@ -62,3 +93,15 @@ anything reading the page aloud. `labelHidden` takes it off the screen with
 | `required` | `boolean` | `false` | Adds the mark a reader looks for |
 | `name` | `string` | | So a `Form` can attach a server error by name |
 | `disabled` | `boolean` | `false` | |
+
+### FieldGroup
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | Required. The legend |
+| `children` | `ReactNode` | | The controls — anything |
+| `help` | `ReactNode` | | The group's description, hidden while an error shows |
+| `error` | `ReactNode` | | What is wrong with the group as a whole |
+| `labelHidden` | `boolean` | `false` | Keep the legend for readers, not the screen |
+| `required` | `boolean` | `false` | |
+| `disabled` | `boolean` | `false` | Disables every native control inside |

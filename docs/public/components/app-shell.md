@@ -54,7 +54,9 @@ are the line's, so four products that each draw their own chrome stop each
 picking their own number — which is how one ended up at 40px and another at
 2.4rem. Override `topHeight` and `sideWidth` where a product genuinely
 differs; a number is pixels and a string is any CSS track size, for a rail
-that collapses or is dragged.
+that is dragged. A rail that collapses to its icons is
+`sideWidth="var(--spacing-rail-compact)"` — 56px, the width
+[NavRail](/dowel/components/nav-rail/)'s `collapsed` column is drawn for.
 
 **Leave out what you do not have.** Without `side` the shell is a one-column
 grid rather than a two-column grid with an empty column still eating its
