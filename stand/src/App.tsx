@@ -61,7 +61,7 @@ import { Progress } from '../../registry/ui/progress'
 import { ErrorBoundary } from '../../registry/ui/error-boundary'
 import { QueryState } from '../../registry/ui/query-state'
 import { Button } from '../../registry/ui/button'
-import { Chip } from '../../registry/ui/chip'
+import { Chip, ChipGroup } from '../../registry/ui/chip'
 import {
   Combobox,
   ComboboxChip,
@@ -97,7 +97,7 @@ import { Checkbox, CheckboxGroup } from '../../registry/ui/checkbox'
 import { DatePicker } from '../../registry/ui/date-picker'
 import { DateRangePicker, type DateRange } from '../../registry/ui/date-range-picker'
 import { DurationField } from '../../registry/ui/duration-field'
-import { Field } from '../../registry/ui/field'
+import { Field, FieldGroup } from '../../registry/ui/field'
 import { Input } from '../../registry/ui/input'
 import { Kbd } from '../../registry/ui/kbd'
 import {
@@ -134,6 +134,7 @@ import { PasswordField } from '../../registry/ui/password-field'
 import { Radio, RadioGroup } from '../../registry/ui/radio-group'
 import { RatingScale } from '../../registry/ui/rating-scale'
 import { SearchField } from '../../registry/ui/search-field'
+import { Segment, SegmentedControl } from '../../registry/ui/segmented-control'
 import { useShortcut } from '../../registry/ui/shortcut'
 import { Spinner } from '../../registry/ui/spinner'
 import {
@@ -192,6 +193,10 @@ import { StatusBadge, StatusDot } from '../../registry/ui/status-dot'
 import { AxisBar, TierBadge, TierRuler, tierAt, type Tier } from '../../registry/ui/tier'
 import { Timeline, TimelineItem } from '../../registry/ui/timeline'
 import { SkeletonOf } from '../../registry/ui/skeleton-of'
+import { SegmentedControlSection } from './sections/segmented-control'
+import { ListRowSection } from './sections/list-row'
+import { InlineFieldSection } from './sections/inline-field'
+import { FieldDraftSection } from './sections/field-draft'
 
 /*
  * The stand.
@@ -226,6 +231,19 @@ const sections = [
     render: () => <MarkedTextSection />,
   },
   { id: 'field', title: 'Field', docs: '/dowel/components/field/', render: () => <FieldSection /> },
+  {
+    id: 'inline-field',
+    title: 'InlineField',
+    docs: '/dowel/components/inline-field/',
+    render: () => <InlineFieldSection />,
+  },
+  {
+    id: 'field-draft',
+    title: 'useFieldDraft',
+    kind: 'utility',
+    docs: '/dowel/components/field-draft/',
+    render: () => <FieldDraftSection />,
+  },
   { id: 'checkbox', title: 'Checkbox', docs: '/dowel/components/checkbox/', render: () => <CheckboxSection /> },
   {
     id: 'radio-group',
@@ -293,6 +311,12 @@ const sections = [
   { id: 'panel', title: 'Panel', docs: '/dowel/components/panel/', render: () => <PanelSection /> },
   { id: 'badge', title: 'Badge', docs: '/dowel/components/badge/', render: () => <BadgeSection /> },
   { id: 'chip', title: 'Chip', docs: '/dowel/components/chip/', render: () => <ChipSection /> },
+  {
+    id: 'segmented-control',
+    title: 'SegmentedControl',
+    docs: '/dowel/components/segmented-control/',
+    render: () => <SegmentedControlSection />,
+  },
   { id: 'kbd', title: 'Kbd', docs: '/dowel/components/kbd/', render: () => <KbdSection /> },
   { id: 'spinner', title: 'Spinner', docs: '/dowel/components/spinner/', render: () => <SpinnerSection /> },
   { id: 'truncate', title: 'Truncate', docs: '/dowel/components/truncate/', render: () => <TruncateSection /> },
@@ -426,6 +450,12 @@ const sections = [
     title: 'KeyValue',
     docs: '/dowel/components/key-value/',
     render: () => <KeyValueSection />,
+  },
+  {
+    id: 'list-row',
+    title: 'ListRow',
+    docs: '/dowel/components/list-row/',
+    render: () => <ListRowSection />,
   },
   {
     id: 'stat-tile',
@@ -1088,6 +1118,35 @@ function FieldSection() {
           <Textarea autoResize maxRows={5} placeholder="Say what happened" />
         </Field>
       </Row>
+
+      <Row label="a FieldGroup around a row of chips - a fieldset names the group, a label cannot">
+        <FieldGroup label="Type" className="w-64">
+          <ChipGroup aria-label="Type" defaultValue={['song']}>
+            <Chip value="song">Song</Chip>
+            <Chip value="clip">Clip</Chip>
+            <Chip value="short">Short</Chip>
+          </ChipGroup>
+        </FieldGroup>
+      </Row>
+
+      <Row label="a FieldGroup around a segmented control">
+        <FieldGroup label="Theme" help="Applies to this device only." className="w-64">
+          <SegmentedControl aria-label="Theme" defaultValue="system">
+            <Segment value="light">Light</Segment>
+            <Segment value="dark">Dark</Segment>
+            <Segment value="system">System</Segment>
+          </SegmentedControl>
+        </FieldGroup>
+      </Row>
+
+      <Row label="a FieldGroup with an error">
+        <FieldGroup label="Delivery" error="Choose at least one." className="w-64">
+          <ChipGroup aria-label="Delivery" multiple value={[]}>
+            <Chip value="email">Email</Chip>
+            <Chip value="sms">SMS</Chip>
+          </ChipGroup>
+        </FieldGroup>
+      </Row>
     </>
   )
 }
@@ -1696,6 +1755,9 @@ function BadgeSection() {
 }
 
 function ChipSection() {
+  const [kind, setKind] = useState<string[]>(['song'])
+  const [filters, setFilters] = useState<string[]>(['unread'])
+
   return (
     <>
       <Row label="variants">
@@ -1712,6 +1774,41 @@ function ChipSection() {
         <Chip variant="accent" count={3} onRemove={() => {}} removeLabel="Remove tag">
           both
         </Chip>
+      </Row>
+
+      <Row label="tones - the status vocabulary and the accent">
+        <Chip variant="accent">accent</Chip>
+        <Chip variant="good">good</Chip>
+        <Chip variant="warn">warn</Chip>
+        <Chip variant="bad">bad</Chip>
+        <Chip variant="info">info</Chip>
+      </Row>
+
+      <Row label="dashed - stands for something not there yet">
+        <Chip variant="dashed">+ Tag</Chip>
+      </Row>
+
+      <Row label="a single choice, as a switch - press one, and it holds">
+        <ChipGroup aria-label="Kind" value={kind} onValueChange={setKind}>
+          <Chip value="song">Song</Chip>
+          <Chip value="clip">Clip</Chip>
+          <Chip value="short">Short</Chip>
+          <Chip value="cover">Cover</Chip>
+        </ChipGroup>
+      </Row>
+
+      <Row label="several at once - filters, with a count on each">
+        <ChipGroup aria-label="Filters" multiple value={filters} onValueChange={setFilters}>
+          <Chip value="unread" count={4}>
+            Unread
+          </Chip>
+          <Chip value="flagged" count={1}>
+            Flagged
+          </Chip>
+          <Chip value="mine" count={12}>
+            Mine
+          </Chip>
+        </ChipGroup>
       </Row>
     </>
   )
@@ -3350,7 +3447,7 @@ function LineChartSection() {
   return (
     <>
       <Row label="a balance across a quarter - week six was never snapshotted, so the line breaks">
-        <Panel className="w-[28rem] p-5">
+        <Panel className="w-112 p-5">
           <LineChart
             points={balancePoints}
             label="Balance, $4,900 to $5,260 across twelve weeks, one not measured"
@@ -3366,7 +3463,7 @@ function LineChartSection() {
       </Row>
 
       <Row label="the same series with a zero floor - what a line loses when the axis starts at nothing">
-        <Panel className="flex w-[28rem] flex-col gap-2 p-5">
+        <Panel className="flex w-112 flex-col gap-2 p-5">
           <LineChart
             points={balancePoints}
             bounds={{ min: 0 }}
@@ -3380,7 +3477,7 @@ function LineChartSection() {
       </Row>
 
       <Row label="sm, and the tones a caller who knows the direction can ask for">
-        <Panel className="flex w-[28rem] flex-col gap-4 p-5">
+        <Panel className="flex w-112 flex-col gap-4 p-5">
           <LineChart points={balancePoints} size="sm" tone="good" ticks={3} formatTick={money} label="Rising, in good" />
           <LineChart
             points={balancePoints.map((point) => ({ ...point, value: point.value === null ? null : 10_000 - point.value }))}
@@ -3394,7 +3491,7 @@ function LineChartSection() {
       </Row>
 
       <Row label="nothing measured - a bare plot with its axis, never a flat line at zero">
-        <Panel className="flex w-[28rem] flex-col gap-2 p-5">
+        <Panel className="flex w-112 flex-col gap-2 p-5">
           <LineChart
             points={[0, 1, 2, 3].map((at) => ({ at, value: null }))}
             label="Nothing recorded this quarter"
@@ -3416,7 +3513,7 @@ function BarChartSection() {
   return (
     <>
       <Row label="twelve weeks - two of them with nothing recorded, one recorded as zero, one of twenty minutes">
-        <Panel className="w-[28rem] p-5">
+        <Panel className="w-112 p-5">
           <ChartFrame gutter={false}>
             <BarChart bars={weekBars()} max={weekCeiling} label="Twelve weeks of work" />
           </ChartFrame>
@@ -3424,7 +3521,7 @@ function BarChartSection() {
       </Row>
 
       <Row label="with the median named - a chart without its baseline invites the reader to invent one">
-        <Panel className="w-[28rem] p-5">
+        <Panel className="w-112 p-5">
           <ChartFrame>
             <BarChart bars={weekBars()} max={weekCeiling} label="Twelve weeks of work, median 38.5h" />
             <Baseline value={weekMedian} max={weekCeiling}>
@@ -3435,7 +3532,7 @@ function BarChartSection() {
       </Row>
 
       <Row label="emphasis - one column is the story, the rest are the field it stands in">
-        <Panel className="w-[28rem] p-5">
+        <Panel className="w-112 p-5">
           <ChartFrame gutter={false}>
             <BarChart bars={picked} max={weekCeiling} label="Twelve weeks, this week picked out" />
           </ChartFrame>
@@ -3648,7 +3745,7 @@ function TrackSection() {
       <Row label="spans - a working day, read against itself">
         <Panel className="flex w-96 flex-col gap-2 p-4">
           <Track segments={workingDay} from={0} to={480} label="Worked 7h 6m, two breaks of 45m and 9m" />
-          <span className="font-mono text-[11px] text-faint tabular-nums">08:12 - 16:12</span>
+          <span className="font-mono text-xs text-faint tabular-nums">08:12 - 16:12</span>
         </Panel>
       </Row>
 
@@ -3733,7 +3830,7 @@ function SparklineSection() {
     <>
       <Row label="beside a total - the shape, with the figure it belongs to">
         <Panel className="flex flex-wrap items-center gap-3 p-4">
-          <span className="font-mono text-[22px] font-semibold tabular-nums">82.0</span>
+          <span className="font-mono text-2xl font-semibold tabular-nums">82.0</span>
           <Badge variant="accent">Clip</Badge>
           <Sparkline values={scoreHistory} max={100} label="Score, 18 to 82 over six versions" />
         </Panel>
@@ -3755,7 +3852,7 @@ function SparklineSection() {
                   size="sm"
                   label={`${axis}, ${line[0]} to ${line.at(-1)} over four versions`}
                 />
-                <span className="w-6 text-right font-mono text-[13px] text-dim tabular-nums">{now}</span>
+                <span className="w-6 text-right font-mono text-sm text-dim tabular-nums">{now}</span>
               </span>
             </span>
           ))}
@@ -4107,7 +4204,7 @@ function ProseSection() {
       </Row>
 
       <Row label="prose-tight in a bubble - the same rules, rhythm compressed, measure given up">
-        <div className="w-[22rem] rounded-lg border border-line bg-raise p-3">
+        <div className="w-88 rounded-lg border border-line bg-raise p-3">
           <div
             className="prose prose-tight"
             dangerouslySetInnerHTML={{
@@ -4141,7 +4238,7 @@ function CodeBlockSection() {
     <>
       <Row label="a command - no colour at all, which is the default and is usually right">
         <CodeBlock
-          className="w-[34rem]"
+          className="w-136"
           code="npx shadcn@latest add https://lacodda.github.io/dowel/r/code-block.json"
           wrap
           copyLabel="Copy the command"
@@ -4151,7 +4248,7 @@ function CodeBlockSection() {
 
       <Row label="a file: a caption, numbers from where it was lifted, and two lines marked">
         <CodeBlock
-          className="w-[34rem]"
+          className="w-136"
           code={sampleConfig}
           caption="vite.config.ts"
           numbered
@@ -4164,7 +4261,7 @@ function CodeBlockSection() {
 
       <Row label="coloured by a highlighter - the eight kinds, drawn in the syntax tokens">
         <CodeBlock
-          className="w-[34rem]"
+          className="w-136"
           code={'export function boundsOf(points: Point[]) {\n  // ...\n}'}
           tokens={highlighted}
           caption="line-scale.ts"
@@ -4176,7 +4273,7 @@ function CodeBlockSection() {
 
       <Row label="sm, and a long value told to wrap rather than scroll for ever">
         <CodeBlock
-          className="w-[34rem]"
+          className="w-136"
           size="sm"
           wrap
           caption="the token, which is not really code"
@@ -4193,7 +4290,7 @@ function CopyButtonSection() {
   return (
     <>
       <Row label="in the corner of a block - hover the panel, not the button, and Tab reaches it too">
-        <div className="group relative w-[22rem] rounded-md border border-line bg-soft p-3">
+        <div className="group relative w-88 rounded-md border border-line bg-soft p-3">
           <p className="pr-8 font-mono text-xs text-dim">
             a4f19c2e-77b0-4c31-9a2e-1f0b3d5c8e44
           </p>
@@ -4231,7 +4328,7 @@ function DiffViewSection() {
   return (
     <>
       <Row label="two drafts - one line rewritten (~), one inserted (+), and the rest standing still">
-        <div className="w-[52rem]">
+        <div className="w-208">
           <DiffView
             before={draftBefore}
             after={draftAfter}
@@ -4245,7 +4342,7 @@ function DiffViewSection() {
       </Row>
 
       <Row label="the same comparison in a side panel - the after line under the before one, never dropped">
-        <div className="w-[22rem]">
+        <div className="w-88">
           <DiffView
             before={draftBefore}
             after={draftAfter}
@@ -4257,7 +4354,7 @@ function DiffViewSection() {
       </Row>
 
       <Row label="nothing moved - no markers, no tint, and the summary says so">
-        <div className="w-[52rem]">
+        <div className="w-208">
           <DiffView
             before={draftBefore}
             after={draftBefore}
@@ -4281,7 +4378,7 @@ function DiffLinesSection() {
   return (
     <>
       <Row label="the changes, in order - what the comparison is built from">
-        <div className="w-[52rem] font-mono text-xs leading-relaxed text-dim">
+        <div className="w-208 font-mono text-xs leading-relaxed text-dim">
           {changes.map((change, at) => (
             <div key={at}>
               <span className="text-faint">{change.kind.padEnd(8)}</span>
@@ -4292,7 +4389,7 @@ function DiffLinesSection() {
       </Row>
 
       <Row label="paired into rows - one object with two sides, which is what keeps two columns in step">
-        <div className="w-[52rem] font-mono text-xs leading-relaxed text-dim">
+        <div className="w-208 font-mono text-xs leading-relaxed text-dim">
           {paired.map((row, at) => (
             <div key={at}>
               <span className="text-faint">
@@ -4344,7 +4441,7 @@ function JsonViewerSection() {
         <JsonViewer
           value={payload}
           label="A webhook payload"
-          className="max-h-96 w-[34rem]"
+          className="max-h-96 w-136"
           onActivate={(row) => setTouched(row.path)}
         />
       </Row>
@@ -4357,12 +4454,12 @@ function JsonViewerSection() {
         <JsonViewer
           value={{ totals: { primitives: '76', tests: 2361 }, published_at: null }}
           label="Quoted and unquoted"
-          className="w-[34rem]"
+          className="w-136"
         />
       </Row>
 
       <Row label="nothing but a value - a viewer of one leaf is still a viewer">
-        <JsonViewer value={null} label="A null" className="w-[34rem]" />
+        <JsonViewer value={null} label="A null" className="w-136" />
       </Row>
     </>
   )
@@ -4375,7 +4472,7 @@ function JsonRowsSection() {
   return (
     <>
       <Row label="the rows a document flattens into - path, depth, and what it is">
-        <div className="max-h-96 w-[52rem] overflow-auto font-mono text-xs leading-relaxed text-dim">
+        <div className="max-h-96 w-208 overflow-auto font-mono text-xs leading-relaxed text-dim">
           {rows.map((row) => (
             <div key={row.path}>
               <span className="text-faint">{String(row.depth)} </span>
@@ -4388,7 +4485,7 @@ function JsonRowsSection() {
       </Row>
 
       <Row label="a key dot notation would break, written so the path still resolves">
-        <div className="w-[52rem] font-mono text-xs text-dim">
+        <div className="w-208 font-mono text-xs text-dim">
           {jsonRows({ 'user name': 1, 'a.b': 2 }, new Set(['$'])).map((row) => (
             <div key={row.path}>{row.path}</div>
           ))}
@@ -4462,6 +4559,39 @@ function EmptyStateSection() {
           action={<Button variant="ghost">Try again</Button>}
         />
       </Row>
+
+      <Row label="plain - no frame, no mark, for something that already has one - a panel in a widget">
+        <Panel className="w-72 p-4">
+          <EmptyState
+            plain
+            title="No works yet"
+            body="Everything you start will show up here."
+            action={
+              <Button size="sm" variant="primary">
+                New work
+              </Button>
+            }
+          />
+        </Panel>
+        <Panel className="w-72 p-4">
+          <EmptyState
+            plain
+            variant="filtered"
+            title="Nothing matches"
+            body="Clearing the tier would show 42 works."
+            action={<Button size="sm">Clear filters</Button>}
+          />
+        </Panel>
+        <Panel className="w-72 p-4">
+          <EmptyState
+            plain
+            variant="error"
+            title="Could not load"
+            body="The server did not answer."
+            action={<Button size="sm">Try again</Button>}
+          />
+        </Panel>
+      </Row>
     </>
   )
 }
@@ -4504,6 +4634,12 @@ function ProgressSection() {
 
 function QueryStateSection() {
   const [state, setState] = useState<'pending' | 'error' | 'empty' | 'ready'>('pending')
+  const [retryState, setRetryState] = useState<'error' | 'pending' | 'ready'>('error')
+
+  const retry = () => {
+    setRetryState('pending')
+    setTimeout(() => setRetryState('ready'), 800)
+  }
 
   return (
     <>
@@ -4540,6 +4676,39 @@ function QueryStateSection() {
             </KeyValue>
           </QueryState>
         </div>
+      </Row>
+
+      <Row label="a retry that retries - press it, and the ladder runs again on its own">
+        <div className="w-96 rounded-md border border-line p-2">
+          <QueryState
+            pending={retryState === 'pending'}
+            error={retryState === 'error' ? { message: 'The server did not answer.' } : null}
+            errorLabels={{ title: 'Could not load' }}
+            onRetry={retry}
+            retryLabel="Try again"
+          >
+            <KeyValue>
+              <KeyValueRow label="Title">Harbour lights</KeyValueRow>
+              <KeyValueRow label="Owner">Ines</KeyValueRow>
+            </KeyValue>
+          </QueryState>
+        </div>
+      </Row>
+
+      <Row label="plain, inside a panel that already has a frame">
+        <Panel className="w-96 p-3">
+          <QueryState
+            plain
+            error={{ message: 'The server did not answer.' }}
+            errorLabels={{ title: 'Could not load' }}
+            onRetry={() => undefined}
+            retryLabel="Try again"
+          >
+            <KeyValue>
+              <KeyValueRow label="Title">Harbour lights</KeyValueRow>
+            </KeyValue>
+          </QueryState>
+        </Panel>
       </Row>
     </>
   )
@@ -4615,7 +4784,7 @@ function MarkedTextSection() {
           text={verse}
           marks={occurrences(verse, 'The', 'bg-warn-soft')}
           lineMarks={[{ line: 2, className: 'bg-good-soft' }]}
-          className={cn('w-[26rem] rounded-md border border-line bg-raise', metrics)}
+          className={cn('w-104 rounded-md border border-line bg-raise', metrics)}
         />
       </Row>
 
@@ -4626,7 +4795,7 @@ function MarkedTextSection() {
           marks={occurrences(text, 'the', 'bg-warn-soft')}
           lineMarks={[{ line: 2, className: 'bg-good-soft' }]}
           aria-label="Verse"
-          className={cn('w-[26rem] rounded-md border border-line bg-raise', metrics)}
+          className={cn('w-104 rounded-md border border-line bg-raise', metrics)}
         />
       </Row>
     </>
@@ -4682,20 +4851,50 @@ const settingsHints: Record<string, string> = {
   agents: 'The command an assistant runs to reach this workspace.',
 }
 
+const workSections = [
+  { id: 'overview', label: 'Overview', description: 'Title, owner, tier, and the last time it moved.' },
+  {
+    id: 'versions',
+    label: 'Versions and every draft kept along the way, oldest first, with what changed in each one',
+    description: 'Every draft kept, oldest first, with what changed.',
+  },
+  { id: 'releases', label: 'Releases', description: 'Where this went out, and under what title.' },
+]
+
 function SectionNavSection() {
   const [active, setActive] = useState('data')
   const current = settingsSections.find((section) => section.id === active)!
+  const [activeWork, setActiveWork] = useState('overview')
+  const currentWork = workSections.find((section) => section.id === activeWork)!
 
   return (
-    <Row label="the column and the heading it opens - press a row">
-      <div className="grid w-full gap-8 md:grid-cols-[11rem_minmax(0,1fr)]">
-        <SectionNav label="Settings" items={settingsSections} activeId={active} onSelect={setActive} />
-        <div className="min-w-0">
-          <SectionHeading title={current.label} description={settingsHints[active]} />
-          <SkeletonText lines={3} />
+    <>
+      <Row label="the column and the heading it opens - press a row">
+        <div className="grid w-full gap-8 md:grid-cols-[11rem_minmax(0,1fr)]">
+          <SectionNav label="Settings" items={settingsSections} activeId={active} onSelect={setActive} />
+          <div className="min-w-0">
+            <SectionHeading title={current.label} description={settingsHints[active]} />
+            <SkeletonText lines={3} />
+          </div>
         </div>
-      </div>
-    </Row>
+      </Row>
+
+      <Row label="with a description under each row, and the caption hidden - the heading beside it already says 'Work'">
+        <div className="grid w-full gap-8 md:grid-cols-[13rem_minmax(0,1fr)]">
+          <SectionNav
+            label="Work"
+            labelHidden
+            items={workSections}
+            activeId={activeWork}
+            onSelect={setActiveWork}
+          />
+          <div className="min-w-0">
+            <SectionHeading title={currentWork.label} description={currentWork.description} />
+            <SkeletonText lines={3} />
+          </div>
+        </div>
+      </Row>
+    </>
   )
 }
 
@@ -4725,7 +4924,7 @@ function NotificationBellSection() {
             aria-hidden
             className={cn('mt-1.5 size-1.5 shrink-0 rounded-full', entry.warn && unread > 0 ? 'bg-warn' : 'bg-line-2')}
           />
-          <p className={cn('m-0 min-w-0 flex-1 text-[13px] text-dim', entry.warn && unread > 0 && 'text-text')}>
+          <p className={cn('m-0 min-w-0 flex-1 text-sm text-dim', entry.warn && unread > 0 && 'text-text')}>
             {entry.text}
           </p>
           <span className="shrink-0 text-2xs tabular-nums text-faint">{entry.when}</span>
@@ -4767,32 +4966,70 @@ const windowLabels = { minimize: 'Minimize', maximize: 'Maximize', restore: 'Res
  * component checks for the bridge before every call and stays inert without
  * it, so nothing here is mocked. */
 function WindowFrameSection() {
+  const [query, setQuery] = useState('')
+
   return (
-    <Row label="a frameless window's chrome, inside a frame - the strips along the edges are tinted here so they can be seen">
-      <div className="relative h-56 w-full overflow-hidden rounded-lg border border-line bg-bg">
-        <ResizeEdges className="absolute bg-accent/40" />
-        <TitleBar
-          labels={windowLabels}
-          mark={<span className="size-4 [&>svg]:size-full">{splashMark}</span>}
-          actions={<NotificationBell count={2} {...bellLabels} />}
-        >
-          <Tabs defaultValue="draft">
-            <TabsList variant="bar" aria-label="Open documents">
-              <TabsTab value="draft" modified modifiedLabel="unsaved changes" onClose={() => undefined} closeLabel="Close Draft">
-                Draft
-              </TabsTab>
-              <TabsTab value="notes" onClose={() => undefined} closeLabel="Close Notes">
-                Notes
-              </TabsTab>
-            </TabsList>
-          </Tabs>
-        </TitleBar>
-        <p className="m-0 p-4 text-sm text-dim">
-          Everything in the bar that is not a control is a handle - the stretch after the tabs is
-          there only for that. Drag it to move the window; double-click to maximise.
-        </p>
-      </div>
-    </Row>
+    <>
+      <Row label="a frameless window's chrome, inside a frame - the strips along the edges are tinted here so they can be seen">
+        <div className="relative h-56 w-full overflow-hidden rounded-lg border border-line bg-bg">
+          <ResizeEdges className="absolute bg-accent/40" />
+          <TitleBar
+            labels={windowLabels}
+            mark={<span className="size-4 [&>svg]:size-full">{splashMark}</span>}
+            actions={<NotificationBell count={2} {...bellLabels} />}
+          >
+            <Tabs defaultValue="draft">
+              <TabsList variant="bar" aria-label="Open documents">
+                <TabsTab value="draft" modified modifiedLabel="unsaved changes" onClose={() => undefined} closeLabel="Close Draft">
+                  Draft
+                </TabsTab>
+                <TabsTab value="notes" onClose={() => undefined} closeLabel="Close Notes">
+                  Notes
+                </TabsTab>
+              </TabsList>
+            </Tabs>
+          </TitleBar>
+          <p className="m-0 p-4 text-sm text-dim">
+            Everything in the bar that is not a control is a handle - the stretch after the tabs is
+            there only for that. Drag it to move the window; double-click to maximise.
+          </p>
+        </div>
+      </Row>
+
+      <Row label="a centre slot, held at the window's middle - a search box, with tabs still on the left">
+        <div className="relative h-56 w-full overflow-hidden rounded-lg border border-line bg-bg">
+          <TitleBar
+            labels={windowLabels}
+            mark={<span className="size-4 [&>svg]:size-full">{splashMark}</span>}
+            center={
+              <SearchField
+                value={query}
+                onValueChange={setQuery}
+                clearLabel="Clear search"
+                placeholder="Search"
+                aria-label="Search"
+                className="w-72"
+              />
+            }
+          >
+            <Tabs defaultValue="overview">
+              <TabsList variant="bar" aria-label="Open documents">
+                <TabsTab value="overview" onClose={() => undefined} closeLabel="Close Overview">
+                  Overview
+                </TabsTab>
+                <TabsTab value="history" onClose={() => undefined} closeLabel="Close History">
+                  History
+                </TabsTab>
+              </TabsList>
+            </Tabs>
+          </TitleBar>
+          <p className="m-0 p-4 text-sm text-dim">
+            The centre keeps its place: opening or closing a tab on the left does not move it, and
+            each side keeps a handle of its own to drag by.
+          </p>
+        </div>
+      </Row>
+    </>
   )
 }
 
@@ -4941,9 +5178,24 @@ const standTiers: Tier[] = [
   { key: 'clip', label: 'A clip', min: 90 },
 ]
 
+const meaningOf = [
+  'barely a tune',
+  'a few notes worth keeping',
+  'hums, but does not stick',
+  'catchy in one section',
+  'catchy start to finish',
+  'a hook worth building the track around',
+  'memorable on first listen',
+  'a clip from here',
+  'carries the whole track',
+  'the reason to press play',
+]
+
 function TierSection() {
   const [melody, setMelody] = useState<number | undefined>(7)
   const [words, setWords] = useState<number | undefined>(undefined)
+  const [mix, setMix] = useState<number | undefined>(6)
+  const [mixPreview, setMixPreview] = useState<number | undefined>(undefined)
 
   return (
     <>
@@ -5014,6 +5266,34 @@ function TierSection() {
             <AxisBar className="flex-1" label="Mix" scale={10} value={6} valueText="6, set elsewhere" />
             <span className="w-16 shrink-0 text-right text-xs text-faint">read only</span>
           </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="mb-2 text-2xs uppercase tracking-caption text-dim">
+          what a mark means - hover one to preview it, before committing to anything
+        </div>
+        <div className="flex flex-col gap-2 rounded-lg border border-line bg-raise p-4">
+          <div className="flex items-center gap-3">
+            <span className="w-20 shrink-0 text-xs text-dim">Mix</span>
+            <AxisBar
+              className="flex-1"
+              label="Mix"
+              scale={10}
+              value={mix}
+              onChange={setMix}
+              onPreview={setMixPreview}
+              threshold={{ mark: 8, label: 'A clip from 8' }}
+              valueText={mix === undefined ? 'unjudged' : String(mix)}
+            />
+            <span className="w-16 shrink-0 text-right text-xs text-faint">{mix ?? 'unjudged'}</span>
+          </div>
+          <p className="m-0 text-xs text-dim">
+            {(() => {
+              const shown = mixPreview ?? mix
+              return shown === undefined || shown < 1 ? 'unjudged' : meaningOf[shown - 1]
+            })()}
+          </p>
         </div>
       </div>
     </>
@@ -5368,7 +5648,7 @@ function AppShellSection() {
       <Row label="a desktop frame - a bar, a rail, and the screen in the corner they leave">
         {/* A fixed height, because the shell fills what it is given and a
             demonstration has to give it something. */}
-        <div className="h-[19rem] w-full overflow-hidden rounded-lg border border-line">
+        <div className="h-76 w-full overflow-hidden rounded-lg border border-line">
           <AppShell
             top={
               <header className="flex h-full items-center gap-3 border-b border-line bg-bg px-3">
@@ -5400,7 +5680,7 @@ function AppShellSection() {
       </Row>
 
       <Row label="the same frame with no rail - the shape a web product usually has">
-        <div className="h-[13rem] w-full overflow-hidden rounded-lg border border-line">
+        <div className="h-52 w-full overflow-hidden rounded-lg border border-line">
           <AppShell
             top={
               <header className="flex h-full items-center gap-4 border-b border-line bg-bg px-3">
@@ -5429,6 +5709,7 @@ function NavRailSection() {
   const [column, setColumn] = useState('catalogue')
   const [row, setRow] = useState('dashboard')
   const [bar, setBar] = useState('calendar')
+  const [collapsed, setCollapsed] = useState(false)
 
   return (
     <>
@@ -5467,10 +5748,53 @@ function NavRailSection() {
       </Row>
 
       <Row label="bar - along the bottom of a phone, where the thumb already is">
-        <div className="w-full max-w-[22rem] overflow-hidden rounded-lg border border-line bg-bg">
+        <div className="w-full max-w-88 overflow-hidden rounded-lg border border-line bg-bg">
           <div className="h-16" />
           <NavRail layout="bar" label="Screens" items={shellScreens} activeId={bar} onSelect={setBar} />
         </div>
+      </Row>
+
+      <Row label="collapsed - icons only, each name in a tooltip beside it">
+        <div className="h-64 w-rail-compact flex flex-col overflow-hidden rounded-lg border-r border-line">
+          <NavRail
+            label="Screens"
+            items={shellScreens}
+            activeId={column}
+            onSelect={setColumn}
+            collapsed
+            className="h-auto border-r-0 pb-0"
+          />
+          <NavGroup collapsed>Library</NavGroup>
+          <NavRail label="Library" items={shellRoadmap} collapsed className="h-auto border-r-0 pt-0 pb-0" />
+          <NavSpacer>
+            <NavRail
+              label="Settings"
+              items={[{ id: 'settings', label: 'Settings' }]}
+              collapsed
+              className="h-auto border-r-0 pt-0"
+            />
+          </NavSpacer>
+        </div>
+      </Row>
+
+      <Row label="collapse in place - the width switches between w-56 and w-rail-compact">
+        <div
+          className={cn(
+            'h-64 overflow-hidden rounded-lg border border-line transition-all',
+            collapsed ? 'w-rail-compact' : 'w-56',
+          )}
+        >
+          <NavRail
+            label="Screens"
+            items={shellScreens}
+            activeId={column}
+            onSelect={setColumn}
+            collapsed={collapsed}
+          />
+        </div>
+        <Button variant="ghost" size="sm" onClick={() => setCollapsed((value) => !value)}>
+          {collapsed ? 'Expand' : 'Collapse'}
+        </Button>
       </Row>
     </>
   )

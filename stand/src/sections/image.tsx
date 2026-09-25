@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Button } from '../../../registry/ui/button'
 import { Row } from '../row'
 import { AspectRatio, Image } from '../../../registry/ui/image'
 
@@ -79,13 +80,9 @@ export function ImageSection() {
             className="rounded-lg"
           />
         </AspectRatio>
-        <button
-          type="button"
-          className="h-8 shrink-0 rounded-md border border-line px-3 text-sm text-text"
-          onClick={() => setPendingSrc(accentPicture)}
-        >
+        <Button size="sm" className="shrink-0" onClick={() => setPendingSrc(accentPicture)}>
           Load it
-        </button>
+        </Button>
       </Row>
 
       <Row label="a source that fails - a quiet fallback rather than the browser's glyph">

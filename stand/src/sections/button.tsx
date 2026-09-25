@@ -91,6 +91,21 @@ export function ButtonSection() {
           As a link
         </Button>
       </Row>
+
+      <Row label="link - takes no size, sits inside text">
+        <p className="m-0 max-w-72 text-sm text-dim">
+          Changes are saved automatically. <Button variant="link">Undo</Button> before it syncs.
+        </p>
+      </Row>
+
+      <Row label="disabled with a reason - stays reachable, and the reason is the title and the description">
+        <Button variant="ghost" disabled disabledReason="The work it belonged to is gone.">
+          Restore
+        </Button>
+        <Button variant="ghost" disabled>
+          Restore
+        </Button>
+      </Row>
     </>
   )
 }
