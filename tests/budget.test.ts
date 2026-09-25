@@ -75,16 +75,31 @@ describe('what a primitive weighs', () => {
      * little above what it measures, so the next growth still has to argue
      * for itself. */
     'nav-rail': {
-      ceiling: 4352,
+      ceiling: 5632,
       because:
         'one list of destinations in the three shapes a product actually needs it - ' +
         'a rail, a row of tabs, a phone bar. Three components would be three answers ' +
-        'to "which entry is the current one", which is the drift this exists to end',
+        'to "which entry is the current one", which is the drift this exists to end. ' +
+        'Raised in v0.33 for the collapsed column: the same entries with their names ' +
+        'moved into a tooltip, which has to be the same entry wrapped - a second ' +
+        'component would be a second answer to which entry is current',
+    },
+    /* Grown in v0.33 by the switch: a chip that is on or off, and the row that
+     * switches them together. The union that keeps a chip from being both
+     * removable and a switch is most of the growth, and it is the part that
+     * must not be split off - a cross inside a toggle is a button inside a
+     * button, and the types are what refuse it. */
+    chip: {
+      ceiling: 5376,
+      because:
+        'the three things a chip is - a label, a removable value, a switch - and the ' +
+        'group the switches go in. Split, a product installs a ChipToggle and a Chip ' +
+        'that disagree about padding and tone, which is the five recipes kilna had',
     },
     tier: {
-      ceiling: 8192,
+      ceiling: 8704,
       because:
-        'the badge, the ruler and the axis are three readings of one score and share the `Tier` it is read against; split apart, the band arithmetic would be written twice and the two copies would disagree about where a boundary falls - which is the defect the ruler was written to correct in the first place',
+        'the badge, the ruler and the axis are three readings of one score and share the `Tier` it is read against; split apart, the band arithmetic would be written twice and the two copies would disagree about where a boundary falls - which is the defect the ruler was written to correct in the first place. Raised in v0.33 by the preview of the mark under the pointer and the threshold said to a reader - both belong to the axis, where the mark is weighed',
     },
     /* The three that grew when a live run found what they were not doing.
      *
@@ -173,7 +188,7 @@ describe('what a primitive weighs', () => {
         'rows, the ARIA tree, and the leaf drawn as the type it actually is.',
     },
     'window-frame': {
-      ceiling: 6656,
+      ceiling: 7168,
       because:
         'The assembled title bar and the four parts it is made of: the buttons, the title-bar gestures and the ' +
         'resize strips all read the same `useMaximized` and go through the same guard ' +
@@ -182,7 +197,9 @@ describe('what a primitive weighs', () => {
         'must vanish then is in one of them while the button that says so is in another. ' +
         'The buttons were already folded into one map; what is left is the eight-entry ' +
         'geometry table, which is the only honest way to write eight positions. `TitleBar` ' +
-        'is the parts put together once, so no product lays the handle out wrong.',
+        'is the parts put together once, so no product lays the handle out wrong. Raised in ' +
+        "v0.33 for the centre slot: a second layout of the same bar rather than a second bar, " +
+        "because a search held at the window's centre needs two sides that each keep a handle.",
     },
     splitter: {
       ceiling: 8704,
@@ -294,7 +311,21 @@ describe('what a primitive drags in', () => {
     // purpose.
     banner: ['class-variance-authority'],
     button: ['@base-ui/react', 'class-variance-authority'],
-    chip: ['class-variance-authority'],
+    // Base UI's Toggle and ToggleGroup for the switch: `aria-pressed`, one Tab
+    // stop for a row and the arrows inside it - the part every hand-drawn
+    // chip in the line got wrong.
+    chip: ['@base-ui/react', 'class-variance-authority'],
+    // The radio group underneath the segments. One choice, arrows that move
+    // and choose, "2 of 3" - the reason it is not a row of toggles.
+    'segmented-control': ['@base-ui/react'],
+    // `useRender`, so a row can be the product's link. No variants: a fact
+    // and a choice are two components, not one with a flag.
+    'list-row': ['@base-ui/react'],
+    // A pure step and a hook. Nothing to install.
+    'field-draft': [],
+    // The draft rules it is built on, and nothing else - the codecs are a few
+    // lines of arithmetic each.
+    'inline-field': ['field-draft'],
     // The palette is the line's own accents, which come from `dowel-ui` and
     // are therefore free; the free-entry box wears Input's field clothes so a
     // colour field and a text field are not two different controls.
@@ -354,7 +385,8 @@ describe('what a primitive drags in', () => {
     menu: ['@base-ui/react', 'class-variance-authority', 'layer'],
     // `useRender` for the entry, which is the product's own link, and `cva`
     // for the three shapes the same list takes.
-    'nav-rail': ['@base-ui/react', 'class-variance-authority'],
+    // The tooltip carries a collapsed entry's name beside its icon.
+    'nav-rail': ['@base-ui/react', 'class-variance-authority', 'tooltip'],
     panel: ['class-variance-authority'],
     // The group is the control - one tab stop, arrows within it - and that is
     // Base UI's roving focus rather than anything drawn here.
@@ -515,7 +547,9 @@ describe('what a primitive drags in', () => {
     // The ladder, drawn with the two screens it steps through: a placeholder
     // while pending, and an empty state when it failed. Writing either again
     // here would be a second version of the same screen.
-    'query-state': ['empty-state', 'skeleton'],
+    // Button for the retry on the default error screen: a failure with no
+    // way to try again is a dead end.
+    'query-state': ['button', 'empty-state', 'skeleton'],
     // The crash screen is an EmptyState in its error variant, with Button's
     // retry - the alternative was a hand-drawn button, which is exactly the
     // drift the set exists to prevent.
