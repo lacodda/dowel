@@ -1,6 +1,7 @@
 import {
   useContext,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -169,6 +170,7 @@ export function BigCalendar({
   const inMonth = (date: IsoDate) => parts(date).year === shown.year && parts(date).month === shown.month
   const days = weeks.flat()
   const now = today()
+  const id = useId()
 
   /* The keyboard's cursor. When the product turns the month with its own
    * arrows the old cursor is off the grid, and the keyboard starts again on
@@ -285,6 +287,10 @@ export function BigCalendar({
                   data-outside={outside ? '' : undefined}
                   data-drop-target={target ? '' : undefined}
                   aria-current={date === now ? 'date' : undefined}
+                  // The date and what the day holds. Named from its whole
+                  // content, every day would also say "Add a release on this
+                  // day", thirty-five times over.
+                  aria-labelledby={`${id}${date}n ${id}${date}l`}
                   tabIndex={date === active ? 0 : -1}
                   onFocus={() => setCursor(date)}
                   onClick={onDaySelect && pressDay(date)}
@@ -300,7 +306,9 @@ export function BigCalendar({
                 >
                   {/* The day in full for whoever cannot see the grid: "14" on
                     * its own is not a date. */}
-                  <span className="sr-only">{format.day.format(asDate(date))}</span>
+                  <span id={`${id}${date}n`} className="sr-only">
+                    {format.day.format(asDate(date))}
+                  </span>
 
                   <div className="flex h-5 shrink-0 items-center justify-between gap-1">
                     <span
@@ -343,12 +351,8 @@ export function BigCalendar({
 
                   <BigCalendarDayContext.Provider value={date === active}>
                     {isOpen ? (
-                      <ScrollArea
-                        label={format.day.format(asDate(date))}
-                        orientation="vertical"
-                        className={cn('flex-1', outside && 'opacity-60')}
-                      >
-                        <div className="flex flex-col gap-1">
+                      <ScrollArea label={format.day.format(asDate(date))} orientation="vertical" className="flex-1">
+                        <div id={`${id}${date}l`} className="flex flex-col gap-1">
                           {items}
                           <Fold onClick={() => { setOpen(null); moveTo(date) }}>{fewerLabel}</Fold>
                         </div>
@@ -357,7 +361,8 @@ export function BigCalendar({
                       <div
                         // The room `lines` is measured from: the same in every day.
                         data-day-lines
-                        className={cn('flex min-h-0 flex-1 flex-col gap-1 overflow-hidden', outside && 'opacity-60')}
+                        id={`${id}${date}l`}
+                        className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden"
                       >
                         {items.slice(0, fold.shown)}
                         {fold.more > 0 && (

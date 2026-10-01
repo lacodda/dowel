@@ -85,11 +85,28 @@ describe('BigCalendarItem', () => {
     expect(line.style.background).toBe('')
   })
 
-  it('draws what has happened quieter', () => {
-    render(<BigCalendarItem done>Clip</BigCalendarItem>)
-    const line = screen.getByText('Clip').parentElement!
+  it('draws what has happened quieter, and still readable', () => {
+    /* A weaker fill and the theme's dim ink - never opacity. Faded to 60%, as
+     * kilna drew it, the words measured 2.7:1 in the light theme, and 1.7:1
+     * on a day of the next month. */
+    const { rerender } = render(
+      <BigCalendarItem done color="var(--series-3)">
+        Clip
+      </BigCalendarItem>,
+    )
+    let line = screen.getByText('Clip').parentElement!
     expect(line.hasAttribute('data-done')).toBe(true)
-    expect(line.className).toContain('opacity-60')
+    expect(line.className).not.toMatch(/\bopacity-/)
+    expect(line.style.background).toContain('var(--series-3) 15%')
+    // Halfway from the text to dim: quieter than a booking, and AA in every
+    // series of every product (tests/palettes.test.ts).
+    expect(line.style.color).toContain('var(--dim), var(--text)')
+
+    rerender(<BigCalendarItem done>Clip</BigCalendarItem>)
+    line = screen.getByText('Clip').parentElement!
+    expect(line.style.color).toContain('var(--dim), var(--text)')
+    expect(line.className).toContain('bg-softer')
+    expect(line.className).not.toMatch(/\bopacity-/)
   })
 
   it('leaves the tab order only inside a day the keyboard is not on', () => {

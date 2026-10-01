@@ -189,6 +189,89 @@ describe('what the numbers promise', () => {
     }
   })
 
+  it('keeps a month view’s line legible in every series colour, booked and done', () => {
+    /*
+     * BigCalendarItem paints with the colour it is given - a series, for a
+     * category - as a fill mixed with transparent and ink leaning to the
+     * theme's text. That is arithmetic over the palette, so it is checked
+     * here over every product rather than by eye on one: the first "done"
+     * line faded to 60% and measured 2.7:1 in the light theme, and its next
+     * ink, the series mixed into `--dim`, still came to 3.55.
+     *
+     * The mixes are done the way the browser does them: `color-mix(in oklab)`
+     * between opaque colours, and a mix with `transparent` keeps the colour
+     * and takes the alpha, composited over the ground in sRGB. The grounds are
+     * the month's own - `raise`, and `softer` over it for the days of the
+     * neighbouring months.
+     */
+    type Rgba = [number, number, number, number]
+    const parse = (hex: string): Rgba => {
+      const channel = (i: number) => Number.parseInt(hex.slice(i, i + 2), 16) / 255
+      return [channel(1), channel(3), channel(5), hex.length === 9 ? channel(7) : 1]
+    }
+    const toHex = ([r, g, b]: Rgba) =>
+      `#${[r, g, b].map((c) => Math.round(Math.max(0, Math.min(1, c)) * 255).toString(16).padStart(2, '0')).join('')}`
+    const linear = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+    const gamma = (c: number) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055)
+    const toOklab = ([r, g, b]: Rgba) => {
+      const [lr, lg, lb] = [linear(r), linear(g), linear(b)]
+      const l = Math.cbrt(0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb)
+      const m = Math.cbrt(0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb)
+      const s = Math.cbrt(0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb)
+      return [
+        0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+        1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+        0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+      ]
+    }
+    const fromOklab = ([L, a, b]: number[]): Rgba => {
+      const l = (L! + 0.3963377774 * a! + 0.2158037573 * b!) ** 3
+      const m = (L! - 0.1055613458 * a! - 0.0638541728 * b!) ** 3
+      const s = (L! - 0.0894841775 * a! - 1.291485548 * b!) ** 3
+      return [
+        gamma(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+        gamma(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+        gamma(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+        1,
+      ]
+    }
+    /** `color-mix(in oklab, a p, b)` of two opaque colours. */
+    const mix = (a: string, p: number, b: string) => {
+      const [x, y] = [toOklab(parse(a)), toOklab(parse(b))]
+      return toHex(fromOklab(x.map((v, i) => v * p + y[i]! * (1 - p))))
+    }
+    /** `a` at `alpha`, painted over the opaque `ground`. */
+    const over = (a: string, alpha: number, ground: string) => {
+      const [x, y] = [parse(a), parse(ground)]
+      return toHex([0, 1, 2].map((i) => x[i]! * alpha + y[i]! * (1 - alpha)) as unknown as Rgba)
+    }
+
+    const weakest: string[] = []
+    for (const [name, { color }] of palettes) {
+      for (const theme of ['dark', 'light'] as const) {
+        const t = color[theme]
+        const raise = value(t, 'raise')
+        const softer = parse(value(t, 'softer'))
+        const grounds = { raise, softer: over(toHex(softer), softer[3], raise) }
+        const quiet = mix(value(t, 'dim'), 0.5, value(t, 'text'))
+        for (let n = 1; n <= 8; n += 1) {
+          const series = value(t, `series-${n}`)
+          for (const [groundName, ground] of Object.entries(grounds)) {
+            const booked = contrast(mix(series, 0.3, value(t, 'text')), over(series, 0.3, ground))
+            const done = contrast(mix(series, 0.3, quiet), over(series, 0.15, ground))
+            const where = `${name} ${theme} series-${n} on ${groundName}`
+            expect(booked, `${where}, booked`).toBeGreaterThanOrEqual(4.5)
+            expect(done, `${where}, done`).toBeGreaterThanOrEqual(4.5)
+            weakest.push(`${done.toFixed(2)} ${where}`)
+          }
+        }
+      }
+    }
+    // The checks above ran: a palette that lost its series would leave this
+    // empty and pass by having nothing to say.
+    expect(weakest.length).toBe(palettes.size * 2 * 8 * 2)
+  })
+
   it('puts legible glyphs on every fill', () => {
     for (const [name, { color }] of palettes) {
       for (const theme of ['dark', 'light'] as const) {

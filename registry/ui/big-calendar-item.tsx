@@ -25,7 +25,8 @@ import { cn } from 'dowel-ui'
  * Two states change how it is drawn, because both are said by kilna's month
  * every day: `tentative` is a plan rather than a booking - a dashed outline,
  * so a suggestion never reads as a fact - and `done` has happened, drawn
- * quieter and still openable.
+ * quieter and still openable, and still readable: a weaker fill and dim ink,
+ * not a faded line.
  *
  * It stands outside the month as well: the queue of things waiting for a date
  * beside it, and the copy that travels under the pointer while one is dragged,
@@ -65,12 +66,19 @@ export interface BigCalendarItemProps extends Omit<HTMLAttributes<HTMLElement>, 
 
 const slot = 'flex shrink-0 items-center gap-0.5 [&_svg:not([class*=size-])]:size-3'
 
-function tint(color: string | undefined, tentative: boolean): CSSProperties | undefined {
-  if (color === undefined) return undefined
-  if (tentative) return { borderColor: color }
+/* Quieter is a weaker fill and an ink halfway from the text to dim - never
+ * opacity. kilna drew a released chip at 60% and its words measured 2.7:1 in
+ * the light theme, 1.7:1 on a day of the next month, which was dimmed again;
+ * the series mixed into `--dim` alone still came to 3.55. Halfway clears AA
+ * in every series of every product (`tests/palettes.test.ts` holds it). */
+const QUIET_INK = 'color-mix(in oklab, var(--dim), var(--text))'
+
+function tint(color: string | undefined, tentative: boolean, done: boolean): CSSProperties | undefined {
+  if (tentative) return color === undefined ? undefined : { borderColor: color }
+  if (color === undefined) return done ? { color: QUIET_INK } : undefined
   return {
-    background: `color-mix(in oklab, ${color} 30%, transparent)`,
-    color: `color-mix(in oklab, ${color} 30%, var(--text))`,
+    background: `color-mix(in oklab, ${color} ${done ? 15 : 30}%, transparent)`,
+    color: `color-mix(in oklab, ${color} 30%, ${done ? QUIET_INK : 'var(--text)'})`,
   }
 }
 
@@ -106,12 +114,14 @@ export function BigCalendarItem({
         'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
         tentative
           ? 'border border-dashed border-line-2 font-medium text-dim'
-          : cn('font-semibold', color === undefined && 'bg-soft text-text'),
+          : cn(
+              done ? 'font-medium' : 'font-semibold',
+              color === undefined && (done ? 'bg-softer' : 'bg-soft text-text'),
+            ),
         pressable && 'cursor-pointer hover:inset-ring hover:inset-ring-line-2',
-        done && 'opacity-60',
         className,
       ),
-      style: { ...tint(color, tentative), ...style },
+      style: { ...tint(color, tentative, done), ...style },
       children: (
         <>
           {start === undefined ? null : <span className={slot}>{start}</span>}

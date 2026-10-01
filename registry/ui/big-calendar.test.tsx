@@ -93,6 +93,26 @@ describe('BigCalendar', () => {
     expect(day('2026-09-14').textContent).toMatch(/Monday,? 14 September 2026/)
   })
 
+  it('names a day by its date and what it holds, not by its plus', () => {
+    // Named from its whole content, every day would also announce "Add",
+    // thirty-five times on the way through a month.
+    render(<Example onAddDay={() => {}} addDayLabel="Add a release on this day" />)
+    const busiest = screen.getAllByRole('gridcell').find((cell) => cell === day('2026-09-14'))!
+    const name = busiest.getAttribute('aria-labelledby')!.split(' ').map((ref) => document.getElementById(ref)?.textContent).join(' ')
+    expect(name).toMatch(/^Monday,? 14 September 2026 /)
+    expect(name).toContain('Clip')
+    expect(name).toContain('3 more')
+    expect(name).not.toContain('Add')
+  })
+
+  it('does not fade what a neighbouring month holds', () => {
+    // Its ground says it is another month. Faded on top of a faded line, a
+    // release there measured 1.7:1.
+    render(<Example />)
+    expect(day('2026-08-31').className).toContain('bg-softer')
+    expect(day('2026-08-31').innerHTML).not.toMatch(/\bopacity-/)
+  })
+
   it('marks today, and the days of the neighbouring months', () => {
     render(<Example />)
     expect(day('2026-09-09').getAttribute('aria-current')).toBe('date')
