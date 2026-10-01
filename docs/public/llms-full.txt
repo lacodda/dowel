@@ -27,7 +27,7 @@ the steps it has, what a component will and will not do for you.
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and ten primitives, each with a page of its own on
+a hundred and twelve primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose. Dates
 and numbers are written in the application's language, never the browser's. Size now comes from the scale and is held there by a
@@ -579,7 +579,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and ten of them.
+A single component: Button, Dialog, Select. A hundred and twelve of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -1637,6 +1637,212 @@ them.
 
 ---
 
+# BigCalendar
+
+Source: https://lacodda.github.io/dowel/components/big-calendar
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#big-calendar
+
+A month of releases in a box of its own height: a busy day folds, a release is picked up and put down on another day.
+
+## Notes
+
+**It is read for "is that week empty".** A list answers "what is on the
+14th"; a month view is for the shape of the weeks. So the month holds its box:
+the weeks share the height, a day never grows past its share, and what a day
+has no room for folds into a count. The count opens the day in place - the same
+height, its lines scrolling inside it - so a busy Friday does not push the next
+week off the screen. One day is open at a time.
+
+**Give it a height.** `flex-1` in a screen, or a height of its own. The grid
+measures one day's room and divides it into lines.
+
+```tsx
+<BigCalendar
+  className="flex-1"
+  month={month}                         // any day of the month: '2026-09-01'
+  onMonthChange={setMonth}
+  renderDay={(date) =>
+    releasesOn(date).map((release) => (
+      <BigCalendarItem key={release.id} color={release.colour} onClick={() => open(release)}>
+        {release.title}
+      </BigCalendarItem>
+    ))
+  }
+  moreLabel={(count) => t('calendar.more', { count })}
+  fewerLabel={t('calendar.fewer')}
+/>
+```
+
+**A line is one line.** `renderDay` returns what a day holds, one node per line,
+and the fold is arithmetic: a line is twenty pixels and two are four apart.
+[BigCalendarItem](/dowel/components/big-calendar-item/) is that line. A line of
+your own has to keep the height, and read `BigCalendarDayContext` for its
+`tabIndex` (below).
+
+**The month's name and its arrows are yours.** They belong to the screen's
+head, in one row with its filters and actions. The grid asks for a new month
+only when the keyboard walks off its edge, through `onMonthChange`; without it
+the cursor stops at the edge.
+
+**Only the weeks the month touches** are drawn - four to six. The days of the
+neighbouring months in them are real days on a quieter ground: `renderDay` is
+asked for them too, and something can be dropped on the 31st of August from the
+September page.
+
+**The keyboard is the Calendar's.** The grid is one tab stop and the arrows move
+a cursor through the days. Tab from a day goes into it and then out of the
+month - the lines of the other days are out of the tab order, so a month of
+forty releases is not forty tab stops.
+
+| Key | |
+| --- | --- |
+| `←` `→` `↑` `↓` | move a day or a week; off the grid, ask for the next month |
+| `PageUp` `PageDown` | move a month |
+| `Home` `End` | the ends of the week |
+| `Enter` `Space` | press the day (`onDaySelect`) |
+| `Tab` | into the day: its plus, its lines, its count |
+| `Escape` | fold the open day, from anywhere inside it |
+
+**The week starts where the locale says.** `en-GB` on Monday, `en-US` on Sunday.
+A product that wants Monday whatever the region says so in the tag -
+`en-US-u-fw-mon` - and a DatePicker beside the month then agrees with it.
+
+## Dragging
+
+Dragging is the product's, and the grid helps without choosing a library. Every
+day carries `data-day`, and `dayOf` reads it back from any element inside a day,
+so the handlers go on the calendar rather than on forty-two cells:
+
+```tsx
+<BigCalendar
+  onDragOver={(event) => { event.preventDefault(); setOver(dayOf(event.target)) }}
+  onDrop={(event) => move(carried, dayOf(event.target))}
+  dropTarget={over}
+  dropHint={over && t('calendar.lands', { count: countOn(over) })}
+  …
+/>
+```
+
+A pointer drag that carries a copy of the line under the pointer asks
+`dayOf(document.elementFromPoint(x, y))` - give the copy `pointer-events: none`
+so it does not answer instead of the day beneath it. `dropTarget` lights the day
+something would land on; `dropHint` says, at its foot, what landing there means.
+
+A click on a day's ground calls `onDaySelect`; a click on a line, the plus or the
+count inside it does not - no line has to stop the event so that opening a
+release does not also book the day under it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `month` | `IsoDate` | | Any day of the month to show |
+| `onMonthChange` | `(month) => void` | | Asked for when the keyboard walks off the grid |
+| `renderDay` | `(date) => ReactNode[]` | | One node per line, each with a `key` |
+| `moreLabel` | `(count) => string` | | The count a full day folds into: "3 more" |
+| `fewerLabel` | `string` | | Folds an open day again |
+| `onDaySelect` | `(date) => void` | | A click on the day's ground, Enter on the cursor |
+| `onAddDay` | `(date) => void` | | The plus in the corner of a day |
+| `addDayLabel` | `string` | | Names the plus; required with `onAddDay` |
+| `dropTarget` | `IsoDate \| null` | | The day something would land on |
+| `dropHint` | `ReactNode` | | What landing on `dropTarget` would mean |
+| `locale` | `string` | the application's (`useLocale`) | Names, and the first day of the week |
+| `aria-label` | `string` | the month, "September 2026" | Names the grid |
+
+Everything else goes on the grid element - `onDragOver`, `onDrop`,
+`onPointerOver`, a `className` with its height.
+
+## Helpers
+
+| | |
+| --- | --- |
+| `dayOf(target)` | the day an element is in, or `null` |
+| `linesThatFit(height)` | how many lines fit in a day's room |
+| `foldDay(count, lines)` | `{ shown, more }` - the count takes a line of its own |
+| `LINE_HEIGHT`, `LINE_GAP` | 20 and 4: a pitch of 24, the floor of a pointer target |
+
+---
+
+# BigCalendarItem
+
+Source: https://lacodda.github.io/dowel/components/big-calendar-item
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#big-calendar-item
+
+Neutral and in four series colours, a plan, something already out, and a title too long for its line.
+
+## Notes
+
+**One line, always.** [BigCalendar](/dowel/components/big-calendar/) folds a
+day by arithmetic - lines of twenty pixels, four apart - so a line that wrapped
+on a narrow day would break the sum and push the last line out of the day. The
+words truncate; put the whole of them in `title`, or in a hover card through
+`render`. The marks in `start` and `end` do not shrink.
+
+**The colour is the item's, not the product's.** The work it belongs to, the
+category it is in. Any CSS colour is taken: `var(--series-3)` for a category,
+the work's own colour where a product keeps one. It is drawn as a soft fill with
+ink leaning towards the theme's text, so one colour reads on both themes.
+Without a colour the line is neutral.
+
+```tsx
+<BigCalendarItem
+  color="var(--series-2)"
+  done={release.status === 'released'}
+  end={<KindGlyph kind={release.kind} />}
+  title={release.title}
+  onClick={() => open(release)}
+>
+  {release.title}
+</BigCalendarItem>
+```
+
+**A plan never reads as a fact.** `tentative` draws an outline in the colour and
+no fill - a suggestion, a slot the auto-layout would take. `done` is quieter and
+still opens.
+
+**What it is follows what it does.** A `<button>` with `onClick`, a plain line
+without one, and the product's own element through `render` - a router link, a
+hover card's trigger.
+
+**It stands outside the month too.** The queue of things waiting for a date
+beside the month, and the copy that travels under the pointer while one is
+dragged, are the same line.
+
+**Inside a month it follows the cursor.** Only the lines of the day the month's
+keyboard is on are in the tab order; the line reads that from
+`BigCalendarDayContext` - `true` in that day, `false` in the others, `null`
+outside a month. A line of your own reads it the same way:
+
+```tsx
+const inCursorDay = useContext(BigCalendarDayContext)
+<MyLine tabIndex={inCursorDay === false ? -1 : 0} />
+```
+
+**Twenty pixels drawn, twenty-four to hit.** `target-min` grows the target to the
+floor, and the gap between two lines is four - so the targets meet and do not
+overlap.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `color` | `string` | | Any CSS colour; neutral without one |
+| `tentative` | `boolean` | `false` | A plan: an outline, no fill |
+| `done` | `boolean` | `false` | Has happened: quieter, still pressable |
+| `start` | `ReactNode` | | Before the words - a cover, a dot |
+| `end` | `ReactNode` | | After the words - the glyphs that mark it |
+| `render` | `RenderProp` | | The element to draw: a link, a trigger |
+| `onClick` | `() => void` | | Makes it a `<button>` |
+| `className` | `string` | | Merged so the caller wins a conflict |
+
+---
+
 # Breadcrumbs
 
 Source: https://lacodda.github.io/dowel/components/breadcrumbs
@@ -1982,8 +2188,10 @@ already knows the part a library would be consulted for.
 | `isIsoDate(value)` | shape *and* existence: `2026-02-31` has the right shape and is not a day |
 | `weekday(date)` | 1 is Monday, 7 is Sunday, as `Intl` numbers them — `Date` numbers Sunday 0, which neither sorts nor matches `getWeekInfo` |
 | `monthGrid(month, locale)` | six whole weeks, starting on the locale's first day, as dates rather than numbers |
-| `firstDayOfWeek(locale)` | 1 or 7, from `Intl`, falling back to Monday |
-| `weekdayNames(locale, start)` | the initials, rotated into that locale's order |
+| `monthWeeks(month, locale)` | only the weeks the month touches, four to six - what a [month view](/dowel/components/big-calendar/) draws |
+| `keyStep(key, date, weekStart)` | where the arrows, the page keys, Home and End move a cursor - one map for every grid of days in the set |
+| `firstDayOfWeek(locale)` | 1 or 7, from `Intl`, falling back to Monday; `en-US-u-fw-mon` asks for Monday whatever the region |
+| `weekdayNames(locale, start)` | the initials, rotated into that locale's order - named in UTC, so a reader west of Greenwich does not see a Monday-first week headed "Sun" |
 
 ```ts
 import { addMonths, isIsoDate, today } from '@/components/ui/calendar-math'
@@ -7023,12 +7231,26 @@ gradient would have to be the colour of whatever sits behind the area.
 fills it. A product that needs the scrolling element - to set its position,
 or to feed a virtual list - takes it through `viewportRef`.
 
+**A list scrolls one way.** Base UI sizes the content to `fit-content`, which is
+right for a table that is meant to be wider than its box and wrong for a list:
+a row that should truncate to its column widens the content instead, and the
+list scrolls sideways by the length of its longest title. `orientation="vertical"`
+holds the content to the viewport's width, so rows truncate, and draws no
+sideways bar; `horizontal` does the same the other way, for a strip of chips.
+
+```tsx
+<ScrollArea label={t('queue')} orientation="vertical" className="h-64">
+  <Queue />
+</ScrollArea>
+```
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `label` | `string` | | Required. Names the viewport when it is a tab stop |
 | `fade` | `boolean` | `false` | Fade the edges that have more past them |
+| `orientation` | `'both' \| 'vertical' \| 'horizontal'` | `'both'` | Which way the content may move; `vertical` truncates rows to the column |
 | `viewportRef` | `Ref<HTMLDivElement>` | | The scrolling element |
 | `className` | `string` | | On the root: its size is the area's size |
 | `viewportClassName` | `string` | | On the scrolling element |

@@ -30,6 +30,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Badge](https://lacodda.github.io/dowel/components/badge.md): A small piece of state attached to something else.
 - [Banner](https://lacodda.github.io/dowel/components/banner.md): A condition about the whole application, across the top, true on every screen.
 - [BarChart](https://lacodda.github.io/dowel/components/bar-chart.md): Columns over a baseline - one period, one bar - with the plot height stated in pixels.
+- [BigCalendar](https://lacodda.github.io/dowel/components/big-calendar.md): A month at a time with what is on each day, filling the box it is given - a busy day folds into a count instead of growing.
+- [BigCalendarItem](https://lacodda.github.io/dowel/components/big-calendar-item.md): One thing on a day of a month view, in one line, in its own colour - a booking, a plan, or something that has happened.
 - [Breadcrumbs](https://lacodda.github.io/dowel/components/breadcrumbs.md): Where you are, as a trail rather than a word - the way back as links, the place you stand as text, and the middle folded away when it will not fit.
 - [Button](https://lacodda.github.io/dowel/components/button.md): The six buttons the products of the line actually reach for, on the vocabulary rather than on raw values.
 - [Calendar](https://lacodda.github.io/dowel/components/calendar.md): A month of days, built on Intl rather than on a date library - and a value that is a string, never a Date.
