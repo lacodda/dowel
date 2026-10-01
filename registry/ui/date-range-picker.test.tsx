@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { DateRangePicker, type DateRange } from './date-range-picker'
 
@@ -28,6 +28,16 @@ function Example(props: Partial<React.ComponentProps<typeof DateRangePicker>> = 
 }
 
 describe('DateRangePicker', () => {
+  /* An empty range opens on today's month, so the clock is pinned inside
+   * September 2026. Unpinned, these tests passed for exactly one month: on
+   * 1 October the popup showed October and "2 September" was nowhere to be
+   * clicked. Only `Date` is faked - user-event waits on real timers. */
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2026, 8, 15, 12))
+  })
+  afterEach(() => vi.useRealTimers())
+
   it('says the placeholder when nothing is chosen', () => {
     render(<Example />)
     expect(screen.getByRole('button', { name: 'Period' }).textContent).toContain('Pick a range')
