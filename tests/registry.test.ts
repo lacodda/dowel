@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
+import ts from 'typescript'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { lineProducts } from '../packages/dowel/src/line'
 
@@ -133,6 +134,30 @@ describe('every item', () => {
       expect(item.title, `\`${item.name}\` has no title`).toBeTruthy()
       expect(item.description, `\`${item.name}\` has no description`).toBeTruthy()
     }
+  })
+
+  it('arrives with every comment it was written with', () => {
+    /*
+     * `shadcn add` runs a component through ts-morph and writes back
+     * `sourceFile.getText()` - which starts at the file's first token, so a
+     * comment above it is dropped. Seven modules opened with their description
+     * and arrived without it, found in v0.34 when a fresh install of BigCalendar
+     * failed the copy check of a project lyrn had just made: calendar-math, as
+     * installed, differed from the registry's own calendar-math.
+     *
+     * The CLI's rule is copied here exactly, with the compiler the CLI uses:
+     * whatever stands before the first token of a file the registry serves.
+     */
+    const dropped: string[] = []
+    for (const item of items.filter((entry) => entry.type === 'registry:ui')) {
+      for (const file of item.files ?? []) {
+        const content = file.content ?? ''
+        const source = ts.createSourceFile(file.path, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
+        const lost = content.slice(0, source.getStart()).trim()
+        if (lost !== '') dropped.push(`${file.path}: ${lost.split('\n')[0]}`)
+      }
+    }
+    expect(dropped, `shadcn add would drop the opening comment of:\n  ${dropped.join('\n  ')}`).toEqual([])
   })
 
   /*

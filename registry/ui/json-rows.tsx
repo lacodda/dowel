@@ -1,3 +1,7 @@
+export {}
+// Code first, so the description below survives `shadcn add`: the CLI writes
+// a file from its first token on and drops every comment above it.
+
 /*
  * What a JSON value looks like as a list of rows, with no React in it.
  *

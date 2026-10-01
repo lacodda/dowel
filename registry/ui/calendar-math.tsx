@@ -1,3 +1,7 @@
+export {}
+// Code first, so the description below survives `shadcn add`: the CLI writes
+// a file from its first token on and drops every comment above it.
+
 /*
  * The arithmetic a calendar runs on, with no React in it.
  *
