@@ -1,0 +1,125 @@
+import { createContext, useContext, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
+import { useRender } from '@base-ui/react/use-render'
+import { cn } from 'dowel-ui'
+
+/*
+ * BigCalendarItem.
+ *
+ * One thing on a day of a month view, in one line: a release, a lesson, a
+ * payment that falls due.
+ *
+ * One line is the rule the month rests on. BigCalendar folds what a day has
+ * no room for into a count, and the count is arithmetic - lines of twenty
+ * pixels, four apart - so an item that wraps to two lines on a narrow day
+ * breaks the sum and pushes the last line out of the day. The words truncate
+ * instead; the whole of them is in `title`, or wherever the product puts a
+ * hover card.
+ *
+ * The colour is the item's own, not the product's: the work it belongs to, the
+ * category it is in. Any CSS colour is taken - `var(--series-3)` for a
+ * category, the work's own colour where a product keeps one - and drawn as a
+ * soft fill with ink leaning towards the theme's text, so the same colour
+ * reads on the dark theme and the light one. Without a colour the item is
+ * neutral.
+ *
+ * Two states change how it is drawn, because both are said by kilna's month
+ * every day: `tentative` is a plan rather than a booking - a dashed outline,
+ * so a suggestion never reads as a fact - and `done` has happened, drawn
+ * quieter and still openable.
+ *
+ * It stands outside the month as well: the queue of things waiting for a date
+ * beside it, and the copy that travels under the pointer while one is dragged,
+ * are the same line.
+ */
+
+/**
+ * Whether a line stands in the day the month's keyboard is on: `true` there,
+ * `false` in every other day, `null` outside a month.
+ *
+ * The month is one tab stop and the arrows walk its days; Tab from a day goes
+ * into that day and then out of the month. So only the lines of the day under
+ * the cursor are in the tab order - a month holding forty releases is not
+ * forty tab stops. BigCalendarItem reads this itself; a product drawing its
+ * own line reads it for the line's `tabIndex`.
+ */
+export const BigCalendarDayContext = createContext<boolean | null>(null)
+
+export interface BigCalendarItemProps extends Omit<HTMLAttributes<HTMLElement>, 'color'> {
+  /** The item's own colour - any CSS colour, `var(--series-3)` for a
+   * category. Neutral without one. */
+  color?: string
+  /** A plan rather than a booking: a dashed outline. */
+  tentative?: boolean
+  /** It has happened: drawn quieter, still pressable. */
+  done?: boolean
+  /** Before the words - a cover, a dot. */
+  start?: ReactNode
+  /** After the words - the glyphs that mark it: a kind, a lock, a status.
+   * They do not shrink; the words truncate. */
+  end?: ReactNode
+  /** The element to draw: the product's link, a hover card's trigger.
+   * Without it the item is a `<button>` when it has `onClick`, and a `<div>`
+   * when it has nothing to do. */
+  render?: useRender.RenderProp
+}
+
+const slot = 'flex shrink-0 items-center gap-0.5 [&_svg:not([class*=size-])]:size-3'
+
+function tint(color: string | undefined, tentative: boolean): CSSProperties | undefined {
+  if (color === undefined) return undefined
+  if (tentative) return { borderColor: color }
+  return {
+    background: `color-mix(in oklab, ${color} 30%, transparent)`,
+    color: `color-mix(in oklab, ${color} 30%, var(--text))`,
+  }
+}
+
+export function BigCalendarItem({
+  color,
+  tentative = false,
+  done = false,
+  start,
+  end,
+  render,
+  className,
+  style,
+  children,
+  onClick,
+  ...props
+}: BigCalendarItemProps) {
+  const pressable = onClick !== undefined
+  const inCursorDay = useContext(BigCalendarDayContext)
+  return useRender({
+    render,
+    defaultTagName: pressable ? 'button' : 'div',
+    props: {
+      ...(render === undefined && pressable ? { type: 'button' } : {}),
+      ...(inCursorDay === false ? { tabIndex: -1 } : {}),
+      onClick,
+      'data-tentative': tentative ? '' : undefined,
+      'data-done': done ? '' : undefined,
+      className: cn(
+        // `target-min`: the line is twenty pixels and the gap four, so the
+        // invisible target reaches the floor of twenty-four and stops exactly
+        // where the next line's begins.
+        'target-min flex h-5 w-full min-w-0 shrink-0 items-center gap-1 rounded-sm px-1 text-left text-xs',
+        'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
+        tentative
+          ? 'border border-dashed border-line-2 font-medium text-dim'
+          : cn('font-semibold', color === undefined && 'bg-soft text-text'),
+        pressable && 'cursor-pointer hover:inset-ring hover:inset-ring-line-2',
+        done && 'opacity-60',
+        className,
+      ),
+      style: { ...tint(color, tentative), ...style },
+      children: (
+        <>
+          {start === undefined ? null : <span className={slot}>{start}</span>}
+          <span className="min-w-0 flex-1 truncate">{children}</span>
+          {end === undefined ? null : <span className={slot}>{end}</span>}
+        </>
+      ),
+      ...props,
+    },
+  })
+}

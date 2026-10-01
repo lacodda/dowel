@@ -240,6 +240,19 @@ describe('what a primitive weighs', () => {
         '10.4 kB to 7.4 kB; splitting further would produce a header nobody can render ' +
         'alone and a grid that cannot change month.',
     },
+    /* Written in v0.34 from kilna's MonthGrid and DayCell, which were two files
+     * in kilna and had to be: the cell took eighteen props from the grid. */
+    'big-calendar': {
+      ceiling: 11264,
+      because:
+        'A month view is the grid, the keyboard that walks it, and the fold that keeps a ' +
+        'day inside its share of the height - and the three share one state: the fold ' +
+        'needs the grid to measure a day, the keyboard needs the fold to know which day is ' +
+        'open, and the tab order of every line follows the cursor. What could stand alone ' +
+        'already does: the weeks and the key map are in `calendar-math`, shared with the ' +
+        'Calendar, and the line is BigCalendarItem. A day cell split off would be a ' +
+        'component nobody can render outside the grid that feeds it.',
+    },
   }
 
   it.each(components.map((c) => [c.name, c.source] as const))(
@@ -375,6 +388,13 @@ describe('what a primitive drags in', () => {
     // Popover for the panel, and the calendar inside it.
     'date-picker': ['input', 'popover', 'calendar', 'calendar-math'],
     'date-range-picker': ['input', 'popover', 'calendar', 'calendar-math'],
+    // The month view: the Calendar's weeks and keys from `calendar-math`, the
+    // overlay scrollbar for a day opened in place, and the line whose height
+    // the fold is counted in.
+    'big-calendar': ['big-calendar-item', 'calendar-math', 'scroll-area'],
+    // `useRender`, so a line can be the product's link or a hover card's
+    // trigger. No `cva`: its looks are two flags and a colour, not variants.
+    'big-calendar-item': ['@base-ui/react'],
     // The dialog's anatomy rather than a copy of it, and a layer for the
     // popups inside.
     drawer: ['@base-ui/react', 'class-variance-authority', 'dialog', 'layer'],
