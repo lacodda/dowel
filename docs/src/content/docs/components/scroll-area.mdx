@@ -52,12 +52,26 @@ gradient would have to be the colour of whatever sits behind the area.
 fills it. A product that needs the scrolling element - to set its position,
 or to feed a virtual list - takes it through `viewportRef`.
 
+**A list scrolls one way.** Base UI sizes the content to `fit-content`, which is
+right for a table that is meant to be wider than its box and wrong for a list:
+a row that should truncate to its column widens the content instead, and the
+list scrolls sideways by the length of its longest title. `orientation="vertical"`
+holds the content to the viewport's width, so rows truncate, and draws no
+sideways bar; `horizontal` does the same the other way, for a strip of chips.
+
+```tsx
+<ScrollArea label={t('queue')} orientation="vertical" className="h-64">
+  <Queue />
+</ScrollArea>
+```
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `label` | `string` | | Required. Names the viewport when it is a tab stop |
 | `fade` | `boolean` | `false` | Fade the edges that have more past them |
+| `orientation` | `'both' \| 'vertical' \| 'horizontal'` | `'both'` | Which way the content may move; `vertical` truncates rows to the column |
 | `viewportRef` | `Ref<HTMLDivElement>` | | The scrolling element |
 | `className` | `string` | | On the root: its size is the area's size |
 | `viewportClassName` | `string` | | On the scrolling element |

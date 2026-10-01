@@ -128,3 +128,60 @@ describe('ScrollArea', () => {
     unmount()
   })
 })
+
+describe('ScrollArea, one way only', () => {
+  /** Content wider and taller than the box, so either bar could be drawn. */
+  function overflowingBothWays() {
+    const sizes = { clientHeight: 100, scrollHeight: 1000, clientWidth: 100, scrollWidth: 1000 }
+    for (const key of METRICS) {
+      Object.defineProperty(Element.prototype, key, { configurable: true, get: () => sizes[key] })
+    }
+  }
+
+  const content = () => viewport().firstElementChild as HTMLElement
+
+  it('holds a vertical list to the width of its column', () => {
+    /* Base UI's content box is `min-width: fit-content`, and a row that should
+     * truncate widened the box instead - kilna's lists scrolled sideways by the
+     * length of their longest title. */
+    render(
+      <ScrollArea label="Recent activity" orientation="vertical">
+        <p>Entry</p>
+      </ScrollArea>,
+    )
+    expect(content().style.minWidth).toMatch(/^0(px)?$/)
+    expect(viewport().style.overflowX).toBe('hidden')
+  })
+
+  it('leaves the content its own width when both ways are allowed', () => {
+    // The table's case: wider than the box is the point.
+    render(<Area />)
+    expect(content().style.minWidth).toBe('fit-content')
+    expect(viewport().style.overflowX).not.toBe('hidden')
+  })
+
+  it('holds a horizontal strip to the height of its row', () => {
+    render(
+      <ScrollArea label="Recent activity" orientation="horizontal">
+        <p>Entry</p>
+      </ScrollArea>,
+    )
+    expect(viewport().style.overflowY).toBe('hidden')
+  })
+
+  it.each([
+    ['vertical', 'horizontal'],
+    ['horizontal', 'vertical'],
+  ] as const)('gives a %s area no bar along the other axis', async (orientation, other) => {
+    overflowingBothWays()
+    const { container } = render(
+      <ScrollArea label="Recent activity" orientation={orientation} className="h-40">
+        <p>Entry</p>
+      </ScrollArea>,
+    )
+    await waitFor(() =>
+      expect(container.querySelector(`[data-orientation="${orientation}"]`)).not.toBeNull(),
+    )
+    expect(container.querySelector(`[data-orientation="${other}"]`)).toBeNull()
+  })
+})
