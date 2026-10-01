@@ -6,7 +6,7 @@
   "description": "The steps of a task too long for one screen, and where you stand in them: set up a workspace, import a library, configure a connection. It is a picture of progress on its own, and the top of a Wizard when the steps are a form - a product can show how far along something is without owning the form that moves it, which is why the two are separate components. Base UI has no stepper, so this one is written here rather than wrapped.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.34.0"
+    "dowel-ui@^0.34.1"
   ],
   "registryDependencies": [],
   "files": [

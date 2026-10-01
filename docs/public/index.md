@@ -17,7 +17,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.34.0.** The theme and its scales, an accent for each of the nineteen
+**v0.34.1.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and

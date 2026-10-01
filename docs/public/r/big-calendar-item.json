@@ -6,7 +6,7 @@
   "description": "One thing on a day of a month view, in one line: a release, a lesson, a payment that falls due.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.34.0"
+    "dowel-ui@^0.34.1"
   ],
   "registryDependencies": [],
   "files": [

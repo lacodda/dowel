@@ -6,7 +6,7 @@
   "description": "Two to five options, one of them chosen, all of them in view - a radio group in a segment's clothes.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.34.0"
+    "dowel-ui@^0.34.1"
   ],
   "registryDependencies": [],
   "files": [

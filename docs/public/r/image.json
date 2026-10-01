@@ -6,7 +6,7 @@
   "description": "The layout jump a loading picture leaves behind is not a styling defect, it is a missing number: the browser has nowhere to put the box until the file arrives and tells it the pixel size, so everything below the picture slides down and back up. `AspectRatio` is that number, given up front by the caller rather than discovered by the browser - a plain box on CSS `aspect-ratio` that reserves its space the instant it is in the tree, and lets any child (an `<img>`, a map, a video) fill it with `size-full`.",
   "dependencies": [
     "class-variance-authority",
-    "dowel-ui@^0.34.0"
+    "dowel-ui@^0.34.1"
   ],
   "registryDependencies": [],
   "files": [

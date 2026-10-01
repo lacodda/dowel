@@ -6,7 +6,7 @@
   "description": "One region of a screen that a reader shows or hides by choice - release notes under a version number, a filter panel, the raw payload under a log line. It differs from Accordion in the way a single light switch differs from a panel of them: there is one trigger and one panel, no group holding several and no rule about how many can be open, because there is only ever one to be open or not.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.34.0"
+    "dowel-ui@^0.34.1"
   ],
   "registryDependencies": [],
   "files": [

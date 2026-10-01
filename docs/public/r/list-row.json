@@ -6,7 +6,7 @@
   "description": "A row of a list, one thing said in a line: ListRow for a fact, RowButton for a choice.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.34.0"
+    "dowel-ui@^0.34.1"
   ],
   "registryDependencies": [],
   "files": [
