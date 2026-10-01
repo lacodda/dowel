@@ -6,7 +6,9 @@ import {
   daysInMonth,
   firstDayOfWeek,
   isIsoDate,
+  keyStep,
   monthGrid,
+  monthWeeks,
   parts,
   weekday,
   weekdayNames,
@@ -147,5 +149,69 @@ describe('the weekday names, wherever the reader is', () => {
     // And the name agrees with the day the grid puts in that column.
     const first = monthGrid('2026-09-01', 'en-GB')[0]![0]!
     expect(weekday(first)).toBe(1)
+  })
+})
+
+describe('the weeks a month touches', () => {
+  it('drops the rows that belong wholly to the next month', () => {
+    // September 2026 starts on a Tuesday and ends on a Wednesday: five weeks
+    // from Monday, where the six-row grid would add a week of October.
+    const weeks = monthWeeks('2026-09-14', 'en-GB')
+    expect(weeks).toHaveLength(5)
+    expect(weeks[0]![0]).toBe('2026-08-31')
+    expect(weeks[4]![6]).toBe('2026-10-04')
+    expect(monthGrid('2026-09-14', 'en-GB')).toHaveLength(6)
+  })
+
+  it('is four weeks for a February that fits them exactly, and six when it must be', () => {
+    // February 2027 starts on a Monday and has 28 days; August 2026 starts on
+    // a Saturday and has 31, which reaches into a sixth week from Monday.
+    expect(monthWeeks('2027-02-01', 'en-GB')).toHaveLength(4)
+    expect(monthWeeks('2026-08-01', 'en-GB')).toHaveLength(6)
+  })
+
+  it('holds every day of the month, on every month of several years', () => {
+    let month = '2024-01-01'
+    for (let i = 0; i < 48; i += 1) {
+      for (const locale of ['en-GB', 'en-US']) {
+        const days = monthWeeks(month, locale).flat()
+        const { year, month: number } = parts(month)
+        const inside = days.filter((date) => parts(date).year === year && parts(date).month === number)
+        expect(inside).toHaveLength(daysInMonth(year, number))
+        // And no row is wholly outside it.
+        for (const week of monthWeeks(month, locale)) {
+          expect(week.some((date) => parts(date).month === number)).toBe(true)
+        }
+      }
+      month = addMonths(month, 1)
+    }
+  })
+})
+
+describe('where a key moves the cursor', () => {
+  it('walks days and weeks with the arrows', () => {
+    expect(keyStep('ArrowRight', '2026-09-30', 1)).toBe('2026-10-01')
+    expect(keyStep('ArrowLeft', '2026-09-01', 1)).toBe('2026-08-31')
+    expect(keyStep('ArrowDown', '2026-09-28', 1)).toBe('2026-10-05')
+    expect(keyStep('ArrowUp', '2026-09-03', 1)).toBe('2026-08-27')
+  })
+
+  it('turns the month with the page keys, clamping to the month it lands in', () => {
+    expect(keyStep('PageDown', '2026-01-31', 1)).toBe('2026-02-28')
+    expect(keyStep('PageUp', '2026-03-31', 1)).toBe('2026-02-28')
+  })
+
+  it("goes to the ends of the week the locale starts", () => {
+    // Wednesday 2 September 2026.
+    expect(keyStep('Home', '2026-09-02', 1)).toBe('2026-08-31')
+    expect(keyStep('End', '2026-09-02', 1)).toBe('2026-09-06')
+    expect(keyStep('Home', '2026-09-02', 7)).toBe('2026-08-30')
+    expect(keyStep('End', '2026-09-02', 7)).toBe('2026-09-05')
+  })
+
+  it('does not move for any other key', () => {
+    for (const key of ['Enter', ' ', 'Escape', 'Tab', 'a']) {
+      expect(keyStep(key, '2026-09-02', 1)).toBeUndefined()
+    }
   })
 })

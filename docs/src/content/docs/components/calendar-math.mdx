@@ -42,8 +42,10 @@ already knows the part a library would be consulted for.
 | `isIsoDate(value)` | shape *and* existence: `2026-02-31` has the right shape and is not a day |
 | `weekday(date)` | 1 is Monday, 7 is Sunday, as `Intl` numbers them — `Date` numbers Sunday 0, which neither sorts nor matches `getWeekInfo` |
 | `monthGrid(month, locale)` | six whole weeks, starting on the locale's first day, as dates rather than numbers |
-| `firstDayOfWeek(locale)` | 1 or 7, from `Intl`, falling back to Monday |
-| `weekdayNames(locale, start)` | the initials, rotated into that locale's order |
+| `monthWeeks(month, locale)` | only the weeks the month touches, four to six - what a [month view](/dowel/components/big-calendar/) draws |
+| `keyStep(key, date, weekStart)` | where the arrows, the page keys, Home and End move a cursor - one map for every grid of days in the set |
+| `firstDayOfWeek(locale)` | 1 or 7, from `Intl`, falling back to Monday; `en-US-u-fw-mon` asks for Monday whatever the region |
+| `weekdayNames(locale, start)` | the initials, rotated into that locale's order - named in UTC, so a reader west of Greenwich does not see a Monday-first week headed "Sun" |
 
 ```ts
 import { addMonths, isIsoDate, today } from '@/components/ui/calendar-math'
