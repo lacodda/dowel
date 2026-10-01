@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   addDays,
   addMonths,
@@ -123,5 +123,29 @@ describe('what a locale decides', () => {
       expect(weekday(monthGrid(month, 'en-GB')[0]![0]!)).toBe(1)
       expect(weekday(monthGrid(month, 'en-US')[0]![0]!)).toBe(7)
     }
+  })
+})
+
+describe('the weekday names, wherever the reader is', () => {
+  /* The names were taken from midnights in UTC and formatted in the reader's
+   * own zone, so west of Greenwich every midnight was the evening before and a
+   * Monday-first grid was headed "Sun". Found in v0.34 by a test that happened
+   * to run in Paraguay; the suite as a whole runs in UTC, where the defect does
+   * not exist - so these change the zone of the process on purpose. */
+  const zones = ['America/Asuncion', 'America/Los_Angeles', 'UTC', 'Asia/Tokyo', 'Pacific/Kiritimati']
+  const original = process.env.TZ
+
+  afterEach(() => {
+    if (original === undefined) delete process.env.TZ
+    else process.env.TZ = original
+  })
+
+  it.each(zones)('heads the columns with the days under them in %s', (zone) => {
+    process.env.TZ = zone
+    expect(weekdayNames('en-GB', 1)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+    expect(weekdayNames('en-US', 7)[0]).toBe('Sun')
+    // And the name agrees with the day the grid puts in that column.
+    const first = monthGrid('2026-09-01', 'en-GB')[0]![0]!
+    expect(weekday(first)).toBe(1)
   })
 })

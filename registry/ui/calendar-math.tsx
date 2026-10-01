@@ -148,9 +148,15 @@ export function monthGrid(month: IsoDate, locale: string): IsoDate[][] {
   return weeks
 }
 
-/** The weekday initials, in the order this locale lays them out. */
+/** The weekday initials, in the order this locale lays them out.
+ *
+ * The week below is midnight in UTC, so it is named in UTC. Named in the
+ * reader's own zone, as it was until v0.34, every reader west of Greenwich saw
+ * each midnight as the evening before: a Monday-first grid headed "Sun Mon
+ * Tue", one column off from the days under it. The tests ran in UTC, where
+ * the two agree, and passed. */
 export function weekdayNames(locale: string, start: number): string[] {
-  const names = new Intl.DateTimeFormat(locale, { weekday: 'short' })
+  const names = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
   // Any week works; this one begins on a Monday.
   const monday = Date.UTC(2024, 0, 1)
   return Array.from({ length: 7 }, (_, index) => {
