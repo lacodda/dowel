@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-hilvan",
+  "type": "registry:file",
+  "title": "hilvan accent",
+  "description": "crimson #D64550 - the colour of the hilvan mark (hv). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/hilvan.css",
+      "target": "~/dowel/accents/hilvan.css",
+      "type": "registry:file",
+      "content": "/*\n * hilvan - crimson #D64550, the colour of its mark (hv).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #D64550;\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-rigger",
+  "type": "registry:file",
+  "title": "rigger accent",
+  "description": "iris (paired with lagoon) #8A62F0 - the colour of the rigger mark (rr). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/rigger.css",
+      "target": "~/dowel/accents/rigger.css",
+      "type": "registry:file",
+      "content": "/*\n * rigger - iris (paired with lagoon) #8A62F0, the colour of its mark (rr).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #8A62F0;\n}\n"
+    }
+  ]
+}

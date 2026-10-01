@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-lyrid",
+  "type": "registry:file",
+  "title": "lyrid accent",
+  "description": "azure #4A8FE8 - the colour of the lyrid mark (ly). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/lyrid.css",
+      "target": "~/dowel/accents/lyrid.css",
+      "type": "registry:file",
+      "content": "/*\n * lyrid - azure #4A8FE8, the colour of its mark (ly).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #4A8FE8;\n}\n"
+    }
+  ]
+}
