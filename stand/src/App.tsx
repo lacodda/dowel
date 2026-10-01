@@ -195,6 +195,7 @@ import { Timeline, TimelineItem } from '../../registry/ui/timeline'
 import { SkeletonOf } from '../../registry/ui/skeleton-of'
 import { SegmentedControlSection } from './sections/segmented-control'
 import { ListRowSection } from './sections/list-row'
+import { BigCalendarItemSection, BigCalendarSection } from './sections/big-calendar'
 import { InlineFieldSection } from './sections/inline-field'
 import { FieldDraftSection } from './sections/field-draft'
 
@@ -307,6 +308,18 @@ const sections = [
     title: 'TimeField',
     docs: '/dowel/components/time-field/',
     render: () => <TimeFieldSection />,
+  },
+  {
+    id: 'big-calendar',
+    title: 'BigCalendar',
+    docs: '/dowel/components/big-calendar/',
+    render: () => <BigCalendarSection />,
+  },
+  {
+    id: 'big-calendar-item',
+    title: 'BigCalendarItem',
+    docs: '/dowel/components/big-calendar-item/',
+    render: () => <BigCalendarItemSection />,
   },
   { id: 'panel', title: 'Panel', docs: '/dowel/components/panel/', render: () => <PanelSection /> },
   { id: 'badge', title: 'Badge', docs: '/dowel/components/badge/', render: () => <BadgeSection /> },
@@ -2725,7 +2738,10 @@ const works: Work[] = [
 const readWork = (row: Work, column: string): SortValue => row[column as keyof Work]
 
 /* A fixed moment, so the relative phrases on the stand do not drift as the
- * page is left open - and so the visual snapshots do not change every run. */
+ * page is left open - and so the visual snapshots do not change every run.
+ * The snapshots pin the browser's clock to the same moment, for everything
+ * that asks the browser for today; `tests/stand-clock.test.ts` keeps the two
+ * the same. */
 const standNow = new Date('2026-09-09T12:00:00Z')
 
 function TableSortSection() {
