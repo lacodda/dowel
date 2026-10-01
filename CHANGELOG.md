@@ -2,6 +2,29 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.34.0] - 2026-10-01
+
+### Bug Fixes
+- Name the weekdays in UTC
+
+### Build
+- Regenerate the registry, the docs mirror and llms.txt
+
+### Documentation
+- Count a hundred and twelve primitives, and name the month view
+
+### Features
+- The weeks a month touches, and one key map
+- Scroll one way, so a list's rows truncate
+- A month at a time, holding the box it is given
+- A month of releases to pick up and put down
+- What has happened stays readable, and a day says what it holds
+
+### Testing
+- Pin the clock the empty range opens on
+- Photograph the stand at its own moment
+- Record the baselines for the month view and its line
+
 ## [0.33.0] - 2026-09-25
 
 ### Breaking Changes
