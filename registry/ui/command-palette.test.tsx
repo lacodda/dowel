@@ -58,7 +58,7 @@ function Example({
       onValueChange={(value: string | null) => onValueChange?.(value)}
     >
       <CommandPalettePopup container={container} aria-label="Commands">
-        <CommandPaletteInput aria-label="Command" placeholder="Type a command" hint={['Escape']} />
+        <CommandPaletteInput aria-label="Command" placeholder="Type a command" hint="Escape" />
         <CommandPaletteEmpty>Nothing matched</CommandPaletteEmpty>
         <CommandPaletteList>
           {(item: string) => (

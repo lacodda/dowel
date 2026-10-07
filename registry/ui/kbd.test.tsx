@@ -12,9 +12,39 @@ describe('Kbd', () => {
     expect(container.querySelector('kbd')).not.toBeNull()
   })
 
-  it('writes a shortcut as separate keys', () => {
-    const { container } = render(<Kbd keys={['Mod', 'K']} />)
-    expect(container.querySelectorAll('kbd')).toHaveLength(2)
+  it('reads the notation a command is bound with', () => {
+    // One string for the binding and the hint, so they cannot disagree.
+    const { container } = render(<Kbd keys="mod+shift+p" />)
+    expect([...container.querySelectorAll('kbd')].map((key) => key.textContent)).toEqual(['Ctrl', 'Shift', 'P'])
+  })
+
+  it('draws a sequence as steps, with a mark between them', () => {
+    // G-then-D drawn like G-with-D would teach the wrong gesture, and two
+    // sequences side by side read as one of four steps without the mark - the
+    // stand showed it.
+    const { container } = render(<Kbd keys="G D" />)
+    const steps = container.querySelectorAll('[data-step]')
+    expect(steps).toHaveLength(2)
+    expect(steps[0]!.textContent).toBe('G')
+    expect(steps[1]!.textContent).toBe('D')
+    const mark = steps[0]!.nextElementSibling!
+    expect(mark.textContent).toBe('›')
+    // Drawn, not read: a reader hears the keys.
+    expect(mark.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('draws no mark inside one step', () => {
+    const { container } = render(<Kbd keys="Mod+Shift+K" />)
+    expect(container.textContent).toBe('CtrlShiftK')
+  })
+
+  it('draws a character as the character', () => {
+    const { container } = render(<Kbd keys="?" />)
+    expect(container.textContent).toBe('?')
+  })
+
+  it('refuses a shortcut it cannot read, rather than drawing a guess', () => {
+    expect(() => render(<Kbd keys="Shift+/" />)).toThrow()
   })
 })
 
@@ -24,6 +54,7 @@ describe('keyLabel', () => {
     // product either hard-codes one of them or writes the branch again.
     expect(keyLabel('Mod', true)).toBe('⌘')
     expect(keyLabel('Mod', false)).toBe('Ctrl')
+    expect(keyLabel('Ctrl', true)).toBe('⌃')
     expect(keyLabel('Alt', true)).toBe('⌥')
     expect(keyLabel('Alt', false)).toBe('Alt')
   })
@@ -47,9 +78,11 @@ describe('Kbd, for a reader', () => {
     await expectNoA11yViolations(<Kbd>K</Kbd>)
   })
 
-  it('passes axe as a shortcut of several keys', async () => {
+  it('passes axe as a shortcut of several keys, and as a sequence', async () => {
     // Not interactive - nothing to press, only whether a row of `<kbd>`
     // elements reads cleanly.
-    await expectNoA11yViolations(<Kbd keys={['Mod', 'K']} />)
+    const { unmount } = await expectNoA11yViolations(<Kbd keys="Mod+K" />)
+    unmount()
+    await expectNoA11yViolations(<Kbd keys="G D" />)
   })
 })

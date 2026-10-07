@@ -1,10 +1,13 @@
 // @vitest-environment jsdom
-import { useState } from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { useEffect, useState } from 'react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
+import { setKeymap, useCommandList } from './commands'
 import { SearchField } from './search-field'
+
+const SEARCH = { id: 'search', label: 'Search everything', keys: 'Mod+K' }
 
 /*
  * SearchField.
@@ -96,7 +99,7 @@ describe('SearchField', () => {
     render(
       <div>
         <button type="button">elsewhere</button>
-        <Example shortcut={['Mod', 'K']} />
+        <Example shortcut={SEARCH} />
       </div>,
     )
 
@@ -110,7 +113,7 @@ describe('SearchField', () => {
 
   it('selects what is there, so the shortcut replaces rather than appends', async () => {
     const user = userEvent.setup()
-    render(<Example shortcut={['Mod', 'K']} value="plum" />)
+    render(<Example shortcut={SEARCH} value="plum" />)
 
     const field = screen.getByRole('searchbox') as HTMLInputElement
     await user.type(field, 'plum')
@@ -130,7 +133,7 @@ describe('SearchField', () => {
     render(
       <div>
         <input aria-label="Somewhere else" />
-        <Example shortcut={['Mod', 'K']} />
+        <Example shortcut={SEARCH} />
       </div>,
     )
 
@@ -145,15 +148,42 @@ describe('SearchField', () => {
     // The hint and the clear button share the right edge; two things in one
     // place is how a field ends up with a cross drawn over a Ctrl.
     const user = userEvent.setup()
-    const { container } = render(<Example clearLabel="Clear" shortcut={['Mod', 'K']} />)
+    const { container } = render(<Example clearLabel="Clear" shortcut={SEARCH} />)
 
     expect(container.querySelector('kbd')).not.toBeNull()
     await user.type(screen.getByRole('searchbox'), 'plum')
     await waitFor(() => expect(container.querySelector('kbd')).toBeNull())
   })
 
+  it('declares its shortcut as a command, so the sheet and the palette list it', () => {
+    let listed: string[] = []
+    function Sheet() {
+      const list = useCommandList()
+      useEffect(() => {
+        listed = list.map((command) => `${command.label}=${command.keys.join(',')}`)
+      })
+      return null
+    }
+    render(
+      <>
+        <Example shortcut={SEARCH} />
+        <Sheet />
+      </>,
+    )
+    expect(listed).toEqual(['Search everything=Mod+K'])
+  })
+
+  it('hints the key it answers to now, after a rebinding', () => {
+    // The hint used to be the array it was written with, so a person who
+    // rebound the key saw the old one in the field forever.
+    const { container } = render(<Example shortcut={SEARCH} />)
+    act(() => setKeymap({ search: 'Mod+/' }))
+    expect([...container.querySelectorAll('kbd')].map((key) => key.textContent)).toEqual(['Ctrl', '/'])
+    act(() => setKeymap({}))
+  })
+
   it('carries no colour outside the vocabulary', () => {
-    const { container } = render(<Example clearLabel="Clear" shortcut={['Mod', 'K']} />)
+    const { container } = render(<Example clearLabel="Clear" shortcut={SEARCH} />)
     const classes = [...container.querySelectorAll('*')]
       .map((node) => node.className)
       .filter((name) => typeof name === 'string')
@@ -171,7 +201,7 @@ describe('SearchField', () => {
     const { unmount } = await expectNoA11yViolations(<Example aria-label="Search" />)
     unmount()
     await expectNoA11yViolations(
-      <Example aria-label="Search" value="plum" clearLabel="Clear" shortcut={['Mod', 'K']} />,
+      <Example aria-label="Search" value="plum" clearLabel="Clear" shortcut={SEARCH} />,
     )
   })
 })

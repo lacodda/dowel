@@ -1,279 +1,245 @@
 // @vitest-environment jsdom
-import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { isTypingTarget, matchesShortcut, useShortcut } from './shortcut'
+import {
+  ariaKeyShortcuts,
+  formatStroke,
+  isTypingTarget,
+  keysOf,
+  normalizeKeys,
+  parseKeys,
+  sameStroke,
+  strokeOf,
+  typesInField,
+} from './shortcut'
 
 /*
  * Shortcut.
  *
  * Two questions, and the tests are about the ways each is got wrong.
  *
- * "Is this the shortcut?" is wrong when it is loose: `Mod+K` firing on
- * `Mod+Shift+K` steals a different command, and a bare `K` firing while
- * Control is held steals every shortcut that starts with one. So the match is
- * pinned in both directions - what must fire, and what must not.
+ * "How is this written?" is wrong when there are two spellings of one key:
+ * `Shift+/` and `?`, `Ctrl+K` and `Mod+K` on Windows. Two spellings is two
+ * commands on one key with no conflict ever seen, so each pair is held to one
+ * spelling here, and the spellings the line refuses are refused out loud.
  *
- * "Is now a moment to act on it?" is wrong when the answer is always yes. A
- * shortcut that fires into a field someone is typing in is the bug this hook
- * exists to prevent, so all three kinds of field are held here, and so is the
- * opt-out for the shortcut that belongs to the field itself.
+ * "Which key was that?" is wrong for anyone who does not type in English.
+ * The cases below are the keyboards the line's own people use: a Russian
+ * layout, where `Ctrl+P` arrives as `з`; a French one, where the number row
+ * types `&` under the finger that means 1; a Mac, where Option turns G into ©.
  */
 
-/** A keydown as the DOM would deliver it, aimed at `target`. */
-function press(
-  key: string,
-  { target = document.body, ...modifiers }: Partial<KeyboardEventInit> & { target?: Element } = {},
-): KeyboardEvent {
-  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...modifiers })
-  target.dispatchEvent(event)
-  return event
-}
+/** A keydown as a browser would build it. Only the fields given are set. */
+const key = (init: KeyboardEventInit) => new KeyboardEvent('keydown', init)
 
-/** A component that does nothing but bind, so a test can mount and unmount
- * the binding rather than the drawing. */
-function Bound({
-  shortcut,
-  onPress,
-  ...options
-}: {
-  shortcut: string[]
-  onPress: (event: KeyboardEvent) => void
-  enabled?: boolean
-  whileTyping?: boolean
-}) {
-  useShortcut(shortcut, onPress, options)
-  return null
-}
-
-describe('matchesShortcut', () => {
-  it('fires on the keystroke it is written as', () => {
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }), ['Mod', 'K'])).toBe(
-      true,
-    )
+describe('the notation', () => {
+  it('writes every shortcut one way', () => {
+    expect(normalizeKeys('mod+shift+p', false)).toBe('Mod+Shift+P')
+    expect(normalizeKeys('Shift+Mod+P', false), 'modifiers have one order').toBe('Mod+Shift+P')
+    expect(normalizeKeys('esc', false)).toBe('Escape')
+    expect(normalizeKeys('Up', false)).toBe('ArrowUp')
+    expect(normalizeKeys('f5', false)).toBe('F5')
+    expect(normalizeKeys('Option+G', true)).toBe('Alt+G')
   })
 
-  it('reads Mod as either Control or Command', () => {
-    // The half a product forgets: hard-coding `ctrlKey` leaves the shortcut
-    // dead on every Mac, and hard-coding `metaKey` leaves it dead everywhere
-    // else. `Mod` is whichever one the machine sends.
-    for (const modifier of ['ctrlKey', 'metaKey'] as const) {
-      expect(
-        matchesShortcut(new KeyboardEvent('keydown', { key: 'k', [modifier]: true }), ['Mod', 'K']),
-        `\`Mod\` did not match ${modifier}`,
-      ).toBe(true)
+  it('reads a space as the next step of a sequence', () => {
+    expect(parseKeys('G D', false)).toHaveLength(2)
+    expect(normalizeKeys('g  d', false)).toBe('G D')
+  })
+
+  it('has a way to write the plus key, which is also the separator', () => {
+    expect(normalizeKeys('Mod++', false)).toBe('Mod++')
+    expect(normalizeKeys('Mod+Plus', false)).toBe('Mod++')
+    expect(normalizeKeys('+', false)).toBe('+')
+  })
+
+  it('folds Ctrl into Mod off an Apple platform, and keeps them apart on one', () => {
+    // On Windows the control key is the command key: two spellings of one
+    // keystroke would be two commands on it that never show as a conflict.
+    expect(normalizeKeys('Ctrl+K', false)).toBe('Mod+K')
+    // On a Mac they are different keys - Ctrl+Tab switches tabs where
+    // Cmd+Tab belongs to the system.
+    expect(normalizeKeys('Ctrl+Tab', true)).toBe('Ctrl+Tab')
+    expect(normalizeKeys('Mod+Tab', true)).toBe('Mod+Tab')
+  })
+
+  it.each([
+    ['Shift+/', 'a character carries its own Shift: `?` is written `?`'],
+    ['Shift+1', 'without a command modifier a digit is the character typed'],
+    ['Cmd+K', 'there is no Cmd: Mod is command on a Mac'],
+    ['Mod+з', 'a letter of another alphabet is found by place, and written in Latin'],
+    ['Mod+Escpae', 'a misspelt name is not a key'],
+    ['Mod+Mod+K', 'a modifier named twice'],
+    ['', 'an empty shortcut'],
+    ['   ', 'a shortcut of spaces'],
+  ])('refuses `%s` - %s', (written) => {
+    expect(() => parseKeys(written, false)).toThrow()
+  })
+
+  it('allows Shift with a digit under a command, where the digit is a place', () => {
+    expect(normalizeKeys('Mod+Shift+1', false)).toBe('Mod+Shift+1')
+  })
+})
+
+describe('reading a keystroke', () => {
+  const read = (init: KeyboardEventInit, apple = false) => {
+    const stroke = strokeOf(key(init), apple)
+    return stroke === null ? null : formatStroke(stroke)
+  }
+
+  it('reads a letter as the letter', () => {
+    expect(read({ key: 'k', code: 'KeyK', ctrlKey: true })).toBe('Mod+K')
+    expect(read({ key: 'K', code: 'KeyK', shiftKey: true })).toBe('Shift+K')
+  })
+
+  it('reads a letter by its place when the layout does not type Latin', () => {
+    // A Russian layout: the key marked P types з. Reading `event.key` here
+    // makes every shortcut stop working the moment someone switches language
+    // to write a sentence.
+    expect(read({ key: 'з', code: 'KeyP', ctrlKey: true })).toBe('Mod+P')
+    expect(read({ key: 'п', code: 'KeyG' })).toBe('G')
+  })
+
+  it('reads a letter by what it types when the layout types Latin, wherever the key is', () => {
+    // A German layout: Z and Y are swapped, and Mod+Z is undo on the key
+    // marked Z - which is where KeyY is.
+    expect(read({ key: 'z', code: 'KeyY', ctrlKey: true })).toBe('Mod+Z')
+  })
+
+  it('reads a character as the character, whichever keys typed it', () => {
+    // US: Shift and the slash key. Russian: Shift and 7. The person means the
+    // question mark on both.
+    expect(read({ key: '?', code: 'Slash', shiftKey: true })).toBe('?')
+    expect(read({ key: '?', code: 'Digit7', shiftKey: true })).toBe('?')
+  })
+
+  it('reads the number row by place under a command modifier', () => {
+    // French: the key that types `&` is the 1, and Mod+1 is pressed there.
+    expect(read({ key: '&', code: 'Digit1', ctrlKey: true })).toBe('Mod+1')
+    // US: Shift is kept, because Mod+Shift+1 is not Mod+1.
+    expect(read({ key: '!', code: 'Digit1', ctrlKey: true, shiftKey: true })).toBe('Mod+Shift+1')
+  })
+
+  it('reads punctuation by its place when the layout types a letter there', () => {
+    // Russian: the key that types [ on a US layout types х.
+    expect(read({ key: 'х', code: 'BracketLeft', ctrlKey: true })).toBe('Mod+[')
+    expect(read({ key: 'Х', code: 'BracketLeft', ctrlKey: true, shiftKey: true })).toBe('Mod+{')
+  })
+
+  it('reads an Option letter on a Mac by its place', () => {
+    expect(read({ key: '©', code: 'KeyG', altKey: true }, true)).toBe('Alt+G')
+    expect(read({ key: 'Dead', code: 'KeyE', altKey: true }, true)).toBe('Alt+E')
+  })
+
+  it('reads the platform modifiers the platform way', () => {
+    expect(read({ key: 'k', code: 'KeyK', metaKey: true }, true)).toBe('Mod+K')
+    expect(read({ key: 'k', code: 'KeyK', ctrlKey: true }, true)).toBe('Ctrl+K')
+    // Off a Mac the Windows key belongs to the system.
+    expect(read({ key: 'k', code: 'KeyK', metaKey: true }, false)).toBeNull()
+  })
+
+  it('reads named keys by name, with Shift', () => {
+    expect(read({ key: 'Escape', code: 'Escape' })).toBe('Escape')
+    expect(read({ key: 'Tab', code: 'Tab', shiftKey: true })).toBe('Shift+Tab')
+    expect(read({ key: ' ', code: 'Space' })).toBe('Space')
+    expect(read({ key: 'F5', code: 'F5' })).toBe('F5')
+  })
+
+  it.each([
+    ['a modifier pressed alone', { key: 'Control', code: 'ControlLeft', ctrlKey: true }],
+    ['AltGr typing a letter', { key: 'ą', code: 'KeyA', ctrlKey: true, altKey: true, modifierAltGraph: true }],
+    ['a key mid-composition', { key: 'k', code: 'KeyK', isComposing: true }],
+    ['a key the line cannot read', { key: 'Unidentified', code: '' }],
+  ] as const)('is not a shortcut: %s', (_what, init) => {
+    expect(read(init as KeyboardEventInit)).toBeNull()
+  })
+
+  it('is exact on every modifier, in both directions', () => {
+    const [modK] = parseKeys('Mod+K', false)
+    expect(sameStroke(modK!, strokeOf(key({ key: 'k', ctrlKey: true }), false)!)).toBe(true)
+    expect(sameStroke(modK!, strokeOf(key({ key: 'k', ctrlKey: true, shiftKey: true }), false)!)).toBe(false)
+    const [bareK] = parseKeys('K', false)
+    expect(sameStroke(bareK!, strokeOf(key({ key: 'k', ctrlKey: true }), false)!)).toBe(false)
+    expect(sameStroke(bareK!, strokeOf(key({ key: 'k', altKey: true }), false)!)).toBe(false)
+  })
+
+  it('writes a keystroke down for a settings screen recording one', () => {
+    expect(keysOf(key({ key: 'з', code: 'KeyP', ctrlKey: true, shiftKey: true }), false)).toBe('Mod+Shift+P')
+    expect(keysOf(key({ key: 'Shift', code: 'ShiftLeft', shiftKey: true }), false)).toBeNull()
+  })
+})
+
+describe('what a field uses', () => {
+  it('knows the keys a field types and moves with', () => {
+    for (const written of ['K', '?', 'Space', 'Enter', 'Tab', 'ArrowUp', 'Home', 'Backspace', 'Shift+K']) {
+      expect(typesInField(parseKeys(written, false)[0]!), written).toBe(true)
     }
   })
 
-  it('does not care how the shortcut is capitalised', () => {
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }), ['mod', 'k'])).toBe(
-      true,
-    )
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'K', ctrlKey: true }), ['Mod', 'K'])).toBe(
-      true,
-    )
-  })
-
-  it('refuses a modifier the shortcut did not ask for', () => {
-    // `Mod+Shift+K` is usually a different command entirely - "open in a new
-    // window" next to "open" - and a loose match runs the wrong one.
-    expect(
-      matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, shiftKey: true }), [
-        'Mod',
-        'K',
-      ]),
-      'Mod+Shift+K ran the Mod+K command',
-    ).toBe(false)
-    expect(
-      matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, altKey: true }), [
-        'Mod',
-        'K',
-      ]),
-    ).toBe(false)
-  })
-
-  it('refuses a bare key while a modifier is held', () => {
-    // The other direction, and the one that is easier to miss: a bare `K`
-    // that matches `Ctrl+K` swallows every shortcut in the application whose
-    // letter it shares.
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k' }), ['K'])).toBe(true)
-    expect(
-      matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }), ['K']),
-      'a bare K fired on Ctrl+K',
-    ).toBe(false)
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k', metaKey: true }), ['K'])).toBe(false)
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k', shiftKey: true }), ['K'])).toBe(false)
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k', altKey: true }), ['K'])).toBe(false)
-  })
-
-  it('requires the modifiers it does ask for', () => {
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'k' }), ['Mod', 'K'])).toBe(false)
-    expect(
-      matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }), ['Mod', 'Shift', 'K']),
-    ).toBe(false)
-    expect(
-      matchesShortcut(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, shiftKey: true }), [
-        'Mod',
-        'Shift',
-        'K',
-      ]),
-    ).toBe(true)
-  })
-
-  it('matches nothing when there is no key to match', () => {
-    // A shortcut of modifiers alone would otherwise fire on the modifier
-    // being pressed, which is not a shortcut, it is a person reaching.
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'Control', ctrlKey: true }), [])).toBe(
-      false,
-    )
-    expect(matchesShortcut(new KeyboardEvent('keydown', { key: 'Control', ctrlKey: true }), ['Mod'])).toBe(
-      false,
-    )
+  it('knows the keys it does not', () => {
+    for (const written of ['Mod+K', 'Alt+ArrowLeft', 'Escape', 'F1', 'Mod+Enter']) {
+      expect(typesInField(parseKeys(written, false)[0]!), written).toBe(false)
+    }
   })
 })
 
 describe('isTypingTarget', () => {
-  it('knows the three things that own their own keys', () => {
+  it('knows the fields that own their keys', () => {
     const input = document.createElement('input')
     const textarea = document.createElement('textarea')
-    const editable = document.createElement('div')
-    // `isContentEditable` is computed from layout, and jsdom does not
-    // implement it at all - the property is absent from `HTMLElement`, so
-    // `contenteditable="true"` reads back as `undefined` there rather than as
-    // `true`. It is defined on the element here instead. What that pins is
-    // that the predicate consults the property; that a real browser sets it
-    // from the attribute is the browser's promise, not this one's.
-    Object.defineProperty(editable, 'isContentEditable', { value: true })
+    const select = document.createElement('select')
+    const search = Object.assign(document.createElement('input'), { type: 'search' })
+    for (const element of [input, textarea, select, search]) {
+      expect(isTypingTarget(element), element.outerHTML).toBe(true)
+    }
+  })
 
-    expect(isTypingTarget(input)).toBe(true)
-    expect(isTypingTarget(textarea)).toBe(true)
+  it('knows a word inside an editable paragraph', () => {
+    // `target` is the innermost element - the bold word, not the paragraph
+    // that was made editable. Asking the element alone misses it.
+    const paragraph = document.createElement('p')
+    paragraph.setAttribute('contenteditable', 'true')
+    const word = document.createElement('b')
+    paragraph.append(word)
+    document.body.append(paragraph)
+    expect(isTypingTarget(word)).toBe(true)
+    paragraph.remove()
+  })
+
+  it('reads isContentEditable where the engine has it', () => {
+    // jsdom does not compute it; a browser does, from the attribute and from
+    // the document's design mode alike.
+    const editable = document.createElement('div')
+    Object.defineProperty(editable, 'isContentEditable', { value: true })
     expect(isTypingTarget(editable)).toBe(true)
   })
 
-  it('lets everything else through', () => {
-    // `toBe(false)`, not falsy: the function says it returns a boolean, and
-    // under jsdom `isContentEditable` is missing, so an uncoerced return
-    // hands back `undefined` here. A caller writing `=== false` would then be
-    // wrong on exactly the engine that renders on a server.
-    expect(isTypingTarget(document.createElement('button'))).toBe(false)
-    expect(isTypingTarget(document.createElement('div'))).toBe(false)
-    expect(isTypingTarget(document.body)).toBe(false)
+  it('lets everything else through, as a boolean', () => {
+    // A checkbox holds no text: `?` on a focused checkbox is a question.
+    const checkbox = Object.assign(document.createElement('input'), { type: 'checkbox' })
+    const off = document.createElement('div')
+    off.setAttribute('contenteditable', 'false')
+    for (const element of [checkbox, document.createElement('button'), off, document.body]) {
+      expect(isTypingTarget(element), element.outerHTML.slice(0, 40)).toBe(false)
+    }
     expect(isTypingTarget(null)).toBe(false)
   })
 })
 
-describe('useShortcut', () => {
-  it('runs the handler on a match, and not on a near miss', () => {
-    const ran: string[] = []
-    render(<Bound shortcut={['Mod', 'K']} onPress={() => ran.push('k')} />)
-
-    press('j', { ctrlKey: true })
-    press('k', { ctrlKey: true, shiftKey: true })
-    expect(ran).toEqual([])
-
-    press('k', { ctrlKey: true })
-    expect(ran).toEqual(['k'])
+describe('ariaKeyShortcuts', () => {
+  it('writes the attribute in the platform names', () => {
+    expect(ariaKeyShortcuts('Mod+K', false)).toBe('Control+K')
+    expect(ariaKeyShortcuts('Mod+K', true)).toBe('Meta+K')
+    expect(ariaKeyShortcuts('Mod++', false)).toBe('Control+Plus')
   })
 
-  it('takes the keystroke off the browser', () => {
-    // Without this the page also scrolls, or Firefox opens its own search
-    // bar over the one that just opened.
-    render(<Bound shortcut={['Mod', 'K']} onPress={() => {}} />)
-
-    expect(press('k', { ctrlKey: true }).defaultPrevented).toBe(true)
-    expect(press('j', { ctrlKey: true }).defaultPrevented, 'a miss was swallowed too').toBe(false)
+  it('separates alternatives with a space, as the attribute does', () => {
+    expect(ariaKeyShortcuts(['Mod+K', 'Mod+P'], false)).toBe('Control+K Control+P')
   })
 
-  it.each([
-    ['an input', () => document.createElement('input')],
-    ['a textarea', () => document.createElement('textarea')],
-    [
-      'something contenteditable',
-      () => {
-        const node = document.createElement('div')
-        Object.defineProperty(node, 'isContentEditable', { value: true })
-        return node
-      },
-    ],
-  ])('does not fire into %s', (_what, make) => {
-    // The whole point of the helper. `Mod+K` in a text editor means "delete to
-    // end of line"; a palette opening on top of that looks like the
-    // application misheard, and nobody can describe it afterwards.
-    const ran: string[] = []
-    const target = make()
-    document.body.appendChild(target)
-    render(<Bound shortcut={['Mod', 'K']} onPress={() => ran.push('k')} />)
-
-    const event = press('k', { ctrlKey: true, target })
-    expect(ran).toEqual([])
-    expect(event.defaultPrevented, 'the field lost the keystroke anyway').toBe(false)
-
-    target.remove()
-  })
-
-  it('fires into a field when it is told to', () => {
-    // For the shortcut that belongs to the field itself - Escape closing the
-    // box it is typed in. Never for one that takes the person elsewhere.
-    const ran: string[] = []
-    const target = document.createElement('input')
-    document.body.appendChild(target)
-    render(<Bound shortcut={['Escape']} onPress={() => ran.push('esc')} whileTyping />)
-
-    press('Escape', { target })
-    expect(ran).toEqual(['esc'])
-
-    target.remove()
-  })
-
-  it('binds nothing when it is not enabled', () => {
-    const ran: string[] = []
-    render(<Bound shortcut={['Mod', 'K']} onPress={() => ran.push('k')} enabled={false} />)
-
-    const event = press('k', { ctrlKey: true })
-    expect(ran).toEqual([])
-    expect(event.defaultPrevented, 'a disabled shortcut still swallowed the key').toBe(false)
-  })
-
-  it('lets go of the document when it goes away', () => {
-    // A listener that outlives its component is how a shortcut ends up firing
-    // twice on the second visit to a screen, and how it keeps firing on a
-    // screen that no longer has the thing it opens.
-    const ran: string[] = []
-    const { unmount } = render(<Bound shortcut={['Mod', 'K']} onPress={() => ran.push('k')} />)
-
-    press('k', { ctrlKey: true })
-    expect(ran).toEqual(['k'])
-
-    unmount()
-    const event = press('k', { ctrlKey: true })
-    expect(ran, 'the listener outlived the component').toEqual(['k'])
-    expect(event.defaultPrevented).toBe(false)
-  })
-
-  it('binds once for an inline handler that changes every render', () => {
-    // The reason the hook reads its deps the way it does. A caller writing
-    // `useShortcut(['Mod','K'], () => …)` passes a new array and a new
-    // function on every render; if that rebound each time, the shortcut would
-    // still work - it would just also fire twice once two listeners raced.
-    const ran: string[] = []
-    function Inline({ tick }: { tick: number }) {
-      useShortcut(['Mod', 'K'], () => ran.push(`k${tick}`))
-      return null
-    }
-    const { rerender } = render(<Inline tick={1} />)
-    rerender(<Inline tick={2} />)
-    rerender(<Inline tick={3} />)
-
-    press('k', { ctrlKey: true })
-    expect(ran, 'more than one listener was bound').toHaveLength(1)
-  })
-
-  it('hands the event to the handler', () => {
-    // So a product that has to look at the original keystroke can.
-    const seen: KeyboardEvent[] = []
-    render(<Bound shortcut={['Mod', 'K']} onPress={(event) => seen.push(event)} />)
-
-    press('k', { metaKey: true })
-    expect(seen).toHaveLength(1)
-    expect(seen[0]!.metaKey).toBe(true)
+  it('leaves a sequence out rather than claim its first key alone does it', () => {
+    // The attribute reads a space as "or": `G D` written into it would say G
+    // on its own runs the command.
+    expect(ariaKeyShortcuts('G D', false)).toBeUndefined()
+    expect(ariaKeyShortcuts(['G D', '?'], false)).toBe('?')
   })
 })

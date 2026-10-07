@@ -188,6 +188,8 @@ describe('every item', () => {
     // a window's own frame, the provider and the thing it provides.
     'window-frame',
     'shortcut',
+    // A store and the hooks into it: no single root to be named after.
+    'commands',
     'reorderable-list',
     'tier',
     'layer',

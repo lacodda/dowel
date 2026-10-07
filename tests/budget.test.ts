@@ -126,6 +126,25 @@ describe('what a primitive weighs', () => {
         '`h-8`/`h-9`/`h-10`, which is longer to write and is the whole point - the ' +
         'height is now one decision the density can move, not three literals.',
     },
+    /* The two halves of v0.35's keys, and neither is a screen: no markup at
+     * all, only the arithmetic every product got wrong a different way. Split
+     * further, each half would have to export its internals to the other. */
+    commands: {
+      ceiling: 13824,
+      because:
+        'one list read three ways - the store and its hooks, the keyboard that answers it (sequences, ' +
+        'where a key is answered, the innermost scope first) and the conflicts that keep the three ' +
+        'agreeing. The list without the keyboard is a list nothing answers, and the keyboard without ' +
+        'the list is the second copy of every key this exists to end (ADR 0008)',
+    },
+    shortcut: {
+      ceiling: 8448,
+      because:
+        'the notation and the reading of a keystroke into it: the parse, the one spelling, and the ' +
+        'layouts - a letter by place when the layout does not type Latin, the number row under a ' +
+        'command, punctuation a Cyrillic layout puts a letter on. The parse and the reading share the ' +
+        'tables of named keys; apart, they would disagree about what a key is called',
+    },
     'command-palette': {
       ceiling: 4864,
       because:
@@ -401,7 +420,8 @@ describe('what a primitive drags in', () => {
     input: [],
     // React and nothing else: two nodes and a context.
     layer: [],
-    kbd: [],
+    // The notation it draws: the same parse the binding is read by.
+    kbd: ['shortcut'],
     menu: ['@base-ui/react', 'class-variance-authority', 'layer'],
     // `useRender` for the entry, which is the product's own link, and `cva`
     // for the three shapes the same list takes.
@@ -429,11 +449,18 @@ describe('what a primitive drags in', () => {
     // maths, the keyboard, and one hidden range input per value.
     slider: ['@base-ui/react'],
     // An Input that knows it is a search box: Input's field clothes, Kbd for
-    // the shortcut it shows, and `useShortcut` for the same shortcut bound -
-    // one array, so the hint cannot drift from the binding.
-    'search-field': ['input', 'kbd', 'shortcut'],
-    // No clothes at all: a hook and two predicates, so it drags in nothing.
+    // the shortcut it shows, and its shortcut declared as a command - so the
+    // hint is the key it answers to now, and the sheet lists it.
+    'search-field': ['commands', 'input', 'kbd'],
+    // No clothes at all: the notation and the reading of a keystroke, pure
+    // functions, so it drags in nothing.
     shortcut: [],
+    // The list and the hooks into it, on the notation. No markup, no
+    // dependency: one listener, a store and the arithmetic of sequences.
+    commands: ['shortcut'],
+    // The sheet: the dialog's anatomy, the close button, the keys drawn by
+    // Kbd, and the list it reads instead of rows of its own.
+    'shortcuts-dialog': ['button', 'commands', 'dialog', 'kbd'],
     spinner: ['class-variance-authority'],
     // Nothing of its own: a native file input, a drag counter, and the
     // filters. Everything hard about uploading is the product's transport,

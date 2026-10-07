@@ -11,3 +11,4 @@ Technical decisions that shape dowel, in the order they were made. Format: Conte
 | [0005](0005-the-lint-rule-ships-with-the-package.md) | The lint rule ships with the package, not through the registry | accepted |
 | [0006](0006-sets-and-a-pinned-registry.md) | Sets install in one command, and each minor is served frozen | accepted |
 | [0007](0007-machine-readable-docs.md) | The documentation is generated for machines from the same source as for people | accepted |
+| [0008](0008-one-list-of-commands.md) | Keys are written once, in one notation, into one list per window | accepted |
