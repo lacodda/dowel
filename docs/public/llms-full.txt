@@ -27,7 +27,7 @@ the steps it has, what a component will and will not do for you.
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and twelve primitives, each with a page of its own on
+a hundred and fourteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose. Dates
 and numbers are written in the application's language, never the browser's, and
@@ -580,7 +580,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and twelve of them.
+A single component: Button, Dialog, Select. A hundred and fourteen of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -2970,9 +2970,10 @@ announces itself as nothing.
 ### It is opened from somewhere else
 
 `CommandPalette` is controlled by `open` / `onOpenChange`, because what opens a
-palette is a keystroke bound elsewhere in the application — which is what
-[`useShortcut`](/dowel/components/shortcut/) is for. The popup is anchored to
-the viewport rather than to a trigger, since it has no trigger to point at.
+palette is a keystroke bound elsewhere in the application — a
+[command](/dowel/components/commands/), so the key is in the sheet of shortcuts
+and the palette lists itself. The popup is anchored to the viewport rather than
+to a trigger, since it has no trigger to point at.
 
 ### The arrows walk through the field
 
@@ -2988,7 +2989,7 @@ on the input throughout, which is what lets typing carry on between arrow
 presses.
 
 ```tsx
-import { useShortcut } from '@/components/ui/shortcut'
+import { useCommand } from '@/components/ui/commands'
 import {
   CommandPalette,
   CommandPaletteEmpty,
@@ -3000,7 +3001,7 @@ import {
 } from '@/components/ui/command-palette'
 
 const [open, setOpen] = useState(false)
-useShortcut(['Mod', 'K'], () => setOpen(true))
+useCommand({ id: 'palette', label: t('commands'), keys: 'Mod+K', run: () => setOpen(true) })
 
 <CommandPalette
   items={commands}
@@ -3012,7 +3013,7 @@ useShortcut(['Mod', 'K'], () => setOpen(true))
     <CommandPaletteInput
       aria-label={t('command')}
       placeholder={t('typeACommand')}
-      hint={['Escape']}
+      hint="Escape"
     />
     <CommandPaletteEmpty>{t('nothingMatched')}</CommandPaletteEmpty>
     <CommandPaletteList>
@@ -3030,6 +3031,33 @@ useShortcut(['Mod', 'K'], () => setOpen(true))
 
 `onValueChange` reports `null` as well as a value — a palette that is cleared
 says so — which is why the example checks before running anything.
+
+### The commands come from the list
+
+The rows a palette runs are the [commands](/dowel/components/commands/) the
+application has declared — the same list the keyboard answers and the sheet of
+shortcuts reads, so a row's key hint is the key that works, after a rebinding
+and without any lost to a conflict. The ones with a `run` are the ones a
+palette can offer; `matchCommands` ranks them by label, and
+`groupCommands` puts them under their headings:
+
+```tsx
+const runnable = useCommandList().filter((command) => command.run)
+const groups = groupCommands(matchCommands(query, runnable))
+
+<CommandPalette items={groups} filter={null} inputValue={query} onInputValueChange={setQuery}
+  onValueChange={(command) => { command?.run(); setOpen(false) }}>
+  …
+  <CommandPaletteItem key={command.id} value={command}>
+    <CommandPaletteRow icon={command.icon} hint={command.keys[0] && <Kbd keys={command.keys[0]} aria-hidden />}>
+      {command.label}
+    </CommandPaletteRow>
+  </CommandPaletteItem>
+```
+
+`filter={null}` because the ranking has already narrowed them — filtered a
+second time, by the Combobox's own rule, the order `matchCommands` chose would
+be lost.
 
 ### More than one kind of thing
 
@@ -3106,7 +3134,7 @@ Base UI's Combobox root, unchanged.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `hint` | `string[]` | | Drawn at the right of the field, as `['Escape']`. Decorative and `aria-hidden` |
+| `hint` | `string` | | Keys drawn at the right of the field, as `Escape`. Decorative and `aria-hidden` |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 Everything else reaches the `<input>`, so `placeholder` and `aria-label` work
@@ -3132,6 +3160,218 @@ conditionally.
 `commandPalettePopupVariants` is exported for the same clothes elsewhere, and
 `commandPaletteItemVariants` is Combobox's row — a palette is a list of
 choices, and two lists of choices in one product should not differ.
+
+---
+
+# Commands
+
+Source: https://lacodda.github.io/dowel/components/commands
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#commands
+
+Commands declared by a shell and a screen: pressed, listed, rebound and in conflict.
+
+## Notes
+
+Not a component — a list and the hooks into it. It is the reason a key is
+written once.
+
+### Why a list
+
+Every product that grew a palette wrote each key three times: in the listener
+that answers it, in the palette row that hints at it, and in the help sheet
+that lists it. The three drift. The sheet promises a key the listener stopped
+answering, the palette hints a key that was rebound, and nothing says so —
+the failure mode of every hand-written sheet of shortcuts is being a version
+behind what the application actually answers to.
+
+So a command is declared once, by the component that owns what it does, and
+for as long as that component is mounted:
+
+```tsx
+import { useCommands } from '@/components/ui/commands'
+
+useCommands([
+  { id: 'search', label: t('search'), group: t('everywhere'), keys: 'Mod+K', run: openPalette },
+  { id: 'go-dashboard', label: t('dashboard'), group: t('going'), keys: 'G D', run: () => navigate('/') },
+  { id: 'undo', label: t('undo'), group: t('everywhere'), keys: 'Mod+Z', enabled: canUndo, run: undo },
+])
+```
+
+The keyboard answers it, [`CommandPalette`](/dowel/components/command-palette/)
+lists it, [`ShortcutsDialog`](/dowel/components/shortcuts-dialog/) lists its
+keys — all from the same entry. A screen that declares its own commands adds
+them while it is open, and they are gone from all three when it is not.
+
+The handlers may be written inline. Each render hands over the newest ones, so
+a command never runs against stale state, and nothing is re-declared — and no
+list re-renders — unless something a list shows has changed.
+
+### One list per window
+
+There is no provider. There is one keyboard per window, and two lists would be
+two listeners on the same keys — which is exactly the conflict this exists to
+catch. The list is the module, and a command can be declared from anywhere.
+
+### Sequences
+
+`G D` is G, then D within a second and a half. A key that does not continue
+the sequence ends it **and does nothing else**: a `g` pressed by mistake must
+not turn the next keystroke into a jump, and the next keystroke must not act
+on its own either. A key held down while a sequence waits is the same key, not
+the next step.
+
+### Where a key is answered
+
+This is the half every product gets wrong once.
+
+- **Not in a field someone is typing in.** `Mod+K` in a text editor means
+  "delete to end of line"; a palette opening on top of it looks like the
+  application misheard. `whileTyping: true` lets a command into fields, and it
+  is refused when declared on a key a field types with — a `?` that fires
+  while typing would be taken from every field in the application. What is
+  left is a key with Mod, Ctrl or Alt, Escape, and the function keys: saving,
+  the palette.
+- **Not a plain key inside a dialog, a menu, a listbox or a tree.** A plain key
+  is one without Mod, Ctrl or Alt. A dialog is a place of its own, and a menu,
+  a listbox or a tree types ahead — `g` there means the row starting with G.
+  A key with a command modifier types nothing and is still answered.
+- **Not Enter or Space on whatever has the focus,** which they press. With
+  nothing focused, they are the application's.
+- **`within` an element, only while the focus is inside it** — and there, before
+  the rest of the application. A list's `J` and `K`, a panel's Escape. This is
+  also how a command answers plain keys inside a dialog: declared within it.
+
+### Conflicts
+
+Two commands on the same keys in the same place cannot both work, and neither
+can one on a prefix of another's sequence — `G` fires the moment it is
+pressed, so `G D` could never finish.
+
+**The one declared first keeps the keys.** Mounted earlier, or earlier in the
+tree when they mount together, so a shell's own commands outrank a screen's.
+The other loses them everywhere at once — in the keyboard, in the palette's
+hint and in the sheet — so nothing promises a key that runs something else.
+The console says which, once per conflict:
+
+```text
+`link` cannot answer to `Mod+K`: `search` already answers to `Mod+K` in the same place, and was declared first.
+```
+
+A command declared `within` an element and one declared for the whole window
+on the same keys are not a conflict: the inner one is meant to win where it
+is. Off an Apple platform `Ctrl+K` and `Mod+K` are one keystroke, and they
+conflict there.
+
+`useCommandConflicts()` returns the conflicts in the window now — for a
+settings screen to warn about before saving a rebinding, or for a test that
+says there are none:
+
+```tsx
+let conflicts: Conflict[] = []
+function Watch() {
+  conflicts = useCommandConflicts()
+  return null
+}
+
+render(<Shell><Watch /></Shell>)
+expect(conflicts).toEqual([])
+```
+
+### Keys something else answers
+
+A command without `run` declares keys that something else already answers —
+Escape closing a dialog. It is listed in the sheet and takes part in conflicts,
+but it is never run from here and never takes the keystroke from whoever
+answers it.
+
+### Rebinding
+
+`setKeymap({ search: 'Mod+P' })` moves keys by command id — which is why an id
+has to be stable from one session to the next. It replaces what was set
+before; an empty list unbinds a command. The keyboard, the palette's hint and
+the sheet all follow.
+
+What it is given is the person's data, not code, so a shortcut in it that does
+not parse is reported and skipped rather than thrown: a settings file written
+by an older version should not take the application down. A command declared
+to fire while typing, rebound to a plain letter, still does not fire into
+fields.
+
+A settings screen records a new binding with
+[`keysOf(event)`](/dowel/components/shortcut/), in its own `keydown` handler.
+It calls `preventDefault`, and a key something nearer already handled is never
+answered here — so the key being recorded is not also run.
+
+### In the palette
+
+`useCommandList()` lists every command in the order declared; the ones with a
+`run` are the ones a palette can offer — something to run, enabled, and not
+tied to where the focus is. `matchCommands(query, commands)` ranks them the
+way kilna's palette always has: a label beginning with the query first, one
+where every term begins a word next, one merely containing the letters last.
+Every term is found in any order, in any alphabet.
+
+```tsx
+const runnable = useCommandList().filter((command) => command.run)
+const found = matchCommands(query, runnable)
+const groups = groupCommands(found)
+```
+
+## API
+
+### `useCommands(commands)` and `useCommand(command)`
+
+Declare for as long as the calling component is mounted.
+
+| Field | Type | | |
+| --- | --- | --- | --- |
+| `id` | `string` | **required** | Stable from one session to the next: a rebinding is stored against it |
+| `label` | `string` | **required** | What the palette shows and the sheet lists, in the product's words |
+| `group` | `string` | | The heading it is listed under |
+| `icon` | `ReactNode` | | Drawn at the start of its palette row |
+| `keys` | `string \| string[]` | | As `Mod+K` or `G D`. Several are alternatives. See [the notation](/dowel/components/shortcut/) |
+| `run` | `() => void` | | Leave out for keys something else answers |
+| `enabled` | `boolean` | `true` | `false` stops it answering; the sheet still lists its keys |
+| `whileTyping` | `boolean` | `false` | Fire into fields too. Refused on a key a field types with |
+| `within` | `RefObject<Element>` | | Answer only while the focus is inside it |
+
+A shortcut that does not parse, and `whileTyping` on a key a field types with,
+throw when declared: a typo in a shortcut is otherwise a key that silently
+never fires.
+
+### `useCommandList(): ListedCommand[]`
+
+Every declared command, in the order declared, one line per id — two mounted
+copies of one component declaring the same command in two places are one
+line. Each has `id`, `label`, `group`, `icon`, `keys` (as it answers now,
+after a rebinding and without any lost to a conflict) and `run` (present when
+it can be run from a list).
+
+### `useCommandKeys(id): string[]`
+
+The keys one command answers to now — for the hint beside a button that does
+the same, or its [`aria-keyshortcuts`](/dowel/components/shortcut/).
+
+### `useCommandConflicts(): Conflict[]`
+
+`{ keys, lost, against, kept }` for each conflict in the window now.
+
+### `runCommand(id): boolean`
+
+Runs a command by id — from a menu item that does the same. `false` when
+nothing by that id can be run.
+
+### `setKeymap(rebound)`
+
+`Record<id, string | string[]>`. Replaces the previous keymap.
+
+### `matchCommands(query, commands)` and `groupCommands(commands)`
+
+The palette's ranking, and the headings in the order they first appear. Both
+are pure and work over any `{ label }` and `{ group }`.
 
 ---
 
@@ -5026,18 +5266,33 @@ is simply wrong on a Mac, where it is `⌘K` — and every product either
 hard-codes one of them or writes the branch again.
 
 ```tsx
-<Kbd keys={['Mod', 'K']} />
+<Kbd keys="Mod+K" />
+<Kbd keys="G D" />
+<Kbd keys={useCommandKeys('search')[0]} />
 ```
 
-`Mod` is command on Apple platforms and control everywhere else. `Alt` and
-`Shift` substitute the same way; `Enter`, `Escape` and the arrows are written
-as symbols on every platform.
+**It reads the notation a command is bound with** —
+[the line's own](/dowel/components/shortcut/) — so the hint and the binding are
+one string and cannot disagree. Give it the keys a
+command answers to *now*, from `useCommandKeys`, and a rebinding moves the hint
+with the key.
+
+`Mod` is command on Apple platforms and control everywhere else. `Ctrl`, `Alt`
+and `Shift` substitute the same way; `Enter`, `Escape` and the arrows are
+written as symbols on every platform.
+
+**A sequence is drawn as its steps** with `›` between them, so G-then-D does
+not read as G-with-D. A mark rather than a word: a word would be English the
+product cannot translate.
+
+A shortcut it cannot read throws rather than drawing a guess: a hint that shows
+the wrong key is worse than none.
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `keys` | `string[]` | | A shortcut, in order. Without it, the children are the key |
+| `keys` | `string` | | A shortcut in the line's notation: `Mod+K`, `G D`, `?`. Without it, the children are the key |
 
 ---
 
@@ -7287,9 +7542,10 @@ it is a real `<button>` with a name, and clearing puts the cursor back in the
 field, because clearing and then having to click the field again is half a
 feature.
 
-**The shortcut that focuses it**, shown in the field rather than learned. The
-same array both draws the hint and binds the key, so what is shown and what
-works cannot drift apart.
+**The shortcut that focuses it**, shown in the field rather than learned. It
+is declared as a [command](/dowel/components/commands/), so it is listed in the
+sheet of shortcuts and the palette like every other key, and the hint shows the
+keys it answers to now - a rebinding moves the key and the hint together.
 
 ### `type="search"` is deliberate
 
@@ -7307,15 +7563,15 @@ other means. There is no separate `showClear` flag, because a flag can
 disagree with the label, and a button announced as nothing is worse than no
 button at all.
 
-`shortcut` is the same idea: give it one and it is both shown and bound; leave
-it out and neither happens.
+`shortcut` is the same idea: give it one and it is shown, bound and listed;
+leave it out and none of that happens.
 
 The hint and the clear button share the right edge, so the hint gives way as
 soon as there is something to clear.
 
 ### The shortcut does not fire while someone is typing
 
-It is [`useShortcut`](/dowel/components/shortcut/) underneath, with its default
+It is a [command](/dowel/components/commands/) underneath, with the default
 intact: `Mod+K` typed into another field belongs to that field. It focuses
 *and selects*, so the shortcut replaces a stale query rather than appending to
 it.
@@ -7329,7 +7585,7 @@ import { SearchField } from '@/components/ui/search-field'
   aria-label={t('search')}
   placeholder={t('searchPlaceholder')}
   clearLabel={t('clear')}
-  shortcut={['Mod', 'K']}
+  shortcut={{ id: 'search', label: t('search'), keys: 'Mod+K' }}
 />
 ```
 
@@ -7352,7 +7608,7 @@ box for the whole application, opened by a shortcut from anywhere.
 | `value` | `string` | | Required and controlled — a search box that owns its own text cannot be cleared by the thing that owns the results |
 | `onValueChange` | `(value: string) => void` | | Told the new query on every keystroke |
 | `clearLabel` | `string` | | What the clear button is called. No default; without it no button is drawn |
-| `shortcut` | `string[]` | | As `['Mod', 'K']`. Shown at the right of the field, and bound |
+| `shortcut` | `{ id, label, keys, group?, whileTyping? }` | | The command that focuses the field. Shown at the right of it, bound, and listed with every other key |
 | `ref` | `Ref<HTMLInputElement>` | | Reaches the input, not the wrapper |
 | `className` | `string` | | Merged onto the wrapper so the caller wins a conflict |
 
@@ -7647,97 +7903,226 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#shortcut
 
-A bound shortcut, and a field it deliberately does not fire into.
+Press any key: what it is as a shortcut, and how this platform writes it.
 
 ## Notes
 
-Not a component — a hook and two predicates. There is nothing to draw, which
-is why the page is mostly about a default.
+Not a component — the notation, and the functions that read a keystroke into
+it. Binding a key is [`commands`](/dowel/components/commands/)' job; drawing
+one is [`Kbd`](/dowel/components/kbd/)'s. Both speak this.
 
-Binding a key is four lines everyone can write. The two decisions inside those
-four lines are what this exists for.
+### The notation
 
-### A shortcut must not fire while someone is typing
+A shortcut is a string, written the way it is read:
 
-This is the default, and it is the point. A keystroke aimed at an `<input>`, a
-`<textarea>` or anything `contenteditable` belongs to that thing, always.
-
-It is the bug nobody can describe afterwards. `Mod+K` inside a text editor
-means "delete to end of line"; a palette opening on top of that looks like the
-application misheard, and the person reporting it can only say that sometimes
-the wrong thing happens when they type. Every product writes this check
-eventually, usually after the bug report, and usually forgetting
-`contenteditable`.
-
-`whileTyping: true` turns it off, and there is exactly one shape of shortcut
-that wants it: one belonging to the field itself — `Escape` closing the box it
-is typed in. Never one that takes the person somewhere else.
-
-### `Mod` is command on Apple platforms and control everywhere else
-
-The other half. A shortcut hard-coded to `ctrlKey` is dead on every Mac; one
-hard-coded to `metaKey` is dead everywhere else. `Mod` matches whichever the
-machine sends.
-
-It is deliberately the same word [`Kbd`](/dowel/components/kbd/) draws by, so
-one array can be passed to both and **what is bound and what is shown cannot
-disagree** — which is how a hint ends up promising `Ctrl+K` on a machine where
-the shortcut is `⌘K`.
-
-### The match is exact, in both directions
-
-`['Mod', 'K']` fires on `Mod+K` and on nothing else. Not on `Mod+Shift+K`,
-which is usually a different command entirely — "open in a new window" next to
-"open". And a bare `['K']` does not fire while a modifier is held, which is the
-direction that is easier to miss: a loose bare key swallows every shortcut in
-the application that shares its letter.
-
-```tsx
-import { useShortcut } from '@/components/ui/shortcut'
-
-useShortcut(['Mod', 'K'], () => setPaletteOpen(true))
-
-// Belongs to the field, so it fires even while typing.
-useShortcut(['Escape'], close, { whileTyping: true })
-
-// Only on the screens that have the thing it opens.
-useShortcut(['Mod', 'S'], save, { enabled: canSave })
+```text
+Mod+K        Mod+Shift+P        ?        Escape        Alt+ArrowLeft        G D
 ```
 
-A match calls `preventDefault`, so the browser does not also scroll the page
-or open its own find bar over what just opened.
+- **`Mod`** is command on Apple platforms and control everywhere else. A
+  shortcut hard-coded to `ctrlKey` is dead on every Mac, one hard-coded to
+  `metaKey` dead everywhere else.
+- **`Ctrl`** is the control key itself, which only means something different
+  on a Mac — `Ctrl+Tab` switches tabs there, where `Mod+Tab` belongs to the
+  system. Off a Mac, `Ctrl+K` *is* `Mod+K`: one keystroke, spelled one way.
+- **`Alt`** and **`Shift`** are what they say. There is no `Cmd`: that is `Mod`.
+- **A space** separates the steps of a sequence. `G D` is G, then D.
+- **Keys** are a Latin letter, a digit, a character such as `?` or `[`, or a
+  name: `Escape`, `Enter`, `Tab`, `Space`, `Backspace`, `Delete`, `Home`,
+  `End`, `PageUp`, `PageDown`, the four arrows, `F1`–`F24`. The plus key is
+  `Mod++` or `Mod+Plus`.
 
-The handler may be written inline. It is read through a ref, so a caller
-passing a fresh arrow function on every render does not rebind the listener —
-which is how these end up firing twice.
+Case does not matter, and `Esc`, `Up` and `Option` are read as `Escape`,
+`ArrowUp` and `Alt` — `normalizeKeys` writes any of them the one way. Two
+spellings of one key are how two commands end up on it without a conflict ever
+being seen, so there is one.
+
+A string, not an array, because a shortcut has to live in more places than
+code: in a settings file where someone rebound it, in the hint beside a
+button, in the sheet that lists every key, and in the comparison that says two
+commands share one.
+
+### A character carries its own Shift
+
+`?` is Shift+/ on one keyboard and Shift+7 on another, and the person pressing
+it means the question mark on both. So `?` is written `?` — and `Shift+/` is
+**refused**, with a message saying to write the character instead. The same
+for `Shift+1`: write `!`.
+
+Under a command modifier a digit is a place on the keyboard rather than a
+character, so `Mod+Shift+1` is a shortcut of its own, and allowed.
+
+### A letter is found by its place, when the layout does not type Latin
+
+On a Russian layout, `Ctrl+P` arrives with `event.key` set to `з`. Matching on
+that makes every shortcut in the application stop working the moment someone
+switches language to write a sentence — which, for the people the line is made
+for, is several times an hour.
+
+So a letter is the letter the key types when the layout types Latin, and the
+key's place when it does not. A German keyboard's `Mod+Z` is still the key
+marked Z, wherever it sits; a Russian keyboard's is the key that types я. The
+same goes for punctuation a non-Latin layout puts a letter on (`х` is where `[`
+is), for Option letters on a Mac (`©` is Option+G), and for the number row
+under a command modifier (a French keyboard types `&` on the key `Mod+1` is
+pressed on).
+
+### What is not a shortcut
+
+A modifier pressed alone, a key in the middle of an input method's
+composition, and AltGr typing a character — Polish `ą` arrives as Ctrl+Alt+A
+on Windows, and it is a letter, not a command. Off a Mac, anything with the
+Windows key: it belongs to the system.
 
 ## API
 
-### `useShortcut(shortcut, onPress, options?)`
+### `parseKeys(keys, apple?): Stroke[]`
 
-| Argument | Type | Default | |
-| --- | --- | --- | --- |
-| `shortcut` | `string[]` | | As `['Mod', 'K']`. `Mod`, `Shift` and `Alt` are the modifiers; the rest is the key |
-| `onPress` | `(event: KeyboardEvent) => void` | | Given the original event, for a product that has to look at it |
-| `options.enabled` | `boolean` | `true` | `false` binds nothing at all |
-| `options.whileTyping` | `boolean` | `false` | `true` fires into fields as well. See above before reaching for it |
+The steps of a shortcut. Throws on anything it cannot read, and says why — a
+shortcut is written in code, and a typo in one is a key that silently never
+fires.
 
-### `matchesShortcut(event, shortcut): boolean`
+### `normalizeKeys(keys, apple?): string`
 
-The comparison on its own, for a product that already owns the handler and
-only needs the question answered. Exact on every modifier.
+A shortcut in its one spelling: `mod+shift+p` is `Mod+Shift+P`, `Esc` is
+`Escape`, and off a Mac `Ctrl+K` is `Mod+K`.
+
+### `strokeOf(event, apple?): Stroke | null` and `keysOf(event, apple?): string | null`
+
+What a keystroke is, as one step — or `null` when it is not a shortcut. `keysOf`
+writes it down: what a settings screen recording a new binding stores.
+
+### `sameStroke(a, b): boolean`
+
+Exact on every modifier, in both directions: `Mod+K` is not `Mod+Shift+K`, and
+a bare `K` is not `Ctrl+K`.
 
 ### `isTypingTarget(target): boolean`
 
-Whether the event landed on something that owns its own keys — an `<input>`, a
-`<textarea>`, or anything `contenteditable`.
+Whether the event landed somewhere that owns its own keys: a text input, a
+textarea, a select, or anything editable — including an element *inside* an
+editable one, which is what `target` is for a bold word in an editable
+paragraph. A checkbox holds no text, so a key on it is not typing.
 
-## Where it is already used
+### `typesInField(stroke): boolean`
 
-[`SearchField`](/dowel/components/search-field/) takes a `shortcut` array and
-binds it with this hook, and
-[`CommandPalette`](/dowel/components/command-palette/) is opened with it: the
-palette has no trigger to point at, and the one it does have is a keystroke.
+Whether a field uses this key — a character, Space, Enter, Tab, the arrows,
+Home and End, deleting. Only Escape, the function keys and anything held with
+Mod, Ctrl or Alt are not.
+
+### `ariaKeyShortcuts(keys, apple?): string | undefined`
+
+The shortcuts in `aria-keyshortcuts` form — `Control+K`, or `Meta+K` on a Mac —
+for the button or menu item that does the same thing. The attribute separates
+*alternatives* with a space, so a sequence written into it would claim its
+first key alone does the job; sequences are left out.
+
+```tsx
+<Button aria-keyshortcuts={ariaKeyShortcuts(useCommandKeys('save'))}>{t('save')}</Button>
+```
+
+### `isApplePlatform(): boolean`
+
+Whether this machine writes and reads shortcuts the Apple way. Every function
+above takes `apple` as its last argument and defaults to this.
+
+---
+
+# ShortcutsDialog
+
+Source: https://lacodda.github.io/dowel/components/shortcuts-dialog
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#shortcuts-dialog
+
+The sheet of a small application, opened by ?, with a screen's own keys in it.
+
+## Notes
+
+**It has no rows of its own.** It lists what is declared through
+[`commands`](/dowel/components/commands/) now, under the headings the commands
+give themselves, with the keys they answer to after a rebinding and without any
+lost to a conflict. A command declared by the open screen appears while that
+screen is open, and is gone when it is not. A hand-written sheet is a version
+behind what the application answers to from the day after it is written; this
+one cannot be.
+
+**It wires itself.** It declares its own command — under the `title` the
+product gives it, on `?` unless told otherwise — so `?` opens it with nothing
+else written, the palette offers it, and it lists itself.
+
+```tsx
+import { ShortcutsDialog } from '@/components/ui/shortcuts-dialog'
+
+<ShortcutsDialog
+  title={t('keys.title')}
+  closeLabel={t('close')}
+  description={t('keys.typing')}
+  group={t('keys.everywhere')}
+/>
+```
+
+Mount it once, in the shell.
+
+**It opens on the list, not on the close button.** A dialog puts the focus on
+the first thing that can take it, which here is the cross — so the Enter that
+someone presses to see what happens would close the sheet, and the arrows that
+should scroll it would do nothing. A sheet is read, not answered. The focus
+goes to the list; Escape and the button close it.
+
+**`?` is a plain key**, so it is not answered while someone types, nor inside
+another dialog or a menu — see
+[where a key is answered](/dowel/components/commands/#where-a-key-is-answered).
+`description` is the place to say so in the product's words.
+
+**What keys cannot say goes after the list**, as children: a gesture with the
+pointer, a note about a mode.
+
+```tsx
+<ShortcutsDialog title={t('keys.title')} closeLabel={t('close')}>
+  <p className="mt-4 text-xs text-faint">{t('keys.stressGesture')}</p>
+</ShortcutsDialog>
+```
+
+### Keys answered elsewhere
+
+Escape closes a dialog, and that is Base UI's doing, not a command's. Declare
+it without a `run` and the sheet lists it like any other — and a command bound
+to Escape in the same place is told, by the console, that it never will be:
+
+```tsx
+useCommand({ id: 'close', label: t('keys.close'), group: t('keys.everywhere'), keys: 'Escape' })
+```
+
+### On a settings page
+
+`ShortcutList` is the list on its own, without the dialog: the same groups and
+rows, for a page that shows the keys in place. A command with no keys has
+nothing to show in either and is left out.
+
+## Props
+
+### `ShortcutsDialog`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `string` | **required** | The heading, and the name of the command that opens it |
+| `closeLabel` | `string` | **required** | What the close button is called, for a screen reader |
+| `description` | `ReactNode` | | The line under the heading |
+| `keys` | `string` | `?` | The keys that open it |
+| `group` | `string` | | The heading its own line is listed under |
+| `open` / `onOpenChange` | | | Controlled, for a product that opens it from elsewhere as well; `?` drives the same state |
+| `children` | `ReactNode` | | After the list |
+
+`SHORTCUTS_COMMAND` is the id of the command it declares — for
+`setKeymap({ [SHORTCUTS_COMMAND]: 'F1' })`, or `runCommand(SHORTCUTS_COMMAND)`
+from a help menu.
+
+### `ShortcutList`
+
+Takes a `<div>`'s props. Two columns from `sm` up; a group never breaks across
+them.
 
 ---
 
@@ -10095,7 +10480,7 @@ side keeps a handle of its own. Without one it stays a single row and the
 documents keep the whole width.
 
 ```tsx
-<TitleBar labels={labels} mark={<ProductMark />} center={<SearchField aria-label={t('search')} value={query} onValueChange={setQuery} shortcut={['Mod', 'K']} />}>
+<TitleBar labels={labels} mark={<ProductMark />} center={<SearchField aria-label={t('search')} value={query} onValueChange={setQuery} shortcut={{ id: 'search', label: t('search'), keys: 'Mod+K' }} />}>
   …
 </TitleBar>
 ```
@@ -11272,7 +11657,8 @@ than the browser's 16px.
 
 The small uppercase label — a field's name, a panel's section, a group of menu
 items, a rail's group — is one utility, `caption`: `text-2xs`, `semibold`,
-uppercase, `tracking-caption`, in `faint`.
+uppercase, `tracking-caption`, in `dim` — not `faint`, which at 10px is below
+AA in both themes (3.45:1 light, 3.16:1 dark, measured).
 
 ```tsx
 <legend className="caption">Type</legend>

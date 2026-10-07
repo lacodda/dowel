@@ -18,15 +18,30 @@ is simply wrong on a Mac, where it is `⌘K` — and every product either
 hard-codes one of them or writes the branch again.
 
 ```tsx
-<Kbd keys={['Mod', 'K']} />
+<Kbd keys="Mod+K" />
+<Kbd keys="G D" />
+<Kbd keys={useCommandKeys('search')[0]} />
 ```
 
-`Mod` is command on Apple platforms and control everywhere else. `Alt` and
-`Shift` substitute the same way; `Enter`, `Escape` and the arrows are written
-as symbols on every platform.
+**It reads the notation a command is bound with** —
+[the line's own](/dowel/components/shortcut/) — so the hint and the binding are
+one string and cannot disagree. Give it the keys a
+command answers to *now*, from `useCommandKeys`, and a rebinding moves the hint
+with the key.
+
+`Mod` is command on Apple platforms and control everywhere else. `Ctrl`, `Alt`
+and `Shift` substitute the same way; `Enter`, `Escape` and the arrows are
+written as symbols on every platform.
+
+**A sequence is drawn as its steps** with `›` between them, so G-then-D does
+not read as G-with-D. A mark rather than a word: a word would be English the
+product cannot translate.
+
+A shortcut it cannot read throws rather than drawing a guess: a hint that shows
+the wrong key is worse than none.
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `keys` | `string[]` | | A shortcut, in order. Without it, the children are the key |
+| `keys` | `string` | | A shortcut in the line's notation: `Mod+K`, `G D`, `?`. Without it, the children are the key |

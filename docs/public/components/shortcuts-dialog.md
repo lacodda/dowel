@@ -1,0 +1,95 @@
+# ShortcutsDialog
+
+Source: https://lacodda.github.io/dowel/components/shortcuts-dialog
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#shortcuts-dialog
+
+The sheet of a small application, opened by ?, with a screen's own keys in it.
+
+## Notes
+
+**It has no rows of its own.** It lists what is declared through
+[`commands`](/dowel/components/commands/) now, under the headings the commands
+give themselves, with the keys they answer to after a rebinding and without any
+lost to a conflict. A command declared by the open screen appears while that
+screen is open, and is gone when it is not. A hand-written sheet is a version
+behind what the application answers to from the day after it is written; this
+one cannot be.
+
+**It wires itself.** It declares its own command — under the `title` the
+product gives it, on `?` unless told otherwise — so `?` opens it with nothing
+else written, the palette offers it, and it lists itself.
+
+```tsx
+import { ShortcutsDialog } from '@/components/ui/shortcuts-dialog'
+
+<ShortcutsDialog
+  title={t('keys.title')}
+  closeLabel={t('close')}
+  description={t('keys.typing')}
+  group={t('keys.everywhere')}
+/>
+```
+
+Mount it once, in the shell.
+
+**It opens on the list, not on the close button.** A dialog puts the focus on
+the first thing that can take it, which here is the cross — so the Enter that
+someone presses to see what happens would close the sheet, and the arrows that
+should scroll it would do nothing. A sheet is read, not answered. The focus
+goes to the list; Escape and the button close it.
+
+**`?` is a plain key**, so it is not answered while someone types, nor inside
+another dialog or a menu — see
+[where a key is answered](/dowel/components/commands/#where-a-key-is-answered).
+`description` is the place to say so in the product's words.
+
+**What keys cannot say goes after the list**, as children: a gesture with the
+pointer, a note about a mode.
+
+```tsx
+<ShortcutsDialog title={t('keys.title')} closeLabel={t('close')}>
+  <p className="mt-4 text-xs text-faint">{t('keys.stressGesture')}</p>
+</ShortcutsDialog>
+```
+
+### Keys answered elsewhere
+
+Escape closes a dialog, and that is Base UI's doing, not a command's. Declare
+it without a `run` and the sheet lists it like any other — and a command bound
+to Escape in the same place is told, by the console, that it never will be:
+
+```tsx
+useCommand({ id: 'close', label: t('keys.close'), group: t('keys.everywhere'), keys: 'Escape' })
+```
+
+### On a settings page
+
+`ShortcutList` is the list on its own, without the dialog: the same groups and
+rows, for a page that shows the keys in place. A command with no keys has
+nothing to show in either and is left out.
+
+## Props
+
+### `ShortcutsDialog`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `string` | **required** | The heading, and the name of the command that opens it |
+| `closeLabel` | `string` | **required** | What the close button is called, for a screen reader |
+| `description` | `ReactNode` | | The line under the heading |
+| `keys` | `string` | `?` | The keys that open it |
+| `group` | `string` | | The heading its own line is listed under |
+| `open` / `onOpenChange` | | | Controlled, for a product that opens it from elsewhere as well; `?` drives the same state |
+| `children` | `ReactNode` | | After the list |
+
+`SHORTCUTS_COMMAND` is the id of the command it declares — for
+`setKeymap({ [SHORTCUTS_COMMAND]: 'F1' })`, or `runCommand(SHORTCUTS_COMMAND)`
+from a help menu.
+
+### `ShortcutList`
+
+Takes a `<div>`'s props. Two columns from `sm` up; a group never breaks across
+them.

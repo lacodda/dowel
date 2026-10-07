@@ -67,7 +67,8 @@ than the browser's 16px.
 
 The small uppercase label — a field's name, a panel's section, a group of menu
 items, a rail's group — is one utility, `caption`: `text-2xs`, `semibold`,
-uppercase, `tracking-caption`, in `faint`.
+uppercase, `tracking-caption`, in `dim` — not `faint`, which at 10px is below
+AA in both themes (3.45:1 light, 3.16:1 dark, measured).
 
 ```tsx
 <legend className="caption">Type</legend>

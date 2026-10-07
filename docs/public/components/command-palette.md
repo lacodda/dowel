@@ -70,9 +70,10 @@ announces itself as nothing.
 ### It is opened from somewhere else
 
 `CommandPalette` is controlled by `open` / `onOpenChange`, because what opens a
-palette is a keystroke bound elsewhere in the application — which is what
-[`useShortcut`](/dowel/components/shortcut/) is for. The popup is anchored to
-the viewport rather than to a trigger, since it has no trigger to point at.
+palette is a keystroke bound elsewhere in the application — a
+[command](/dowel/components/commands/), so the key is in the sheet of shortcuts
+and the palette lists itself. The popup is anchored to the viewport rather than
+to a trigger, since it has no trigger to point at.
 
 ### The arrows walk through the field
 
@@ -88,7 +89,7 @@ on the input throughout, which is what lets typing carry on between arrow
 presses.
 
 ```tsx
-import { useShortcut } from '@/components/ui/shortcut'
+import { useCommand } from '@/components/ui/commands'
 import {
   CommandPalette,
   CommandPaletteEmpty,
@@ -100,7 +101,7 @@ import {
 } from '@/components/ui/command-palette'
 
 const [open, setOpen] = useState(false)
-useShortcut(['Mod', 'K'], () => setOpen(true))
+useCommand({ id: 'palette', label: t('commands'), keys: 'Mod+K', run: () => setOpen(true) })
 
 <CommandPalette
   items={commands}
@@ -112,7 +113,7 @@ useShortcut(['Mod', 'K'], () => setOpen(true))
     <CommandPaletteInput
       aria-label={t('command')}
       placeholder={t('typeACommand')}
-      hint={['Escape']}
+      hint="Escape"
     />
     <CommandPaletteEmpty>{t('nothingMatched')}</CommandPaletteEmpty>
     <CommandPaletteList>
@@ -130,6 +131,33 @@ useShortcut(['Mod', 'K'], () => setOpen(true))
 
 `onValueChange` reports `null` as well as a value — a palette that is cleared
 says so — which is why the example checks before running anything.
+
+### The commands come from the list
+
+The rows a palette runs are the [commands](/dowel/components/commands/) the
+application has declared — the same list the keyboard answers and the sheet of
+shortcuts reads, so a row's key hint is the key that works, after a rebinding
+and without any lost to a conflict. The ones with a `run` are the ones a
+palette can offer; `matchCommands` ranks them by label, and
+`groupCommands` puts them under their headings:
+
+```tsx
+const runnable = useCommandList().filter((command) => command.run)
+const groups = groupCommands(matchCommands(query, runnable))
+
+<CommandPalette items={groups} filter={null} inputValue={query} onInputValueChange={setQuery}
+  onValueChange={(command) => { command?.run(); setOpen(false) }}>
+  …
+  <CommandPaletteItem key={command.id} value={command}>
+    <CommandPaletteRow icon={command.icon} hint={command.keys[0] && <Kbd keys={command.keys[0]} aria-hidden />}>
+      {command.label}
+    </CommandPaletteRow>
+  </CommandPaletteItem>
+```
+
+`filter={null}` because the ranking has already narrowed them — filtered a
+second time, by the Combobox's own rule, the order `matchCommands` chose would
+be lost.
 
 ### More than one kind of thing
 
@@ -206,7 +234,7 @@ Base UI's Combobox root, unchanged.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `hint` | `string[]` | | Drawn at the right of the field, as `['Escape']`. Decorative and `aria-hidden` |
+| `hint` | `string` | | Keys drawn at the right of the field, as `Escape`. Decorative and `aria-hidden` |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 Everything else reaches the `<input>`, so `placeholder` and `aria-label` work

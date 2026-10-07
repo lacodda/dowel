@@ -44,6 +44,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [ColumnResizeHandle](https://lacodda.github.io/dowel/components/column-resize-handle.md): The strip on a header cell's edge that a column is dragged wider or narrower by, and the hook that keeps the widths - double-click resets.
 - [Combobox](https://lacodda.github.io/dowel/components/combobox.md): A Select you can type in - it filters, and it has chips.
 - [CommandPalette](https://lacodda.github.io/dowel/components/command-palette.md): One box that finds anything. dowel supplies the box, the filtering and the keyboard; the product supplies the commands.
+- [Commands](https://lacodda.github.io/dowel/components/commands.md): One list of everything the application can do, read by the keyboard, the command palette and the sheet of shortcuts alike.
 - [ConfirmDialog](https://lacodda.github.io/dowel/components/confirm-dialog.md): The dialog for a choice that cannot be taken back - announced as an alert dialog, and not dismissed by clicking away.
 - [ContextMenu](https://lacodda.github.io/dowel/components/context-menu.md): The same actions as Menu, opened by right click over an area.
 - [CopyButton](https://lacodda.github.io/dowel/components/copy-button.md): The copy affordance in the corner of a block - which confirms only after the clipboard does, and says so out loud.
@@ -101,7 +102,8 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [SectionNav](https://lacodda.github.io/dowel/components/section-nav.md): The left-hand list of a screen with sections, drawn as the product's own links, and the heading each section opens under.
 - [SegmentedControl](https://lacodda.github.io/dowel/components/segmented-control.md): Two to five options, one of them chosen, all of them in view - a radio group in a segment's clothes.
 - [Select](https://lacodda.github.io/dowel/components/select.md): A dropdown that is not the browser's, so it can be dressed like everything else.
-- [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): Binding a keystroke, with the two things every product gets subtly wrong already decided.
+- [Shortcut](https://lacodda.github.io/dowel/components/shortcut.md): The one notation the line writes keys in, and the one reading of a keystroke against it - on every keyboard layout.
+- [ShortcutsDialog](https://lacodda.github.io/dowel/components/shortcuts-dialog.md): The sheet of every key the application answers to, opened by ?, written from the list of commands rather than by hand.
 - [Skeleton](https://lacodda.github.io/dowel/components/skeleton.md): A placeholder shaped like the thing still loading - because a skeleton of the wrong shape is worse than none.
 - [SkeletonOf](https://lacodda.github.io/dowel/components/skeleton-of.md): A placeholder that measures the content instead of guessing it - the shape that was on screen, drawn back while the next load is in flight.
 - [Slider](https://lacodda.github.io/dowel/components/slider.md): A value picked by position, and a range picked by two - the same component either way.

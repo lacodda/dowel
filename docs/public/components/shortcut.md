@@ -6,94 +6,125 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#shortcut
 
-A bound shortcut, and a field it deliberately does not fire into.
+Press any key: what it is as a shortcut, and how this platform writes it.
 
 ## Notes
 
-Not a component — a hook and two predicates. There is nothing to draw, which
-is why the page is mostly about a default.
+Not a component — the notation, and the functions that read a keystroke into
+it. Binding a key is [`commands`](/dowel/components/commands/)' job; drawing
+one is [`Kbd`](/dowel/components/kbd/)'s. Both speak this.
 
-Binding a key is four lines everyone can write. The two decisions inside those
-four lines are what this exists for.
+### The notation
 
-### A shortcut must not fire while someone is typing
+A shortcut is a string, written the way it is read:
 
-This is the default, and it is the point. A keystroke aimed at an `<input>`, a
-`<textarea>` or anything `contenteditable` belongs to that thing, always.
-
-It is the bug nobody can describe afterwards. `Mod+K` inside a text editor
-means "delete to end of line"; a palette opening on top of that looks like the
-application misheard, and the person reporting it can only say that sometimes
-the wrong thing happens when they type. Every product writes this check
-eventually, usually after the bug report, and usually forgetting
-`contenteditable`.
-
-`whileTyping: true` turns it off, and there is exactly one shape of shortcut
-that wants it: one belonging to the field itself — `Escape` closing the box it
-is typed in. Never one that takes the person somewhere else.
-
-### `Mod` is command on Apple platforms and control everywhere else
-
-The other half. A shortcut hard-coded to `ctrlKey` is dead on every Mac; one
-hard-coded to `metaKey` is dead everywhere else. `Mod` matches whichever the
-machine sends.
-
-It is deliberately the same word [`Kbd`](/dowel/components/kbd/) draws by, so
-one array can be passed to both and **what is bound and what is shown cannot
-disagree** — which is how a hint ends up promising `Ctrl+K` on a machine where
-the shortcut is `⌘K`.
-
-### The match is exact, in both directions
-
-`['Mod', 'K']` fires on `Mod+K` and on nothing else. Not on `Mod+Shift+K`,
-which is usually a different command entirely — "open in a new window" next to
-"open". And a bare `['K']` does not fire while a modifier is held, which is the
-direction that is easier to miss: a loose bare key swallows every shortcut in
-the application that shares its letter.
-
-```tsx
-import { useShortcut } from '@/components/ui/shortcut'
-
-useShortcut(['Mod', 'K'], () => setPaletteOpen(true))
-
-// Belongs to the field, so it fires even while typing.
-useShortcut(['Escape'], close, { whileTyping: true })
-
-// Only on the screens that have the thing it opens.
-useShortcut(['Mod', 'S'], save, { enabled: canSave })
+```text
+Mod+K        Mod+Shift+P        ?        Escape        Alt+ArrowLeft        G D
 ```
 
-A match calls `preventDefault`, so the browser does not also scroll the page
-or open its own find bar over what just opened.
+- **`Mod`** is command on Apple platforms and control everywhere else. A
+  shortcut hard-coded to `ctrlKey` is dead on every Mac, one hard-coded to
+  `metaKey` dead everywhere else.
+- **`Ctrl`** is the control key itself, which only means something different
+  on a Mac — `Ctrl+Tab` switches tabs there, where `Mod+Tab` belongs to the
+  system. Off a Mac, `Ctrl+K` *is* `Mod+K`: one keystroke, spelled one way.
+- **`Alt`** and **`Shift`** are what they say. There is no `Cmd`: that is `Mod`.
+- **A space** separates the steps of a sequence. `G D` is G, then D.
+- **Keys** are a Latin letter, a digit, a character such as `?` or `[`, or a
+  name: `Escape`, `Enter`, `Tab`, `Space`, `Backspace`, `Delete`, `Home`,
+  `End`, `PageUp`, `PageDown`, the four arrows, `F1`–`F24`. The plus key is
+  `Mod++` or `Mod+Plus`.
 
-The handler may be written inline. It is read through a ref, so a caller
-passing a fresh arrow function on every render does not rebind the listener —
-which is how these end up firing twice.
+Case does not matter, and `Esc`, `Up` and `Option` are read as `Escape`,
+`ArrowUp` and `Alt` — `normalizeKeys` writes any of them the one way. Two
+spellings of one key are how two commands end up on it without a conflict ever
+being seen, so there is one.
+
+A string, not an array, because a shortcut has to live in more places than
+code: in a settings file where someone rebound it, in the hint beside a
+button, in the sheet that lists every key, and in the comparison that says two
+commands share one.
+
+### A character carries its own Shift
+
+`?` is Shift+/ on one keyboard and Shift+7 on another, and the person pressing
+it means the question mark on both. So `?` is written `?` — and `Shift+/` is
+**refused**, with a message saying to write the character instead. The same
+for `Shift+1`: write `!`.
+
+Under a command modifier a digit is a place on the keyboard rather than a
+character, so `Mod+Shift+1` is a shortcut of its own, and allowed.
+
+### A letter is found by its place, when the layout does not type Latin
+
+On a Russian layout, `Ctrl+P` arrives with `event.key` set to `з`. Matching on
+that makes every shortcut in the application stop working the moment someone
+switches language to write a sentence — which, for the people the line is made
+for, is several times an hour.
+
+So a letter is the letter the key types when the layout types Latin, and the
+key's place when it does not. A German keyboard's `Mod+Z` is still the key
+marked Z, wherever it sits; a Russian keyboard's is the key that types я. The
+same goes for punctuation a non-Latin layout puts a letter on (`х` is where `[`
+is), for Option letters on a Mac (`©` is Option+G), and for the number row
+under a command modifier (a French keyboard types `&` on the key `Mod+1` is
+pressed on).
+
+### What is not a shortcut
+
+A modifier pressed alone, a key in the middle of an input method's
+composition, and AltGr typing a character — Polish `ą` arrives as Ctrl+Alt+A
+on Windows, and it is a letter, not a command. Off a Mac, anything with the
+Windows key: it belongs to the system.
 
 ## API
 
-### `useShortcut(shortcut, onPress, options?)`
+### `parseKeys(keys, apple?): Stroke[]`
 
-| Argument | Type | Default | |
-| --- | --- | --- | --- |
-| `shortcut` | `string[]` | | As `['Mod', 'K']`. `Mod`, `Shift` and `Alt` are the modifiers; the rest is the key |
-| `onPress` | `(event: KeyboardEvent) => void` | | Given the original event, for a product that has to look at it |
-| `options.enabled` | `boolean` | `true` | `false` binds nothing at all |
-| `options.whileTyping` | `boolean` | `false` | `true` fires into fields as well. See above before reaching for it |
+The steps of a shortcut. Throws on anything it cannot read, and says why — a
+shortcut is written in code, and a typo in one is a key that silently never
+fires.
 
-### `matchesShortcut(event, shortcut): boolean`
+### `normalizeKeys(keys, apple?): string`
 
-The comparison on its own, for a product that already owns the handler and
-only needs the question answered. Exact on every modifier.
+A shortcut in its one spelling: `mod+shift+p` is `Mod+Shift+P`, `Esc` is
+`Escape`, and off a Mac `Ctrl+K` is `Mod+K`.
+
+### `strokeOf(event, apple?): Stroke | null` and `keysOf(event, apple?): string | null`
+
+What a keystroke is, as one step — or `null` when it is not a shortcut. `keysOf`
+writes it down: what a settings screen recording a new binding stores.
+
+### `sameStroke(a, b): boolean`
+
+Exact on every modifier, in both directions: `Mod+K` is not `Mod+Shift+K`, and
+a bare `K` is not `Ctrl+K`.
 
 ### `isTypingTarget(target): boolean`
 
-Whether the event landed on something that owns its own keys — an `<input>`, a
-`<textarea>`, or anything `contenteditable`.
+Whether the event landed somewhere that owns its own keys: a text input, a
+textarea, a select, or anything editable — including an element *inside* an
+editable one, which is what `target` is for a bold word in an editable
+paragraph. A checkbox holds no text, so a key on it is not typing.
 
-## Where it is already used
+### `typesInField(stroke): boolean`
 
-[`SearchField`](/dowel/components/search-field/) takes a `shortcut` array and
-binds it with this hook, and
-[`CommandPalette`](/dowel/components/command-palette/) is opened with it: the
-palette has no trigger to point at, and the one it does have is a keystroke.
+Whether a field uses this key — a character, Space, Enter, Tab, the arrows,
+Home and End, deleting. Only Escape, the function keys and anything held with
+Mod, Ctrl or Alt are not.
+
+### `ariaKeyShortcuts(keys, apple?): string | undefined`
+
+The shortcuts in `aria-keyshortcuts` form — `Control+K`, or `Meta+K` on a Mac —
+for the button or menu item that does the same thing. The attribute separates
+*alternatives* with a space, so a sequence written into it would claim its
+first key alone does the job; sequences are left out.
+
+```tsx
+<Button aria-keyshortcuts={ariaKeyShortcuts(useCommandKeys('save'))}>{t('save')}</Button>
+```
+
+### `isApplePlatform(): boolean`
+
+Whether this machine writes and reads shortcuts the Apple way. Every function
+above takes `apple` as its last argument and defaults to this.
