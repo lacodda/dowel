@@ -2,6 +2,33 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.35.0] - 2026-10-07
+
+### Breaking Changes
+
+- **One list of commands for keys, palette and sheet**
+`useShortcut` is removed - declare
+`useCommand({ id, label, keys: 'Mod+K', run })` instead. `Kbd keys`,
+`CommandPaletteInput hint` take a string (`keys="Mod+K"`,
+`hint="Escape"`), and SearchField's `shortcut` is a command:
+`shortcut={{ id: 'search', label, keys: 'Mod+K' }}`.
+
+### Bug Fixes
+- Set the caption in dim, which passes AA at 10px
+
+### Build
+- Regenerate the registry, the docs mirror and llms.txt
+
+### Documentation
+- Commands, the sheet of shortcuts and the notation of keys
+
+### Features
+- One list of commands for keys, palette and sheet
+- Commands, the sheet and the notation, live
+
+### Testing
+- Record the baselines for commands, the sheet and the notation
+
 ## [0.34.1] - 2026-10-01
 
 ### Bug Fixes
