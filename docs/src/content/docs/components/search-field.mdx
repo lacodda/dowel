@@ -26,9 +26,10 @@ it is a real `<button>` with a name, and clearing puts the cursor back in the
 field, because clearing and then having to click the field again is half a
 feature.
 
-**The shortcut that focuses it**, shown in the field rather than learned. The
-same array both draws the hint and binds the key, so what is shown and what
-works cannot drift apart.
+**The shortcut that focuses it**, shown in the field rather than learned. It
+is declared as a [command](/dowel/components/commands/), so it is listed in the
+sheet of shortcuts and the palette like every other key, and the hint shows the
+keys it answers to now - a rebinding moves the key and the hint together.
 
 ### `type="search"` is deliberate
 
@@ -46,15 +47,15 @@ other means. There is no separate `showClear` flag, because a flag can
 disagree with the label, and a button announced as nothing is worse than no
 button at all.
 
-`shortcut` is the same idea: give it one and it is both shown and bound; leave
-it out and neither happens.
+`shortcut` is the same idea: give it one and it is shown, bound and listed;
+leave it out and none of that happens.
 
 The hint and the clear button share the right edge, so the hint gives way as
 soon as there is something to clear.
 
 ### The shortcut does not fire while someone is typing
 
-It is [`useShortcut`](/dowel/components/shortcut/) underneath, with its default
+It is a [command](/dowel/components/commands/) underneath, with the default
 intact: `Mod+K` typed into another field belongs to that field. It focuses
 *and selects*, so the shortcut replaces a stale query rather than appending to
 it.
@@ -68,7 +69,7 @@ import { SearchField } from '@/components/ui/search-field'
   aria-label={t('search')}
   placeholder={t('searchPlaceholder')}
   clearLabel={t('clear')}
-  shortcut={['Mod', 'K']}
+  shortcut={{ id: 'search', label: t('search'), keys: 'Mod+K' }}
 />
 ```
 
@@ -91,7 +92,7 @@ box for the whole application, opened by a shortcut from anywhere.
 | `value` | `string` | | Required and controlled — a search box that owns its own text cannot be cleared by the thing that owns the results |
 | `onValueChange` | `(value: string) => void` | | Told the new query on every keystroke |
 | `clearLabel` | `string` | | What the clear button is called. No default; without it no button is drawn |
-| `shortcut` | `string[]` | | As `['Mod', 'K']`. Shown at the right of the field, and bound |
+| `shortcut` | `{ id, label, keys, group?, whileTyping? }` | | The command that focuses the field. Shown at the right of it, bound, and listed with every other key |
 | `ref` | `Ref<HTMLInputElement>` | | Reaches the input, not the wrapper |
 | `className` | `string` | | Merged onto the wrapper so the caller wins a conflict |
 

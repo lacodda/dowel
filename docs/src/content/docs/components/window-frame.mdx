@@ -69,7 +69,7 @@ side keeps a handle of its own. Without one it stays a single row and the
 documents keep the whole width.
 
 ```tsx
-<TitleBar labels={labels} mark={<ProductMark />} center={<SearchField aria-label={t('search')} value={query} onValueChange={setQuery} shortcut={['Mod', 'K']} />}>
+<TitleBar labels={labels} mark={<ProductMark />} center={<SearchField aria-label={t('search')} value={query} onValueChange={setQuery} shortcut={{ id: 'search', label: t('search'), keys: 'Mod+K' }} />}>
   …
 </TitleBar>
 ```
