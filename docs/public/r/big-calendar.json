@@ -5,7 +5,7 @@
   "title": "BigCalendar",
   "description": "A month at a time, with what is on each day of it, filling the box it is given.",
   "dependencies": [
-    "dowel-ui@^0.34.1"
+    "dowel-ui@^0.35.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/big-calendar-item.json",

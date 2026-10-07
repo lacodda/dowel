@@ -5,7 +5,7 @@
   "title": "InlineField",
   "description": "A value that is edited where it is shown: click it, type, Enter or leave to keep, Escape to take it back.",
   "dependencies": [
-    "dowel-ui@^0.34.1"
+    "dowel-ui@^0.35.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/field-draft.json"

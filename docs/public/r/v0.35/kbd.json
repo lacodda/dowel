@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd",
+  "type": "registry:ui",
+  "title": "Kbd",
+  "description": "A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element because that is what the element is for - a screen reader announces it as keyboard input rather than reading a stray capital letter.",
+  "dependencies": [
+    "dowel-ui@^0.35.0"
+  ],
+  "registryDependencies": [
+    "https://lacodda.github.io/dowel/r/v0.35/shortcut.json"
+  ],
+  "files": [
+    {
+      "path": "ui/kbd.tsx",
+      "target": "@ui/kbd.tsx",
+      "type": "registry:ui",
+      "content": "import { Fragment, type HTMLAttributes } from 'react'\nimport { cn } from 'dowel-ui'\nimport { isApplePlatform, parseKeys, strokeParts } from './shortcut'\n\n/*\n * Kbd.\n *\n * A key, as printed in a menu or a hint: `Ctrl` `K`. It is a `<kbd>` element\n * because that is what the element is for - a screen reader announces it as\n * keyboard input rather than reading a stray capital letter.\n *\n * It reads the line's own notation, the one a command is bound with, so what\n * is shown and what is bound are the same string: `Mod+K` is drawn `Ctrl` `K`\n * here and `⌘` `K` on a Mac, and a product that writes the branch itself is\n * a product whose hint is wrong on one of them.\n *\n * A sequence - `G D` - is drawn as its steps with a mark between them, so\n * G-then-D does not read as G-with-D, and two sequences side by side do not\n * read as one of four steps. The mark is `›`, not a word: a word here would be\n * English the product cannot translate, and the notation has no key by that\n * name, so it cannot be mistaken for one.\n */\n\n/** What a key is called on this platform. `Mod` is the one that differs most:\n * command on Apple platforms, control everywhere else. */\nexport function keyLabel(key: string, apple: boolean = isApplePlatform()): string {\n  const shared: Record<string, string> = {\n    Enter: '↵',\n    Escape: 'Esc',\n    ArrowUp: '↑',\n    ArrowDown: '↓',\n    ArrowLeft: '←',\n    ArrowRight: '→',\n    Backspace: '⌫',\n    Delete: 'Del',\n    Tab: '⇥',\n    Space: '␣',\n    PageUp: 'PgUp',\n    PageDown: 'PgDn',\n  }\n  const perPlatform: Record<string, [apple: string, other: string]> = {\n    Mod: ['⌘', 'Ctrl'],\n    Ctrl: ['⌃', 'Ctrl'],\n    Alt: ['⌥', 'Alt'],\n    Shift: ['⇧', 'Shift'],\n  }\n\n  const platform = perPlatform[key]\n  if (platform) return apple ? platform[0] : platform[1]\n  return shared[key] ?? key\n}\n\nexport interface KbdProps extends HTMLAttributes<HTMLElement> {\n  /** A shortcut in the line's notation - `Mod+K`, `G D`, `?`. Given this, the\n   * component draws each key under this platform's own name. Without it, the\n   * children are the key. */\n  keys?: string\n}\n\nexport function Kbd({ keys, className, children, ...props }: KbdProps) {\n  const cap = cn(\n    'inline-flex min-w-5 items-center justify-center rounded-sm border border-line bg-soft',\n    'px-1 py-0.5 font-mono text-2xs leading-none text-dim',\n  )\n\n  if (keys === undefined) {\n    return (\n      <kbd className={cn(cap, className)} {...props}>\n        {children}\n      </kbd>\n    )\n  }\n\n  const apple = isApplePlatform()\n  return (\n    <span className={cn('inline-flex items-center gap-1', className)} {...props}>\n      {parseKeys(keys, apple).map((stroke, step) => (\n        <Fragment key={step}>\n          {step > 0 && (\n            <span aria-hidden className=\"text-2xs leading-none text-dim\">\n              ›\n            </span>\n          )}\n          <span data-step={step} className=\"inline-flex items-center gap-0.5\">\n            {strokeParts(stroke).map((key) => (\n              <kbd key={key} className={cap}>\n                {keyLabel(key, apple)}\n              </kbd>\n            ))}\n          </span>\n        </Fragment>\n      ))}\n    </span>\n  )\n}\n"
+    }
+  ]
+}
