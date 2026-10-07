@@ -770,12 +770,15 @@
  *
  * A utility rather than a component because it is a role text plays inside
  * things that are already components: a `<legend>`, a `<th>`, a `<label>`.
- * Its colour is `faint` - verified against the grounds at body size; at 10px
- * it is below AA in the light theme, which is a finding about `faint` at every
- * small size and is owned by the contrast work, not by this recipe.
+ * Its colour is `dim`, not `faint`. `faint` is verified against the grounds at
+ * body size; at 10px a live axe run measured it at 3.45:1 on a raised surface
+ * in the light theme and 3.16:1 in the dark, against AA's 4.5:1 - a caption
+ * nobody can read is a caption doing nothing. `dim` passes in both. That
+ * `faint` fails at every small size, not only here, is still the contrast
+ * work's to gate.
  */
 @utility caption {
-  @apply text-2xs font-semibold uppercase tracking-caption text-faint;
+  @apply text-2xs font-semibold uppercase tracking-caption text-dim;
 }
 
 @utility target-min {

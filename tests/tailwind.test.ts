@@ -75,7 +75,7 @@ describe('the theme compiles', () => {
     }
   })
 
-  it('turns the caption role into one utility, at 600 in faint capitals', async () => {
+  it('turns the caption role into one utility, at 600 in dim capitals', async () => {
     // One role, seven recipes in the set before this; the weight is the part
     // that drifted, so it is the part checked.
     const css = await build(['caption'])
@@ -83,7 +83,8 @@ describe('the theme compiles', () => {
     const body = rule.slice(0, rule.indexOf('}'))
     expect(body).toContain('font-weight: 600')
     expect(body).toContain('text-transform: uppercase')
-    expect(body).toContain('color: var(--faint)')
+    // `dim`, because `faint` at 10px is below AA in both themes.
+    expect(body).toContain('color: var(--dim)')
     expect(body).toContain('font-size: 10px')
   })
 
