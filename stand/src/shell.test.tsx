@@ -120,7 +120,8 @@ describe('the showcase', () => {
     render(<App />)
     const nav = screen.getByRole('navigation', { name: /components/i })
 
-    // `calendar-math` is pure date arithmetic and `useShortcut` is a hook.
+    // `calendar-math` is pure date arithmetic, `Shortcut` is a notation and
+    // `Commands` is a list with hooks into it.
     // They sat in the same list as forty-three components under names in two
     // different styles, which left a reader to guess why one was lowercase.
     const group = within(nav).getByRole('heading', { name: /without markup/i })
@@ -130,7 +131,8 @@ describe('the showcase', () => {
       .getAllByRole('list')
       .at(-1)!
     expect(within(utilities).getByRole('link', { name: 'calendar-math' })).toBeDefined()
-    expect(within(utilities).getByRole('link', { name: 'useShortcut' })).toBeDefined()
+    expect(within(utilities).getByRole('link', { name: 'Shortcut' })).toBeDefined()
+    expect(within(utilities).getByRole('link', { name: 'Commands' })).toBeDefined()
   })
 
   it('has no accessibility violations on a component page either', async () => {

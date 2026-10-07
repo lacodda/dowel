@@ -98,6 +98,7 @@ export function CommandsSection() {
       <Row label="J answers only inside this list - click it, then press J">
         <div
           ref={panel}
+          role="group"
           tabIndex={0}
           aria-label="A list with keys of its own"
           className="flex items-center gap-2 rounded-md border border-line px-3 py-2 text-sm text-dim focus-visible:outline-2 focus-visible:outline-accent"

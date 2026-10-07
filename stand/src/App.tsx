@@ -81,15 +81,6 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../registry/ui/context-menu'
-import {
-  CommandPalette,
-  CommandPaletteEmpty,
-  CommandPaletteInput,
-  CommandPaletteItem,
-  CommandPaletteList,
-  CommandPalettePopup,
-  CommandPaletteRow,
-} from '../../registry/ui/command-palette'
 import { Copyable } from '../../registry/ui/copyable'
 import { Calendar } from '../../registry/ui/calendar'
 import { addDays, addMonths, daysInMonth, isIsoDate, today } from '../../registry/ui/calendar-math'
@@ -135,7 +126,6 @@ import { Radio, RadioGroup } from '../../registry/ui/radio-group'
 import { RatingScale } from '../../registry/ui/rating-scale'
 import { SearchField } from '../../registry/ui/search-field'
 import { Segment, SegmentedControl } from '../../registry/ui/segmented-control'
-import { useShortcut } from '../../registry/ui/shortcut'
 import { Spinner } from '../../registry/ui/spinner'
 import {
   Toast,
@@ -194,6 +184,10 @@ import { AxisBar, TierBadge, TierRuler, tierAt, type Tier } from '../../registry
 import { Timeline, TimelineItem } from '../../registry/ui/timeline'
 import { SkeletonOf } from '../../registry/ui/skeleton-of'
 import { SegmentedControlSection } from './sections/segmented-control'
+import { CommandPaletteSection } from './sections/command-palette'
+import { CommandsSection } from './sections/commands'
+import { ShortcutSection } from './sections/shortcut'
+import { ShortcutsDialogSection } from './sections/shortcuts-dialog'
 import { ListRowSection } from './sections/list-row'
 import { BigCalendarItemSection, BigCalendarSection } from './sections/big-calendar'
 import { InlineFieldSection } from './sections/inline-field'
@@ -215,9 +209,10 @@ import { FieldDraftSection } from './sections/field-draft'
 /* The sections of the stand: one per component, in the order a screen is
  * built. Each new component adds an entry here.
  *
- * Two of them are not components at all - `calendar-math` is pure date
- * arithmetic with no React in it, and `useShortcut` is a hook - and they are
- * marked `utility` so the navigation can say so. They were previously mixed
+ * Some of them are not components at all - `calendar-math` is pure date
+ * arithmetic with no React in it, `Shortcut` is a notation and `Commands` a
+ * list with hooks into it - and they are marked `utility` so the navigation
+ * can say so. They were previously mixed
  * into the same list under names in two different styles, which left a reader
  * to guess why one entry was lowercase; the answer was never "for no reason",
  * but the list gave no way to tell. */
@@ -373,8 +368,21 @@ const sections = [
     render: () => <CommandPaletteSection />,
   },
   {
+    id: 'shortcuts-dialog',
+    title: 'ShortcutsDialog',
+    docs: '/dowel/components/shortcuts-dialog/',
+    render: () => <ShortcutsDialogSection />,
+  },
+  {
+    id: 'commands',
+    title: 'Commands',
+    kind: 'utility',
+    docs: '/dowel/components/commands/',
+    render: () => <CommandsSection />,
+  },
+  {
     id: 'shortcut',
-    title: 'useShortcut',
+    title: 'Shortcut',
     kind: 'utility',
     docs: '/dowel/components/shortcut/',
     render: () => <ShortcutSection />,
@@ -1831,16 +1839,22 @@ function KbdSection() {
   return (
     <>
       <Row label="shortcuts, written the way this platform writes them">
-        <Kbd keys={['Mod', 'K']} />
-        <Kbd keys={['Mod', 'Shift', 'P']} />
-        <Kbd keys={['Escape']} />
+        <Kbd keys="Mod+K" />
+        <Kbd keys="Mod+Shift+P" />
+        <Kbd keys="Escape" />
+      </Row>
+
+      <Row label="a sequence - G, then D">
+        <Kbd keys="G D" />
+        <Kbd keys="G C" />
       </Row>
 
       <Row label="single keys">
         <Kbd>K</Kbd>
-        <Kbd keys={['Enter']} />
-        <Kbd keys={['ArrowUp']} />
-        <Kbd keys={['ArrowDown']} />
+        <Kbd keys="Enter" />
+        <Kbd keys="ArrowUp" />
+        <Kbd keys="ArrowDown" />
+        <Kbd keys="?" />
       </Row>
     </>
   )
@@ -2185,20 +2199,11 @@ function ComboboxSection() {
 /*
  * Searching, and the shortcut that gets you there.
  *
- * These are the three that only exist properly when a key is pressed, so the
- * stand is where they can be. The palette opens on Ctrl+K (Cmd+K on a Mac)
- * from anywhere on this page that is not already a field - which is itself the
- * behaviour worth trying, since it is the half most implementations get wrong.
+ * The field's shortcut is a command like any other: press Ctrl+/ (Cmd+/ on a
+ * Mac) from anywhere on this page that is not already a field. The palette,
+ * the commands and the sheet of shortcuts have sections of their own under
+ * sections/.
  */
-
-const COMMANDS = [
-  'Open the catalogue',
-  'New version',
-  'New note',
-  'Go to the calendar',
-  'Settings',
-  'Switch profile',
-]
 
 function SearchFieldSection() {
   const [plain, setPlain] = useState('')
@@ -2234,79 +2239,9 @@ function SearchFieldSection() {
           aria-label="Search everything"
           placeholder="Search"
           clearLabel="Clear"
-          shortcut={['Mod', '/']}
+          shortcut={{ id: 'search', label: 'Search everything', keys: 'Mod+/' }}
           value={withShortcut}
           onValueChange={setWithShortcut}
-        />
-      </Row>
-    </>
-  )
-}
-
-function CommandPaletteSection() {
-  const [open, setOpen] = useState(false)
-  const [ran, setRan] = useState<string | null>(null)
-
-  useShortcut(['Mod', 'K'], () => setOpen(true))
-
-  return (
-    <Row label="press Ctrl+K, or click">
-      <Button variant="ghost" onClick={() => setOpen(true)}>
-        Open the palette
-      </Button>
-      {ran !== null && <Badge variant="accent">{ran}</Badge>}
-
-      <CommandPalette
-        items={COMMANDS}
-        open={open}
-        onOpenChange={setOpen}
-        onValueChange={(value) => {
-          setRan(String(value))
-          setOpen(false)
-        }}
-      >
-        <CommandPalettePopup aria-label="Commands">
-          <CommandPaletteInput
-            aria-label="Command"
-            placeholder="Type a command"
-            hint={['Esc']}
-          />
-          <CommandPaletteEmpty className="px-3 py-6 text-center text-sm text-dim">
-            Nothing matched
-          </CommandPaletteEmpty>
-          <CommandPaletteList className="overflow-y-auto p-1">
-            {(command: string) => (
-              <CommandPaletteItem key={command} value={command}>
-                <CommandPaletteRow hint="command">{command}</CommandPaletteRow>
-              </CommandPaletteItem>
-            )}
-          </CommandPaletteList>
-        </CommandPalettePopup>
-      </CommandPalette>
-    </Row>
-  )
-}
-
-function ShortcutSection() {
-  const [pressed, setPressed] = useState(0)
-  const [inField, setInField] = useState('')
-
-  useShortcut(['Mod', 'J'], () => setPressed((count) => count + 1))
-
-  return (
-    <>
-      <Row label="press Ctrl+J anywhere on this page">
-        <Kbd keys={['Mod', 'J']} />
-        <Badge variant={pressed > 0 ? 'accent' : 'outline'}>{pressed}</Badge>
-      </Row>
-
-      <Row label="now press it inside this field - nothing happens, on purpose">
-        <Input
-          className="max-w-72"
-          aria-label="A field that owns its own keys"
-          placeholder="Type here, then press Ctrl+J"
-          value={inField}
-          onChange={(event) => setInField(event.target.value)}
         />
       </Row>
     </>

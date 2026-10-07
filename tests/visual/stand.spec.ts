@@ -61,6 +61,8 @@ const SECTIONS = [
   'combobox',
   'search-field',
   'command-palette',
+  'shortcuts-dialog',
+  'commands',
   'shortcut',
   'toast',
   'alert',
