@@ -45,6 +45,12 @@ export default defineConfig({
 					label: 'Components',
 					items: [{ autogenerate: { directory: 'components' } }],
 				},
+				// Screens made of the components, which a product copies to
+				// change rather than to keep.
+				{
+					label: 'Blocks',
+					items: [{ autogenerate: { directory: 'blocks' } }],
+				},
 				{
 					label: 'Guides',
 					items: [{ autogenerate: { directory: 'guides' } }],

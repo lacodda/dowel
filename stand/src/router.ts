@@ -44,11 +44,27 @@ function claimRedirect(): void {
   window.history.replaceState(null, '', handed)
 }
 
+/**
+ * A link written before each component had a page: `/dowel/stand/#button`.
+ *
+ * The documentation linked that way for several versions after the stand
+ * moved to paths, and such links live on in pages nobody will edit - a
+ * product's notes, a bookmark. At the root of the stand an anchor naming a
+ * component is turned into its path, so the link lands where it meant to.
+ */
+function claimAnchor(): void {
+  const { pathname, hash } = window.location
+  const atRoot = pathname === BASE || `${pathname}/` === BASE
+  if (!atRoot || !/^#[a-z][a-z0-9-]*$/.test(hash)) return
+  window.history.replaceState(null, '', `${BASE}${hash.slice(1)}`)
+}
+
 /** The part of the path that names a component: `/dowel/stand/button` is
  * `button`, and the root is an empty string. */
 function readPath(): string {
   if (typeof window === 'undefined') return ''
   claimRedirect()
+  claimAnchor()
   const { pathname } = window.location
   const rest = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname.replace(/^\//, '')
   return rest.replace(/\/+$/, '')

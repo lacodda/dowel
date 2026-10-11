@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { useRef, useState } from 'react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { compileClasses, utilityRules } from '../../tests/compile'
-import { Frame, ListDetail, ListDetailBack, Pane } from './frame'
+import { Frame, ListDetail, ListDetailBack, Pane, useListDetailTurn } from './frame'
 
 /*
  * Frame, Pane and ListDetail are class names arranged around three promises:
@@ -243,5 +244,114 @@ describe('the frame', () => {
       expect(classOf(element)).not.toMatch(/\bdark:/)
       expect(classOf(element)).not.toMatch(/#[0-9a-f]{3,8}\b/i)
     }
+  })
+})
+
+/*
+ * The turn, on its own. jsdom lays nothing out, so the narrow width is
+ * stubbed the way a browser reports it: a column that has stepped aside is
+ * not visible, and neither is anything inside it.
+ */
+describe('useListDetailTurn', () => {
+  afterEach(() => {
+    delete (HTMLElement.prototype as { checkVisibility?: unknown }).checkVisibility
+  })
+
+  function narrow() {
+    ;(HTMLElement.prototype as { checkVisibility?: () => boolean }).checkVisibility = function (this: HTMLElement) {
+      const root = this.closest('[data-list-detail]')
+      if (root === null) return true
+      const open = root.hasAttribute('data-open')
+      if (this.closest('[data-list]')) return !open
+      if (this.closest('[data-detail]')) return open
+      return true
+    }
+  }
+
+  const KEYS = ['a', 'b']
+
+  function Harness({ initial = null, rowsGone = false }: { initial?: string | null; rowsGone?: boolean }) {
+    const [selected, setSelected] = useState<string | null>(initial)
+    const title = useRef<HTMLHeadingElement>(null)
+    const list = useRef<HTMLDivElement>(null)
+    const search = useRef<HTMLInputElement>(null)
+    const turn = useListDetailTurn({
+      selected,
+      title,
+      rowOf: (key) => (rowsGone ? null : (list.current?.querySelector<HTMLElement>(`[data-key="${key}"]`) ?? null)),
+      fallback: search,
+    })
+    const choose = (key: string | null) => {
+      turn(key)
+      setSelected(key)
+    }
+    return (
+      <ListDetail
+        open={selected !== null}
+        list={
+          <div ref={list}>
+            <input ref={search} aria-label="Find" />
+            <button type="button" onClick={() => setSelected('a')}>
+              open a from outside
+            </button>
+            {KEYS.map((key) => (
+              <button key={key} type="button" data-key={key} onClick={() => choose(key)}>
+                {key}
+              </button>
+            ))}
+          </div>
+        }
+        detail={
+          selected === null ? null : (
+            <div>
+              <ListDetailBack label="Back" onClick={() => choose(null)} />
+              <h2 ref={title} tabIndex={-1}>
+                {selected}
+              </h2>
+            </div>
+          )
+        }
+      />
+    )
+  }
+
+  it('hands the focus to the heading once the list steps aside', async () => {
+    narrow()
+    render(<Harness />)
+    await userEvent.click(screen.getByRole('button', { name: 'b' }))
+    expect(document.activeElement).toBe(screen.getByRole('heading', { name: 'b' }))
+  })
+
+  it('hands it back to the row that was open', async () => {
+    narrow()
+    render(<Harness />)
+    await userEvent.click(screen.getByRole('button', { name: 'b' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Back' }))
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'b' }))
+  })
+
+  it('falls back when the row that was open is gone', async () => {
+    // Filtered out while it was open, say: the list's search takes the focus.
+    narrow()
+    render(<Harness rowsGone />)
+    await userEvent.click(screen.getByRole('button', { name: 'b' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Back' }))
+    expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Find' }))
+  })
+
+  it('moves nothing for a turn the reader did not make', async () => {
+    // Opened from somewhere else - an address, a notification. The reader's
+    // focus is theirs.
+    narrow()
+    render(<Harness />)
+    await userEvent.click(screen.getByRole('button', { name: 'open a from outside' }))
+    expect(document.activeElement).not.toBe(screen.getByRole('heading', { name: 'a' }))
+  })
+
+  it('leaves the focus where it is when nothing was hidden', async () => {
+    ;(HTMLElement.prototype as { checkVisibility?: () => boolean }).checkVisibility = () => true
+    render(<Harness />)
+    await userEvent.click(screen.getByRole('button', { name: 'b' }))
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'b' }))
   })
 })

@@ -33,6 +33,8 @@ export default defineConfig({
     // prefix, and would send it into the index file.
     alias: {
       'dowel-ui/marks': new URL('./packages/dowel/src/marks.ts', import.meta.url).pathname,
+      // How a block names a primitive: the consumer's alias, here the source.
+      '@/components/ui': new URL('./registry/ui', import.meta.url).pathname,
       'dowel-ui': new URL('./packages/dowel/src/index.ts', import.meta.url).pathname,
     },
     // A ceiling on workers, because the default is one per core and every one

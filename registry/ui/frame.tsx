@@ -1,4 +1,4 @@
-import type { HTMLAttributes, MouseEventHandler, ReactNode, Ref } from 'react'
+import { useEffect, useRef, type HTMLAttributes, type MouseEventHandler, type ReactNode, type Ref, type RefObject } from 'react'
 import { cn } from 'dowel-ui'
 import { Button } from './button'
 import { ScrollArea } from './scroll-area'
@@ -38,7 +38,8 @@ import { ScrollArea } from './scroll-area'
  * shows one of the two: the list until something is open, then the open
  * thing alone, with `ListDetailBack` in its head to return. That is how a
  * list and its detail work at that width everywhere else, from mail to
- * settings, and it is decided here once rather than by each screen.
+ * settings, and it is decided here once rather than by each screen - as is
+ * where the focus goes when the two trade places (`useListDetailTurn`).
  */
 
 export interface FrameProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -180,6 +181,69 @@ export function ListDetail({
       {side === 'start' ? opened : column}
     </div>
   )
+}
+
+/** Whether an element is on screen: false once its column has stepped aside. */
+function shown(element: Element | null | undefined): element is HTMLElement {
+  if (!(element instanceof HTMLElement) || !element.isConnected) return false
+  // `checkVisibility` is the browser's own answer, a hidden ancestor
+  // included. Where it is missing, a laid-out element has boxes.
+  return typeof element.checkVisibility === 'function'
+    ? element.checkVisibility()
+    : element.getClientRects().length > 0
+}
+
+export interface ListDetailTurnOptions {
+  /** The key of what is open, or null. */
+  selected: string | null
+  /** The open thing's heading - where the focus goes once the list has
+   * stepped aside. Give it `tabIndex={-1}`, or a browser will not focus it. */
+  title: RefObject<HTMLElement | null>
+  /** The row of a key, for the way back. */
+  rowOf: (key: string) => HTMLElement | null
+  /** Where the focus goes back to when the row that was open is gone - the
+   * list's search field, say. */
+  fallback?: RefObject<HTMLElement | null>
+}
+
+/**
+ * Where the focus goes when the list and the open thing trade places.
+ *
+ * Beside each other nothing moves: the focus stays on the row that was
+ * pressed, which is still there. Where only one fits, the pressed row has
+ * just been hidden, and a browser drops the focus of a hidden element on the
+ * floor - the next Tab starts from the top of the page, and a screen reader
+ * says nothing at all. So it is handed to what took the row's place: the open
+ * thing's heading, and on the way back the row that was open.
+ *
+ * Returns `turn`, to call with the key the reader asked for - before telling
+ * the product. Only a turn the reader made moves the focus: a selection that
+ * arrived from the address bar leaves it wherever the reader put it.
+ */
+export function useListDetailTurn({ selected, title, rowOf, fallback }: ListDetailTurnOptions) {
+  const turned = useRef(false)
+  // What was open before going back, so the reader lands on the row they
+  // left rather than at the top of the list.
+  const left = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!turned.current) return
+    turned.current = false
+    const focused = document.activeElement
+    if (focused && focused !== document.body && shown(focused)) return
+    if (selected !== null) {
+      if (shown(title.current)) title.current.focus()
+      return
+    }
+    const back = left.current === null ? null : rowOf(left.current)
+    if (shown(back)) back.focus()
+    else if (shown(fallback?.current)) fallback.current.focus()
+  })
+
+  return (key: string | null) => {
+    turned.current = true
+    if (key === null) left.current = selected
+  }
 }
 
 export interface ListDetailBackProps {

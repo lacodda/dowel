@@ -58,6 +58,11 @@ describe('what a primitive weighs', () => {
       because:
         'a side and a size that compose - the width of a side panel, the height of a sheet - on top of the swipe-aware transforms; splitting side from size would be two props that only mean anything together',
     },
+    frame: {
+      ceiling: 5376,
+      because:
+        'a column, a pane and a list beside its detail are the three shapes one screen is built of, and the turn of focus belongs to the one that hides a column - split into files, the rule for where the focus goes would sit apart from the geometry that makes it necessary',
+    },
     'column-resize-handle': {
       ceiling: 5120,
       because:

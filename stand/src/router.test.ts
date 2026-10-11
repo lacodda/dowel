@@ -36,6 +36,25 @@ describe('the stand router', () => {
     expect(result.current.path).toBe('')
   })
 
+  it('turns an anchor naming a component into its page', () => {
+    // How the documentation linked here for several versions, and how such
+    // links live on in pages nobody will edit.
+    window.history.replaceState(null, '', `${BASE}#combobox`)
+    const { result } = renderHook(() => useRoute())
+    expect(result.current.path).toBe('combobox')
+    expect(window.location.pathname).toBe(`${BASE}combobox`)
+    expect(window.location.hash).toBe('')
+  })
+
+  it('leaves an anchor on a component page alone', () => {
+    // A heading inside a section may be linked to; only the root reads an
+    // anchor as a component.
+    window.history.replaceState(null, '', `${BASE}button#sizes`)
+    const { result } = renderHook(() => useRoute())
+    expect(result.current.path).toBe('button')
+    expect(window.location.hash).toBe('#sizes')
+  })
+
   it('ignores a trailing slash, which a copied link often carries', () => {
     go('badge/')
     const { result } = renderHook(() => useRoute())

@@ -162,6 +162,7 @@ const sections = [
   ['Start here', (page) => page.slug === '' || page.slug === 'getting-started'],
   ['Concepts', (page) => page.slug.startsWith('concepts/')],
   ['Components', (page) => page.slug.startsWith('components/')],
+  ['Blocks', (page) => page.slug.startsWith('blocks/')],
   ['Guides', (page) => page.slug.startsWith('guides/')],
   ['Reference', (page) => page.slug.startsWith('reference/')],
 ]

@@ -134,6 +134,8 @@ const SECTIONS = [
   'tier',
   'timeline',
   'skeleton-of',
+  // Blocks: a screen each, in a window of its own.
+  'list-detail-screen',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

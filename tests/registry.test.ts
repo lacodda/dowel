@@ -678,6 +678,17 @@ describe('the two sites point at each other', () => {
     expect(config, 'no link to the stand in the site navigation').toContain("link: '/stand/'")
   })
 
+  it('a page links to its component on the stand, not to the front page', () => {
+    // `/dowel/stand/#button` opened the overview for several versions: the
+    // stand routes by path, and an anchor at its root names nothing. Every
+    // "See it live" on the site went to the same front page and the test
+    // above went on passing, because it checked that a link exists.
+    const door = readFileSync(resolve(root, 'docs/src/components/Stand.astro'), 'utf8')
+    const href = door.match(/const href = `([^`]+)`/)?.[1]
+    expect(href, 'Stand.astro no longer builds its href').toBeDefined()
+    expect(href).toBe('/dowel/stand/${component}')
+  })
+
   it('the stand offers the documentation', () => {
     const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
     expect(app, 'the stand has no way back to the documentation').toContain('documentation')

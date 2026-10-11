@@ -55,7 +55,7 @@ const file = {
     },
     type: {
       type: 'string',
-      enum: ['registry:ui', 'registry:file', 'registry:lib', 'registry:hook'],
+      enum: ['registry:ui', 'registry:component', 'registry:file', 'registry:lib', 'registry:hook'],
       description: 'What kind of file this is, which decides which alias resolves its target.',
     },
     target: {
@@ -89,7 +89,7 @@ const schema = {
       type: 'string',
       enum: itemTypes,
       description:
-        '`registry:ui` is a component, `registry:file` a loose file such as an accent, `registry:style` a theme or a set that installs other items.',
+        '`registry:ui` is a component, `registry:block` a screen made of components, `registry:file` a loose file such as an accent, `registry:style` a theme or a set that installs other items.',
     },
     title: { type: 'string', minLength: 1, description: 'What the CLI prints while installing.' },
     description: {
@@ -143,6 +143,11 @@ const schema = {
       // nothing is an entry that does nothing.
       if: { properties: { type: { const: 'registry:ui' } }, required: ['type'] },
       then: { required: ['files'] },
+    },
+    {
+      // A block is a screen: its file, and the components it is made of.
+      if: { properties: { type: { const: 'registry:block' } }, required: ['type'] },
+      then: { required: ['files', 'registryDependencies'] },
     },
   ],
 }

@@ -20,7 +20,11 @@ interface Props {
 }
 
 const { component, caption } = Astro.props
-const href = `/dowel/stand/#${component}`
+/* A path, not an anchor. The stand gave each component a page of its own,
+ * and this went on pointing at `#button` - which the stand read as its front
+ * page, so every "See it live" on the site opened the overview instead of
+ * the component. The site's 404 hands a stand path back to the stand. */
+const href = `/dowel/stand/${component}`
 ---
 
 <a class="stand-link" href={href}>

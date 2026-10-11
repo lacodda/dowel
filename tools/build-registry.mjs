@@ -182,7 +182,9 @@ function npmDependencies(source) {
   return [
     ...new Set(
       specifiers
-        .filter((name) => !name.startsWith('.'))
+        // Siblings, by path or by the consumer's alias: a block names the
+        // primitives it stands on as `@/components/ui/<name>`.
+        .filter((name) => !name.startsWith('.') && !name.startsWith('@/'))
         // React is a peer of any React component and is always already there;
         // declaring it would reinstall it in every consumer.
         .filter((name) => name !== 'react' && name !== 'react-dom')
@@ -213,6 +215,19 @@ function siblingNames(source) {
     ...new Set(
       [...source.matchAll(/from\s+'\.\/([\w-]+)'/g)].map((match) => match[1]),
     ),
+  ].sort()
+}
+
+/** Primitives a block stands on, named the way a product imports them.
+ *
+ * A block lives in `components/blocks` and the primitives in `components/ui`,
+ * so a relative `../ui/button` would hold only in a project whose two
+ * directories happen to sit side by side. `@/components/ui/button` is what
+ * `shadcn add` rewrites to the consumer's own `ui` alias, wherever that
+ * points - the one spelling that is right in every project. */
+function primitiveNames(source) {
+  return [
+    ...new Set([...source.matchAll(/from\s+'@\/components\/ui\/([\w-]+)'/g)].map((match) => match[1])),
   ].sort()
 }
 
@@ -283,6 +298,50 @@ const componentItems = componentSources.map(({ file, name, content }) => {
     ],
   }
 })
+
+/*
+ * Blocks, read from `registry/blocks`.
+ *
+ * A block is a screen - a list beside its detail, a sign-in, settings, the
+ * first day of a dashboard - made of the primitives and nothing else. It is
+ * `registry:block`, and it lands in `components/blocks` rather than beside
+ * the primitives: a primitive is a copy kept as it came, a block is a
+ * starting point the product is expected to change, and the two directories
+ * say which is which. `check-registry` in a product holds `components/ui` to
+ * the catalogue and leaves `components/blocks` alone for that reason.
+ *
+ * Derived the way a component is: the description from the file's own
+ * comment, the npm dependencies from its imports, and the primitives from
+ * its `@/components/ui/...` imports - so a block that starts using a
+ * primitive cannot arrive without it.
+ */
+const blockDir = resolve(root, 'registry/blocks')
+
+const blockItems = readdirSync(blockDir)
+  .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
+  .map((file) => {
+    const name = basename(file, '.tsx')
+    const content = readFileSync(resolve(blockDir, file), 'utf8').replace(/\r\n/g, '\n')
+    // The first paragraph of the file's own comment, as for a component.
+    const doc = content.match(/\/\*\n \* [A-Z][^\n]*\n \*\n \* ([\s\S]*?)\.\n/)
+    return {
+      $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+      name,
+      type: 'registry:block',
+      title: titleOf(name),
+      description: doc ? `${doc[1].replace(/\n \* /g, ' ').trim()}.` : `The ${name} block.`,
+      dependencies: npmDependencies(content),
+      registryDependencies: primitiveNames(content),
+      files: [
+        {
+          path: `blocks/${file}`,
+          target: `@components/blocks/${file}`,
+          type: 'registry:component',
+          content,
+        },
+      ],
+    }
+  })
 
 /*
  * Presets: a set installed by one command.
@@ -444,7 +503,7 @@ const agentsItem = {
   docs: 'Replace `<product>` in the accent import with your own, and add whatever else your project expects of an agent.',
 }
 
-const items = [themeItem, proseItem, ...accentItems, ...componentItems, ...presetItems, agentsItem]
+const items = [themeItem, proseItem, ...accentItems, ...componentItems, ...blockItems, ...presetItems, agentsItem]
 
 /*
  * The registry is served twice.

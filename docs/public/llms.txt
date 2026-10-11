@@ -135,6 +135,10 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [WindowFrame](https://lacodda.github.io/dowel/components/window-frame.md): The window's own frame for a window with no system frame - the title bar with its documents, the three buttons, drag and double-click, and the edges you resize by.
 - [Wizard](https://lacodda.github.io/dowel/components/wizard.md): A Stepper, the current step's content and Back / Next / Finish - with a check on every way forward, focus moved to each new step, and nothing lost on Back.
 
+## Blocks
+
+- [ListDetailScreen](https://lacodda.github.io/dowel/blocks/list-detail-screen.md): A screen of things and the one that is open - a searchable list beside it, the three kinds of nothing, a keyboard that walks the list, and a phone where the two take turns.
+
 ## Guides
 
 - [What a component has to pass](https://lacodda.github.io/dowel/guides/gates.md): The checks every primitive runs through, and what each one is there to catch.

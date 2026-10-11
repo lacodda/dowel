@@ -169,6 +169,7 @@ import { AccordionSection } from './sections/accordion'
 import { ScrollAreaSection } from './sections/scroll-area'
 import { SplitterSection } from './sections/splitter'
 import { FrameSection } from './sections/frame'
+import { ListDetailScreenSection } from './sections/list-detail-screen'
 import { ImageSection } from './sections/image'
 import { StepperSection } from './sections/stepper'
 import { WizardSection } from './sections/wizard'
@@ -761,6 +762,16 @@ const sections = [
     docs: '/dowel/components/skeleton-of/',
     render: () => <SkeletonOfSection />,
   },
+  /* Blocks: screens made of the components above, in a group of their own.
+   * A block is a starting point a product changes rather than a copy it
+   * keeps, and the list says which is which. */
+  {
+    id: 'list-detail-screen',
+    title: 'ListDetailScreen',
+    kind: 'block',
+    docs: '/dowel/blocks/list-detail-screen/',
+    render: () => <ListDetailScreenSection />,
+  },
 ]
 
 /** The version this stand was built from, injected by Vite out of the package
@@ -910,7 +921,23 @@ export function App() {
           <div className="sticky top-8 max-h-[calc(100vh-6rem)] overflow-y-auto pr-1">
             <ul className="m-0 list-none space-y-0.5 p-0">
               {sections
-                .filter((section) => section.kind !== 'utility')
+                .filter((section) => section.kind === undefined)
+                .map((section) => (
+                  <NavLink
+                    key={section.id}
+                    section={section}
+                    active={section.id === current?.id}
+                    navigate={navigate}
+                  />
+                ))}
+            </ul>
+
+            {/* Screens made of the components, which a product copies to
+              * change rather than to keep. */}
+            <h2 className="mt-5 mb-1 px-2 text-2xs uppercase tracking-caption text-dim">Blocks</h2>
+            <ul className="m-0 list-none space-y-0.5 p-0">
+              {sections
+                .filter((section) => section.kind === 'block')
                 .map((section) => (
                   <NavLink
                     key={section.id}
@@ -1043,7 +1070,10 @@ function Overview({ navigate }: { navigate: (to: string) => void }) {
 
       <div className="hidden gap-3 md:grid md:grid-cols-3">
         <Panel className="p-4">
-          <h2 className="mb-1 text-sm font-semibold">{sections.length} components</h2>
+          <h2 className="mb-1 text-sm font-semibold">
+            {sections.filter((section) => section.kind !== 'block').length} components,{' '}
+            {sections.filter((section) => section.kind === 'block').length} blocks
+          </h2>
           <p className="m-0 text-xs text-dim">
             Pick one from the list. Each has a page of its own, so the address bar names what you
             are looking at and the link can be sent to someone.

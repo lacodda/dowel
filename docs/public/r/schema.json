@@ -22,11 +22,12 @@
     "type": {
       "type": "string",
       "enum": [
+        "registry:block",
         "registry:file",
         "registry:style",
         "registry:ui"
       ],
-      "description": "`registry:ui` is a component, `registry:file` a loose file such as an accent, `registry:style` a theme or a set that installs other items."
+      "description": "`registry:ui` is a component, `registry:block` a screen made of components, `registry:file` a loose file such as an accent, `registry:style` a theme or a set that installs other items."
     },
     "title": {
       "type": "string",
@@ -78,6 +79,7 @@
             "type": "string",
             "enum": [
               "registry:ui",
+              "registry:component",
               "registry:file",
               "registry:lib",
               "registry:hook"
@@ -135,6 +137,24 @@
       "then": {
         "required": [
           "files"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "registry:block"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "files",
+          "registryDependencies"
         ]
       }
     }
