@@ -80,3 +80,28 @@ Linux. Pinning one platform is what makes a baseline mean something.
 
 The accent is left at dowel's own amber. Colour is checked numerically for
 every accent of the line; what a picture catches is shape.
+
+Those pictures go further than the gate. A release note shows the stand's
+picture of everything the release added or changed the look of, linked at the
+tag, so the note keeps showing that release after the next one changes it.
+
+## Nothing here is anybody's
+
+The stand, the [demo](/dowel/demo/) and every picture of them are drawn on one
+invented world - people on `example.com`, works nobody has made - kept in
+`fixtures/world.ts`, so a list in one block and its detail in another are the
+same works. That is the default, and a gate keeps it one: every tracked file
+is read for the four shapes private data comes in, each with the reserved form
+allowed instead.
+
+| What | Allowed |
+| --- | --- |
+| An email address | A domain reserved for examples: `example.com`, `.test`, `.invalid` |
+| An IPv4 address | The documentation ranges - `192.0.2.x`, `198.51.100.x`, `203.0.113.x` - or loopback |
+| A path into a home directory | A placeholder for its owner: `you`, `<name>` |
+| A host on a private network | None: `.pi`, `.lan`, `.local` are somebody's machines |
+
+The pictures are taken in `en-US` and UTC, said in the configuration rather
+than inherited from the machine that took them, at the world's own fixed
+moment: a date in a picture is drawn in a language and a zone, and nobody's in
+particular is the one that belongs in a release note.

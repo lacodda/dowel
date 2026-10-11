@@ -19,6 +19,16 @@ The catalogue of what exists is at
 offline at `node_modules/dowel-ui/registry.json` — the version this project
 actually has. Check there before writing a component from scratch.
 
+What changed in a component, release by release, is offline too, at
+`node_modules/dowel-ui/history.json` — the answer to "why does my copy differ
+from the registry I just upgraded to".
+
+**Blocks are different.** A whole screen — `list-detail-screen`,
+`settings-screen`, `login-screen`, `empty-dashboard-screen` — lands in
+`components/blocks/` and is this project's to change outright: rename it to the
+screen it is, change what it shows. Start a new screen of that shape from a
+block rather than from nothing: <https://lacodda.github.io/dowel/blocks/list-detail-screen/>
+
 ## The rules that are not negotiable here
 
 **No colour is ever written down.** Not a hex, not `rgb()`, not a stock Tailwind

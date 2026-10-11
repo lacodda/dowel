@@ -14,6 +14,7 @@ A dowel is the hidden peg that joins two boards so the seam does not show. That 
 
 **[Documentation](https://lacodda.github.io/dowel/)** — what everything is and why it is that way.
 **[The stand](https://lacodda.github.io/dowel/stand/)** — every component, live, in either theme and in the accent of any product of the line.
+**[The demo](https://lacodda.github.io/dowel/demo/)** — kilna-lite, a small product built from the blocks, on invented data.
 
 ## The theme
 
@@ -72,6 +73,23 @@ dependency budget and a picture in both themes.
 The full catalogue, live: **[the stand](https://lacodda.github.io/dowel/stand/)**.
 One page per component: **[components](https://lacodda.github.io/dowel/components/button/)**.
 Installing, sets and frozen versions: **[the registry guide](https://lacodda.github.io/dowel/guides/registry/)**.
+
+## Blocks
+
+Whole screens made of the primitives - a list beside what is open in it,
+settings in sections, a sign-in, a dashboard's first day:
+
+```bash
+npx shadcn@latest add https://lacodda.github.io/dowel/r/list-detail-screen.json
+```
+
+A block lands in `components/blocks`, beside the primitives it brings with it,
+and is yours to change. It works as it stands all the same: the data and every
+word come in through props, and the parts that took each product longest are
+already in it - the empty states, the keyboard, a phone where the list and the
+open thing take turns. See them at work in
+**[kilna-lite](https://lacodda.github.io/dowel/demo/)**:
+**[blocks](https://lacodda.github.io/dowel/blocks/list-detail-screen/)**.
 
 ## Moving an existing project over
 
@@ -154,7 +172,8 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 ## Status
 
 The theme, the scales, an accent per product, and a hundred and fifteen primitives are
-in daily use across two products of the line. Every component installs from a
+in daily use across two products of the line, with four blocks - whole screens
+made of them - and a demo built from those. Every component installs from a
 versioned registry and passes its own gate - axe, the keyboard, a dependency
 budget, a scale that refuses a length nobody argued for, a floor under every
 pointer target, and a picture in both themes - before it ships.
@@ -166,7 +185,7 @@ Released versions and what landed in each: [CHANGELOG](https://github.com/lacodd
 - [The stand](https://lacodda.github.io/dowel/stand/) - every component, live
 - [Getting started](https://lacodda.github.io/dowel/getting-started/), [the lint rules](https://lacodda.github.io/dowel/guides/linting/) and [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/)
 - [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration/) - the four commands and what they refuse to do
-- [Components](https://lacodda.github.io/dowel/components/button/)
+- [Components](https://lacodda.github.io/dowel/components/button/), and [blocks](https://lacodda.github.io/dowel/blocks/list-detail-screen/) with [the demo](https://lacodda.github.io/dowel/demo/) built from them
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
 - [The vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary/) this system uses for its own parts, and [the mistakes](https://lacodda.github.io/dowel/concepts/anti-patterns/) that actually get made against it
 

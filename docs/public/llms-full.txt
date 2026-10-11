@@ -10,13 +10,17 @@ Source: https://lacodda.github.io/dowel/
 
 One theme, one token vocabulary, one set of primitives - so every product in the line looks made by one hand, and nobody sees the joint.
 
-## Two places
+## Three places
 
 **[The stand](/dowel/stand/)** is where the components are. Every one of them,
 live, in either theme and in the accent of any product of the line — change the
 accent and watch what follows from it: the hover shade, the soft fill, the focus
 ring, the colour of text on an accent fill. None of which a component states for
 itself.
+
+**[The demo](/dowel/demo/)** is where they are used: kilna-lite, a small
+product made of nothing but the [blocks](/dowel/blocks/list-detail-screen/) -
+whole screens built from the components - on an invented world.
 
 **These pages** are where the reasons are. What a token means, why a scale has
 the steps it has, what a component will and will not do for you.
@@ -29,7 +33,11 @@ for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
 a hundred and fifteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
-density you left it in, and measures the contrast of whichever you chose. Dates
+density you left it in, and measures the contrast of whichever you chose; each
+page ends with the history of its file, release by release. Four
+[blocks](/dowel/blocks/list-detail-screen/) - a list beside the open thing,
+settings, a sign-in, a dashboard's first day - are drawn together in
+[kilna-lite](/dowel/demo/). Dates
 and numbers are written in the application's language, never the browser's, and
 a month of days holds the screen it is given. A key is written once, in one
 [list of commands](/dowel/components/commands/) the keyboard, the palette and
@@ -11200,6 +11208,31 @@ Linux. Pinning one platform is what makes a baseline mean something.
 The accent is left at dowel's own amber. Colour is checked numerically for
 every accent of the line; what a picture catches is shape.
 
+Those pictures go further than the gate. A release note shows the stand's
+picture of everything the release added or changed the look of, linked at the
+tag, so the note keeps showing that release after the next one changes it.
+
+## Nothing here is anybody's
+
+The stand, the [demo](/dowel/demo/) and every picture of them are drawn on one
+invented world - people on `example.com`, works nobody has made - kept in
+`fixtures/world.ts`, so a list in one block and its detail in another are the
+same works. That is the default, and a gate keeps it one: every tracked file
+is read for the four shapes private data comes in, each with the reserved form
+allowed instead.
+
+| What | Allowed |
+| --- | --- |
+| An email address | A domain reserved for examples: `example.com`, `.test`, `.invalid` |
+| An IPv4 address | The documentation ranges - `192.0.2.x`, `198.51.100.x`, `203.0.113.x` - or loopback |
+| A path into a home directory | A placeholder for its owner: `you`, `<name>` |
+| A host on a private network | None: `.pi`, `.lan`, `.local` are somebody's machines |
+
+The pictures are taken in `en-US` and UTC, said in the configuration rather
+than inherited from the machine that took them, at the world's own fixed
+moment: a date in a picture is drawn in a language and a zone, and nobody's in
+particular is the one that belongs in a release note.
+
 ---
 
 # The lint rules
@@ -11799,6 +11832,37 @@ already made yours:
 @import 'dowel-ui/theme.css';
 @import 'dowel-ui/accents/kilna.css';
 ```
+
+## Blocks
+
+A block is a screen made of the components: a list beside what is open in it,
+settings in sections, a sign-in, a dashboard's first day. It installs like a
+component and brings the components it is made of:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/settings-screen.json
+```
+
+It lands somewhere else, and on purpose. A component lands in
+`components/ui` and is kept as it came - a product's `check-registry` holds
+that directory to the catalogue, and `dowel diff` says when a copy has
+drifted. A block lands in `components/blocks` and is the product's from that
+moment: rename it to the screen it is, change what it shows. The two
+directories say which kind of file is which.
+
+A block names the components it uses as `@/components/ui/button`, never as a
+relative path, and `shadcn add` rewrites that to wherever your
+`components.json` puts the `ui` alias - so a project whose components live
+elsewhere gets imports that resolve. The registry lists exactly those
+components as the block's dependencies, read from its imports, so none can be
+left behind.
+
+Blocks are named for what they are - `list-detail-screen`, `login-screen` -
+because they share one registry with the components, and `list-detail` would
+sit beside the `ListDetail` it is built on. They are held to what a component
+is held to: no word of their own (every word is in a `words` prop), only the
+scale, axe, a page on the stand and a picture in both themes. They are drawn
+together in [kilna-lite](/dowel/demo/), a small product made of nothing else.
 
 ## Pinning a version
 

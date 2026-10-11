@@ -50,6 +50,37 @@ already made yours:
 @import 'dowel-ui/accents/kilna.css';
 ```
 
+## Blocks
+
+A block is a screen made of the components: a list beside what is open in it,
+settings in sections, a sign-in, a dashboard's first day. It installs like a
+component and brings the components it is made of:
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/settings-screen.json
+```
+
+It lands somewhere else, and on purpose. A component lands in
+`components/ui` and is kept as it came - a product's `check-registry` holds
+that directory to the catalogue, and `dowel diff` says when a copy has
+drifted. A block lands in `components/blocks` and is the product's from that
+moment: rename it to the screen it is, change what it shows. The two
+directories say which kind of file is which.
+
+A block names the components it uses as `@/components/ui/button`, never as a
+relative path, and `shadcn add` rewrites that to wherever your
+`components.json` puts the `ui` alias - so a project whose components live
+elsewhere gets imports that resolve. The registry lists exactly those
+components as the block's dependencies, read from its imports, so none can be
+left behind.
+
+Blocks are named for what they are - `list-detail-screen`, `login-screen` -
+because they share one registry with the components, and `list-detail` would
+sit beside the `ListDetail` it is built on. They are held to what a component
+is held to: no word of their own (every word is in a `words` prop), only the
+scale, axe, a page on the stand and a picture in both themes. They are drawn
+together in [kilna-lite](/dowel/demo/), a small product made of nothing else.
+
 ## Pinning a version
 
 `/r/` always serves the newest build. That is the right default — a component
