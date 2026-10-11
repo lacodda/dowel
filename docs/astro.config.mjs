@@ -41,6 +41,8 @@ export default defineConfig({
 				// explains a component, the stand shows it. Every page should
 				// have the door to it, not only the ones that remember.
 				{ label: 'The stand ↗', link: '/stand/', attrs: { class: 'stand-nav-link' } },
+				// The blocks at work: a small product made of them.
+				{ label: 'The demo ↗', link: '/demo/', attrs: { class: 'stand-nav-link' } },
 				{
 					label: 'Components',
 					items: [{ autogenerate: { directory: 'components' } }],

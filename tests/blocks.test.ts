@@ -68,7 +68,7 @@ describe('the blocks', () => {
     // stylesheet's sources, a block renders with every class it shares with
     // a primitive and none of its own - cramped rather than broken, which is
     // why it was found by measuring a padding of zero, not by looking.
-    for (const sheet of ['stand/src/styles.css']) {
+    for (const sheet of ['stand/src/styles.css', 'demo/src/styles.css']) {
       const css = readFileSync(resolve(root, sheet), 'utf8')
       expect(css, `${sheet} does not scan the blocks`).toMatch(/@source '[^']*registry\/blocks'/)
     }

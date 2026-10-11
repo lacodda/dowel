@@ -5,7 +5,7 @@ on:
     branches: [main]
     # The stand reads the theme straight from the package, so a token that
     # changes there changes the token page too.
-    paths: ['docs/**', 'stand/**', 'packages/dowel/src/theme.css', 'registry/**']
+    paths: ['docs/**', 'stand/**', 'demo/**', 'fixtures/**', 'packages/dowel/src/theme.css', 'registry/**']
   workflow_dispatch:
 
 permissions:
@@ -46,6 +46,12 @@ jobs:
         run: pnpm --filter dowel-stand build
       - name: Put the stand under the docs
         run: cp -r stand/dist docs/dist/stand
+      # kilna-lite: a small product built from the blocks, on the stand's
+      # fictional world. It routes by hash, so it needs no 404 handoff.
+      - name: Build the demo
+        run: pnpm --filter dowel-demo build
+      - name: Put the demo under the docs
+        run: cp -r demo/dist docs/dist/demo
       # Pages serves one 404 for the whole site and it is the documentation's,
       # so the stand's client-side routes reach it rather than the stand. This
       # teaches that page to hand a stand path back to the stand.

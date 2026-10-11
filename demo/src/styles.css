@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@import '../../packages/dowel/src/theme.css';
+
+/*
+ * Where the classes are written. The demo's own screens are scanned as part
+ * of this project; the components and the blocks live at the repository
+ * root, because a product copies them rather than importing them.
+ */
+@source '../../registry/ui';
+@source '../../registry/blocks';
+
+/* The window is the page: the shell fills it and scrolls nowhere itself. */
+html,
+body,
+#root {
+  height: 100%;
+}

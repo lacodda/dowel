@@ -26,6 +26,8 @@ export default defineConfig({
       // product rather than imported from one, but they are tested here.
       'registry/**/*.test.{ts,tsx}',
       'stand/src/**/*.test.{ts,tsx}',
+      // The demo, walked as a visitor walks it.
+      'demo/src/**/*.test.{ts,tsx}',
       'tests/**/*.test.ts',
     ],
     // `dowel-ui` is what a copied component imports; here it is the source.
@@ -35,6 +37,7 @@ export default defineConfig({
       'dowel-ui/marks': new URL('./packages/dowel/src/marks.ts', import.meta.url).pathname,
       // How a block names a primitive: the consumer's alias, here the source.
       '@/components/ui': new URL('./registry/ui', import.meta.url).pathname,
+      '@/components/blocks': new URL('./registry/blocks', import.meta.url).pathname,
       'dowel-ui': new URL('./packages/dowel/src/index.ts', import.meta.url).pathname,
     },
     // A ceiling on workers, because the default is one per core and every one

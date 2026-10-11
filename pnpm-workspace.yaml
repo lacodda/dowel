@@ -5,3 +5,7 @@ packages:
   # the docs site is outside the workspace and had to install twice in CI to
   # get the same thing.
   - stand
+  # The demo - a small product built from the blocks, consumer number zero -
+  # is a member for the same reason the stand is: what it draws lives at the
+  # repository root.
+  - demo
