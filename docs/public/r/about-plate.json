@@ -5,7 +5,7 @@
   "title": "AboutPlate",
   "description": "The about-plate primitive.",
   "dependencies": [
-    "dowel-ui@^0.35.0"
+    "dowel-ui@^0.36.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/product-mark.json"

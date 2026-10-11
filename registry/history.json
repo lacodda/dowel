@@ -143,6 +143,19 @@
   ],
   "agents": [
     {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "blocks, the demo and the history of each file",
+          "date": "2026-10-11",
+          "commit": "ea2287a555"
+        }
+      ]
+    },
+    {
       "version": "0.13.0",
       "changes": [
         {
@@ -655,6 +668,19 @@
   ],
   "combobox": [
     {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -760,6 +786,19 @@
     }
   ],
   "command-palette": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
     {
       "version": "0.35.0",
       "changes": [
@@ -1300,6 +1339,21 @@
       ]
     }
   ],
+  "empty-dashboard-screen": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "SettingsScreen, LoginScreen and EmptyDashboardScreen",
+          "date": "2026-10-11",
+          "commit": "319624041c"
+        }
+      ]
+    }
+  ],
   "empty-state": [
     {
       "version": "0.33.0",
@@ -1416,6 +1470,29 @@
       ]
     }
   ],
+  "frame": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "blocks in the registry, and ListDetailScreen",
+          "date": "2026-10-11",
+          "commit": "26752a172c"
+        },
+        {
+          "type": "feat",
+          "scope": "frame",
+          "breaking": false,
+          "summary": "a column that never scrolls, panes, and a list beside its detail",
+          "date": "2026-10-11",
+          "commit": "32e8d6dc63"
+        }
+      ]
+    }
+  ],
   "image": [
     {
       "version": "0.31.0",
@@ -1433,6 +1510,19 @@
   ],
   "inline-field": [
     {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -1447,6 +1537,19 @@
     }
   ],
   "input": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
     {
       "version": "0.28.0",
       "changes": [
@@ -1639,7 +1742,35 @@
       ]
     }
   ],
+  "list-detail-screen": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "blocks in the registry, and ListDetailScreen",
+          "date": "2026-10-11",
+          "commit": "26752a172c"
+        }
+      ]
+    }
+  ],
   "list-row": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "list-row,section-nav",
+          "breaking": false,
+          "summary": "set the notes in dim, which clears AA",
+          "date": "2026-10-11",
+          "commit": "e9e9a0e8f8"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -1654,7 +1785,35 @@
       ]
     }
   ],
+  "login-screen": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "SettingsScreen, LoginScreen and EmptyDashboardScreen",
+          "date": "2026-10-11",
+          "commit": "319624041c"
+        }
+      ]
+    }
+  ],
   "marked-text": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
     {
       "version": "0.26.0",
       "changes": [
@@ -1802,6 +1961,19 @@
   ],
   "number-field": [
     {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
+    {
       "version": "0.31.0",
       "changes": [
         {
@@ -1943,6 +2115,19 @@
     }
   ],
   "password-field": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
     {
       "version": "0.28.0",
       "changes": [
@@ -2333,6 +2518,19 @@
   ],
   "section-nav": [
     {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "list-row,section-nav",
+          "breaking": false,
+          "summary": "set the notes in dim, which clears AA",
+          "date": "2026-10-11",
+          "commit": "e9e9a0e8f8"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -2484,6 +2682,21 @@
           "summary": "Menu, ContextMenu, Select and Combobox",
           "date": "2026-08-31",
           "commit": "243cc12f2e"
+        }
+      ]
+    }
+  ],
+  "settings-screen": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "SettingsScreen, LoginScreen and EmptyDashboardScreen",
+          "date": "2026-10-11",
+          "commit": "319624041c"
         }
       ]
     }
@@ -2847,6 +3060,19 @@
   ],
   "tag-input": [
     {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "fields",
+          "breaking": false,
+          "summary": "set typed text at 16px under a finger",
+          "date": "2026-10-11",
+          "commit": "967db1d927"
+        }
+      ]
+    },
+    {
       "version": "0.20.0",
       "changes": [
         {
@@ -2876,6 +3102,19 @@
     }
   ],
   "theme": [
+    {
+      "version": "0.36.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "frame",
+          "breaking": false,
+          "summary": "a column that never scrolls, panes, and a list beside its detail",
+          "date": "2026-10-11",
+          "commit": "32e8d6dc63"
+        }
+      ]
+    },
     {
       "version": "0.35.0",
       "changes": [

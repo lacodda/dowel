@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-nooma",
+  "type": "registry:file",
+  "title": "nooma accent",
+  "description": "emerald #3FA873 - the colour of the nooma mark (nm). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/nooma.css",
+      "target": "~/dowel/accents/nooma.css",
+      "type": "registry:file",
+      "content": "/*\n * nooma - emerald #3FA873, the colour of its mark (nm).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #3FA873;\n}\n"
+    }
+  ]
+}
