@@ -26,6 +26,10 @@ export default defineConfig({
 			},
 			favicon: '/favicon.svg',
 			customCss: ['./src/styles/brand.css'],
+			// Every component and block page ends with the history of its
+			// file, drawn once here rather than remembered by each page.
+			components: { MarkdownContent: './src/components/MarkdownContent.astro' },
+			routeMiddleware: './src/route-data.ts',
 			head: [
 				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/dowel/apple-touch-icon.png' } },
 				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://raw.githubusercontent.com/lacodda/dowel/main/assets/social-preview.png' } },

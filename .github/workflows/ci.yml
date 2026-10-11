@@ -27,6 +27,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The whole history and its tags: `tests/history.test.ts` reads
+          # each item's history out of git and compares it with the file.
+          fetch-depth: 0
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:

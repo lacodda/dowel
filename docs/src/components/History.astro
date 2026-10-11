@@ -1,0 +1,102 @@
+---
+/*
+ * What happened to this file, release by release.
+ *
+ * The question a product asks when `dowel diff` says its copy differs from
+ * the registry it just upgraded to: which releases changed the file it
+ * copied, and how. The CHANGELOG answers by release; this answers by file.
+ * It is drawn on every component and block page by the MarkdownContent
+ * override, so no page can forget it.
+ */
+import { releasesOf } from '../lib/history'
+
+interface Props {
+  name: string
+  dir: 'ui' | 'blocks'
+}
+
+const { name, dir } = Astro.props
+const releases = releasesOf(name)
+// The recent ones; the rest are one link away, in git.
+const shown = releases.slice(0, 8)
+const repository = 'https://github.com/lacodda/dowel'
+---
+
+{
+  releases.length > 0 && (
+    <section class="history">
+      <h2 id="history">History</h2>
+      <p>
+        Each release that changed <code>{`${dir}/${name}.tsx`}</code> - the file a product copies - newest first.
+      </p>
+      <ol>
+        {shown.map((release) => (
+          <li>
+            <a href={`${repository}/releases/tag/v${release.version}`} class="version">
+              v{release.version}
+            </a>
+            {release.changes.some((change) => change.breaking) && <span class="breaking">breaking</span>}
+            <ul>
+              {release.changes.map((change) => (
+                <li>
+                  <span class="type">{change.type}</span> {change.summary}{' '}
+                  <a href={`${repository}/commit/${change.commit}`} class="commit">
+                    <code>{change.commit.slice(0, 7)}</code>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
+      {releases.length > shown.length && (
+        <p>
+          {releases.length - shown.length} earlier{' '}
+          {releases.length - shown.length === 1 ? 'release' : 'releases'}:{' '}
+          <a href={`${repository}/commits/main/registry/${dir}/${name}.tsx`}>every commit to the file</a>.
+        </p>
+      )}
+    </section>
+  )
+}
+
+<style>
+  .history ol {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .history ol > li + li {
+    margin-top: 0.75rem;
+  }
+
+  .history .version {
+    font-weight: 600;
+  }
+
+  .history ul {
+    margin-top: 0.25rem;
+  }
+
+  .history .type {
+    display: inline-block;
+    min-width: 4.5em;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .history .breaking {
+    margin-left: 0.5rem;
+    padding: 0 0.4rem;
+    border: 1px solid var(--sl-color-red);
+    border-radius: 999px;
+    color: var(--sl-color-red);
+    font-size: var(--sl-text-xs);
+  }
+
+  .history .commit {
+    color: var(--sl-color-gray-3);
+  }
+</style>

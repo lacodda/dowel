@@ -54,6 +54,7 @@
     "./prose.css": "./dist/prose.css",
     "./tokens.json": "./dist/tokens.json",
     "./registry.json": "./dist/registry.json",
+    "./history.json": "./dist/history.json",
     "./accents/*.css": "./dist/accents/*.css",
     "./palettes/*.json": "./dist/palettes/*.json"
   },

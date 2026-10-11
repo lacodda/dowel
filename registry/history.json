@@ -1,0 +1,3510 @@
+{
+  "about-plate": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "marks",
+          "breaking": false,
+          "summary": "the line's marks in the package, at the level their size calls for",
+          "date": "2026-09-23",
+          "commit": "192bb5f0bf"
+        }
+      ]
+    }
+  ],
+  "accordion": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "collapsible",
+          "breaking": false,
+          "summary": "disclosure alone and in a set",
+          "date": "2026-09-23",
+          "commit": "719b1f8d89"
+        }
+      ]
+    }
+  ],
+  "action-bar": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five components for the harder half of a form",
+          "date": "2026-09-03",
+          "commit": "cfb317aafd"
+        }
+      ]
+    }
+  ],
+  "activity-heatmap": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure in steps, and name the step that was missing",
+          "date": "2026-09-19",
+          "commit": "8dd8a2859e"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a year of days, where a cell has four meanings",
+          "date": "2026-09-15",
+          "commit": "5254004ef2"
+        }
+      ]
+    }
+  ],
+  "activity-legend": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a year of days, where a cell has four meanings",
+          "date": "2026-09-15",
+          "commit": "5254004ef2"
+        }
+      ]
+    }
+  ],
+  "activity-weeks": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a year of days, where a cell has four meanings",
+          "date": "2026-09-15",
+          "commit": "5254004ef2"
+        }
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "version": "0.13.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "commit the agent briefing the registry ships",
+          "date": "2026-09-02",
+          "commit": "1a9fb54976"
+        }
+      ]
+    }
+  ],
+  "alert": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "feedback",
+          "breaking": false,
+          "summary": "Toast, Alert and Banner",
+          "date": "2026-09-01",
+          "commit": "84012111d5"
+        }
+      ]
+    }
+  ],
+  "app-shell": [
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "app-shell",
+          "breaking": false,
+          "summary": "the frame, with the two mistakes already made",
+          "date": "2026-09-20",
+          "commit": "72958c9c72"
+        }
+      ]
+    }
+  ],
+  "avatar": [
+    {
+      "version": "0.27.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "avatar",
+          "breaking": false,
+          "summary": "a person in the space of a word, with the fallback as the normal case",
+          "date": "2026-09-19",
+          "commit": "0582087b37"
+        }
+      ]
+    }
+  ],
+  "badge": [
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "banner": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "feedback",
+          "breaking": false,
+          "summary": "Toast, Alert and Banner",
+          "date": "2026-09-01",
+          "commit": "84012111d5"
+        }
+      ]
+    }
+  ],
+  "bar-chart": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "columns over a baseline, with the plot height stated",
+          "date": "2026-09-15",
+          "commit": "aa695cfa9c"
+        }
+      ]
+    }
+  ],
+  "big-calendar": [
+    {
+      "version": "0.34.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "what has happened stays readable, and a day says what it holds",
+          "date": "2026-10-01",
+          "commit": "cae3dabce6"
+        },
+        {
+          "type": "feat",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "a month at a time, holding the box it is given",
+          "date": "2026-10-01",
+          "commit": "36af128cb8"
+        }
+      ]
+    }
+  ],
+  "big-calendar-item": [
+    {
+      "version": "0.34.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "what has happened stays readable, and a day says what it holds",
+          "date": "2026-10-01",
+          "commit": "cae3dabce6"
+        },
+        {
+          "type": "feat",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "a month at a time, holding the box it is given",
+          "date": "2026-10-01",
+          "commit": "36af128cb8"
+        }
+      ]
+    }
+  ],
+  "breadcrumbs": [
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "breadcrumbs",
+          "breaking": false,
+          "summary": "where you are, as a trail rather than a word",
+          "date": "2026-09-20",
+          "commit": "0151aaa916"
+        }
+      ]
+    }
+  ],
+  "button": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "button",
+          "breaking": false,
+          "summary": "a link variant, and a disabled button that says why",
+          "date": "2026-09-25",
+          "commit": "8639f9b7e0"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "button",
+          "breaking": true,
+          "summary": "stand on the control rows and size the icon at every size",
+          "date": "2026-09-24",
+          "commit": "71ce281a81"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "button",
+          "breaking": true,
+          "summary": "compose with `render`, and drop Radix",
+          "date": "2026-08-31",
+          "commit": "ef564a745e"
+        }
+      ]
+    },
+    {
+      "version": "0.4.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the component pipeline and Button",
+          "date": "2026-08-29",
+          "commit": "cf78880999"
+        }
+      ]
+    }
+  ],
+  "calendar": [
+    {
+      "version": "0.34.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "calendar-math",
+          "breaking": false,
+          "summary": "the weeks a month touches, and one key map",
+          "date": "2026-10-01",
+          "commit": "7658a0c13b"
+        }
+      ]
+    },
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "dates, on Intl rather than on a date library",
+          "date": "2026-09-02",
+          "commit": "5ec8403592"
+        }
+      ]
+    }
+  ],
+  "calendar-math": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.34.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "calendar-math",
+          "breaking": false,
+          "summary": "the weeks a month touches, and one key map",
+          "date": "2026-10-01",
+          "commit": "7658a0c13b"
+        },
+        {
+          "type": "fix",
+          "scope": "calendar-math",
+          "breaking": false,
+          "summary": "name the weekdays in UTC",
+          "date": "2026-10-01",
+          "commit": "f154bb56f2"
+        }
+      ]
+    },
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "dates, on Intl rather than on a date library",
+          "date": "2026-09-02",
+          "commit": "5ec8403592"
+        }
+      ]
+    }
+  ],
+  "checkbox": [
+    {
+      "version": "0.16.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "a field, and the three ways of choosing",
+          "date": "2026-09-02",
+          "commit": "7df746d61c"
+        }
+      ]
+    }
+  ],
+  "chip": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "chip",
+          "breaking": false,
+          "summary": "switch alone and in a group, in the tones of Badge",
+          "date": "2026-09-25",
+          "commit": "c6161b1d12"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "a floor for pointer targets, and a way to reach it",
+          "date": "2026-09-19",
+          "commit": "2d397f5ff2"
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "gates",
+          "breaking": false,
+          "summary": "budget what a primitive costs and forbid words of its own",
+          "date": "2026-08-31",
+          "commit": "8163f87d11"
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "code-block": [
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure syntax contrast against the surface the browser draws",
+          "date": "2026-09-17",
+          "commit": "fbd3d2396c"
+        },
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "collapsible": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "collapsible",
+          "breaking": false,
+          "summary": "disclosure alone and in a set",
+          "date": "2026-09-23",
+          "commit": "719b1f8d89"
+        }
+      ]
+    }
+  ],
+  "color-field": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five components for the harder half of a form",
+          "date": "2026-09-03",
+          "commit": "cfb317aafd"
+        }
+      ]
+    }
+  ],
+  "column-resize-handle": [
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "columns",
+          "breaking": false,
+          "summary": "a header edge to drag, rows that reorder, a funnel with a panel",
+          "date": "2026-09-18",
+          "commit": "8310586a41"
+        }
+      ]
+    }
+  ],
+  "combobox": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.19.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "stand",
+          "breaking": false,
+          "summary": "give every component a page of its own",
+          "date": "2026-09-03",
+          "commit": "4fec02107b"
+        }
+      ]
+    },
+    {
+      "version": "0.18.2",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "let a component turn off the focus ring, and dress the palette",
+          "date": "2026-09-02",
+          "commit": "073966999c"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five defects a live run found, and none of the tests did",
+          "date": "2026-09-02",
+          "commit": "863226c86f"
+        }
+      ]
+    },
+    {
+      "version": "0.11.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "palette",
+          "breaking": false,
+          "summary": "expose Collection and GroupLabel",
+          "date": "2026-09-01",
+          "commit": "89bf69a2b3"
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "menus",
+          "breaking": false,
+          "summary": "Menu, ContextMenu, Select and Combobox",
+          "date": "2026-08-31",
+          "commit": "243cc12f2e"
+        }
+      ]
+    }
+  ],
+  "command-palette": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    },
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.18.2",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "let a component turn off the focus ring, and dress the palette",
+          "date": "2026-09-02",
+          "commit": "073966999c"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five defects a live run found, and none of the tests did",
+          "date": "2026-09-02",
+          "commit": "863226c86f"
+        }
+      ]
+    },
+    {
+      "version": "0.11.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "palette",
+          "breaking": false,
+          "summary": "expose Collection and GroupLabel",
+          "date": "2026-09-01",
+          "commit": "89bf69a2b3"
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "palette",
+          "breaking": false,
+          "summary": "CommandPalette, SearchField and the shortcut behind them",
+          "date": "2026-09-01",
+          "commit": "81555615d3"
+        }
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    }
+  ],
+  "confirm-dialog": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "let the scrim be turned off, and show the overlays closed",
+          "date": "2026-08-31",
+          "commit": "fd27006ed7"
+        },
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip",
+          "date": "2026-08-31",
+          "commit": "5dc3c06918"
+        }
+      ]
+    }
+  ],
+  "context-menu": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "menus",
+          "breaking": false,
+          "summary": "Menu, ContextMenu, Select and Combobox",
+          "date": "2026-08-31",
+          "commit": "243cc12f2e"
+        }
+      ]
+    }
+  ],
+  "copy-button": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "a floor for pointer targets, and a way to reach it",
+          "date": "2026-09-19",
+          "commit": "2d397f5ff2"
+        }
+      ]
+    },
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "copyable": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "a floor for pointer targets, and a way to reach it",
+          "date": "2026-09-19",
+          "commit": "2d397f5ff2"
+        }
+      ]
+    },
+    {
+      "version": "0.7.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "gates",
+          "breaking": false,
+          "summary": "budget what a primitive costs and forbid words of its own",
+          "date": "2026-08-31",
+          "commit": "8163f87d11"
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "date-picker": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "dates, on Intl rather than on a date library",
+          "date": "2026-09-02",
+          "commit": "5ec8403592"
+        }
+      ]
+    }
+  ],
+  "date-range-picker": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "dates, on Intl rather than on a date library",
+          "date": "2026-09-02",
+          "commit": "5ec8403592"
+        }
+      ]
+    }
+  ],
+  "dialog": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.11.2",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "dialog",
+          "breaking": false,
+          "summary": "never grow taller than the window",
+          "date": "2026-09-02",
+          "commit": "c19c4751be"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "let the scrim be turned off, and show the overlays closed",
+          "date": "2026-08-31",
+          "commit": "fd27006ed7"
+        },
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip",
+          "date": "2026-08-31",
+          "commit": "5dc3c06918"
+        }
+      ]
+    }
+  ],
+  "diff-lines": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "diff-view": [
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "data",
+          "breaking": false,
+          "summary": "stack the comparison when narrow, instead of dropping half of it",
+          "date": "2026-09-17",
+          "commit": "85d16bbc74"
+        },
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "divider": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "divider",
+          "breaking": false,
+          "summary": "a rule that says whether it means anything",
+          "date": "2026-09-20",
+          "commit": "6494aa8712"
+        }
+      ]
+    }
+  ],
+  "drawer": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "let the scrim be turned off, and show the overlays closed",
+          "date": "2026-08-31",
+          "commit": "fd27006ed7"
+        },
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip",
+          "date": "2026-08-31",
+          "commit": "5dc3c06918"
+        }
+      ]
+    }
+  ],
+  "duration-field": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "numbers, scales, and the two fields with no foundation",
+          "date": "2026-09-02",
+          "commit": "ead7461190"
+        }
+      ]
+    }
+  ],
+  "empty-state": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "states",
+          "breaking": false,
+          "summary": "plain empty states and a retry for a failed load",
+          "date": "2026-09-25",
+          "commit": "ce765d42c7"
+        }
+      ]
+    },
+    {
+      "version": "0.23.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "the screens between asking for data and showing it",
+          "date": "2026-09-09",
+          "commit": "bc3f636934"
+        }
+      ]
+    }
+  ],
+  "error-boundary": [
+    {
+      "version": "0.23.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "the screens between asking for data and showing it",
+          "date": "2026-09-09",
+          "commit": "bc3f636934"
+        }
+      ]
+    }
+  ],
+  "field": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "field",
+          "breaking": false,
+          "summary": "a group of controls named by one caption",
+          "date": "2026-09-25",
+          "commit": "b5ed83775f"
+        }
+      ]
+    },
+    {
+      "version": "0.16.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "a field, and the three ways of choosing",
+          "date": "2026-09-02",
+          "commit": "7df746d61c"
+        }
+      ]
+    }
+  ],
+  "field-draft": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "inline-field",
+          "breaking": false,
+          "summary": "values edited where they are shown",
+          "date": "2026-09-25",
+          "commit": "0f98ce85df"
+        }
+      ]
+    }
+  ],
+  "file-drop": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five components for the harder half of a form",
+          "date": "2026-09-03",
+          "commit": "cfb317aafd"
+        }
+      ]
+    }
+  ],
+  "filter-popover": [
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "columns",
+          "breaking": false,
+          "summary": "a header edge to drag, rows that reorder, a funnel with a panel",
+          "date": "2026-09-18",
+          "commit": "8310586a41"
+        }
+      ]
+    }
+  ],
+  "image": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "image",
+          "breaking": false,
+          "summary": "a picture that holds its box before it arrives",
+          "date": "2026-09-23",
+          "commit": "3114a6e7ad"
+        }
+      ]
+    }
+  ],
+  "inline-field": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "inline-field",
+          "breaking": false,
+          "summary": "values edited where they are shown",
+          "date": "2026-09-25",
+          "commit": "0f98ce85df"
+        }
+      ]
+    }
+  ],
+  "input": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "json-rows": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "json-viewer": [
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "kbd": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "key-value": [
+    {
+      "version": "0.22.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a long list, a deep one, and the facts beside them",
+          "date": "2026-09-09",
+          "commit": "4cbd42ec00"
+        }
+      ]
+    }
+  ],
+  "layer": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "layer",
+          "breaking": false,
+          "summary": "make the host once without reading a ref during render",
+          "date": "2026-09-24",
+          "commit": "eab2935c42"
+        },
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    }
+  ],
+  "line-chart": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a level between the readings, with a hole drawn as a hole",
+          "date": "2026-09-15",
+          "commit": "24fee8fb2a"
+        }
+      ]
+    }
+  ],
+  "line-scale": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a level between the readings, with a hole drawn as a hole",
+          "date": "2026-09-15",
+          "commit": "24fee8fb2a"
+        }
+      ]
+    }
+  ],
+  "list-row": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "list-row",
+          "breaking": false,
+          "summary": "rows that state a fact and rows that are a choice",
+          "date": "2026-09-25",
+          "commit": "10d680d3e1"
+        }
+      ]
+    }
+  ],
+  "marked-text": [
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "marked-text",
+          "breaking": false,
+          "summary": "add text with marks, to read or to type into",
+          "date": "2026-09-18",
+          "commit": "f52f6e1aa3"
+        }
+      ]
+    }
+  ],
+  "menu": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        },
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "menus",
+          "breaking": false,
+          "summary": "Menu, ContextMenu, Select and Combobox",
+          "date": "2026-08-31",
+          "commit": "243cc12f2e"
+        }
+      ]
+    }
+  ],
+  "nav-rail": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "frame",
+          "breaking": false,
+          "summary": "a collapsed rail, a centred title bar, described sections",
+          "date": "2026-09-25",
+          "commit": "b91b8d6f3c"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "nav-rail",
+          "breaking": false,
+          "summary": "one list of destinations, in the three shapes it takes",
+          "date": "2026-09-20",
+          "commit": "a58c06d96e"
+        }
+      ]
+    }
+  ],
+  "notification-bell": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "notification-bell",
+          "breaking": false,
+          "summary": "add the title-bar bell",
+          "date": "2026-09-18",
+          "commit": "c0f370a49c"
+        }
+      ]
+    }
+  ],
+  "number-field": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "numbers, scales, and the two fields with no foundation",
+          "date": "2026-09-02",
+          "commit": "ead7461190"
+        }
+      ]
+    }
+  ],
+  "number-format": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.21.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a table, its pages, and the two ways a cell is written",
+          "date": "2026-09-09",
+          "commit": "32dc405cfa"
+        }
+      ]
+    }
+  ],
+  "page-header": [
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "page-header",
+          "breaking": false,
+          "summary": "a screen's own heading, and the measure under it",
+          "date": "2026-09-20",
+          "commit": "e214c793a1"
+        }
+      ]
+    }
+  ],
+  "page-size": [
+    {
+      "version": "0.21.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a table, its pages, and the two ways a cell is written",
+          "date": "2026-09-09",
+          "commit": "32dc405cfa"
+        }
+      ]
+    }
+  ],
+  "pagination": [
+    {
+      "version": "0.21.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a table, its pages, and the two ways a cell is written",
+          "date": "2026-09-09",
+          "commit": "32dc405cfa"
+        }
+      ]
+    }
+  ],
+  "panel": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "password-field": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "numbers, scales, and the two fields with no foundation",
+          "date": "2026-09-02",
+          "commit": "ead7461190"
+        }
+      ]
+    }
+  ],
+  "popover": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip",
+          "date": "2026-08-31",
+          "commit": "5dc3c06918"
+        }
+      ]
+    }
+  ],
+  "preview-card": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip",
+          "date": "2026-08-31",
+          "commit": "5dc3c06918"
+        }
+      ]
+    }
+  ],
+  "product-mark": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "marks",
+          "breaking": false,
+          "summary": "the line's marks in the package, at the level their size calls for",
+          "date": "2026-09-23",
+          "commit": "192bb5f0bf"
+        }
+      ]
+    }
+  ],
+  "product-switcher": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "marks",
+          "breaking": false,
+          "summary": "the line's marks in the package, at the level their size calls for",
+          "date": "2026-09-23",
+          "commit": "192bb5f0bf"
+        }
+      ]
+    }
+  ],
+  "progress": [
+    {
+      "version": "0.23.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "progress",
+          "breaking": false,
+          "summary": "stripe the unknown bar, because a full one reads as done",
+          "date": "2026-09-09",
+          "commit": "1eeccf2cea"
+        },
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "the screens between asking for data and showing it",
+          "date": "2026-09-09",
+          "commit": "bc3f636934"
+        }
+      ]
+    }
+  ],
+  "prose": [
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    }
+  ],
+  "query-state": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "states",
+          "breaking": false,
+          "summary": "plain empty states and a retry for a failed load",
+          "date": "2026-09-25",
+          "commit": "ce765d42c7"
+        }
+      ]
+    },
+    {
+      "version": "0.23.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "the screens between asking for data and showing it",
+          "date": "2026-09-09",
+          "commit": "bc3f636934"
+        }
+      ]
+    }
+  ],
+  "radio-group": [
+    {
+      "version": "0.16.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "a field, and the three ways of choosing",
+          "date": "2026-09-02",
+          "commit": "7df746d61c"
+        }
+      ]
+    }
+  ],
+  "rating-scale": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure in steps, and name the step that was missing",
+          "date": "2026-09-19",
+          "commit": "8dd8a2859e"
+        }
+      ]
+    },
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "numbers, scales, and the two fields with no foundation",
+          "date": "2026-09-02",
+          "commit": "ead7461190"
+        }
+      ]
+    }
+  ],
+  "relative-time": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.21.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a table, its pages, and the two ways a cell is written",
+          "date": "2026-09-09",
+          "commit": "32dc405cfa"
+        }
+      ]
+    }
+  ],
+  "reorderable-list": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "columns",
+          "breaking": false,
+          "summary": "a header edge to drag, rows that reorder, a funnel with a panel",
+          "date": "2026-09-18",
+          "commit": "8310586a41"
+        }
+      ]
+    }
+  ],
+  "save-state": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five components for the harder half of a form",
+          "date": "2026-09-03",
+          "commit": "cfb317aafd"
+        }
+      ]
+    }
+  ],
+  "scroll-area": [
+    {
+      "version": "0.34.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "scroll-area",
+          "breaking": false,
+          "summary": "scroll one way, so a list's rows truncate",
+          "date": "2026-10-01",
+          "commit": "2a1a9d1a7f"
+        }
+      ]
+    },
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "scroll-area",
+          "breaking": false,
+          "summary": "an overlay bar that takes no width",
+          "date": "2026-09-23",
+          "commit": "d29932f710"
+        }
+      ]
+    }
+  ],
+  "search-field": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "palette",
+          "breaking": false,
+          "summary": "CommandPalette, SearchField and the shortcut behind them",
+          "date": "2026-09-01",
+          "commit": "81555615d3"
+        }
+      ]
+    }
+  ],
+  "section-nav": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "frame",
+          "breaking": false,
+          "summary": "a collapsed rail, a centred title bar, described sections",
+          "date": "2026-09-25",
+          "commit": "b91b8d6f3c"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.29.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "section-nav",
+          "breaking": false,
+          "summary": "keep a long section name on one line",
+          "date": "2026-09-20",
+          "commit": "5e1e695092"
+        }
+      ]
+    },
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "section-nav",
+          "breaking": false,
+          "summary": "add the section column and its heading",
+          "date": "2026-09-18",
+          "commit": "0241e1fcc6"
+        }
+      ]
+    }
+  ],
+  "segmented-control": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "segmented-control",
+          "breaking": false,
+          "summary": "one of a few, as a radio group",
+          "date": "2026-09-25",
+          "commit": "93eec94b92"
+        }
+      ]
+    }
+  ],
+  "select": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        },
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five defects a live run found, and none of the tests did",
+          "date": "2026-09-02",
+          "commit": "863226c86f"
+        }
+      ]
+    },
+    {
+      "version": "0.9.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "menus",
+          "breaking": false,
+          "summary": "Menu, ContextMenu, Select and Combobox",
+          "date": "2026-08-31",
+          "commit": "243cc12f2e"
+        }
+      ]
+    }
+  ],
+  "shortcut": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    },
+    {
+      "version": "0.10.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "palette",
+          "breaking": false,
+          "summary": "CommandPalette, SearchField and the shortcut behind them",
+          "date": "2026-09-01",
+          "commit": "81555615d3"
+        }
+      ]
+    }
+  ],
+  "shortcuts-dialog": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "commands",
+          "breaking": true,
+          "summary": "one list of commands for keys, palette and sheet",
+          "date": "2026-10-07",
+          "commit": "dd9a125dab"
+        }
+      ]
+    }
+  ],
+  "skeleton": [
+    {
+      "version": "0.23.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "the screens between asking for data and showing it",
+          "date": "2026-09-09",
+          "commit": "bc3f636934"
+        }
+      ]
+    }
+  ],
+  "skeleton-of": [
+    {
+      "version": "0.27.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "skeleton-of",
+          "breaking": false,
+          "summary": "a placeholder that measures the content instead of guessing it",
+          "date": "2026-09-19",
+          "commit": "7d1b777713"
+        }
+      ]
+    }
+  ],
+  "slider": [
+    {
+      "version": "0.17.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "numbers, scales, and the two fields with no foundation",
+          "date": "2026-09-02",
+          "commit": "ead7461190"
+        }
+      ]
+    }
+  ],
+  "sparkline": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "the shape of a history, beside the number it belongs to",
+          "date": "2026-09-15",
+          "commit": "132bcbe2b7"
+        }
+      ]
+    }
+  ],
+  "spinner": [
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "splash": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "icons",
+          "breaking": false,
+          "summary": "let an icon keep the size it is given, across the set",
+          "date": "2026-09-24",
+          "commit": "217b558e9d"
+        }
+      ]
+    },
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "splash",
+          "breaking": false,
+          "summary": "add the opening screen",
+          "date": "2026-09-18",
+          "commit": "fad03eede1"
+        }
+      ]
+    }
+  ],
+  "splitter": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "splitter",
+          "breaking": false,
+          "summary": "panes a person resizes, by pointer or keyboard",
+          "date": "2026-09-23",
+          "commit": "0e3b4db274"
+        }
+      ]
+    }
+  ],
+  "stat-tile": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "stat-tile",
+          "breaking": true,
+          "summary": "a judgement has to bring a mark, and the type says so",
+          "date": "2026-09-19",
+          "commit": "ea09d669f3"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "one figure, and what it is a figure of",
+          "date": "2026-09-15",
+          "commit": "e6a9466233"
+        }
+      ]
+    }
+  ],
+  "status-dot": [
+    {
+      "version": "0.27.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "status-dot",
+          "breaking": false,
+          "summary": "a condition that carries its word, not only its colour",
+          "date": "2026-09-19",
+          "commit": "bdcae7f8aa"
+        }
+      ]
+    }
+  ],
+  "stepper": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "stepper",
+          "breaking": false,
+          "summary": "progress through steps, and the form that walks them",
+          "date": "2026-09-23",
+          "commit": "8c95cacef0"
+        }
+      ]
+    }
+  ],
+  "switch": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.16.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "a field, and the three ways of choosing",
+          "date": "2026-09-02",
+          "commit": "7df746d61c"
+        }
+      ]
+    }
+  ],
+  "table": [
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.21.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a table, its pages, and the two ways a cell is written",
+          "date": "2026-09-09",
+          "commit": "32dc405cfa"
+        }
+      ]
+    }
+  ],
+  "table-sort": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.21.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a table, its pages, and the two ways a cell is written",
+          "date": "2026-09-09",
+          "commit": "32dc405cfa"
+        }
+      ]
+    }
+  ],
+  "tabs": [
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "button",
+          "breaking": true,
+          "summary": "stand on the control rows and size the icon at every size",
+          "date": "2026-09-24",
+          "commit": "71ce281a81"
+        }
+      ]
+    },
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tabs",
+          "breaking": false,
+          "summary": "a window's open documents in its title bar",
+          "date": "2026-09-23",
+          "commit": "f9f5ef296e"
+        }
+      ]
+    }
+  ],
+  "tag-input": [
+    {
+      "version": "0.20.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five components for the harder half of a form",
+          "date": "2026-09-03",
+          "commit": "cfb317aafd"
+        }
+      ]
+    }
+  ],
+  "textarea": [
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "theme": [
+    {
+      "version": "0.35.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "set the caption in dim, which passes AA at 10px",
+          "date": "2026-10-07",
+          "commit": "7001054703"
+        }
+      ]
+    },
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "one caption utility and the compact rail width",
+          "date": "2026-09-25",
+          "commit": "88a3fee352"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "inherit the body's line height as a ratio, not a length",
+          "date": "2026-09-24",
+          "commit": "7a94feb9e4"
+        },
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "set the page in the base step and lighten lucide's line",
+          "date": "2026-09-24",
+          "commit": "6ca827cd16"
+        }
+      ]
+    },
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "name the window's own chrome, so four products stop guessing",
+          "date": "2026-09-20",
+          "commit": "afc3ac0177"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "a floor for pointer targets, and a way to reach it",
+          "date": "2026-09-19",
+          "commit": "2d397f5ff2"
+        }
+      ]
+    },
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.25.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure syntax contrast against the surface the browser draws",
+          "date": "2026-09-17",
+          "commit": "fbd3d2396c"
+        },
+        {
+          "type": "feat",
+          "scope": "text",
+          "breaking": false,
+          "summary": "markdown through one stylesheet, and code whose colours are yours",
+          "date": "2026-09-17",
+          "commit": "5f27eb8428"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a year of days, where a cell has four meanings",
+          "date": "2026-09-15",
+          "commit": "5254004ef2"
+        },
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "the colours a chart is drawn in, and the gate that holds them",
+          "date": "2026-09-15",
+          "commit": "d74dc240e3"
+        }
+      ]
+    },
+    {
+      "version": "0.20.2",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "keep the scrollbar thumb catchable, and gate the rules",
+          "date": "2026-09-04",
+          "commit": "584d4ce57d"
+        }
+      ]
+    },
+    {
+      "version": "0.18.2",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "let a component turn off the focus ring, and dress the palette",
+          "date": "2026-09-02",
+          "commit": "073966999c"
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "the light surfaces were twelve times denser than intended",
+          "date": "2026-09-01",
+          "commit": "1bcee917a0"
+        }
+      ]
+    },
+    {
+      "version": "0.6.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "give every status fill a legible partner",
+          "date": "2026-08-31",
+          "commit": "8f1f897468"
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "add the radius, type, motion, elevation and layer scales",
+          "date": "2026-08-29",
+          "commit": "8688579a8c"
+        }
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "make the accent legible for every colour in the line",
+          "date": "2026-08-29",
+          "commit": "baa5733361"
+        },
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "add the token vocabulary in dark and light themes",
+          "date": "2026-08-29",
+          "commit": "2820332b14"
+        }
+      ]
+    }
+  ],
+  "tier": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tier",
+          "breaking": false,
+          "summary": "preview the mark under the pointer and say the threshold",
+          "date": "2026-09-25",
+          "commit": "479c4bf76e"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure in steps, and name the step that was missing",
+          "date": "2026-09-19",
+          "commit": "8dd8a2859e"
+        }
+      ]
+    },
+    {
+      "version": "0.27.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tier",
+          "breaking": false,
+          "summary": "the band, the road to the next one, and one axis of the score",
+          "date": "2026-09-19",
+          "commit": "eef43e141b"
+        }
+      ]
+    }
+  ],
+  "time-field": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "locale",
+          "breaking": true,
+          "summary": "dates and numbers in the application's language",
+          "date": "2026-09-23",
+          "commit": "9be5f95299"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "density as a property of a region",
+          "date": "2026-09-19",
+          "commit": "849d783b01"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "dates, on Intl rather than on a date library",
+          "date": "2026-09-02",
+          "commit": "5ec8403592"
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.27.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "timeline",
+          "breaking": false,
+          "summary": "a history whose rail stops where the history does",
+          "date": "2026-09-19",
+          "commit": "70c69228da"
+        }
+      ]
+    }
+  ],
+  "toast": [
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.11.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "feedback",
+          "breaking": false,
+          "summary": "Toast, Alert and Banner",
+          "date": "2026-09-01",
+          "commit": "84012111d5"
+        }
+      ]
+    }
+  ],
+  "tooltip": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.32.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": true,
+          "summary": "a layer for popups inside overlays, a body that scrolls alone",
+          "date": "2026-09-24",
+          "commit": "5244cfdd83"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure in steps, and name the step that was missing",
+          "date": "2026-09-19",
+          "commit": "8dd8a2859e"
+        }
+      ]
+    },
+    {
+      "version": "0.26.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "shade a popup instead of staining the page behind it",
+          "date": "2026-09-18",
+          "commit": "9c7a96b331"
+        }
+      ]
+    },
+    {
+      "version": "0.18.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "forms",
+          "breaking": false,
+          "summary": "five defects a live run found, and none of the tests did",
+          "date": "2026-09-02",
+          "commit": "863226c86f"
+        }
+      ]
+    },
+    {
+      "version": "0.8.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "overlays",
+          "breaking": false,
+          "summary": "Dialog, ConfirmDialog, Drawer, Popover, PreviewCard, Tooltip",
+          "date": "2026-08-31",
+          "commit": "5dc3c06918"
+        }
+      ]
+    }
+  ],
+  "track": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "eslint",
+          "breaking": true,
+          "summary": "no-raw-button and no-arbitrary-scale",
+          "date": "2026-09-25",
+          "commit": "ac7a11a9cc"
+        }
+      ]
+    },
+    {
+      "version": "0.28.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "measure in steps, and name the step that was missing",
+          "date": "2026-09-19",
+          "commit": "8dd8a2859e"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a bar divided into stretches, with something standing along it",
+          "date": "2026-09-15",
+          "commit": "cd912265b3"
+        }
+      ]
+    }
+  ],
+  "track-segments": [
+    {
+      "version": "0.34.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "keep a module's description through shadcn add",
+          "date": "2026-10-01",
+          "commit": "a2182f9dfb"
+        }
+      ]
+    },
+    {
+      "version": "0.24.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a bar divided into stretches, with something standing along it",
+          "date": "2026-09-15",
+          "commit": "cd912265b3"
+        }
+      ]
+    }
+  ],
+  "tree-rows": [
+    {
+      "version": "0.22.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a long list, a deep one, and the facts beside them",
+          "date": "2026-09-09",
+          "commit": "4cbd42ec00"
+        }
+      ]
+    }
+  ],
+  "tree-view": [
+    {
+      "version": "0.22.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a long list, a deep one, and the facts beside them",
+          "date": "2026-09-09",
+          "commit": "4cbd42ec00"
+        }
+      ]
+    }
+  ],
+  "truncate": [
+    {
+      "version": "0.5.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "registry",
+          "breaking": false,
+          "summary": "add the nine base primitives",
+          "date": "2026-08-30",
+          "commit": "81a2fd944c"
+        }
+      ]
+    }
+  ],
+  "virtual-list": [
+    {
+      "version": "0.22.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "data",
+          "breaking": false,
+          "summary": "a long list, a deep one, and the facts beside them",
+          "date": "2026-09-09",
+          "commit": "4cbd42ec00"
+        }
+      ]
+    }
+  ],
+  "window-frame": [
+    {
+      "version": "0.33.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "frame",
+          "breaking": false,
+          "summary": "a collapsed rail, a centred title bar, described sections",
+          "date": "2026-09-25",
+          "commit": "b91b8d6f3c"
+        }
+      ]
+    },
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tabs",
+          "breaking": false,
+          "summary": "a window's open documents in its title bar",
+          "date": "2026-09-23",
+          "commit": "f9f5ef296e"
+        }
+      ]
+    },
+    {
+      "version": "0.29.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "name the window's own chrome, so four products stop guessing",
+          "date": "2026-09-20",
+          "commit": "afc3ac0177"
+        }
+      ]
+    },
+    {
+      "version": "0.26.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "window-frame",
+          "breaking": false,
+          "summary": "add the frameless window's own chrome",
+          "date": "2026-09-18",
+          "commit": "0eee2528dd"
+        }
+      ]
+    }
+  ],
+  "wizard": [
+    {
+      "version": "0.31.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "stepper",
+          "breaking": false,
+          "summary": "progress through steps, and the form that walks them",
+          "date": "2026-09-23",
+          "commit": "8c95cacef0"
+        }
+      ]
+    }
+  ]
+}

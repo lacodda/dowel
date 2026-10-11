@@ -602,4 +602,13 @@ if (snapshotExists) {
 const catalogue = readFileSync(resolve(outDir, 'registry.json'), 'utf8')
 writeFileSync(resolve(root, 'packages/dowel/dist/registry.json'), catalogue)
 
+/* And the history of every item beside it - which release changed which
+ * file, and how - for the reader asking why a copy differs from the registry
+ * it was upgraded to. Copied rather than computed: it is git's, and the
+ * checkout that publishes has no history (`tools/build-history.mjs`). */
+writeFileSync(
+  resolve(root, 'packages/dowel/dist/history.json'),
+  readFileSync(resolve(root, 'registry/history.json'), 'utf8').replace(/\r\n/g, '\n'),
+)
+
 console.log(`registry: ${items.length} items, ${snapshotExists ? `${snapshot} snapshot kept` : `plus the ${snapshot} snapshot`}`)
