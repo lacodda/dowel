@@ -4875,6 +4875,114 @@ Built on [Popover](/dowel/components/popover/) and
 
 ---
 
+# Frame
+
+Source: https://lacodda.github.io/dowel/components/frame
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#frame
+
+A column with a standing head and foot, a list beside its detail at two widths, and the rail's width for settings.
+
+## Notes
+
+**The column never scrolls; a part of its body does.** The obvious way to
+build a screen - a column that scrolls - is wrong three ways at once: the head
+goes up with the content, a table's sticky header has nothing to stick to, and
+a field at the foot drifts off the bottom of the window with everything above
+it. kilna found eleven screens drawn that way after a release had said none
+were, and this is the frame it settled on.
+
+```tsx
+<Screen scroll="held">
+  <Frame head={<PageHeader title="Works" />} foot={<SaveState status={status} />}>
+    <Pane label="Works" bodyClassName="p-1">
+      {works.map((work) => <RowButton key={work.id}>{work.title}</RowButton>)}
+    </Pane>
+  </Frame>
+</Screen>
+```
+
+`Screen scroll="held"` hands the window's height down and scrolls nowhere;
+`Frame` keeps it; `Pane` is the one box that scrolls, between bars that stand.
+
+**`Pane` scrolls down, never across.** Its body is a
+[ScrollArea](/dowel/components/scroll-area/) held to the vertical axis, so a
+row truncates to its column instead of widening it - a queue's rows once ran a
+hundred pixels past a 264px column before the axis was held. `label` names the
+body, which becomes a tab stop when it overflows.
+
+**`ListDetail` has two widths and one gap.** `list` (`--spacing-list`, 264px)
+for rows with a title and a line under it; `rail` (`--spacing-rail`, 216px)
+for a column of destinations, such as the sections of a settings screen. Six
+screens of kilna drew this with five widths and three gaps before it was one
+component.
+
+**Where there is no room for both, there is one.** Below 672px of its own
+width - a container query, so a rail beside it is counted - the list takes
+the whole width until something is open, then the open thing takes it alone.
+That is why `open` is required: a screen that forgot it would show a phone the
+list forever. Put `ListDetailBack` in the detail's head; it is drawn only at
+that width, where the list is not on screen.
+
+```tsx
+<ListDetail
+  open={selected !== null}
+  list={<Pane label="Works">{rows}</Pane>}
+  detail={
+    <Pane
+      label={work.title}
+      head={<ListDetailBack label="All works" onClick={() => setSelected(null)} />}
+    >
+      {body}
+    </Pane>
+  }
+/>
+```
+
+The [ListDetailScreen](/dowel/blocks/list-detail-screen/) block is this,
+with the search, the keyboard and the empty states a list needs.
+
+## Props
+
+### Frame
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `head` | `ReactNode` | | Stands above the body: a title, filters, actions |
+| `foot` | `ReactNode` | | Stands under it: a composer, a status line |
+| `children` | `ReactNode` | | The body, which takes the rest of the height |
+
+### Pane
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `string` | | Names the scrolling body |
+| `head` | `ReactNode` | | The bar across the top |
+| `foot` | `ReactNode` | | The bar across the foot |
+| `bodyClassName` | `string` | | The body's padding |
+| `viewportRef` | `Ref<HTMLDivElement>` | | The scrolling element |
+
+### ListDetail
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `list` | `ReactNode` | | The list, usually a `Pane` of `RowButton`s |
+| `detail` | `ReactNode` | | What is open, or what says nothing is |
+| `open` | `boolean` | | Whether something is open; decides which one shows where only one fits |
+| `width` | `list \| rail` | `list` | The list's width |
+| `side` | `start \| end` | `start` | Which side the list stands on |
+
+### ListDetailBack
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | | The product's word: "All works" |
+| `onClick` | `MouseEventHandler` | | Go back to the list |
+
+---
+
 # Image
 
 Source: https://lacodda.github.io/dowel/components/image
@@ -5063,6 +5171,16 @@ keeps the two from disagreeing:
 **The focus ring is drawn outside the border**, not instead of it. A field that
 only changes colour on focus is invisible to a reader who does not separate
 those two colours.
+
+**Under a finger the text is 16px.** iOS Safari zooms the page into any field
+whose text is smaller when it takes the focus, and does not zoom back out - a
+sign-in form opens at 130% with the password off the side of the screen. The
+set's fields are 12px with a mouse and `pointer-coarse:text-lg` with a finger,
+which is a question about the pointer rather than the width: a phone on its
+side is wider than `sm` and zooms all the same. Every field in the set carries
+it - Input, Textarea, PasswordField, NumberField, SearchField, TagInput,
+Combobox, the palette - so a product has nothing to override on its own
+sign-in screen.
 
 ## Props
 

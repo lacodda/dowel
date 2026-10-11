@@ -63,6 +63,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [FieldDraft](https://lacodda.github.io/dowel/components/field-draft.md): The rules between a value stored somewhere and the text someone is typing over it, as a hook to spread on an input.
 - [FileDrop](https://lacodda.github.io/dowel/components/file-drop.md): A place to put files: drag them onto it, or press it and pick them.
 - [FilterPopover](https://lacodda.github.io/dowel/components/filter-popover.md): A funnel in a column header that opens a small panel for narrowing by that column, filled while the filter holds something, with Clear inside.
+- [Frame](https://lacodda.github.io/dowel/components/frame.md): The geometry of a screen whose bottom edge is the window's - a column that never scrolls, panes whose bars stand, a list beside what is open in it.
 - [Image](https://lacodda.github.io/dowel/components/image.md): A box that reserves its shape before a picture arrives - a placeholder while it loads, a fade once it has, and a quiet fallback instead of the browser's broken-image glyph.
 - [InlineField](https://lacodda.github.io/dowel/components/inline-field.md): A value edited where it is shown - click, type, Enter or leave to keep, Escape to take it back.
 - [Input](https://lacodda.github.io/dowel/components/input.md): A single-line field, with everything a browser gives an input for free.

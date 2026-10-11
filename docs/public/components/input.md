@@ -26,6 +26,16 @@ keeps the two from disagreeing:
 only changes colour on focus is invisible to a reader who does not separate
 those two colours.
 
+**Under a finger the text is 16px.** iOS Safari zooms the page into any field
+whose text is smaller when it takes the focus, and does not zoom back out - a
+sign-in form opens at 130% with the password off the side of the screen. The
+set's fields are 12px with a mouse and `pointer-coarse:text-lg` with a finger,
+which is a question about the pointer rather than the width: a phone on its
+side is wider than `sm` and zooms all the same. Every field in the set carries
+it - Input, Textarea, PasswordField, NumberField, SearchField, TagInput,
+Combobox, the palette - so a product has nothing to override on its own
+sign-in screen.
+
 ## Props
 
 Everything an `<input>` takes, plus `className`. `ref` reaches the element,

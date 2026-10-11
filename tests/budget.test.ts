@@ -318,6 +318,9 @@ describe('what a primitive drags in', () => {
     'scroll-area': ['@base-ui/react', 'class-variance-authority'],
     // Written by hand: resizing two panes is arithmetic, not a dependency.
     splitter: ['class-variance-authority'],
+    // A screen's geometry: a pane's body is a ScrollArea held to one axis,
+    // and the way back to the list on a narrow screen is a Button.
+    frame: ['button', 'scroll-area'],
     image: ['class-variance-authority'],
     // Progress, and the form that walks it. The wizard is the stepper plus
     // its steps' content and the Button actions under them.

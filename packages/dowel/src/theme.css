@@ -720,6 +720,17 @@
   --spacing-rail-compact: 56px;
 
   /*
+   * A list beside what is open in it: `ListDetail`'s column of rows.
+   *
+   * Wider than the rail on purpose. The rail holds a destination per line -
+   * one word and an icon - and a list holds a title with a line under it and
+   * a date at the end, which at 216px is cut to three words. kilna drew six
+   * such screens with five widths and three gaps before settling on two
+   * widths, this and the rail's; 264 is the one its rows read at.
+   */
+  --spacing-list: 264px;
+
+  /*
    * How much of a frameless window's edge can be grabbed to resize it.
    *
    * The system used to own this and gave about 4 pixels plus whatever the

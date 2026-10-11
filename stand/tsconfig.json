@@ -11,6 +11,6 @@
       "dowel-ui/marks": ["../packages/dowel/src/marks.ts"]
     }
   },
-  "include": ["src", "../registry/**/*.tsx", "vite.config.ts"],
+  "include": ["src", "../registry/**/*.tsx", "../fixtures/**/*.ts", "vite.config.ts"],
   "exclude": ["../registry/**/*.test.tsx"]
 }

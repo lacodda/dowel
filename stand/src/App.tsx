@@ -168,6 +168,7 @@ import { CollapsibleSection } from './sections/collapsible'
 import { AccordionSection } from './sections/accordion'
 import { ScrollAreaSection } from './sections/scroll-area'
 import { SplitterSection } from './sections/splitter'
+import { FrameSection } from './sections/frame'
 import { ImageSection } from './sections/image'
 import { StepperSection } from './sections/stepper'
 import { WizardSection } from './sections/wizard'
@@ -690,6 +691,7 @@ const sections = [
     docs: '/dowel/components/splitter/',
     render: () => <SplitterSection />,
   },
+  { id: 'frame', title: 'Frame', docs: '/dowel/components/frame/', render: () => <FrameSection /> },
   {
     id: 'image',
     title: 'Image',

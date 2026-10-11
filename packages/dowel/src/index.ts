@@ -201,7 +201,8 @@ export const sizeTokens = [
 
 /**
  * The window's own chrome: the strip at the top, the rail at the left, the
- * buttons that close the window, and how much of a frameless window's edge
+ * column of a list beside what is open in it, the buttons that close the
+ * window, and how much of a frameless window's edge
  * can be grabbed to resize it.
  *
  * Its own group rather than a tail on `sizeTokens`, because it is a different
@@ -218,6 +219,7 @@ export const chromeTokens = [
   'spacing-titlebar',
   'spacing-rail',
   'spacing-rail-compact',
+  'spacing-list',
   'spacing-window-button',
   'spacing-resize-edge',
   'spacing-resize-corner',

@@ -120,6 +120,7 @@ const SECTIONS = [
   'accordion',
   'scroll-area',
   'splitter',
+  'frame',
   'image',
   'stepper',
   'wizard',
