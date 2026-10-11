@@ -20,7 +20,14 @@ jobs:
         with:
           config: cliff.toml
           args: --latest --strip header
+        env:
+          OUTPUT: release-notes.md
+      # What the release added or changed the look of, as the stand draws it:
+      # the visual gate's baselines, committed before the tag and linked at it.
+      # Node alone - it reads committed files and needs no install.
+      - name: Add the pictures from the stand
+        run: node tools/release-notes.mjs "$GITHUB_REF_NAME" >> release-notes.md
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          body: ${{ steps.cliff.outputs.content }}
+          body_path: release-notes.md
