@@ -21,6 +21,6 @@ declare module '*/build-history.mjs' {
 
   export function itemOf(path: string): string | null
   export function parseSubject(subject: string): Pick<Change, 'type' | 'scope' | 'breaking' | 'summary'>
-  export function buildHistory(root?: string): History
+  export function buildHistory(root?: string, options?: { exact?: boolean }): History
   export function serialize(history: History): string
 }

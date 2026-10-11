@@ -26,6 +26,12 @@ describe('the history', () => {
     ).toBe(true)
   })
 
+  it('reads the same history in one pass as release by release', () => {
+    // The one pass is what runs; the release-by-release road is what a merge
+    // in the history would force. Both answer here, and must agree.
+    expect(buildHistory(root)).toEqual(buildHistory(root, { exact: true }))
+  }, 30_000)
+
   it('knows the components, the theme, prose and the briefing', () => {
     const history = buildHistory(root)
     for (const name of ['button', 'theme', 'prose', 'input']) expect(history[name], name).toBeDefined()

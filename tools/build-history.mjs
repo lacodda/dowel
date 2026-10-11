@@ -74,8 +74,11 @@ function currentItems(root) {
  *
  * Throws on a shallow clone rather than answering from the part of history
  * it can see: a history read from one commit says every item was born today.
+ *
+ * `exact` asks git release by release even on a linear history - the slow
+ * road a merge would force, kept honest by a test that both roads agree.
  */
-export function buildHistory(root = defaultRoot) {
+export function buildHistory(root = defaultRoot, { exact = false } = {}) {
   const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
 
   if (git('rev-parse', '--is-shallow-repository').trim() === 'true') {
@@ -108,35 +111,77 @@ export function buildHistory(root = defaultRoot) {
   const watched = ['registry/ui', 'registry/blocks', 'packages/dowel/src/theme.css', 'packages/dowel/src/prose.css', 'registry/files/AGENTS.md']
   const history = {}
 
-  for (const { version, range } of ranges) {
-    // Breaking is said in the header (`!`) or in a footer; the footer needs
-    // the body, which is read only for the commits that have one.
-    const breakingByFooter = new Set(
-      git('log', '--no-merges', '--format=%H', '--grep=BREAKING CHANGE', range).split('\n').filter(Boolean),
-    )
-    const log = git('log', '--no-merges', '--format=%x00%H%x09%cs%x09%s', '--name-only', range, '--', ...watched)
-    for (const entry of log.split('\0').filter((chunk) => chunk.trim() !== '')) {
-      const [header, ...paths] = entry.split('\n')
-      const [hash, date, subject] = header.split('\t')
-      const parsed = parseSubject(subject)
-      const change = {
-        type: parsed.type,
-        scope: parsed.scope,
-        breaking: parsed.breaking || breakingByFooter.has(hash),
-        summary: parsed.summary,
-        date,
-        commit: hash.slice(0, 10),
+  // Breaking is said in the header (`!`) or in a footer; the footer needs the
+  // body, so it is asked of git once for the whole history.
+  const breakingByFooter = new Set(
+    git('log', '--no-merges', '--format=%H', '--grep=BREAKING CHANGE', 'HEAD').split('\n').filter(Boolean),
+  )
+
+  /** The commits of a `git log` that names its files, as `{ hash, date, subject, paths }`. */
+  const commitsOf = (log) =>
+    log
+      .split('\0')
+      .filter((chunk) => chunk.trim() !== '')
+      .map((entry) => {
+        const [header, ...paths] = entry.split('\n')
+        const [hash, date, subject] = header.split('\t')
+        return { hash, date, subject, paths: paths.map((path) => path.trim()).filter(Boolean) }
+      })
+
+  /*
+   * Which version shipped each commit.
+   *
+   * On a linear history - which this repository keeps, and checks - that is
+   * one pass: walking back from HEAD, a commit belongs to the nearest tag at
+   * or above it. Asking git range by range gave the same answer in two calls
+   * per release, a hundred processes, and on the Windows runner that was six
+   * seconds - a gate timing out on its own bookkeeping. With a merge in the
+   * history the nearest tag above is no longer the release that shipped a
+   * commit, so the exact, slower question is asked instead.
+   */
+  const released = new Map()
+  if (!exact && git('rev-list', '--merges', '--count', 'HEAD').trim() === '0') {
+    const tagged = new Set(tags)
+    let version = latest !== undefined && compareVersions(manifest, latest) > 0 ? manifest : null
+    // Oldest last; `%D` names the tags that point at the commit.
+    for (const line of git('log', '--format=%H%x09%D', 'HEAD').split('\n').filter(Boolean)) {
+      const [hash, refs = ''] = line.split('\t')
+      const tag = refs
+        .split(', ')
+        .map((ref) => ref.replace(/^tag: v/, ''))
+        .find((ref) => tagged.has(ref))
+      if (tag !== undefined) version = tag
+      if (version !== null) released.set(hash, version)
+    }
+  } else {
+    for (const { version, range } of ranges) {
+      for (const hash of git('log', '--format=%H', range).split('\n').filter(Boolean)) released.set(hash, version)
+    }
+  }
+
+  const log = git('log', '--no-merges', '--format=%x00%H%x09%cs%x09%s', '--name-only', 'HEAD', '--', ...watched)
+  for (const { hash, date, subject, paths } of commitsOf(log)) {
+    const version = released.get(hash)
+    // After the last tag, with the manifest not yet raised: no release yet.
+    if (version === undefined) continue
+    const parsed = parseSubject(subject)
+    const change = {
+      type: parsed.type,
+      scope: parsed.scope,
+      breaking: parsed.breaking || breakingByFooter.has(hash),
+      summary: parsed.summary,
+      date,
+      commit: hash.slice(0, 10),
+    }
+    const touched = new Set(paths.map((path) => itemOf(path)).filter((name) => name !== null && items.has(name)))
+    for (const name of touched) {
+      history[name] ??= []
+      let release = history[name].find((entry) => entry.version === version)
+      if (!release) {
+        release = { version, changes: [] }
+        history[name].push(release)
       }
-      const touched = new Set(paths.map((path) => itemOf(path.trim())).filter((name) => name !== null && items.has(name)))
-      for (const name of touched) {
-        history[name] ??= []
-        let release = history[name].find((entry) => entry.version === version)
-        if (!release) {
-          release = { version, changes: [] }
-          history[name].push(release)
-        }
-        release.changes.push(change)
-      }
+      release.changes.push(change)
     }
   }
 
