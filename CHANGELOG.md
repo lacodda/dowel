@@ -2,6 +2,35 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.36.0] - 2026-10-11
+
+### Bug Fixes
+- Set typed text at 16px under a finger
+- Set the notes in dim, which clears AA
+
+### Build
+- Regenerate the registry, its v0.36 snapshot, the history and llms.txt
+
+### CI
+- Show what changed as the stand draws it
+
+### Documentation
+- Blocks, the demo and the history of each file
+
+### Features
+- A column that never scrolls, panes, and a list beside its detail
+- Blocks in the registry, and ListDetailScreen
+- SettingsScreen, LoginScreen and EmptyDashboardScreen
+- Kilna-lite, a small product built from the blocks
+- The history of every item, by file
+
+### Performance
+- Read the history in one pass
+
+### Testing
+- Hold everything photographed to the invented world
+- Record the baselines for the frame and the blocks
+
 ## [0.35.0] - 2026-10-07
 
 ### Breaking Changes
