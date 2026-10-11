@@ -81,6 +81,17 @@ describe('MarkedTextarea', () => {
     }
   })
 
+  it('keeps the two layers in step under a finger too', () => {
+    // The field is 16px under a coarse pointer, for the reason Input gives.
+    // The mirror is not a field and no gate on fields reads it - so a size
+    // given to one layer and not the other is a drift only this sees.
+    const { container } = render(<MarkedTextarea value="x" onChange={() => {}} aria-label="Verse" />)
+    const coarse = (className: string) => className.split(/\s+/).filter((name) => name.startsWith('pointer-coarse:'))
+    const mirror = coarse(container.querySelector('[data-mirror]')!.className)
+    expect(mirror).toContain('pointer-coarse:text-lg')
+    expect(coarse(screen.getByRole('textbox').className)).toEqual(mirror)
+  })
+
   it('stays transparent even when the metrics carry a background', () => {
     // The stand passed `bg-raise` in the shared class list and the field
     // painted over every mark. The box may have a background; the layer on

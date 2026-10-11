@@ -104,7 +104,8 @@ export function NumberField({
           placeholder={placeholder}
           aria-label={ariaLabel}
           className={cn(
-            'w-full min-w-0 bg-transparent px-2.5 text-sm text-text placeholder:text-faint',
+            // 16px under a finger, for the reason `fieldClasses` gives.
+            'w-full min-w-0 bg-transparent px-2.5 text-sm pointer-coarse:text-lg text-text placeholder:text-faint',
             'outline-none',
             // Figures line up in a column, which is the whole reason a number
             // is in a field of its own.
