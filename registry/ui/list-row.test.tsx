@@ -14,6 +14,18 @@ import { ListRow, RowButton } from './list-row'
  */
 
 describe('ListRow', () => {
+  it('sets its notes in dim, which clears AA at their size', () => {
+    // `faint` measured below AA at 11px in both themes, live, under every
+    // list beside a detail. Until contrast is computed per type step, the
+    // choice is held here.
+    render(<ListRow description="Ines Duarte" end="2 hours ago">Harbour lights</ListRow>)
+    for (const note of ['Ines Duarte', '2 hours ago']) {
+      const className = screen.getByText(note).className
+      expect(className).toContain('text-dim')
+      expect(className).not.toContain('text-faint')
+    }
+  })
+
   it('lays out the three slots around the words', () => {
     render(
       <ListRow start={<span>•</span>} description="Audio" end={<time>02.09</time>}>

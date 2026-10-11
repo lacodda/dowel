@@ -21,6 +21,13 @@ const items = [
 ]
 
 describe('SectionNav', () => {
+  it('sets what a section holds in dim, which clears AA at 10px', () => {
+    render(<SectionNav label="Settings" items={[{ id: 'g', label: 'General', description: 'Theme, language' }]} />)
+    const className = screen.getByText('Theme, language').className
+    expect(className).toContain('text-dim')
+    expect(className).not.toContain('text-faint')
+  })
+
   it('is a landmark named for its caption', () => {
     render(<SectionNav label="Settings" items={items} />)
     expect(screen.getByRole('navigation', { name: 'Settings' })).toBeDefined()

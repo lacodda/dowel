@@ -127,7 +127,9 @@ function SectionNavRow({
           ) : (
             <span className="flex min-w-0 flex-1 flex-col">
               <span className={cn('truncate', active && 'font-semibold')}>{item.label}</span>
-              <span className="line-clamp-2 text-2xs text-faint">{item.description}</span>
+              {/* `dim` at this size: `faint` measured below AA at 10px in
+                  both themes (the same finding as ListRow's notes). */}
+              <span className="line-clamp-2 text-2xs text-dim">{item.description}</span>
             </span>
           )}
         </>
