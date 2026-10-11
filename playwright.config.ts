@@ -44,6 +44,11 @@ export default defineConfig({
     // window is a different picture for reasons that have nothing to do with
     // the component.
     viewport: { width: 1000, height: 800 },
+    // Nobody in particular's language and zone, said rather than inherited
+    // from the machine: a date in a picture is drawn in both, and the
+    // pictures go into release notes (`tests/redakt.test.ts`).
+    locale: 'en-US',
+    timezoneId: 'UTC',
   },
 
   expect: {
