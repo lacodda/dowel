@@ -136,6 +136,9 @@ const SECTIONS = [
   'skeleton-of',
   // Blocks: a screen each, in a window of its own.
   'list-detail-screen',
+  'settings-screen',
+  'login-screen',
+  'empty-dashboard-screen',
 ] as const
 
 for (const theme of ['dark', 'light'] as const) {

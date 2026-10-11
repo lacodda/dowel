@@ -170,6 +170,9 @@ import { ScrollAreaSection } from './sections/scroll-area'
 import { SplitterSection } from './sections/splitter'
 import { FrameSection } from './sections/frame'
 import { ListDetailScreenSection } from './sections/list-detail-screen'
+import { SettingsScreenSection } from './sections/settings-screen'
+import { LoginScreenSection } from './sections/login-screen'
+import { EmptyDashboardScreenSection } from './sections/empty-dashboard-screen'
 import { ImageSection } from './sections/image'
 import { StepperSection } from './sections/stepper'
 import { WizardSection } from './sections/wizard'
@@ -771,6 +774,27 @@ const sections = [
     kind: 'block',
     docs: '/dowel/blocks/list-detail-screen/',
     render: () => <ListDetailScreenSection />,
+  },
+  {
+    id: 'settings-screen',
+    title: 'SettingsScreen',
+    kind: 'block',
+    docs: '/dowel/blocks/settings-screen/',
+    render: () => <SettingsScreenSection />,
+  },
+  {
+    id: 'login-screen',
+    title: 'LoginScreen',
+    kind: 'block',
+    docs: '/dowel/blocks/login-screen/',
+    render: () => <LoginScreenSection />,
+  },
+  {
+    id: 'empty-dashboard-screen',
+    title: 'EmptyDashboardScreen',
+    kind: 'block',
+    docs: '/dowel/blocks/empty-dashboard-screen/',
+    render: () => <EmptyDashboardScreenSection />,
   },
 ]
 

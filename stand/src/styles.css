@@ -26,3 +26,7 @@
  * whose CSS does not exist.
  */
 @source '../../registry/ui';
+/* The blocks too, for the same reason: a class written only in a block - its
+ * row padding, its strike-through - had no CSS until this line, and the
+ * screen looked merely cramped rather than broken. */
+@source '../../registry/blocks';

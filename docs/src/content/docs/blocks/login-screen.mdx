@@ -1,0 +1,76 @@
+---
+title: LoginScreen
+description: The page for someone not signed in yet - a name, a password, a button, and the two ways it can go wrong said differently.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/login-screen.json
+```
+
+The block lands in `components/blocks/login-screen.tsx`, and what it is made of -
+[Field](/dowel/components/field/), [Input](/dowel/components/input/),
+[PasswordField](/dowel/components/password-field/),
+[Alert](/dowel/components/alert/), [Panel](/dowel/components/panel/) and
+[Button](/dowel/components/button/) - in `components/ui`.
+
+<Stand component="login-screen" caption="Sign in, be refused, find the server out of reach - at a desktop's width and a phone's." />
+
+## Notes
+
+**Refused and unreachable are different answers.** `onSubmit` resolves with
+nothing when the person is signed in, and with words when the server said no
+- "That email and password do not match." A promise that rejects means there
+was no answer at all, and the screen says `words.failed` instead. Telling
+someone whose password is right that it is wrong sends them to reset it.
+
+```tsx
+<LoginScreen
+  title="Sign in to kilna"
+  mark={<ProductMark product="kilna" size={40} />}
+  onSubmit={async ({ identifier, password }) => {
+    const response = await fetch('/api/session', { method: 'POST', body: JSON.stringify({ identifier, password }) })
+    if (response.status === 401) return 'That email and password do not match.'
+    if (!response.ok) throw new Error(response.statusText)
+    navigate('/')
+  }}
+  words={words}
+/>
+```
+
+**After a refusal the password is selected.** The focus goes back to it with
+everything in it selected, so the next attempt types over the old one rather
+than after it - and the refusal is a `role="alert"`, so a reader whose focus
+just moved hears why.
+
+**It cannot be sent twice.** While an attempt is on its way the button says
+`words.submitting`, is disabled and `aria-busy`, and a second submission by
+any road is refused: a double press signed in twice.
+
+**A password manager knows which box is which.** The first field is
+`autocomplete="username"` whether it asks for an email or a user name - that
+is the token paired with `current-password` - and `identifier="username"`
+turns it from an email field into a plain one, without the address keyboard
+or the browser's address check.
+
+**16px under a finger.** iOS zooms the page into a field with smaller text and
+does not zoom back out, which on this screen is the form at 130% with the
+password off the side. The set's fields take care of it, so the screen has
+nothing to override.
+
+**It is the page.** The block renders the page's `main`. Render it outside the
+frame of the signed-in product, where there is no rail beside it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | | "Sign in to kilna" |
+| `description` | `ReactNode` | | A line under it |
+| `mark` | `ReactNode` | | The product's mark, above the title |
+| `identifier` | `email \| username` | `email` | What the first field asks for |
+| `onSubmit` | `(credentials) => Promise<ReactNode \| void>` | | Nothing when signed in, words when refused; reject when there was no answer |
+| `extra` | `ReactNode` | | Under the password: "Forgot your password?" |
+| `footer` | `ReactNode` | | Under the panel |
+| `words` | `LoginScreenWords` | | `{ identifier, password, show, hide, submit, submitting, failed }` |

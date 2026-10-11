@@ -137,7 +137,10 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 
 ## Blocks
 
+- [EmptyDashboardScreen](https://lacodda.github.io/dowel/blocks/empty-dashboard-screen.md): A dashboard on its first day - the few things to do before it has anything to show, the next one ready to press, and the figures to come drawn with a dash.
 - [ListDetailScreen](https://lacodda.github.io/dowel/blocks/list-detail-screen.md): A screen of things and the one that is open - a searchable list beside it, the three kinds of nothing, a keyboard that walks the list, and a phone where the two take turns.
+- [LoginScreen](https://lacodda.github.io/dowel/blocks/login-screen.md): The page for someone not signed in yet - a name, a password, a button, and the two ways it can go wrong said differently.
+- [SettingsScreen](https://lacodda.github.io/dowel/blocks/settings-screen.md): Settings in sections - a column of destinations, each named with what is in it, beside the open section; on a phone, the column first and then the section.
 
 ## Guides
 

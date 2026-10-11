@@ -61,6 +61,18 @@ describe('the blocks', () => {
   it('there are some', () => {
     expect(blocks.length).toBeGreaterThan(0)
   })
+
+  it('are scanned for classes wherever they are drawn', () => {
+    // Tailwind writes CSS for the classes it finds in the files it scans,
+    // and the blocks live outside every app that draws them. Left out of a
+    // stylesheet's sources, a block renders with every class it shares with
+    // a primitive and none of its own - cramped rather than broken, which is
+    // why it was found by measuring a padding of zero, not by looking.
+    for (const sheet of ['stand/src/styles.css']) {
+      const css = readFileSync(resolve(root, sheet), 'utf8')
+      expect(css, `${sheet} does not scan the blocks`).toMatch(/@source '[^']*registry\/blocks'/)
+    }
+  })
 })
 
 describe.each(named)('%s', (name, { source }) => {
