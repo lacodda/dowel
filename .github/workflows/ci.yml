@@ -64,7 +64,7 @@ jobs:
     # it, which `tests/toolchain.test.ts` now does.
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      image: mcr.microsoft.com/playwright:v1.64.0-noble
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
