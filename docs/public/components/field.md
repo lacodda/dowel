@@ -45,6 +45,21 @@ there is no separate `invalid` prop to keep in step.
 **The error takes the hint's place rather than joining it.** Two lines of small
 print under one control is one too many, and the error is the one that matters.
 
+**A Switch or a Checkbox sits `beside` its name**, inside the label, as on
+every settings screen: a press on the words flips it, and the hint and the
+error go under the row.
+
+```tsx
+<Field label="Weekly letter" help="Sundays, at nine." beside>
+  <Switch checked={letter} onCheckedChange={setLetter} />
+</Field>
+```
+
+Every other control of the set goes under the caption, wired the same way: an
+Input, a Textarea, a PasswordField, a TagInput, a DatePicker - and a
+NumberField or a Select, which are Base UI's and find the field they sit in by
+themselves. Each is held by a test that asks for it by its name.
+
 **The label is always rendered.** A field named only by its placeholder loses
 that name the moment someone types, and a placeholder was never a label to
 anything reading the page aloud. `labelHidden` takes it off the screen with
@@ -93,6 +108,7 @@ does on its own.
 | `required` | `boolean` | `false` | Adds the mark a reader looks for |
 | `name` | `string` | | So a `Form` can attach a server error by name |
 | `disabled` | `boolean` | `false` | |
+| `beside` | `boolean` | `false` | The control beside its name, inside the label - for a Switch or a Checkbox |
 
 ### FieldGroup
 

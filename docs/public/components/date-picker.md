@@ -40,6 +40,17 @@ writes a hidden input instead.
 <DatePicker name="released_on" ... />   // submits 2026-09-02
 ```
 
+**Inside a `Field` the label names the trigger.** The id the label points at
+and the two `aria-` references go on the button, and the button is named by the
+label and then the date - "Release, 2 September 2026" - rather than by the date
+alone. A press on the label opens the month.
+
+```tsx
+<Field label="Release" help="The day it goes out.">
+  <DatePicker value={releasedOn} onValueChange={setReleasedOn} ... />
+</Field>
+```
+
 The value, the arithmetic and the keyboard are the
 [Calendar](/dowel/components/calendar/)'s; this is the field around it.
 
@@ -55,4 +66,5 @@ The value, the arithmetic and the keyboard are the
 | `nextMonthLabel` | `string` | | Required |
 | `locale` | `string` | the application's (`useLocale`) | |
 | `name` | `string` | | Puts the value in the form |
+| `id`, `aria-labelledby`, `aria-describedby`, `aria-invalid` | | | Put on the trigger - what a `Field` hands it |
 | `disabled` | `boolean` | `false` | |

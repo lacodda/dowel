@@ -1,6 +1,6 @@
 # dowel
 
-> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.36.0.
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.37.0.
 
 Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
 
@@ -98,6 +98,9 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [RelativeTime](https://lacodda.github.io/dowel/components/relative-time.md): A phrase like "3 minutes ago" in the application's language, over a date they can still read.
 - [ReorderableList](https://lacodda.github.io/dowel/components/reorderable-list.md): Drag a row of a vertical list up or down to put it somewhere else - or Alt with an arrow - with a line showing where it lands.
 - [SaveState](https://lacodda.github.io/dowel/components/save-state.md): The quiet line beside a field that saves itself: saving, then a tick that fades.
+- [schema-check](https://lacodda.github.io/dowel/components/schema-check.md): What is wrong with a value, by the rules its schema states - in codes a product puts into its own words.
+- [SchemaFields](https://lacodda.github.io/dowel/components/schema-fields.md): The fields a JSON Schema describes, drawn and checked - for a zod schema or a Rust struct, with no adapter for either.
+- [schema-shape](https://lacodda.github.io/dowel/components/schema-shape.md): A JSON Schema read as the fields a form draws - references, nullability and choices resolved, and what cannot be drawn refused by name.
 - [Scroll area](https://lacodda.github.io/dowel/components/scroll-area.md): A box that scrolls with the line's overlay scrollbar - a thin bar drawn over the content, never a gutter that takes width - reachable and named for the keyboard.
 - [SearchField](https://lacodda.github.io/dowel/components/search-field.md): An Input that knows it is a search box, with the clear button and the shortcut already in it.
 - [SectionNav](https://lacodda.github.io/dowel/components/section-nav.md): The left-hand list of a screen with sections, drawn as the product's own links, and the heading each section opens under.
@@ -153,6 +156,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 ## Reference
 
 - [Accents](https://lacodda.github.io/dowel/reference/accents.md): One colour per product of the lacodda line, and the theme derives the rest from it.
+- [Accessibility](https://lacodda.github.io/dowel/reference/accessibility.md): What axe finds on every component and block, in a browser, in both themes - a report the build writes, not one typed by hand.
 - [Palettes for native products](https://lacodda.github.io/dowel/reference/palettes.md): Every colour of the theme, resolved for each product of the line, for code that cannot evaluate CSS.
 - [Scales](https://lacodda.github.io/dowel/reference/scales.md): Radius, type, motion, elevation and stacking order - the sizes and speeds every product of the lacodda line is drawn on.
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens.md): The token vocabulary every product of the lacodda line shares, in the dark and light themes.

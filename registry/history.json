@@ -1054,6 +1054,19 @@
   ],
   "date-picker": [
     {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "date-picker,date-range-picker",
+          "breaking": false,
+          "summary": "name the trigger by its label and its date",
+          "date": "2026-10-14",
+          "commit": "96662d8150"
+        }
+      ]
+    },
+    {
       "version": "0.31.0",
       "changes": [
         {
@@ -1094,6 +1107,19 @@
     }
   ],
   "date-range-picker": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "date-picker,date-range-picker",
+          "breaking": false,
+          "summary": "name the trigger by its label and its date",
+          "date": "2026-10-14",
+          "commit": "96662d8150"
+        }
+      ]
+    },
     {
       "version": "0.31.0",
       "changes": [
@@ -1399,6 +1425,19 @@
   ],
   "field": [
     {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "field",
+          "breaking": false,
+          "summary": "draw a switch or a checkbox beside its name",
+          "date": "2026-10-14",
+          "commit": "f85fa7cd64"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -1494,6 +1533,19 @@
     }
   ],
   "image": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "motion",
+          "breaking": false,
+          "summary": "give every loop a rest of its own under reduced motion",
+          "date": "2026-10-14",
+          "commit": "18511f0115"
+        }
+      ]
+    },
     {
       "version": "0.31.0",
       "changes": [
@@ -1960,6 +2012,27 @@
     }
   ],
   "number-field": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "number-field",
+          "breaking": false,
+          "summary": "keep a typed number out of range when asked",
+          "date": "2026-10-14",
+          "commit": "998c9b48cc"
+        },
+        {
+          "type": "fix",
+          "scope": "number-field",
+          "breaking": false,
+          "summary": "leave a field's wiring on the input, not on the group",
+          "date": "2026-10-14",
+          "commit": "562d960e40"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -2447,6 +2520,51 @@
       ]
     }
   ],
+  "schema-check": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "schema-fields",
+          "breaking": false,
+          "summary": "a form drawn and checked from a JSON Schema",
+          "date": "2026-10-14",
+          "commit": "1a8d1128d5"
+        }
+      ]
+    }
+  ],
+  "schema-fields": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "schema-fields",
+          "breaking": false,
+          "summary": "a form drawn and checked from a JSON Schema",
+          "date": "2026-10-14",
+          "commit": "1a8d1128d5"
+        }
+      ]
+    }
+  ],
+  "schema-shape": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "schema-fields",
+          "breaking": false,
+          "summary": "a form drawn and checked from a JSON Schema",
+          "date": "2026-10-14",
+          "commit": "1a8d1128d5"
+        }
+      ]
+    }
+  ],
   "scroll-area": [
     {
       "version": "0.34.0",
@@ -2746,6 +2864,19 @@
   ],
   "skeleton": [
     {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "motion",
+          "breaking": false,
+          "summary": "give every loop a rest of its own under reduced motion",
+          "date": "2026-10-14",
+          "commit": "18511f0115"
+        }
+      ]
+    },
+    {
       "version": "0.23.0",
       "changes": [
         {
@@ -2760,6 +2891,19 @@
     }
   ],
   "skeleton-of": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "motion",
+          "breaking": false,
+          "summary": "give every loop a rest of its own under reduced motion",
+          "date": "2026-10-14",
+          "commit": "18511f0115"
+        }
+      ]
+    },
     {
       "version": "0.27.0",
       "changes": [
@@ -2818,6 +2962,19 @@
     }
   ],
   "spinner": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "motion",
+          "breaking": false,
+          "summary": "give every loop a rest of its own under reduced motion",
+          "date": "2026-10-14",
+          "commit": "18511f0115"
+        }
+      ]
+    },
     {
       "version": "0.5.0",
       "changes": [
@@ -3102,6 +3259,19 @@
     }
   ],
   "theme": [
+    {
+      "version": "0.37.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "make the duration steps classes, and the default a step",
+          "date": "2026-10-14",
+          "commit": "a0e9cc56b8"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [

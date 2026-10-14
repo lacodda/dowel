@@ -1,4 +1,4 @@
-# dowel 0.36.0
+# dowel 0.37.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -27,14 +27,18 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.36.0.** The theme and its scales, an accent for each of the nineteen
+**v0.37.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and fifteen primitives, each with a page of its own on
+a hundred and eighteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose; each
-page ends with the history of its file, release by release. Four
+page ends with what axe found on it, in both themes, and the history of its
+file, release by release - the whole of the first is the
+[accessibility report](/dowel/reference/accessibility/). A form can be drawn
+from the JSON Schema its data already has, by
+[SchemaFields](/dowel/components/schema-fields/). Four
 [blocks](/dowel/blocks/list-detail-screen/) - a list beside the open thing,
 settings, a sign-in, a dashboard's first day - are drawn together in
 [kilna-lite](/dowel/demo/). Dates
@@ -591,7 +595,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and fifteen of them.
+A single component: Button, Dialog, Select. A hundred and eighteen of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -3765,6 +3769,17 @@ writes a hidden input instead.
 <DatePicker name="released_on" ... />   // submits 2026-09-02
 ```
 
+**Inside a `Field` the label names the trigger.** The id the label points at
+and the two `aria-` references go on the button, and the button is named by the
+label and then the date - "Release, 2 September 2026" - rather than by the date
+alone. A press on the label opens the month.
+
+```tsx
+<Field label="Release" help="The day it goes out.">
+  <DatePicker value={releasedOn} onValueChange={setReleasedOn} ... />
+</Field>
+```
+
 The value, the arithmetic and the keyboard are the
 [Calendar](/dowel/components/calendar/)'s; this is the field around it.
 
@@ -3780,6 +3795,7 @@ The value, the arithmetic and the keyboard are the
 | `nextMonthLabel` | `string` | | Required |
 | `locale` | `string` | the application's (`useLocale`) | |
 | `name` | `string` | | Puts the value in the form |
+| `id`, `aria-labelledby`, `aria-describedby`, `aria-invalid` | | | Put on the trigger - what a `Field` hands it |
 | `disabled` | `boolean` | `false` | |
 
 ---
@@ -4610,6 +4626,21 @@ there is no separate `invalid` prop to keep in step.
 **The error takes the hint's place rather than joining it.** Two lines of small
 print under one control is one too many, and the error is the one that matters.
 
+**A Switch or a Checkbox sits `beside` its name**, inside the label, as on
+every settings screen: a press on the words flips it, and the hint and the
+error go under the row.
+
+```tsx
+<Field label="Weekly letter" help="Sundays, at nine." beside>
+  <Switch checked={letter} onCheckedChange={setLetter} />
+</Field>
+```
+
+Every other control of the set goes under the caption, wired the same way: an
+Input, a Textarea, a PasswordField, a TagInput, a DatePicker - and a
+NumberField or a Select, which are Base UI's and find the field they sit in by
+themselves. Each is held by a test that asks for it by its name.
+
 **The label is always rendered.** A field named only by its placeholder loses
 that name the moment someone types, and a placeholder was never a label to
 anything reading the page aloud. `labelHidden` takes it off the screen with
@@ -4658,6 +4689,7 @@ does on its own.
 | `required` | `boolean` | `false` | Adds the mark a reader looks for |
 | `name` | `string` | | So a `Form` can attach a server error by name |
 | `disabled` | `boolean` | `false` | |
+| `beside` | `boolean` | `false` | The control beside its name, inside the label - for a Switch or a Checkbox |
 
 ### FieldGroup
 
@@ -6230,6 +6262,12 @@ value and its range; two more unlabelled controls tell a reader nothing it did
 not have. Use `hideStepper` where the range is wide enough that the buttons are
 an invitation to click sixty times.
 
+**A typed number out of range is moved to the bound on blur** - Base UI's
+default, and a correction made without a word: a 9 typed for an age of at
+least 13 leaves the box as 13. A form that says what is wrong passes
+`allowOutOfRange`, keeps the 9 and says it; the arrows still stop at the bounds.
+[SchemaFields](/dowel/components/schema-fields/) always does.
+
 ## Props
 
 | Prop | Type | Default | |
@@ -6238,6 +6276,7 @@ an invitation to click sixty times.
 | `defaultValue` | `number` | | Uncontrolled |
 | `onValueChange` | `(value) => void` | | Receives `null` when emptied |
 | `min`, `max` | `number` | | |
+| `allowOutOfRange` | `boolean` | `false` | Keep a typed number outside `min`/`max` as typed, for a form that says what is wrong; the arrows still stop at the bounds |
 | `step` | `number` | `1` | What the arrows change it by |
 | `largeStep` | `number` | | What PageUp and PageDown change it by |
 | `format` | `Intl.NumberFormatOptions` | | Currency, percent, precision |
@@ -7565,6 +7604,293 @@ learn to turn a screen reader's verbosity down.
 
 **The words are yours.** A primitive with a string of its own cannot be
 translated.
+
+---
+
+# schema-check
+
+Source: https://lacodda.github.io/dowel/components/schema-check
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#schema-check
+
+A value held to the workspace schema, answered live.
+
+## Notes
+
+**Not a component.** It has no markup - it is the check
+[SchemaFields](/dowel/components/schema-fields/) says its problems from, and
+the one a Save button asks before it lets a record go.
+
+**Codes, not words.** An issue is `{ key: 'port', code: 'minimum', limit: 1 }`:
+the product says it in its own language, through `words.issue`. A message
+written here would be English inside every product of the line.
+
+**The empty value first.** Absent, an empty string, and `null` where the
+schema does not allow `null` are all empty: a problem only if the field is
+required, and nothing else is asked of them - an optional field left empty is
+not too short. A required group is there by construction, so its own required
+fields are asked for; an optional group that is absent asks nothing.
+
+**Checked at the edges.** Lengths count characters as a reader does (an emoji
+is one), ranges hold at both ends, `multipleOf` survives floating point (0.3 is
+a multiple of 0.1), and an answer has to match by type as well (`'1'` is not
+`1`). Three formats are known, loosely - `email`, `uri`, `date` - and a format
+it does not know is left to the receiving end, as is a rule the schema cannot
+state.
+
+## The functions
+
+| | |
+| --- | --- |
+| `checkValue(fields, value)` | every problem, field by field in the order they are drawn; the first for a field is the one worth saying |
+| `valueAt(value, path)` | the value at a path, or `undefined` if any step is missing |
+| `withValue(value, path, next)` | a copy with the value replaced - or the key removed, for `undefined`; untouched branches stay the same objects |
+
+```ts
+import { readSchema } from '@/components/ui/schema-shape'
+import { checkValue } from '@/components/ui/schema-check'
+
+checkValue(readSchema(schema), { name: 'N', server: { port: 0 } })
+// [{ key: 'name', code: 'minLength', limit: 2 },
+//  { key: 'server.port', code: 'minimum', limit: 1 }]
+```
+
+### Codes
+
+| Code | Carries |
+| --- | --- |
+| `required` | |
+| `type` | |
+| `enum` | |
+| `uniqueItems` | |
+| `format` | `format` |
+| `pattern` | `pattern` |
+| `minLength`, `maxLength`, `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, `multipleOf`, `minItems`, `maxItems` | `limit` |
+
+An issue on one entry of a list of tags carries that entry as `item`.
+
+---
+
+# SchemaFields
+
+Source: https://lacodda.github.io/dowel/components/schema-fields
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#schema-fields
+
+A workspace's settings drawn from its schema, the value as the product receives it, and the same form after a refused save.
+
+## Notes
+
+**The data is already described once.** Settings, a profile, a config file: a
+zod schema or a Rust struct says what the fields are, what is required and what
+range a number keeps to. A form written by hand beside it is a second
+description, and the two drift - a field added to the struct that nobody can
+edit, a range the form allows and the server refuses. `SchemaFields` draws the
+form from the first description.
+
+**The schema is the adapter.** Both writers already speak JSON Schema, so
+there is nothing to install for either:
+
+```tsx
+import { z } from 'zod'
+import { SchemaFields } from '@/components/ui/schema-fields'
+
+const Workspace = z.object({
+  name: z.string().min(2).meta({ title: 'Workspace name' }),
+  port: z.number().int().min(1).max(65535).default(8443).meta({ title: 'Port' }),
+  theme: z.enum(['system', 'light', 'dark']).meta({ title: 'Theme', 'x-control': 'segmented' }),
+  letter: z.boolean().default(true).meta({ title: 'Weekly letter' }),
+})
+const schema = z.toJSONSchema(Workspace)
+
+<SchemaFields schema={schema} value={value} onValueChange={setValue} words={words} />
+```
+
+A Rust struct reaches the same place through `schemars` - `schema_for!(Config)`
+sent to the screen as JSON. `$ref` into `$defs`, `Option<T>` written either way
+schemars writes it, and a documented enum as a union of `const`s are all read.
+
+**What is drawn as what.** The type of the value picks the control; `x-control`
+in the schema picks between the drawings one type has.
+
+| The schema says | Drawn as |
+| --- | --- |
+| `type: string` | an [Input](/dowel/components/input/) |
+| `format: email`, `format: uri` | an Input of that type |
+| `format: date` | a [DatePicker](/dowel/components/date-picker/) |
+| `writeOnly: true` or `format: password` | a [PasswordField](/dowel/components/password-field/) |
+| `x-control: multiline` | a [Textarea](/dowel/components/textarea/) |
+| `type: number`, `type: integer` | a [NumberField](/dowel/components/number-field/), stepping by `multipleOf` |
+| `type: boolean` | a [Switch](/dowel/components/switch/) beside its name |
+| `enum`, or a union of `const`s with titles | a [Select](/dowel/components/select/) |
+| ...with `x-control: segmented` or `radio` | a [SegmentedControl](/dowel/components/segmented-control/) or a [RadioGroup](/dowel/components/radio-group/) |
+| an array of answers | a column of [Checkboxes](/dowel/components/checkbox/) |
+| an array of plain strings | a [TagInput](/dowel/components/tag-input/) |
+| `type: object` | a [FieldGroup](/dowel/components/field/) of its own fields |
+| `const` | nothing - a value nobody chooses; `defaultsOf` writes it |
+
+The label is the `title`, else the property's own name; the hint is the
+`description`. Every field is a `Field` or a `FieldGroup`, so the label, the
+hint and the error are wired the one way the set wires them.
+
+**Refused by name, never left out.** A list of records, a map, a union of
+objects, `not`, `if` - a keyword this cannot draw throws a `SchemaError` naming
+the field when the schema is read. A form that silently leaves a field out is
+a form the data can no longer be edited through, and nobody notices until the
+value is wrong. Draw such a field yourself with `custom`, or change the schema:
+
+```tsx
+<SchemaFields
+  schema={schema}
+  custom={{
+    stops: ({ field, value, onValueChange, error }) => (
+      <StopsEditor label={field.label} value={value} onChange={onValueChange} error={error} />
+    ),
+  }}
+  ...
+/>
+```
+
+**An empty box writes nothing.** The key is removed, or set to `null` where the
+schema allows `null`. An optional field left empty is absent rather than an
+empty string that fails its own `minLength` - which is what a hand-written form
+does on its first day.
+
+**A problem is said once its field is left**, not on the first keystroke and
+not before anyone has touched the form. After a save that was refused, `reveal`
+says every problem at once. A number out of range is said, not quietly moved
+to the bound.
+
+**Problems from elsewhere go over the schema's own.** A name that is taken, a
+zod `refine` the schema cannot state, a server that said no - pass them by key
+in `errors`, and they are said at once:
+
+```tsx
+<SchemaFields errors={{ name: 'A workspace by that name exists.', 'server.port': 'Busy.' }} ... />
+```
+
+**Ask before saving.** The check is a function, so the Save button can use it:
+
+```tsx
+import { readSchema } from '@/components/ui/schema-shape'
+import { checkValue } from '@/components/ui/schema-check'
+
+const fields = useMemo(() => readSchema(schema), [schema])
+const problems = checkValue(fields, value)
+
+<Button disabled={problems.length > 0}>Save</Button>
+```
+
+Put `noValidate` on the `<form>` around it: the browser's own bubbles would
+say the same things a second time, in the browser's language.
+
+**No words of its own.** What a problem is called is `words.issue`, given the
+issue's code and limit - in the product's language, through its own
+translations:
+
+```tsx
+const words: SchemaFieldsWords = {
+  issue: (issue) => {
+    switch (issue.code) {
+      case 'required': return t('form.required')
+      case 'minimum': return t('form.atLeast', { n: issue.limit })
+      // ...
+    }
+  },
+  none: t('form.none'),
+  choose: t('form.choose'),
+  pickDate: t('form.pickDate'),
+  previousMonth: t('calendar.previous'),
+  nextMonth: t('calendar.next'),
+  showSecret: t('form.show'),
+  hideSecret: t('form.hide'),
+  removeTag: (tag) => t('form.removeTag', { tag }),
+}
+```
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `schema` | `JsonSchema` | | Required. An object schema; its properties are the fields, in the order written |
+| `value` | `Record<string, unknown>` | | Required. The record |
+| `onValueChange` | `(value) => void` | | Required. Told the next record - a copy, never the same object changed |
+| `words` | `SchemaFieldsWords` | | Required. Every word the fields show |
+| `errors` | `Record<string, ReactNode>` | | Problems from elsewhere, by key (`server.port`) |
+| `reveal` | `boolean` | `false` | Say every problem now, after a refused save |
+| `custom` | `Record<string, (props) => ReactNode>` | | Fields the product draws itself, by key |
+| `disabled` | `boolean` | `false` | Every field at once, while it saves |
+| `className` | `string` | | On the column the fields stand in |
+
+### Words
+
+| Word | |
+| --- | --- |
+| `issue(issue, field)` | What is wrong with one field: `issue.code` is the rule, `limit` and `format` what it asked for |
+| `none` | The answer that takes an optional choice back |
+| `choose` | What a required choice says before anything is chosen |
+| `pickDate`, `previousMonth`, `nextMonth` | The date picker's face and its two month buttons |
+| `showSecret`, `hideSecret` | The reveal button of a secret |
+| `removeTag(tag)` | The cross on one tag |
+
+---
+
+# schema-shape
+
+Source: https://lacodda.github.io/dowel/components/schema-shape
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#schema-shape
+
+A workspace schema read as its fields, a refusal by name, and a new record from the defaults.
+
+## Notes
+
+**Not a component.** It has no markup and renders nothing - it is the reading
+[SchemaFields](/dowel/components/schema-fields/) draws from, split out so a
+product can ask the same questions without drawing anything: which fields a
+schema has, which are required, what a new record starts as.
+
+**The two writers, as they write.** zod's `toJSONSchema()` and schemars are
+read without an adapter: draft 2020-12 and draft 7, local `$ref` into `$defs`
+or `definitions` (keywords beside a `$ref` describe the use and win over the
+target's), a lone `allOf`, nullable spelt as a type list or as a union with
+`null`, and a choice spelt as `enum` or as a union of `const`s whose `title`
+is the answer's label.
+
+**Strict on purpose.** Anything it cannot draw - a list of records, a map, a
+union of objects, `not`, `if`, `patternProperties`, a reference to itself -
+throws a `SchemaError` with the field's key. Keys passed as `custom` are read
+for their label and help and never refused: the product draws them.
+
+## The functions
+
+| | |
+| --- | --- |
+| `readSchema(schema, custom?)` | the fields of an object schema, in the order its properties are written, each with its control, label, help, rules and answers |
+| `defaultsOf(fields)` | a new record: every `default` (copied, never shared), every `const`, and a required group as an object |
+| `patternOf(pattern)` | a schema's `pattern` as a `RegExp`, read with `u` as ajv reads it, without it for a pattern only valid that way |
+| `SchemaError` | what a refusal throws: `key` is the field, `reason` what was not read |
+
+```ts
+import { defaultsOf, readSchema } from '@/components/ui/schema-shape'
+
+const fields = readSchema(schema)
+fields.map((field) => [field.key, field.control])
+// [['name', 'text'], ['port', 'integer'], ['theme', 'segmented'], ['server', 'group'], ...]
+
+defaultsOf(fields)
+// { port: 8443, letter: true, server: {} }
+```
+
+`x-control` redraws a field only within its type - `multiline` for text,
+`segmented` or `radio` for a choice - and anywhere else it is refused, so a
+schema cannot ask for a drawing that would mean nothing.
 
 ---
 
@@ -11156,6 +11482,31 @@ than because it was inconvenient:
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
 
+## Motion
+
+The theme carries one rule for `prefers-reduced-motion`: every transition and
+animation cut to nothing. Every primitive leans on it, so the gate holds the
+classes under it (`tests/motion.test.ts`):
+
+- **Every class of motion compiles to something.** The set's classes are read
+  out of its source and run through Tailwind with the theme. Eight primitives
+  wrote `duration-quick` and `duration-base` for a dozen releases and both
+  compiled to nothing - the transitions ran on Tailwind's own 150ms, and no
+  test, screenshot or reader noticed.
+- **Every duration is one of the three steps** - `quick`, `base`, `slow` -
+  never a number. A bare `transition-colors` takes `quick`, because the theme
+  makes it the default.
+- **A loop says what it looks like standing still.** The theme's rule runs an
+  animation once, for a hundredth of a millisecond, and leaves it wherever it
+  ended; a spinner or a skeleton names its rest with `motion-reduce:animate-none`.
+- **Nothing moves by script** - `element.animate()`, a smooth scroll - without
+  asking `prefers-reduced-motion` first: the stylesheet cannot reach it.
+- **And in a real browser**, every string of motion classes the set writes is
+  put on an element and measured: at rest for a reader who asked for less
+  motion, and timed by a step for one who did not. jsdom resolves no media
+  query, so this is the only place the rule is seen working rather than seen
+  written.
+
 ## Weight, and what a component drags in
 
 Two budgets. The first is a ceiling on code size with comments excluded —
@@ -12017,6 +12368,194 @@ before it reached a screen.
 
 ---
 
+# Accessibility
+
+Source: https://lacodda.github.io/dowel/reference/accessibility
+
+Every item on [the stand](/dowel/stand/) is put through
+[axe-core](https://github.com/dequelabs/axe-core) in a real browser, in the dark
+theme and in the light one, against WCAG 2.2 at A and AA and axe's own best
+practices. The numbers below are that run. They are not typed here: the browser
+writes one file per item, the page is drawn from those files, and a gate holds
+the files to the stand - an item added without a report, an axe upgrade
+without a new run, or a fixed violation still listed as owed fails before
+anything is published. A page that claims a result the set no longer has is
+the one thing this report must not be.
+
+**What else holds the line.** This run sees the examples as the stand draws
+them, closed. The unit tests put every primitive through axe as well, in every
+variant and open - a menu with its list showing, a dialog with its focus
+trapped - and drive the interactive ones by the keyboard. Colour contrast is
+also computed from the tokens for every accent of the line, the floor of a
+pointer target is a token at WCAG's 24px, and every animation comes to rest for
+a reader who asked for less motion. The [gates](/dowel/guides/gates/) say what
+each one catches.
+
+**What no automated check sees.** Whether a name makes sense when it is read
+aloud, whether the order a reader tabs in is the order the screen means,
+whether an error says what to do about it. axe marks some of these for a
+person - they are listed with each item - and the rest are what reading a
+screen with a screen reader is for.
+
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 84 items with nothing owed.
+
+## Not yet passed
+
+### `color-contrast` - 36 items
+
+Text in `faint`, and text on the soft status fills, at the small type steps - 10 to 12px - measures below the 4.5:1 AA asks, in one theme or both. The tokens are held to AA at body size, not at every step they are set in; the work that holds them per step moves these, as it already moved the caption, the notes of a list row and the empty face of the date pickers. Some of it is the stand’s own notes beside the examples.
+
+activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-chart, big-calendar, calendar, chip, code-block, context-menu, diff-lines, diff-view, empty-state, field-draft, json-rows, json-viewer, key-value, line-chart, line-scale, number-format, query-state, relative-time, save-state, skeleton-of, splash, status-dot, stepper, tag-input, tier, timeline, track, track-segments, tree-rows, wizard
+
+### `label-content-name-mismatch` - 4 items
+
+A control named by `aria-label` whose name does not hold the words drawn on it - Copy around the value it copies, the bell around its count, a day of the month view named by its date and its releases. Someone telling voice control what they see says words the name does not have (WCAG 2.5.3). The date pickers had the same defect and are fixed.
+
+big-calendar, copyable, notification-bell, window-frame
+
+### `target-size` - 1 item
+
+A release drawn in a crowded day of the month view comes out smaller than the 24px a pointer is asked to hit (WCAG 2.5.8): the fold that keeps a day in its share of the height decides its size.
+
+big-calendar
+
+## Rules about a page, off on the stand
+
+- `landmark-unique` - Two examples of a breadcrumb trail on one page are two landmarks with one name; a product shows one.
+- `landmark-no-duplicate-main` - An app shell and a sign-in screen are the page and bring its main; on the stand they sit inside the stand’s own.
+- `landmark-main-is-top-level` - For the same reason: the block’s main is the product’s top level, and the stand’s frame is around it.
+- `heading-order` - Where a heading sits in the outline is the page’s to say, and the stand’s headings are not a product’s.
+
+## Every item
+
+| Item | Passed | Left to a person | Owed |
+| --- | --- | --- | --- |
+| about-plate | 10 | `color-contrast` |  |
+| accordion | 19 |  |  |
+| action-bar | 17 |  |  |
+| activity-heatmap | 15 | `color-contrast` | `color-contrast` |
+| activity-legend | 3 |  | `color-contrast` |
+| activity-weeks | 3 |  | `color-contrast` |
+| alert | 9 |  | `color-contrast` |
+| app-shell | 17 |  |  |
+| avatar | 16 |  |  |
+| badge | 3 |  | `color-contrast` |
+| banner | 9 |  | `color-contrast` |
+| bar-chart | 15 | `color-contrast` | `color-contrast` |
+| big-calendar-item | 8 |  |  |
+| big-calendar | 20 | `color-contrast` `target-size` | `color-contrast` `label-content-name-mismatch` `target-size` |
+| breadcrumbs | 15 |  |  |
+| button | 16 |  |  |
+| calendar-math | 4 |  |  |
+| calendar | 20 | `color-contrast` | `color-contrast` |
+| checkbox | 18 | `aria-toggle-field-name` |  |
+| chip | 16 | `color-contrast` | `color-contrast` |
+| code-block | 16 | `color-contrast` | `color-contrast` |
+| collapsible | 15 |  |  |
+| color-field | 19 |  |  |
+| column-resize-handle | 19 |  |  |
+| combobox | 21 |  |  |
+| command-palette | 7 |  |  |
+| commands | 21 |  |  |
+| confirm-dialog | 12 |  |  |
+| context-menu | 3 |  | `color-contrast` |
+| copy-button | 16 |  |  |
+| copyable | 16 |  | `label-content-name-mismatch` |
+| date-picker | 15 |  |  |
+| date-range-picker | 15 |  |  |
+| dialog | 12 |  |  |
+| diff-lines | 3 |  | `color-contrast` |
+| diff-view | 16 | `color-contrast` | `color-contrast` |
+| divider | 16 |  |  |
+| drawer | 12 |  |  |
+| duration-field | 13 |  |  |
+| empty-dashboard-screen | 26 |  |  |
+| empty-state | 6 |  | `color-contrast` |
+| error-boundary | 6 |  |  |
+| field-draft | 13 |  | `color-contrast` |
+| field | 24 |  |  |
+| file-drop | 13 |  |  |
+| filter-popover | 18 |  |  |
+| frame | 23 |  |  |
+| image | 14 |  |  |
+| inline-field | 13 |  |  |
+| input | 12 |  |  |
+| json-rows | 3 | `color-contrast` | `color-contrast` |
+| json-viewer | 18 | `color-contrast` | `color-contrast` |
+| kbd | 5 | `color-contrast` |  |
+| key-value | 5 |  | `color-contrast` |
+| layer | 12 |  |  |
+| line-chart | 16 |  | `color-contrast` |
+| line-scale | 3 |  | `color-contrast` |
+| list-detail-screen | 26 |  |  |
+| list-row | 19 |  |  |
+| login-screen | 23 | `color-contrast` |  |
+| marked-text | 13 | `color-contrast` |  |
+| menu | 13 |  |  |
+| nav-rail | 12 |  |  |
+| notification-bell | 13 |  | `label-content-name-mismatch` |
+| number-field | 19 |  |  |
+| number-format | 3 |  | `color-contrast` |
+| page-header | 16 |  |  |
+| page-size | 16 |  |  |
+| pagination | 12 | `label-content-name-mismatch` |  |
+| panel | 4 |  |  |
+| password-field | 17 |  |  |
+| popover | 12 |  |  |
+| preview-card | 5 |  |  |
+| product-mark | 15 | `color-contrast` |  |
+| product-switcher | 13 | `color-contrast` |  |
+| progress | 16 |  |  |
+| prose | 14 |  |  |
+| query-state | 11 |  | `color-contrast` |
+| radio-group | 18 | `aria-toggle-field-name` `duplicate-id-aria` |  |
+| rating-scale | 17 |  |  |
+| relative-time | 3 |  | `color-contrast` |
+| reorderable-list | 6 |  |  |
+| save-state | 14 |  | `color-contrast` |
+| schema-check | 4 |  |  |
+| schema-fields | 24 |  |  |
+| schema-shape | 8 |  |  |
+| scroll-area | 19 |  |  |
+| search-field | 15 |  |  |
+| section-nav | 13 |  |  |
+| segmented-control | 18 |  |  |
+| select | 16 |  |  |
+| settings-screen | 21 |  |  |
+| shortcut | 13 | `color-contrast` |  |
+| shortcuts-dialog | 6 |  |  |
+| skeleton-of | 5 |  | `color-contrast` |
+| skeleton | 5 |  |  |
+| slider | 17 |  |  |
+| sparkline | 15 |  |  |
+| spinner | 16 |  |  |
+| splash | 13 | `color-contrast` | `color-contrast` |
+| splitter | 19 |  |  |
+| stat-tile | 7 |  |  |
+| status-dot | 15 |  | `color-contrast` |
+| stepper | 17 | `color-contrast` | `color-contrast` |
+| switch | 18 |  |  |
+| table-sort | 4 |  |  |
+| table | 23 | `color-contrast` |  |
+| tabs | 20 |  |  |
+| tag-input | 14 |  | `color-contrast` |
+| textarea | 7 |  |  |
+| tier | 18 | `color-contrast` | `color-contrast` |
+| time-field | 13 |  |  |
+| timeline | 17 |  | `color-contrast` |
+| toast | 6 |  |  |
+| tooltip | 12 |  |  |
+| track-segments | 3 |  | `color-contrast` |
+| track | 14 |  | `color-contrast` |
+| tree-rows | 4 |  | `color-contrast` |
+| tree-view | 20 | `color-contrast` `duplicate-id-aria` |  |
+| truncate | 5 |  |  |
+| virtual-list | 18 | `aria-required-children` `color-contrast` |  |
+| window-frame | 23 | `color-contrast` | `label-content-name-mismatch` |
+| wizard | 18 |  | `color-contrast` |
+
+---
+
 # Palettes for native products
 
 Source: https://lacodda.github.io/dowel/reference/palettes
@@ -12212,17 +12751,25 @@ its own keeps it - a `strokeWidth` at the call site, `absoluteStrokeWidth`, or a
 There is no `ease-in`. It starts slowly, which on a control the user just
 clicked reads as lag.
 
-Durations are custom properties rather than utilities, because Tailwind's
-`duration-*` takes a literal number:
+Each step is a class as well as a custom property: `duration-quick`,
+`duration-base`, `duration-slow`. A bare `transition-colors` with no duration
+takes `quick`, because the theme makes it the default - so a transition in a
+product runs on a step whether or not anyone named one. Inside an arbitrary
+transition the property is read directly:
 
-```css
-.thing {
-  transition: opacity var(--duration-quick) var(--ease-out);
-}
+```tsx
+<div className="transition-opacity duration-base ease-out" />
+<div className="[transition:opacity_var(--duration-quick)_var(--ease-out)]" />
 ```
 
-All of it is cut to nothing under `prefers-reduced-motion` — that is handled by
-the theme, and a product does not have to remember it.
+Until v0.37 the theme said a named duration could not be a class, and the
+classes the set wrote compiled to nothing - every one of those transitions ran
+on Tailwind's own 150ms. [The motion gate](/dowel/guides/gates/#motion) now
+compiles every class of motion the set writes.
+
+All of it is cut to nothing under `prefers-reduced-motion` - that is handled by
+the theme, and a product does not have to remember it. A loop - a spinner, a
+skeleton - names its rest itself with `motion-reduce:animate-none`.
 
 ## Elevation
 

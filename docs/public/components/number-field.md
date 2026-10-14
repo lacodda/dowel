@@ -49,6 +49,12 @@ value and its range; two more unlabelled controls tell a reader nothing it did
 not have. Use `hideStepper` where the range is wide enough that the buttons are
 an invitation to click sixty times.
 
+**A typed number out of range is moved to the bound on blur** - Base UI's
+default, and a correction made without a word: a 9 typed for an age of at
+least 13 leaves the box as 13. A form that says what is wrong passes
+`allowOutOfRange`, keeps the 9 and says it; the arrows still stop at the bounds.
+[SchemaFields](/dowel/components/schema-fields/) always does.
+
 ## Props
 
 | Prop | Type | Default | |
@@ -57,6 +63,7 @@ an invitation to click sixty times.
 | `defaultValue` | `number` | | Uncontrolled |
 | `onValueChange` | `(value) => void` | | Receives `null` when emptied |
 | `min`, `max` | `number` | | |
+| `allowOutOfRange` | `boolean` | `false` | Keep a typed number outside `min`/`max` as typed, for a form that says what is wrong; the arrows still stop at the bounds |
 | `step` | `number` | `1` | What the arrows change it by |
 | `largeStep` | `number` | | What PageUp and PageDown change it by |
 | `format` | `Intl.NumberFormatOptions` | | Currency, percent, precision |

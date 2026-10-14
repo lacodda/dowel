@@ -108,17 +108,25 @@ its own keeps it - a `strokeWidth` at the call site, `absoluteStrokeWidth`, or a
 There is no `ease-in`. It starts slowly, which on a control the user just
 clicked reads as lag.
 
-Durations are custom properties rather than utilities, because Tailwind's
-`duration-*` takes a literal number:
+Each step is a class as well as a custom property: `duration-quick`,
+`duration-base`, `duration-slow`. A bare `transition-colors` with no duration
+takes `quick`, because the theme makes it the default - so a transition in a
+product runs on a step whether or not anyone named one. Inside an arbitrary
+transition the property is read directly:
 
-```css
-.thing {
-  transition: opacity var(--duration-quick) var(--ease-out);
-}
+```tsx
+<div className="transition-opacity duration-base ease-out" />
+<div className="[transition:opacity_var(--duration-quick)_var(--ease-out)]" />
 ```
 
-All of it is cut to nothing under `prefers-reduced-motion` — that is handled by
-the theme, and a product does not have to remember it.
+Until v0.37 the theme said a named duration could not be a class, and the
+classes the set wrote compiled to nothing - every one of those transitions ran
+on Tailwind's own 150ms. [The motion gate](/dowel/guides/gates/#motion) now
+compiles every class of motion the set writes.
+
+All of it is cut to nothing under `prefers-reduced-motion` - that is handled by
+the theme, and a product does not have to remember it. A loop - a spinner, a
+skeleton - names its rest itself with `motion-reduce:animate-none`.
 
 ## Elevation
 

@@ -1,0 +1,63 @@
+# schema-check
+
+Source: https://lacodda.github.io/dowel/components/schema-check
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#schema-check
+
+A value held to the workspace schema, answered live.
+
+## Notes
+
+**Not a component.** It has no markup - it is the check
+[SchemaFields](/dowel/components/schema-fields/) says its problems from, and
+the one a Save button asks before it lets a record go.
+
+**Codes, not words.** An issue is `{ key: 'port', code: 'minimum', limit: 1 }`:
+the product says it in its own language, through `words.issue`. A message
+written here would be English inside every product of the line.
+
+**The empty value first.** Absent, an empty string, and `null` where the
+schema does not allow `null` are all empty: a problem only if the field is
+required, and nothing else is asked of them - an optional field left empty is
+not too short. A required group is there by construction, so its own required
+fields are asked for; an optional group that is absent asks nothing.
+
+**Checked at the edges.** Lengths count characters as a reader does (an emoji
+is one), ranges hold at both ends, `multipleOf` survives floating point (0.3 is
+a multiple of 0.1), and an answer has to match by type as well (`'1'` is not
+`1`). Three formats are known, loosely - `email`, `uri`, `date` - and a format
+it does not know is left to the receiving end, as is a rule the schema cannot
+state.
+
+## The functions
+
+| | |
+| --- | --- |
+| `checkValue(fields, value)` | every problem, field by field in the order they are drawn; the first for a field is the one worth saying |
+| `valueAt(value, path)` | the value at a path, or `undefined` if any step is missing |
+| `withValue(value, path, next)` | a copy with the value replaced - or the key removed, for `undefined`; untouched branches stay the same objects |
+
+```ts
+import { readSchema } from '@/components/ui/schema-shape'
+import { checkValue } from '@/components/ui/schema-check'
+
+checkValue(readSchema(schema), { name: 'N', server: { port: 0 } })
+// [{ key: 'name', code: 'minLength', limit: 2 },
+//  { key: 'server.port', code: 'minimum', limit: 1 }]
+```
+
+### Codes
+
+| Code | Carries |
+| --- | --- |
+| `required` | |
+| `type` | |
+| `enum` | |
+| `uniqueItems` | |
+| `format` | `format` |
+| `pattern` | `pattern` |
+| `minLength`, `maxLength`, `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, `multipleOf`, `minItems`, `maxItems` | `limit` |
+
+An issue on one entry of a list of tags carries that entry as `item`.
