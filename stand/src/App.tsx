@@ -1196,6 +1196,35 @@ function FieldSection() {
         </Field>
       </Row>
 
+      <Row label="around the controls that are not a plain box - each named by the caption">
+        <Field label="Port" help="Where the relay listens." className="w-40">
+          <NumberField defaultValue={8443} />
+        </Field>
+        <Field label="Opens on" className="w-48">
+          <Select defaultValue="Harbour lights" items={['Harbour lights', 'Paper boats'].map((title) => ({ value: title, label: title }))}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectPopup>
+              <SelectItem value="Harbour lights">Harbour lights</SelectItem>
+              <SelectItem value="Paper boats">Paper boats</SelectItem>
+            </SelectPopup>
+          </Select>
+        </Field>
+        <Field label="Next review" className="w-56">
+          <DatePicker value="2026-09-14" placeholder="Pick a day" previousMonthLabel="Previous month" nextMonthLabel="Next month" locale="en-GB" />
+        </Field>
+      </Row>
+
+      <Row label="beside its name - a Switch or a Checkbox, and a press on the words flips it">
+        <Field label="Weekly letter" help="Sundays, at nine." beside className="w-56">
+          <Switch defaultChecked />
+        </Field>
+        <Field label="Archived" beside className="w-40">
+          <Checkbox />
+        </Field>
+      </Row>
+
       <Row label="a FieldGroup around a row of chips - a fieldset names the group, a label cannot">
         <FieldGroup label="Type" className="w-64">
           <ChipGroup aria-label="Type" defaultValue={['song']}>

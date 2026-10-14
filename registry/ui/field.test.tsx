@@ -5,6 +5,11 @@ import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Field, FieldGroup } from './field'
 import { Input } from './input'
+import { NumberField } from './number-field'
+import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from './select'
+import { Switch } from './switch'
+import { Checkbox } from './checkbox'
+import { DatePicker } from './date-picker'
 
 /*
  * Field.
@@ -131,6 +136,149 @@ describe('Field', () => {
       <Field label="Email" error="That address is not valid.">
         <Input />
       </Field>,
+    )
+  })
+})
+
+/*
+ * Field around every kind of control in the set.
+ *
+ * Asked for by name, which is the one question that fails unless the wiring is
+ * real: a label beside a control looks attached in every screenshot and passes
+ * axe, and the DatePicker's did exactly that until its trigger took the id.
+ * SchemaFields puts each of these in a Field, so this is what it stands on.
+ */
+describe('Field, around each kind of control', () => {
+  function Fruit() {
+    return (
+      <Select items={[{ value: 'pear', label: 'Pear' }]} value="pear">
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectPopup>
+          <SelectItem value="pear">Pear</SelectItem>
+        </SelectPopup>
+      </Select>
+    )
+  }
+
+  it('names a NumberField and describes it with the hint', () => {
+    render(
+      <Field label="Port" help="Where the server listens.">
+        <NumberField value={8080} />
+      </Field>,
+    )
+    const control = screen.getByRole('textbox', { name: 'Port' })
+    expect(screen.getByRole('textbox', { description: 'Where the server listens.' })).toBe(control)
+  })
+
+  it('marks a NumberField invalid while an error shows', () => {
+    render(
+      <Field label="Port" error="Too low.">
+        <NumberField value={1} />
+      </Field>,
+    )
+    const control = screen.getByRole('textbox', { name: 'Port' })
+    expect(control.getAttribute('aria-invalid')).toBe('true')
+    expect(screen.getByRole('textbox', { description: 'Too low.' })).toBe(control)
+  })
+
+  it('leaves the field’s wiring on the NumberField’s box, not on the group around it', () => {
+    // Field.Control hands its props to whatever it renders; spread onto the
+    // NumberField's root they sat on a `<div>` with no role, where axe flags
+    // `aria-labelledby` and `aria-invalid` as attributes that mean nothing.
+    const { container } = render(
+      <Field label="Port" help="Where it listens." error="Too low.">
+        <NumberField value={1} />
+      </Field>,
+    )
+    const stray = [...container.querySelectorAll('[aria-labelledby], [aria-describedby], [aria-invalid]')].filter(
+      (element) => element.tagName !== 'INPUT',
+    )
+    expect(stray.map((element) => element.outerHTML.slice(0, 80))).toEqual([])
+  })
+
+  it('names a Select', () => {
+    render(
+      <Field label="Fruit" help="In season.">
+        <Fruit />
+      </Field>,
+    )
+    expect(screen.getByRole('combobox', { name: 'Fruit', description: 'In season.' })).toBeDefined()
+  })
+
+  it('names a DatePicker by the label and the date it shows', () => {
+    // The trigger is a button: named by the label alone, it would be
+    // announced without the date on it.
+    render(
+      <Field label="Release" help="The day it goes out.">
+        <DatePicker value="2026-09-02" placeholder="Pick a day" previousMonthLabel="Back" nextMonthLabel="On" locale="en-GB" />
+      </Field>,
+    )
+    const trigger = screen.getByRole('button', { name: 'Release 2 September 2026' })
+    expect(screen.getByRole('button', { description: 'The day it goes out.' })).toBe(trigger)
+  })
+
+  it('opens the DatePicker from a press on its label', async () => {
+    // The label's `for` is the trigger's id; without the id the name still
+    // arrives by `aria-labelledby`, and only the press finds the difference.
+    render(
+      <Field label="Release">
+        <DatePicker placeholder="Pick a day" previousMonthLabel="Back" nextMonthLabel="On" />
+      </Field>,
+    )
+    await userEvent.click(screen.getByText('Release'))
+    expect(await screen.findByRole('button', { name: 'Back' })).toBeDefined()
+  })
+
+  it('draws a Switch beside its name, and a press on the name flips it', async () => {
+    const onChange = vi.fn()
+    render(
+      <Field label="Send a weekly letter" help="Sundays, at nine." beside>
+        <Switch checked={false} onCheckedChange={onChange} />
+      </Field>,
+    )
+    const control = screen.getByRole('switch', { name: 'Send a weekly letter' })
+    expect(screen.getByRole('switch', { description: 'Sundays, at nine.' })).toBe(control)
+    await userEvent.click(screen.getByText('Send a weekly letter'))
+    expect(onChange).toHaveBeenCalledWith(true, expect.anything())
+  })
+
+  it('draws a Checkbox beside its name', () => {
+    render(
+      <Field label="Archived" beside>
+        <Checkbox checked />
+      </Field>,
+    )
+    expect(screen.getByRole('checkbox', { name: 'Archived' })).toBeDefined()
+  })
+
+  it('draws one label, not a caption over a control with a name of its own', () => {
+    const { container } = render(
+      <Field label="Archived" beside>
+        <Checkbox checked />
+      </Field>,
+    )
+    expect(container.querySelectorAll('label')).toHaveLength(1)
+    expect(screen.getByText('Archived').closest('label')?.className).not.toContain('caption')
+  })
+
+  it('passes axe around each, with a hint and with an error', async () => {
+    await expectNoA11yViolations(
+      <>
+        <Field label="Port" help="Where it listens.">
+          <NumberField value={8080} />
+        </Field>
+        <Field label="Fruit" error="Not in season.">
+          <Fruit />
+        </Field>
+        <Field label="Weekly letter" help="Sundays." required beside>
+          <Switch checked />
+        </Field>
+        <Field label="Release" error="Too late.">
+          <DatePicker placeholder="Pick a day" previousMonthLabel="Back" nextMonthLabel="On" />
+        </Field>
+      </>,
     )
   })
 })
