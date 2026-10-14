@@ -29,13 +29,22 @@ function Example(props: Partial<React.ComponentProps<typeof DatePicker>> = {}) {
 describe('DatePicker', () => {
   it('says the placeholder when nothing is chosen', () => {
     render(<Example />)
-    expect(screen.getByRole('button', { name: 'Release date' }).textContent).toContain('Pick a date')
+    expect(screen.getByRole('button', { name: /^Release date/ }).textContent).toContain('Pick a date')
+  })
+
+  it('is named by its label and then by what it shows, so the name holds the words on it', () => {
+    // WCAG 2.5.3: someone telling voice control what they see on the button
+    // says the date, and a name of "Release date" alone does not have it.
+    const { rerender } = render(<Example />)
+    expect(screen.getByRole('button', { name: 'Release date Pick a date' })).toBeDefined()
+    rerender(<Example value="2026-09-02" />)
+    expect(screen.getByRole('button', { name: 'Release date 2 September 2026' })).toBeDefined()
   })
 
   it('writes the date the reader own way', () => {
     // `2026-09-02` is what is stored; "2 September 2026" is what is read.
     render(<Example value="2026-09-02" />)
-    expect(screen.getByRole('button', { name: 'Release date' }).textContent).toContain(
+    expect(screen.getByRole('button', { name: /^Release date/ }).textContent).toContain(
       '2 September 2026',
     )
   })
@@ -45,7 +54,7 @@ describe('DatePicker', () => {
     const onValueChange = vi.fn()
     render(<Example value="2026-09-02" onValueChange={onValueChange} />)
 
-    await user.click(screen.getByRole('button', { name: 'Release date' }))
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
     await user.click(screen.getByRole('button', { name: /^14 September 2026/ }))
 
     expect(onValueChange).toHaveBeenCalledWith('2026-09-14')
@@ -57,7 +66,7 @@ describe('DatePicker', () => {
     const user = userEvent.setup()
     render(<Example value="2026-09-02" onValueChange={() => {}} />)
 
-    await user.click(screen.getByRole('button', { name: 'Release date' }))
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
     expect(screen.getByRole('grid')).toBeDefined()
 
     await user.click(screen.getByRole('button', { name: /^14 September 2026/ }))
@@ -68,7 +77,7 @@ describe('DatePicker', () => {
     const user = userEvent.setup()
     render(<Example value="2026-12-24" />)
 
-    await user.click(screen.getByRole('button', { name: 'Release date' }))
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
     expect(screen.getByRole('button', { name: /^24 December 2026/ })).toBeDefined()
   })
 
@@ -85,7 +94,7 @@ describe('DatePicker', () => {
     const user = userEvent.setup()
     render(<Example disabled />)
 
-    await user.click(screen.getByRole('button', { name: 'Release date' }))
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
     expect(screen.queryByRole('grid')).toBeNull()
   })
 

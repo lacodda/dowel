@@ -40,19 +40,24 @@ describe('DateRangePicker', () => {
 
   it('says the placeholder when nothing is chosen', () => {
     render(<Example />)
-    expect(screen.getByRole('button', { name: 'Period' }).textContent).toContain('Pick a range')
+    expect(screen.getByRole('button', { name: /^Period/ }).textContent).toContain('Pick a range')
+  })
+
+  it('is named by its label and then by what it shows, so the name holds the words on it', () => {
+    render(<Example />)
+    expect(screen.getByRole('button', { name: 'Period Pick a range' })).toBeDefined()
   })
 
   it('shows the first day alone while the range is half made', () => {
     // Not "nothing chosen" and not a range of one day: the middle of the
     // interaction, and the reader has to see it.
     render(<Example value={{ start: '2026-09-02' }} />)
-    expect(screen.getByRole('button', { name: 'Period' }).textContent).toContain('2 Sept 2026')
+    expect(screen.getByRole('button', { name: /^Period/ }).textContent).toContain('2 Sept 2026')
   })
 
   it('shows both days once the range is whole', () => {
     render(<Example value={{ start: '2026-09-02', end: '2026-09-10' }} />)
-    const label = screen.getByRole('button', { name: 'Period' }).textContent ?? ''
+    const label = screen.getByRole('button', { name: /^Period/ }).textContent ?? ''
     expect(label).toContain('2 Sept 2026')
     expect(label).toContain('10 Sept 2026')
   })
@@ -64,7 +69,7 @@ describe('DateRangePicker', () => {
     const onValueChange = vi.fn()
     render(<Example value={{}} onValueChange={onValueChange} />)
 
-    await user.click(screen.getByRole('button', { name: 'Period' }))
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
     await user.click(screen.getByRole('button', { name: /^2 September 2026/ }))
 
     expect(onValueChange).toHaveBeenCalledWith({ start: '2026-09-02' })
@@ -75,7 +80,7 @@ describe('DateRangePicker', () => {
     const onValueChange = vi.fn()
     render(<Example value={{ start: '2026-09-02' }} onValueChange={onValueChange} />)
 
-    await user.click(screen.getByRole('button', { name: 'Period' }))
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
     await user.click(screen.getByRole('button', { name: /^10 September 2026/ }))
 
     expect(onValueChange).toHaveBeenCalledWith({ start: '2026-09-02', end: '2026-09-10' })
@@ -88,7 +93,7 @@ describe('DateRangePicker', () => {
     const onValueChange = vi.fn()
     render(<Example value={{ start: '2026-09-20' }} onValueChange={onValueChange} />)
 
-    await user.click(screen.getByRole('button', { name: 'Period' }))
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
     await user.click(screen.getByRole('button', { name: /^10 September 2026/ }))
 
     expect(onValueChange).toHaveBeenCalledWith({ start: '2026-09-10', end: '2026-09-20' })
@@ -101,7 +106,7 @@ describe('DateRangePicker', () => {
       <Example value={{ start: '2026-09-02', end: '2026-09-10' }} onValueChange={onValueChange} />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Period' }))
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
     await user.click(screen.getByRole('button', { name: /^20 September 2026/ }))
 
     expect(onValueChange).toHaveBeenCalledWith({ start: '2026-09-20' })
@@ -118,7 +123,7 @@ describe('DateRangePicker', () => {
     }
     render(<Host />)
 
-    await user.click(screen.getByRole('button', { name: 'Period' }))
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
     await user.click(screen.getByRole('button', { name: /^2 September 2026/ }))
     expect(screen.getByRole('grid'), 'closed after the first click').toBeDefined()
 
