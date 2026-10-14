@@ -197,6 +197,7 @@ import { ListRowSection } from './sections/list-row'
 import { BigCalendarItemSection, BigCalendarSection } from './sections/big-calendar'
 import { InlineFieldSection } from './sections/inline-field'
 import { FieldDraftSection } from './sections/field-draft'
+import { SchemaCheckSection, SchemaFieldsSection, SchemaShapeSection } from './sections/schema-fields'
 
 /*
  * The stand.
@@ -244,6 +245,26 @@ const sections = [
     kind: 'utility',
     docs: '/dowel/components/field-draft/',
     render: () => <FieldDraftSection />,
+  },
+  {
+    id: 'schema-fields',
+    title: 'SchemaFields',
+    docs: '/dowel/components/schema-fields/',
+    render: () => <SchemaFieldsSection />,
+  },
+  {
+    id: 'schema-shape',
+    title: 'schema-shape',
+    kind: 'utility',
+    docs: '/dowel/components/schema-shape/',
+    render: () => <SchemaShapeSection />,
+  },
+  {
+    id: 'schema-check',
+    title: 'schema-check',
+    kind: 'utility',
+    docs: '/dowel/components/schema-check/',
+    render: () => <SchemaCheckSection />,
   },
   { id: 'checkbox', title: 'Checkbox', docs: '/dowel/components/checkbox/', render: () => <CheckboxSection /> },
   {

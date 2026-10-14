@@ -122,8 +122,9 @@ describe.each(named)('%s', (name, { source }) => {
     })
 
     it('is photographed', () => {
-      const spec = readFileSync(resolve(root, 'tests/visual/stand.spec.ts'), 'utf8')
-      expect(spec).toContain(`  '${name}',`)
+      // The pictures and the accessibility report walk one list of sections.
+      const sections = readFileSync(resolve(root, 'tests/visual/sections.ts'), 'utf8')
+      expect(sections).toContain(`  '${name}',`)
     })
   })
 

@@ -195,6 +195,10 @@ describe('every item', () => {
     'layer',
     // A hook and the pure step under it - the rules a field is typed by.
     'field-draft',
+    // A schema read as fields, and a value held to them: what SchemaFields
+    // draws with, and what a product asks before it saves.
+    'schema-shape',
+    'schema-check',
   ])
 
   it('names a component the way a consumer types it', () => {

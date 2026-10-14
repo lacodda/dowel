@@ -277,6 +277,33 @@ describe('what a primitive weighs', () => {
         'Calendar, and the line is BigCalendarItem. A day cell split off would be a ' +
         'component nobody can render outside the grid that feeds it.',
     },
+    /* A form drawn from a schema, in three files by what each answers: which
+     * fields there are, what is wrong with a value, and how each is drawn.
+     * Each is still past the ceiling, and each for the same reason - it is one
+     * walk over the kinds a schema can describe, and the kinds are many. */
+    'schema-shape': {
+      ceiling: 10752,
+      because:
+        'reading a schema is one walk - references, nullability, choices and types - and ' +
+        'each step needs the others: a `$ref` can land on a nullable union of answers. ' +
+        'Split by keyword, every part would need the resolver and the walk would be ' +
+        'stitched across files; what does stand alone, the check, already is one',
+    },
+    'schema-check': {
+      ceiling: 6144,
+      because:
+        'one rule set per kind of value - text, number, list - and the empty value that ' +
+        'comes before all of them; split by kind, the rule for empty would be written ' +
+        'three times and disagree about `null`',
+    },
+    'schema-fields': {
+      ceiling: 11264,
+      because:
+        'one switch over the controls a schema can ask for, and the two rules every case ' +
+        'shares: what an emptied control writes, and when a problem is said. Split by ' +
+        'control, both rules would be repeated in each file, which is the drift a form ' +
+        'drawn from a schema exists to end',
+    },
   }
 
   it.each(components.map((c) => [c.name, c.source] as const))(
@@ -363,6 +390,26 @@ describe('what a primitive drags in', () => {
     'list-row': ['@base-ui/react'],
     // A pure step and a hook. Nothing to install.
     'field-draft': [],
+    // A form from a schema: the reading and the check are pure, and the
+    // drawing is the set's own fields - the schema brings no dependency.
+    'schema-shape': [],
+    'schema-check': ['schema-shape'],
+    'schema-fields': [
+      'checkbox',
+      'date-picker',
+      'field',
+      'input',
+      'number-field',
+      'password-field',
+      'radio-group',
+      'schema-check',
+      'schema-shape',
+      'segmented-control',
+      'select',
+      'switch',
+      'tag-input',
+      'textarea',
+    ],
     // The draft rules it is built on, and nothing else - the codecs are a few
     // lines of arithmetic each.
     'inline-field': ['field-draft'],
