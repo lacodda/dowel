@@ -181,11 +181,11 @@ export function SkeletonOf({
           <div
             key={row}
             style={{ height }}
-            className="animate-pulse shrink-0 rounded-md bg-soft"
+            className="animate-pulse motion-reduce:animate-none shrink-0 rounded-md bg-soft"
           />
         ))
       ) : (
-        <div style={{ height: measured.height }} className="animate-pulse rounded-md bg-soft" />
+        <div style={{ height: measured.height }} className="animate-pulse motion-reduce:animate-none rounded-md bg-soft" />
       )}
     </div>
   )

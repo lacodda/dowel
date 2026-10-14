@@ -166,7 +166,7 @@ export function Image({ fallback, fit, className, src, alt, ...props }: ImagePro
         />
       )}
       {status === 'loading' && (
-        <span aria-hidden className="absolute inset-0 animate-pulse rounded-md bg-soft" />
+        <span aria-hidden className="absolute inset-0 animate-pulse motion-reduce:animate-none rounded-md bg-soft" />
       )}
       {status === 'failed' && fallback && (
         <span className="absolute inset-0 flex items-center justify-center text-dim">{fallback}</span>
