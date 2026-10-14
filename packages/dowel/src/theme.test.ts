@@ -47,7 +47,10 @@ describe('token vocabulary', () => {
       // `--color-*` entries map the vocabulary onto Tailwind utilities rather
       // than adding to it, and `--text-…--line-height` is Tailwind's way of
       // attaching a line height to a size - part of that token, not another.
+      // `--transition-duration-*` and the default duration name the
+      // `--duration-*` steps for Tailwind, as `--color-*` names the colours.
       .filter((name) => !name.startsWith('--color-') && !name.endsWith('--line-height'))
+      .filter((name) => !name.startsWith('--transition-duration-') && name !== '--default-transition-duration')
 
     for (const name of declared) {
       expect(known, `\`${name}\` is declared but not exported by the package`).toContain(name)

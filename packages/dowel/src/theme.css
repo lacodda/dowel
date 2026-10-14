@@ -645,6 +645,27 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /*
+   * Durations, as the namespace Tailwind's `duration-*` reads, so
+   * `duration-quick` is a class. The steps are declared once, as `--duration-*`
+   * further down; these only name them for the compiler.
+   *
+   * Until v0.37 they were not here, and the comment beside the steps said a
+   * named duration could not be a class. It can - the namespace is
+   * `--transition-duration-*` - and eight primitives had been writing
+   * `duration-quick` and `duration-base` all along: classes that compiled to
+   * nothing, so every one of those transitions ran on Tailwind's 150ms. The
+   * motion gate now compiles every class of motion the set writes.
+   *
+   * The default is a step too. A bare `transition-colors` - most of the set's
+   * transitions - takes it, and 150ms was the one duration in the set nobody
+   * had chosen.
+   */
+  --transition-duration-quick: var(--duration-quick);
+  --transition-duration-base: var(--duration-base);
+  --transition-duration-slow: var(--duration-slow);
+  --default-transition-duration: var(--duration-quick);
+
+  /*
    * Elevation. Three steps, because the products had one and used it for a
    * toast, a dropdown and a modal alike - so a modal never sat further from
    * the page than the menu it covered.
@@ -912,10 +933,10 @@
    * `quick` for a colour or an opacity that should feel immediate, `base` for
    * something that moves, `slow` for something arriving from off-screen.
    *
-   * Not in `@theme`: Tailwind's `duration-*` utility takes a literal number,
-   * not a named step, so these are read directly - `transition-duration:
-   * var(--duration-base)`. The easing curves opposite them ARE a namespace,
-   * so `ease-out` is a class.
+   * Declared here rather than in `@theme`, so the token keeps its name - the
+   * `@theme` block above maps each to `--transition-duration-*`, which is what
+   * makes `duration-quick` a class. Inside an arbitrary transition they are
+   * read directly: `[transition:opacity_var(--duration-quick)_var(--ease-out)]`.
    *
    * Every duration here is for people who want motion: `prefers-reduced-
    * motion` cuts them to nothing further down.
