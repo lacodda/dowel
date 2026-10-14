@@ -5,7 +5,7 @@
  * (`tests/visual/a11y.spec.ts`); gathered here so the reference page and the
  * foot of each component page read the same thing.
  */
-import { KNOWN, PAGE_RULES, STANDARD, type ItemReport } from './accessibility-report'
+import { KNOWN, PAGE_RULES, STANDARD, type ItemReport } from '../../../tools/accessibility-report'
 
 const files = import.meta.glob<ItemReport>('../data/accessibility/*.json', { eager: true, import: 'default' })
 

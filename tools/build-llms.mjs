@@ -30,7 +30,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD } from '../docs/src/lib/accessibility-report.ts'
+import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD } from './accessibility-report.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = resolve(here, '..')

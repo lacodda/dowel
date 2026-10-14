@@ -1,6 +1,10 @@
 /*
- * The accessibility report: its shape, and how a rule's tags name the WCAG
- * criteria it checks.
+ * The accessibility report: its shape, the debt it is held to, and how a
+ * rule's tags name the WCAG criteria it checks.
+ *
+ * Here rather than beside the documentation that draws it: the unit gate and
+ * the browser run import it too, and a file under `docs/` is compiled against
+ * the docs site's own toolchain, which a test job does not install.
  *
  * Written by `tests/visual/a11y.spec.ts`, one file per item of the stand, from
  * a run of axe over its section in both themes; read by the documentation -

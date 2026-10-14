@@ -3,7 +3,7 @@ import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { SECTIONS } from './visual/sections'
-import { KNOWN, PAGE_RULES, REPORT_DIR, criteriaOf, type ItemReport } from '../docs/src/lib/accessibility-report'
+import { KNOWN, PAGE_RULES, REPORT_DIR, criteriaOf, type ItemReport } from '../tools/accessibility-report'
 
 /*
  * The accessibility report the documentation draws, held between runs.

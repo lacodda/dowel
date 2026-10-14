@@ -3,7 +3,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 import { SECTIONS } from './sections'
-import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD, criteriaOf, type ItemReport, type Result } from '../../docs/src/lib/accessibility-report'
+import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD, criteriaOf, type ItemReport, type Result } from '../../tools/accessibility-report'
 
 /*
  * Every section of the stand, through axe, in both themes - in a browser.
