@@ -35,6 +35,11 @@ export interface NumberFieldProps {
   onValueChange?: (value: number | null) => void
   min?: number
   max?: number
+  /** Keep a typed number outside `min`/`max` as typed, rather than moving it
+   * to the bound on blur - for a form that says what is wrong instead. A 9
+   * typed for an age of at least 13 became 13 without a word; the arrows
+   * still stop at the bounds. */
+  allowOutOfRange?: boolean
   /** What the arrows change it by. */
   step?: number
   /** What PageUp and PageDown change it by, when a single step is too slow. */

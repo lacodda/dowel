@@ -67,6 +67,27 @@ describe('NumberField', () => {
     expect(last === undefined || last === 10).toBe(true)
   })
 
+  it('moves a typed number into range on blur - unless told to keep it as typed', async () => {
+    // The default is Base UI's, and it is a correction made without a word:
+    // a 9 typed for an age of at least 13 leaves the box as 13. A form that
+    // says what is wrong keeps the 9 and says it.
+    const user = userEvent.setup()
+    const clamped = vi.fn()
+    const kept = vi.fn()
+    render(
+      <>
+        <NumberField min={13} onValueChange={clamped} aria-label="Clamped" />
+        <NumberField min={13} allowOutOfRange onValueChange={kept} aria-label="Kept" />
+      </>,
+    )
+    await user.type(screen.getByLabelText('Clamped'), '9')
+    await user.tab()
+    expect(clamped.mock.calls.at(-1)?.[0]).toBe(13)
+    await user.type(screen.getByLabelText('Kept'), '9')
+    await user.tab()
+    expect(kept.mock.calls.at(-1)?.[0]).toBe(9)
+  })
+
   it('shows the unit beside the field rather than inside it', () => {
     // Inside, it is something to parse and something to delete by accident.
     render(<NumberField value={16} unit="px" aria-label="Width" />)
