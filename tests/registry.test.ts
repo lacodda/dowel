@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
 import ts from 'typescript'
 import { beforeAll, describe, expect, it } from 'vitest'
@@ -71,7 +71,12 @@ const pinned = (() => {
 
 let pinnedItems: RegistryItem[]
 
+/** When the generator was started, less a margin for the clock: a file last
+ * written before it was not written by it. */
+let generatedFrom = 0
+
 beforeAll(() => {
+  generatedFrom = Date.now() - 2000
   execFileSync('node', ['tools/build-registry.mjs'], { cwd: root })
   const read = (file: string) => JSON.parse(readFileSync(resolve(registryDir, file), 'utf8'))
   catalogue = read('registry.json')
@@ -98,16 +103,33 @@ describe('what is deployed', () => {
     // publishes as-is: it never runs this generator. So a theme edited without
     // rebuilding the registry would ship a stale theme to every consumer,
     // while every other check passed.
-    const current = new Map(served().map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]))
+    const files = served()
+    // Only what the generator wrote in this run is read again. A released
+    // snapshot is left untouched by it, so a file it did not write is, by
+    // construction, the file that was committed - and the snapshots are most
+    // of the directory, growing by a hundred and fifty files a release.
+    const current = new Map(
+      files
+        .filter((file) => statSync(resolve(registryDir, file)).mtimeMs >= generatedFrom)
+        .map((file) => [file, readFileSync(resolve(registryDir, file), 'utf8')]),
+    )
 
-    expect([...current.keys()].sort(), 'the registry gained or lost an item').toEqual(
+    expect(current.size, 'the generator wrote nothing - is the clock right?').toBeGreaterThan(0)
+    expect([...files].sort(), 'the registry gained or lost an item').toEqual(
       [...committed.keys()].sort(),
     )
-    for (const [file, content] of current) {
-      expect(sameText(committed.get(file) ?? ''), `\`${file}\` is stale; run \`pnpm build\``).toBe(
-        sameText(content),
-      )
-    }
+    /* One assertion over the whole directory, not one per file. Every
+     * release adds a snapshot of the registry beside it - two and a half
+     * thousand files by v0.37 - and a check per file crossed the test's five
+     * seconds on a busy machine. Equal strings are compared before the line
+     * endings are normalised, so the common case costs one comparison. */
+    const stale = [...current]
+      .filter(([file, content]) => {
+        const was = committed.get(file) ?? ''
+        return was !== content && sameText(was) !== sameText(content)
+      })
+      .map(([file]) => file)
+    expect(stale, 'stale; run `pnpm build`').toEqual([])
   })
 })
 
