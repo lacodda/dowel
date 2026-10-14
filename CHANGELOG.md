@@ -2,6 +2,29 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.37.0] - 2026-10-14
+
+### Bug Fixes
+- Make the duration steps classes, and the default a step
+- Give every loop a rest of its own under reduced motion
+- Leave a field's wiring on the input, not on the group
+- Name the trigger by its label and its date
+- Keep the report's shape where a test job can compile it
+
+### Build
+- Regenerate the registry, its v0.37 snapshot, the history and llms.txt
+
+### Features
+- Keep a typed number out of range when asked
+- Draw a switch or a checkbox beside its name
+- A form drawn and checked from a JSON Schema
+- An accessibility report the build writes itself
+
+### Testing
+- Hold every class of motion to the reduced-motion rule
+- Read again only what the generator wrote
+- Record the baselines for the schema fields and the field beside its name
+
 ## [0.36.0] - 2026-10-11
 
 ### Bug Fixes
