@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import type { TestProject } from 'vitest/node'
 import { lineProducts } from '../packages/dowel/src/line'
+import { compiled, motionSources, motionStrings } from './motion'
 
 /*
  * Every browser the suite needs, launched once and before any worker starts.
@@ -32,6 +33,7 @@ export default async function setup(project: TestProject) {
   execFileSync('node', ['tools/build-palettes.mjs', dir], { cwd: root })
   project.provide('palettesDir', dir)
   project.provide('painted', await paint(dir))
+  project.provide('motion', await measureMotion())
   return () => rmSync(dir, { recursive: true, force: true })
 }
 
@@ -92,9 +94,69 @@ async function paint(dir: string): Promise<Painted> {
   return painted
 }
 
+/** What the browser computed for one string of motion classes, with and
+ * without a reader's request for less motion. */
+export interface MotionMeasure {
+  file: string
+  classes: string[]
+  reduce: ComputedMotion
+  full: ComputedMotion
+}
+
+export interface ComputedMotion {
+  transitionDuration: string
+  animationName: string
+  animationDuration: string
+  animationIterationCount: string
+}
+
+/*
+ * Every string of motion classes the set writes, on an element of its own,
+ * in a page carrying the theme and Tailwind's output for exactly those
+ * classes - then asked what it computes, once as a reader who wants motion and
+ * once as one who asked for less. jsdom resolves no custom property and no
+ * media query, so this is the only place the theme's rule is seen working
+ * rather than seen written.
+ */
+async function measureMotion(): Promise<MotionMeasure[]> {
+  const strings = motionSources().flatMap((source) =>
+    motionStrings(source).map((classes) => ({ file: source.file, classes })),
+  )
+  const css = await compiled([...new Set(strings.flatMap((string) => string.classes))])
+  const attribute = (text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+  const body = strings.map((string, at) => `<i data-at="${at}" class="${attribute(string.classes.join(' '))}"></i>`).join('')
+
+  const { chromium } = await import('@playwright/test')
+  const browser = await chromium.launch()
+  try {
+    const page = await browser.newPage()
+    await page.setContent(`<html><head><style>${css}</style></head><body>${body}</body></html>`)
+    const read = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll('i[data-at]')].map((element) => {
+          const style = getComputedStyle(element)
+          return {
+            transitionDuration: style.transitionDuration,
+            animationName: style.animationName,
+            animationDuration: style.animationDuration,
+            animationIterationCount: style.animationIterationCount,
+          }
+        }),
+      )
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const reduce = await read()
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+    const full = await read()
+    return strings.map((string, at) => ({ ...string, reduce: reduce[at]!, full: full[at]! }))
+  } finally {
+    await browser.close()
+  }
+}
+
 declare module 'vitest' {
   export interface ProvidedContext {
     palettesDir: string
     painted: Painted
+    motion: MotionMeasure[]
   }
 }

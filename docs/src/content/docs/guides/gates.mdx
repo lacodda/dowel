@@ -30,6 +30,31 @@ than because it was inconvenient:
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
 
+## Motion
+
+The theme carries one rule for `prefers-reduced-motion`: every transition and
+animation cut to nothing. Every primitive leans on it, so the gate holds the
+classes under it (`tests/motion.test.ts`):
+
+- **Every class of motion compiles to something.** The set's classes are read
+  out of its source and run through Tailwind with the theme. Eight primitives
+  wrote `duration-quick` and `duration-base` for a dozen releases and both
+  compiled to nothing - the transitions ran on Tailwind's own 150ms, and no
+  test, screenshot or reader noticed.
+- **Every duration is one of the three steps** - `quick`, `base`, `slow` -
+  never a number. A bare `transition-colors` takes `quick`, because the theme
+  makes it the default.
+- **A loop says what it looks like standing still.** The theme's rule runs an
+  animation once, for a hundredth of a millisecond, and leaves it wherever it
+  ended; a spinner or a skeleton names its rest with `motion-reduce:animate-none`.
+- **Nothing moves by script** - `element.animate()`, a smooth scroll - without
+  asking `prefers-reduced-motion` first: the stylesheet cannot reach it.
+- **And in a real browser**, every string of motion classes the set writes is
+  put on an element and measured: at rest for a reader who asked for less
+  motion, and timed by a step for one who did not. jsdom resolves no media
+  query, so this is the only place the rule is seen working rather than seen
+  written.
+
 ## Weight, and what a component drags in
 
 Two budgets. The first is a ceiling on code size with comments excluded —
