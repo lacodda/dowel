@@ -1,0 +1,142 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "aria-allowed-attr": {
+      "help": "Elements must only use supported ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-conditional-attr": {
+      "help": "ARIA attributes must be used as specified for the element's role",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-prohibited-attr": {
+      "help": "Elements must only use permitted ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr": {
+      "help": "ARIA attributes must conform to valid names",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr-value": {
+      "help": "ARIA attributes must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "button-name": {
+      "help": "Buttons must have discernible text",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "form-field-multiple-labels": {
+      "help": "Form field must not have multiple label elements",
+      "criteria": [
+        "3.3.2"
+      ]
+    },
+    "label": {
+      "help": "Form elements must have labels",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "label-title-only": {
+      "help": "Form elements should have a visible label",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-conditional-attr",
+      "aria-prohibited-attr",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "button-name",
+      "color-contrast",
+      "empty-heading",
+      "form-field-multiple-labels",
+      "label",
+      "label-title-only",
+      "link-name",
+      "nested-interactive",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .text-faint"
+        ]
+      }
+    ]
+  },
+  "light": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-conditional-attr",
+      "aria-prohibited-attr",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "button-name",
+      "color-contrast",
+      "empty-heading",
+      "form-field-multiple-labels",
+      "label",
+      "label-title-only",
+      "link-name",
+      "nested-interactive",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .text-faint"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "aria-allowed-attr": {
+      "help": "Elements must only use supported ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-allowed-role": {
+      "help": "ARIA role should be appropriate for the element",
+      "criteria": []
+    },
+    "aria-conditional-attr": {
+      "help": "ARIA attributes must be used as specified for the element's role",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-deprecated-role": {
+      "help": "Deprecated ARIA roles must not be used",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-hidden-focus": {
+      "help": "ARIA hidden element must not be focusable or contain focusable elements",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-prohibited-attr": {
+      "help": "Elements must only use permitted ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-required-attr": {
+      "help": "Required ARIA attributes must be provided",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-required-children": {
+      "help": "Certain ARIA roles must contain particular children",
+      "criteria": [
+        "1.3.1"
+      ]
+    },
+    "aria-required-parent": {
+      "help": "Certain ARIA roles must be contained by particular parents",
+      "criteria": [
+        "1.3.1"
+      ]
+    },
+    "aria-roles": {
+      "help": "ARIA roles used must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr": {
+      "help": "ARIA attributes must conform to valid names",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr-value": {
+      "help": "ARIA attributes must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "button-name": {
+      "help": "Buttons must have discernible text",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "form-field-multiple-labels": {
+      "help": "Form field must not have multiple label elements",
+      "criteria": [
+        "3.3.2"
+      ]
+    },
+    "label": {
+      "help": "Form elements must have labels",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "label-content-name-mismatch": {
+      "help": "Elements must have their visible text as part of their accessible name",
+      "criteria": [
+        "2.5.3"
+      ]
+    },
+    "label-title-only": {
+      "help": "Form elements should have a visible label",
+      "criteria": []
+    },
+    "landmark-no-duplicate-banner": {
+      "help": "Document should not have more than one banner landmark",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "tabindex": {
+      "help": "Elements should not have tabindex greater than zero",
+      "criteria": []
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-allowed-role",
+      "aria-conditional-attr",
+      "aria-deprecated-role",
+      "aria-hidden-focus",
+      "aria-prohibited-attr",
+      "aria-required-attr",
+      "aria-required-children",
+      "aria-required-parent",
+      "aria-roles",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "button-name",
+      "color-contrast",
+      "empty-heading",
+      "form-field-multiple-labels",
+      "label",
+      "label-title-only",
+      "landmark-no-duplicate-banner",
+      "link-name",
+      "nested-interactive",
+      "tabindex",
+      "target-size"
+    ],
+    "incomplete": [
+      "color-contrast"
+    ],
+    "violations": [
+      {
+        "rule": "label-content-name-mismatch",
+        "nodes": [
+          "#base-ui-_r_c_"
+        ]
+      }
+    ]
+  },
+  "light": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-allowed-role",
+      "aria-conditional-attr",
+      "aria-deprecated-role",
+      "aria-hidden-focus",
+      "aria-prohibited-attr",
+      "aria-required-attr",
+      "aria-required-children",
+      "aria-required-parent",
+      "aria-roles",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "button-name",
+      "color-contrast",
+      "empty-heading",
+      "form-field-multiple-labels",
+      "label",
+      "label-title-only",
+      "landmark-no-duplicate-banner",
+      "link-name",
+      "nested-interactive",
+      "tabindex",
+      "target-size"
+    ],
+    "incomplete": [
+      "color-contrast"
+    ],
+    "violations": [
+      {
+        "rule": "label-content-name-mismatch",
+        "nodes": [
+          "#base-ui-_r_c_"
+        ]
+      }
+    ]
+  }
+}

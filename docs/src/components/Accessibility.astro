@@ -1,0 +1,62 @@
+---
+/*
+ * What axe found on this item's examples, at the foot of its page.
+ *
+ * Drawn by the MarkdownContent override beside the history, so no page can
+ * forget it, from the same report the reference page is built from.
+ */
+import { allRules, axeVersion, owedBy, partsOf, passedIn, reports, undecidedIn } from '../lib/accessibility'
+
+interface Props {
+  name: string
+  dir: 'ui' | 'blocks'
+}
+
+const { name } = Astro.props
+const report = reports.get(name)
+const rules = allRules()
+const passed = report ? passedIn(report) : []
+const undecided = report ? undecidedIn(report) : []
+const owed = owedBy(name)
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+---
+
+{
+  report && (
+    <section class="accessibility">
+      <h2 id="accessibility">Accessibility</h2>
+      <p>
+        The examples on <a href={`${base}/stand/${name}`}>the stand</a>, through axe {axeVersion()} in a browser, in both
+        themes, against WCAG 2.2 A and AA and axe's best practices: <strong>{passed.length} rules applied and passed</strong>
+        {owed.length === 0 ? ', and none failed.' : '.'} The <a href={`${base}/reference/accessibility/`}>accessibility report</a> has
+        every item.
+      </p>
+      {owed.length > 0 && (
+        <>
+          <p>Not yet passed, and why:</p>
+          <ul>
+            {owed.map((debt) => (
+              <li>
+                <code>{debt.rule}</code> - {partsOf(debt.reason).map((part) => (part.code ? <code>{part.text}</code> : part.text))}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {undecided.length > 0 && (
+        <p>
+          Left to a person, where axe could not decide:{' '}
+          {undecided.map((rule, at) => (
+            <>
+              {at > 0 && ', '}
+              <span title={rules.get(rule)?.help}>
+                <code>{rule}</code>
+              </span>
+            </>
+          ))}
+          .
+        </p>
+      )}
+    </section>
+  )
+}

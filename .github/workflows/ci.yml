@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       update_snapshots:
-        description: 'Record new stand baselines instead of comparing'
+        description: 'Record new stand baselines and accessibility reports instead of comparing'
         type: boolean
         default: false
 
@@ -82,7 +82,7 @@ jobs:
 
       - name: Compare the stand with its baselines
         if: ${{ inputs.update_snapshots != true }}
-        run: pnpm visual
+        run: pnpm exec playwright test tests/visual/stand.spec.ts tests/visual/measured.spec.ts
       - name: Keep the diffs, so a failure can be looked at
         if: ${{ failure() && inputs.update_snapshots != true }}
         uses: actions/upload-artifact@v7
@@ -93,11 +93,55 @@ jobs:
 
       - name: Record new baselines
         if: ${{ inputs.update_snapshots == true }}
-        run: pnpm visual:update
+        run: pnpm exec playwright test tests/visual/stand.spec.ts --update-snapshots
       - name: Hand the baselines back to be committed
         if: ${{ inputs.update_snapshots == true }}
         uses: actions/upload-artifact@v7
         with:
           name: stand-baselines
           path: tests/visual/**/*.png
+          retention-days: 7
+
+  accessibility:
+    name: stand accessibility
+    # axe over every section of the stand, in both themes, in the same
+    # container as the pictures - the browser that renders them is the one
+    # that resolves the colours contrast is measured in. A job of its own
+    # because it is a hundred and twenty pages twice: beside the pictures
+    # rather than after them, and four at a time, since nothing here is a
+    # comparison of pixels that a busy machine could disturb.
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.0-noble
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build the stand
+        run: pnpm stand:build
+
+      - name: Hold the stand to its accessibility report
+        if: ${{ inputs.update_snapshots != true }}
+        run: pnpm exec playwright test tests/visual/a11y.spec.ts --workers=4
+      - name: Keep what failed, so it can be looked at
+        if: ${{ failure() && inputs.update_snapshots != true }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: accessibility-failures
+          path: test-results/
+          retention-days: 7
+
+      - name: Record the report again
+        if: ${{ inputs.update_snapshots == true }}
+        run: pnpm exec playwright test tests/visual/a11y.spec.ts --workers=4 --update-snapshots
+      - name: Hand the report back to be committed
+        if: ${{ inputs.update_snapshots == true }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: stand-accessibility
+          path: docs/src/data/accessibility/
           retention-days: 7

@@ -1,0 +1,33 @@
+---
+title: Accessibility
+description: What axe finds on every component and block, in a browser, in both themes - a report the build writes, not one typed by hand.
+---
+
+import AccessibilityReport from '../../../components/AccessibilityReport.astro'
+
+Every item on [the stand](/dowel/stand/) is put through
+[axe-core](https://github.com/dequelabs/axe-core) in a real browser, in the dark
+theme and in the light one, against WCAG 2.2 at A and AA and axe's own best
+practices. The numbers below are that run. They are not typed here: the browser
+writes one file per item, the page is drawn from those files, and a gate holds
+the files to the stand - an item added without a report, an axe upgrade
+without a new run, or a fixed violation still listed as owed fails before
+anything is published. A page that claims a result the set no longer has is
+the one thing this report must not be.
+
+**What else holds the line.** This run sees the examples as the stand draws
+them, closed. The unit tests put every primitive through axe as well, in every
+variant and open - a menu with its list showing, a dialog with its focus
+trapped - and drive the interactive ones by the keyboard. Colour contrast is
+also computed from the tokens for every accent of the line, the floor of a
+pointer target is a token at WCAG's 24px, and every animation comes to rest for
+a reader who asked for less motion. The [gates](/dowel/guides/gates/) say what
+each one catches.
+
+**What no automated check sees.** Whether a name makes sense when it is read
+aloud, whether the order a reader tabs in is the order the screen means,
+whether an error says what to do about it. axe marks some of these for a
+person - they are listed with each item - and the rest are what reading a
+screen with a screen reader is for.
+
+<AccessibilityReport />

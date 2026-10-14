@@ -1149,16 +1149,16 @@ function InputSection() {
   return (
     <>
       <Row label="states">
-        <Input placeholder="Empty" />
-        <Input defaultValue="With a value" />
-        <Input disabled defaultValue="Disabled" />
-        <Input aria-invalid defaultValue="Invalid" />
+        <Input aria-label="Empty" placeholder="Empty" />
+        <Input aria-label="With a value" defaultValue="With a value" />
+        <Input aria-label="Disabled" disabled defaultValue="Disabled" />
+        <Input aria-label="Invalid" aria-invalid defaultValue="Invalid" />
       </Row>
 
       <Row label="types">
-        <Input type="email" placeholder="you@example.com" />
-        <Input type="password" defaultValue="secret" />
-        <Input type="number" defaultValue={42} />
+        <Input aria-label="Email" type="email" placeholder="you@example.com" />
+        <Input aria-label="Password" type="password" defaultValue="secret" />
+        <Input aria-label="Count" type="number" defaultValue={42} />
       </Row>
     </>
   )
@@ -2089,7 +2089,7 @@ function PreviewCardSection() {
       <p className="text-sm text-dim">
         The score came from{' '}
         <PreviewCard>
-          <PreviewCardTrigger render={<a href="#preview-card" className="text-accent" />}>
+          <PreviewCardTrigger render={<a href="#preview-card" className="text-accent underline underline-offset-2" />}>
             the seven axes
           </PreviewCardTrigger>
           <PreviewCardPopup>
@@ -2930,7 +2930,7 @@ function TableSection() {
       </Row>
 
       <Row label="a sticky heading - scroll the box, the heading stays">
-        <div className="h-48 w-64 overflow-y-auto rounded-md border border-line">
+        <div tabIndex={0} role="region" aria-label="Recent works" className="h-48 w-64 overflow-y-auto rounded-md border border-line">
           <Table>
             <TableHead sticky>
               <TableRow>

@@ -1,0 +1,71 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "definition-list": {
+      "help": "<dl> elements must only directly contain properly-ordered <dt> and <dd> groups, <script>, <template> or <div> elements",
+      "criteria": [
+        "1.3.1"
+      ]
+    },
+    "dlitem": {
+      "help": "<dt> and <dd> elements must be contained by a <dl>",
+      "criteria": [
+        "1.3.1"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "color-contrast",
+      "definition-list",
+      "dlitem",
+      "empty-heading",
+      "link-name",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": []
+  },
+  "light": {
+    "passes": [
+      "color-contrast",
+      "definition-list",
+      "dlitem",
+      "empty-heading",
+      "link-name",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".inline-flex"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "link-in-text-block": {
+      "help": "Links must be distinguishable without relying on color",
+      "criteria": [
+        "1.4.1"
+      ]
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "color-contrast",
+      "empty-heading",
+      "link-in-text-block",
+      "link-name",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": []
+  },
+  "light": {
+    "passes": [
+      "color-contrast",
+      "empty-heading",
+      "link-in-text-block",
+      "link-name",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": []
+  }
+}

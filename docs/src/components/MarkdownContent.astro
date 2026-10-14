@@ -1,11 +1,13 @@
 ---
 /*
- * Starlight's markdown column, with the history of the page's item at its
- * foot. An override rather than a line in each page: a hundred and twenty
- * pages each remembering to draw it is a hundred and twenty chances to
- * forget, and the day the list of pages grows is the day one does.
+ * Starlight's markdown column, with what axe found on the page's item and
+ * the history of its file at its foot. An override rather than a line in each
+ * page: a hundred and twenty pages each remembering to draw them is a hundred
+ * and twenty chances to forget, and the day the list of pages grows is the
+ * day one does.
  */
 import Default from '@astrojs/starlight/components/MarkdownContent.astro'
+import Accessibility from './Accessibility.astro'
 import History from './History.astro'
 import { itemOfPage } from '../lib/history'
 
@@ -14,5 +16,6 @@ const item = itemOfPage(Astro.locals.starlightRoute.id)
 
 <Default>
   <slot />
+  {item && <Accessibility name={item.name} dir={item.dir} />}
   {item && <History name={item.name} dir={item.dir} />}
 </Default>

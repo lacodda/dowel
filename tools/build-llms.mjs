@@ -30,6 +30,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD } from '../docs/src/lib/accessibility-report.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = resolve(here, '..')
@@ -128,6 +129,10 @@ function expand(body, frontmatter) {
         `[The same screen in every accent of the line, ${mode} theme - see ${site}/reference/accents/]`,
     )
 
+    // `<AccessibilityReport>`: the whole report, as the page draws it - the
+    // figures, what is owed and why, the rules left off, every item.
+    out = out.replace(/<AccessibilityReport\s*\/>/g, () => accessibilityReport())
+
     // A splash page carries its hero in frontmatter, and the body starts
     // mid-thought without it.
     const tagline = frontmatter.match(/tagline:\s*(.*)/)?.[1]?.trim()
@@ -135,6 +140,50 @@ function expand(body, frontmatter) {
 
     return out.replace(/\n{3,}/g, '\n\n').trim()
   })
+}
+
+/** The accessibility report as Markdown, from the files the browser wrote:
+ * the same data the page's component draws, so the two cannot disagree. */
+function accessibilityReport() {
+  const dir = resolve(root, REPORT_DIR)
+  const items = readdirSync(dir)
+    .filter((file) => file.endsWith('.json'))
+    .sort()
+    .map((file) => [file.replace(/\.json$/, ''), JSON.parse(readFileSync(resolve(dir, file), 'utf8'))])
+  const rules = new Map(items.flatMap(([, report]) => Object.entries(report.rules)))
+  const criteria = new Set([...rules.values()].flatMap((rule) => rule.criteria))
+  const owed = (name) => KNOWN.filter((debt) => debt.items.includes(name)).map((debt) => debt.rule)
+  const passed = (report) => {
+    const failed = new Set([...report.dark.violations, ...report.light.violations].map((violation) => violation.rule))
+    return new Set([...report.dark.passes, ...report.light.passes].filter((rule) => !failed.has(rule))).size
+  }
+  const undecided = (report) => [...new Set([...report.dark.incomplete, ...report.light.incomplete])].sort()
+  return [
+    `Run by axe ${items[0]?.[1].axe ?? ''} against \`${STANDARD.join(', ')}\`: ${items.length} items of the stand, in two themes each; ` +
+      `${rules.size} rules applied, ${criteria.size} WCAG criteria checked, ` +
+      `${items.filter(([name]) => owed(name).length === 0).length} items with nothing owed.`,
+    '## Not yet passed',
+    ...(KNOWN.length === 0
+      ? ['Nothing: every item passes every rule that applied to it, in both themes.']
+      : KNOWN.map(
+          (debt) =>
+            `### \`${debt.rule}\` - ${debt.items.length} ${debt.items.length === 1 ? 'item' : 'items'}\n\n` +
+            `${debt.reason}\n\n${debt.items.join(', ')}`,
+        )),
+    '## Rules about a page, off on the stand',
+    Object.entries(PAGE_RULES)
+      .map(([rule, reason]) => `- \`${rule}\` - ${reason}`)
+      .join('\n'),
+    '## Every item',
+    [
+      '| Item | Passed | Left to a person | Owed |',
+      '| --- | --- | --- | --- |',
+      ...items.map(
+        ([name, report]) =>
+          `| ${name} | ${passed(report)} | ${undecided(report).map((rule) => `\`${rule}\``).join(' ')} | ${owed(name).map((rule) => `\`${rule}\``).join(' ')} |`,
+      ),
+    ].join('\n'),
+  ].join('\n\n')
 }
 
 /** Component tags left outside code: markup a machine reader receives as

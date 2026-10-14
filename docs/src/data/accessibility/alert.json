@@ -1,0 +1,113 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "aria-allowed-role": {
+      "help": "ARIA role should be appropriate for the element",
+      "criteria": []
+    },
+    "aria-deprecated-role": {
+      "help": "Deprecated ARIA roles must not be used",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-required-attr": {
+      "help": "Required ARIA attributes must be provided",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-roles": {
+      "help": "ARIA roles used must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "button-name": {
+      "help": "Buttons must have discernible text",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "aria-allowed-role",
+      "aria-deprecated-role",
+      "aria-required-attr",
+      "aria-roles",
+      "button-name",
+      "color-contrast",
+      "empty-heading",
+      "link-name",
+      "nested-interactive",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".border-bad\\/40 > .min-w-0.flex-1 > .text-xs"
+        ]
+      }
+    ]
+  },
+  "light": {
+    "passes": [
+      "aria-allowed-role",
+      "aria-deprecated-role",
+      "aria-required-attr",
+      "aria-roles",
+      "button-name",
+      "color-contrast",
+      "empty-heading",
+      "link-name",
+      "nested-interactive",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".border-good\\/40 > .min-w-0.flex-1 > .text-xs",
+          ".flex-col > .border-warn\\/40.bg-warn-soft.text-warn > .min-w-0.flex-1 > .text-xs",
+          ".border-bad\\/40 > .min-w-0.flex-1 > .text-xs",
+          ".border-info\\/40 > .min-w-0.flex-1 > .text-xs",
+          ".min-w-0.flex-1 > .font-semibold",
+          ".mt-0\\.5"
+        ]
+      }
+    ]
+  }
+}

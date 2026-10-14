@@ -1,0 +1,158 @@
+---
+/*
+ * The accessibility report, whole: what axe checked on every item of the
+ * stand, in a browser, in both themes - the numbers, the criteria, what is
+ * left to a person and what is still owed.
+ *
+ * Nothing here is typed by hand. It is drawn from the files the browser
+ * wrote, and a gate holds those files to the stand on every run, so the page
+ * cannot claim a result the set no longer has.
+ */
+import { KNOWN, PAGE_RULES, STANDARD, allRules, axeVersion, owedBy, partsOf, passedIn, reports, undecidedIn } from '../lib/accessibility'
+
+const rules = allRules()
+const items = [...reports]
+const clean = items.filter(([name]) => owedBy(name).length === 0)
+
+/* The WCAG criteria the applied rules check, each with the rules that check
+ * it and how many items it applied to. */
+const criteria = new Map<string, { rules: Set<string>; items: Set<string> }>()
+for (const [name, report] of items) {
+  for (const rule of [...report.dark.passes, ...report.light.passes, ...report.dark.violations.map((v) => v.rule)]) {
+    for (const criterion of rules.get(rule)?.criteria ?? []) {
+      const entry = criteria.get(criterion) ?? { rules: new Set(), items: new Set() }
+      entry.rules.add(rule)
+      entry.items.add(name)
+      criteria.set(criterion, entry)
+    }
+  }
+}
+const order = (criterion: string) => criterion.split('.').map((part) => part.padStart(3, '0')).join('.')
+const byCriterion = [...criteria].sort(([a], [b]) => order(a).localeCompare(order(b)))
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const pageOf = (name: string) =>
+  name.endsWith('-screen') ? `${base}/blocks/${name}/` : `${base}/components/${name}/`
+---
+
+<div class="report">
+  <p class="figures">
+    <span><strong>{items.length}</strong> items of the stand</span>
+    <span><strong>2</strong> themes each</span>
+    <span><strong>{rules.size}</strong> rules applied</span>
+    <span><strong>{criteria.size}</strong> WCAG criteria checked</span>
+    <span><strong>{clean.length}</strong> items with nothing owed</span>
+  </p>
+  <p>
+    Run by axe {axeVersion()} against <code>{STANDARD.join(', ')}</code>.
+  </p>
+
+  <h2 id="criteria">The criteria checked</h2>
+  <p>Each WCAG success criterion a rule that applied checks, and on how many items it applied.</p>
+  <table>
+    <thead>
+      <tr><th>Criterion</th><th>Rules</th><th>Items</th></tr>
+    </thead>
+    <tbody>
+      {
+        byCriterion.map(([criterion, entry]) => (
+          <tr>
+            <td>{criterion}</td>
+            <td>
+              {[...entry.rules].sort().map((rule, at) => (
+                <>
+                  {at > 0 && ' '}
+                  <span title={rules.get(rule)?.help}>
+                    <code>{rule}</code>
+                  </span>
+                </>
+              ))}
+            </td>
+            <td>{entry.items.size}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h2 id="owed">Not yet passed</h2>
+  {
+    KNOWN.length === 0 ? (
+      <p>Nothing: every item passes every rule that applied to it, in both themes.</p>
+    ) : (
+      KNOWN.map((debt) => (
+        <>
+          <h3>
+            <code>{debt.rule}</code> - {debt.items.length} {debt.items.length === 1 ? 'item' : 'items'}
+          </h3>
+          <p>{partsOf(debt.reason).map((part) => (part.code ? <code>{part.text}</code> : part.text))}</p>
+          <p class="items">
+            {debt.items.map((name, at) => (
+              <>
+                {at > 0 && ', '}
+                <a href={pageOf(name)}>{name}</a>
+              </>
+            ))}
+          </p>
+        </>
+      ))
+    )
+  }
+
+  <h2 id="rules-off">Rules about a page, off on the stand</h2>
+  <ul>
+    {
+      Object.entries(PAGE_RULES).map(([rule, reason]) => (
+        <li>
+          <code>{rule}</code> - {partsOf(reason).map((part) => (part.code ? <code>{part.text}</code> : part.text))}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2 id="items">Every item</h2>
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Passed</th><th>Left to a person</th><th>Owed</th></tr>
+    </thead>
+    <tbody>
+      {
+        items.map(([name, report]) => (
+          <tr>
+            <td>
+              <a href={pageOf(name)}>{name}</a>
+            </td>
+            <td>{passedIn(report).length}</td>
+            <td>
+              {undecidedIn(report).map((rule, at) => (
+                <>
+                  {at > 0 && ' '}
+                  <code>{rule}</code>
+                </>
+              ))}
+            </td>
+            <td>
+              {owedBy(name).map((debt, at) => (
+                <>
+                  {at > 0 && ' '}
+                  <code>{debt.rule}</code>
+                </>
+              ))}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .figures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .report .items {
+    font-size: var(--sl-text-sm);
+  }
+</style>

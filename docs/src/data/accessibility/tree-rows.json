@@ -1,0 +1,98 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "avoid-inline-spacing": {
+      "help": "Inline text spacing must be adjustable with custom stylesheets",
+      "criteria": [
+        "1.4.12"
+      ]
+    },
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "avoid-inline-spacing",
+      "color-contrast",
+      "empty-heading",
+      "link-name",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(5) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(6) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(7) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(8) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(9) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(10) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(11) > .text-faint"
+        ]
+      }
+    ]
+  },
+  "light": {
+    "passes": [
+      "avoid-inline-spacing",
+      "color-contrast",
+      "empty-heading",
+      "link-name",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
+          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
+          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(5) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(6) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(7) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(8) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(9) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(10) > .text-faint",
+          ".items-baseline.gap-2.flex:nth-child(11) > .text-faint"
+        ]
+      }
+    ]
+  }
+}

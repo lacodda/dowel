@@ -1,0 +1,162 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "aria-allowed-attr": {
+      "help": "Elements must only use supported ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-allowed-role": {
+      "help": "ARIA role should be appropriate for the element",
+      "criteria": []
+    },
+    "aria-conditional-attr": {
+      "help": "ARIA attributes must be used as specified for the element's role",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-deprecated-role": {
+      "help": "Deprecated ARIA roles must not be used",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-hidden-focus": {
+      "help": "ARIA hidden element must not be focusable or contain focusable elements",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-prohibited-attr": {
+      "help": "Elements must only use permitted ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-required-attr": {
+      "help": "Required ARIA attributes must be provided",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-roles": {
+      "help": "ARIA roles used must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-toggle-field-name": {
+      "help": "ARIA toggle fields must have an accessible name",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr": {
+      "help": "ARIA attributes must conform to valid names",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr-value": {
+      "help": "ARIA attributes must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "duplicate-id-aria": {
+      "help": "IDs used in ARIA and labels must be unique",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "tabindex": {
+      "help": "Elements should not have tabindex greater than zero",
+      "criteria": []
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-allowed-role",
+      "aria-conditional-attr",
+      "aria-deprecated-role",
+      "aria-hidden-focus",
+      "aria-prohibited-attr",
+      "aria-required-attr",
+      "aria-roles",
+      "aria-toggle-field-name",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "color-contrast",
+      "duplicate-id-aria",
+      "empty-heading",
+      "link-name",
+      "nested-interactive",
+      "tabindex",
+      "target-size"
+    ],
+    "incomplete": [
+      "aria-toggle-field-name",
+      "duplicate-id-aria"
+    ],
+    "violations": []
+  },
+  "light": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-allowed-role",
+      "aria-conditional-attr",
+      "aria-deprecated-role",
+      "aria-hidden-focus",
+      "aria-prohibited-attr",
+      "aria-required-attr",
+      "aria-roles",
+      "aria-toggle-field-name",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "color-contrast",
+      "duplicate-id-aria",
+      "empty-heading",
+      "link-name",
+      "nested-interactive",
+      "tabindex",
+      "target-size"
+    ],
+    "incomplete": [
+      "aria-toggle-field-name",
+      "duplicate-id-aria"
+    ],
+    "violations": []
+  }
+}

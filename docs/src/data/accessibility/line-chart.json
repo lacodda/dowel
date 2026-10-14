@@ -1,0 +1,188 @@
+{
+  "axe": "4.14.0",
+  "rules": {
+    "aria-allowed-attr": {
+      "help": "Elements must only use supported ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-allowed-role": {
+      "help": "ARIA role should be appropriate for the element",
+      "criteria": []
+    },
+    "aria-conditional-attr": {
+      "help": "ARIA attributes must be used as specified for the element's role",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-deprecated-role": {
+      "help": "Deprecated ARIA roles must not be used",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-hidden-focus": {
+      "help": "ARIA hidden element must not be focusable or contain focusable elements",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-prohibited-attr": {
+      "help": "Elements must only use permitted ARIA attributes",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-required-attr": {
+      "help": "Required ARIA attributes must be provided",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-roles": {
+      "help": "ARIA roles used must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr": {
+      "help": "ARIA attributes must conform to valid names",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "aria-valid-attr-value": {
+      "help": "ARIA attributes must conform to valid values",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "avoid-inline-spacing": {
+      "help": "Inline text spacing must be adjustable with custom stylesheets",
+      "criteria": [
+        "1.4.12"
+      ]
+    },
+    "color-contrast": {
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "criteria": [
+        "1.4.3"
+      ]
+    },
+    "empty-heading": {
+      "help": "Headings should not be empty",
+      "criteria": []
+    },
+    "link-name": {
+      "help": "Links must have discernible text",
+      "criteria": [
+        "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
+    "role-img-alt": {
+      "help": "[role=\"img\"] and [role=\"image\"] elements must have alternative text",
+      "criteria": [
+        "1.1.1"
+      ]
+    },
+    "target-size": {
+      "help": "All touch targets must be 24px large, or leave sufficient space",
+      "criteria": [
+        "2.5.8"
+      ]
+    }
+  },
+  "dark": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-allowed-role",
+      "aria-conditional-attr",
+      "aria-deprecated-role",
+      "aria-hidden-focus",
+      "aria-prohibited-attr",
+      "aria-required-attr",
+      "aria-roles",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "avoid-inline-spacing",
+      "color-contrast",
+      "empty-heading",
+      "link-name",
+      "nested-interactive",
+      "role-img-alt",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".mb-4:nth-child(2) > .items-end.p-4.flex-wrap > .w-112.p-5.bg-raise > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".mb-4:nth-child(2) > .items-end.p-4.flex-wrap > .w-112.p-5.bg-raise > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".mb-4:nth-child(2) > .items-end.p-4.flex-wrap > .w-112.p-5.bg-raise > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(3) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".pointer-events-none.inset-x-0.absolute:nth-child(4) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".mt-1 > span:nth-child(1)",
+          ".mt-1 > span:nth-child(2)",
+          ".flex-col.w-112.p-5 > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".flex-col.w-112.p-5 > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".flex-col.w-112.p-5 > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(3) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"Rising, in good\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"Rising, in good\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"The mirror of it, in bad\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"The mirror of it, in bad\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5"
+        ]
+      }
+    ]
+  },
+  "light": {
+    "passes": [
+      "aria-allowed-attr",
+      "aria-allowed-role",
+      "aria-conditional-attr",
+      "aria-deprecated-role",
+      "aria-hidden-focus",
+      "aria-prohibited-attr",
+      "aria-required-attr",
+      "aria-roles",
+      "aria-valid-attr",
+      "aria-valid-attr-value",
+      "avoid-inline-spacing",
+      "color-contrast",
+      "empty-heading",
+      "link-name",
+      "nested-interactive",
+      "role-img-alt",
+      "target-size"
+    ],
+    "incomplete": [],
+    "violations": [
+      {
+        "rule": "color-contrast",
+        "nodes": [
+          ".mb-4:nth-child(2) > .items-end.p-4.flex-wrap > .w-112.p-5.bg-raise > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".mb-4:nth-child(2) > .items-end.p-4.flex-wrap > .w-112.p-5.bg-raise > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".mb-4:nth-child(2) > .items-end.p-4.flex-wrap > .w-112.p-5.bg-raise > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(3) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".pointer-events-none.inset-x-0.absolute:nth-child(4) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".mt-1 > span:nth-child(1)",
+          ".mt-1 > span:nth-child(2)",
+          ".flex-col.w-112.p-5 > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".flex-col.w-112.p-5 > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5",
+          ".flex-col.w-112.p-5 > .\\[--plot\\:160px\\].pr-12[role=\"img\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(3) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"Rising, in good\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"Rising, in good\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"The mirror of it, in bad\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(1) > .-top-1\\.5.left-full.pl-1\\.5",
+          "div[aria-label=\"The mirror of it, in bad\"] > .h-\\[var\\(--plot\\)\\].border-chart-axis.border-b > .pointer-events-none.inset-x-0.absolute:nth-child(2) > .-top-1\\.5.left-full.pl-1\\.5"
+        ]
+      }
+    ]
+  }
+}
