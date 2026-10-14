@@ -81,8 +81,15 @@ export function NumberField({
   ...props
 }: NumberFieldProps) {
   const language = useLocale(locale)
+  /* What a `Field` hands its control - the id and the `aria-` references - is
+   * already on the input, put there by Base UI from the field it sits in.
+   * Spread onto the root as well, it landed on a `<div>` with no role, where
+   * `aria-labelledby` and `aria-invalid` mean nothing and axe asks a person
+   * to look (aria-prohibited-attr). */
+  const root: Record<string, unknown> = { ...props }
+  for (const key of ['id', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) delete root[key]
   return (
-    <Base.Root {...props} locale={language} className={cn('inline-flex items-center gap-2', className)}>
+    <Base.Root {...root} locale={language} className={cn('inline-flex items-center gap-2', className)}>
       <Base.Group
         className={cn(
           fieldClasses,
