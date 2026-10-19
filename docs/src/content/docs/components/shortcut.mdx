@@ -127,6 +127,13 @@ first key alone does the job; sequences are left out.
 <Button aria-keyshortcuts={ariaKeyShortcuts(useCommandKeys('save'))}>{t('save')}</Button>
 ```
 
+### `keyLabel(key, apple?): string`
+
+What a key is called on this platform — `Mod` is `Ctrl` here and `⌘` on a Mac,
+`ArrowRight` is `→`. [`Kbd`](/dowel/components/kbd/) draws its caps with these
+names; a product that prints keys as text, without Tailwind, reads them from
+here. `Kbd` still exports it.
+
 ### `isApplePlatform(): boolean`
 
 Whether this machine writes and reads shortcuts the Apple way. Every function
