@@ -5,7 +5,7 @@
   "title": "Frame",
   "description": "The geometry of a screen whose bottom edge is the window's: a column that hands its height down and scrolls nowhere itself, a panel whose bars stand while its body scrolls between them, and a list beside what is open in it.",
   "dependencies": [
-    "dowel-ui@^0.38.0"
+    "dowel-ui@^0.38.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/button.json",

@@ -5,7 +5,7 @@
   "title": "SchemaFields",
   "description": "A settings screen, a profile, a config: the data is already described once, as a zod schema or a Rust struct, and the form beside it was the second description - the one that fell behind. This draws the form from the first one. zod hands it a schema with `z.toJSONSchema()`, a Rust struct with `schemars`; no adapter for either, because the schema is the adapter. Which field becomes which control is `schema-shape`'s reading, and what is wrong with a value is `schema-check`'s.",
   "dependencies": [
-    "dowel-ui@^0.38.0"
+    "dowel-ui@^0.38.1"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/checkbox.json",

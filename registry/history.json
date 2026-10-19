@@ -945,6 +945,19 @@
   ],
   "commands": [
     {
+      "version": "0.38.1",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "commands",
+          "breaking": false,
+          "summary": "take a key before an editor's keymap when asked",
+          "date": "2026-10-19",
+          "commit": "53b2194a56"
+        }
+      ]
+    },
+    {
       "version": "0.35.0",
       "changes": [
         {
@@ -1777,6 +1790,19 @@
     }
   ],
   "kbd": [
+    {
+      "version": "0.38.1",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "shortcut",
+          "breaking": false,
+          "summary": "keep the names of the keys with the notation",
+          "date": "2026-10-19",
+          "commit": "b03f814eb5"
+        }
+      ]
+    },
     {
       "version": "0.35.0",
       "changes": [
@@ -2984,6 +3010,19 @@
     }
   ],
   "shortcut": [
+    {
+      "version": "0.38.1",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "shortcut",
+          "breaking": false,
+          "summary": "keep the names of the keys with the notation",
+          "date": "2026-10-19",
+          "commit": "b03f814eb5"
+        }
+      ]
+    },
     {
       "version": "0.35.0",
       "changes": [
