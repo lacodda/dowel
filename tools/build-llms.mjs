@@ -31,6 +31,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD } from './accessibility-report.ts'
+import { breakingChanges, breakingChangesMarkdown } from './breaking-changes.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = resolve(here, '..')
@@ -132,6 +133,12 @@ function expand(body, frontmatter) {
     // `<AccessibilityReport>`: the whole report, as the page draws it - the
     // figures, what is owed and why, the rules left off, every item.
     out = out.replace(/<AccessibilityReport\s*\/>/g, () => accessibilityReport())
+
+    // `<BreakingChanges>`: every break the changelog records, read by the
+    // same parser the page uses.
+    out = out.replace(/<BreakingChanges\s*\/>/g, () =>
+      breakingChangesMarkdown(breakingChanges(readFileSync(resolve(root, 'CHANGELOG.md'), 'utf8'))),
+    )
 
     // A splash page carries its hero in frontmatter, and the body starts
     // mid-thought without it.

@@ -1,0 +1,59 @@
+---
+title: Upgrading dowel
+description: What moves when dowel does, what stays put because it is yours, and every change that breaks a product - with the way through each.
+---
+
+import BreakingChanges from '../../../components/BreakingChanges.astro'
+
+A product on dowel holds it in two ways, and they move differently. The
+**package** - the theme, the lint rules, the `dowel` command - is a dependency,
+and upgrading it moves it. The **components** were copied in by the registry
+and are the product's own files: nothing upstream reaches into them, so an
+upgrade leaves them as they are until you decide otherwise.
+
+## The package
+
+```console
+$ npm install dowel-ui@latest
+```
+
+The theme, the lint rules and the command update in place. Lint is where a
+change to the rules shows first; `npx dowel doctor` says whether the
+installation is still wired the way the theme expects.
+
+## The components you copied
+
+```console
+$ npx dowel diff
+```
+
+[`diff`](/dowel/guides/migration/#what-you-changed-since) compares every copy in
+the project with the catalogue of the version just installed, and splits them
+in two:
+
+- **Copies you never changed** are behind, not edited. Add them again and they
+  are current:
+
+  ```console
+  $ npx shadcn add https://lacodda.github.io/dowel/r/date-picker.json --overwrite
+  ```
+
+- **Copies you changed** are yours to merge. Each component's page ends with
+  its history - every release that touched the file, and how - so the merge
+  starts from what changed upstream rather than from a diff of two strangers.
+
+Then `npx dowel check`, the type checker and the linter: a break below is
+almost always a type error or a lint error first.
+
+## What breaks, and the way through
+
+dowel is before 1.0, and a minor release can break a product. Every break is
+listed here, newest first, with what to do about it. Read from the version you
+are on up to the one you are moving to - the list is the changelog's own, read
+out of it, so it is never a release behind.
+
+At 1.0 this is the migration guide from 0.x: everything above the version you
+start from. After 1.0, a break is a major release, and a token renamed is one of
+them - with the old name and the new in the same place.
+
+<BreakingChanges />

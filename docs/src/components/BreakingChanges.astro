@@ -1,0 +1,58 @@
+---
+/*
+ * Every change that breaks a product, release by release, with the way
+ * through it - read out of the changelog rather than typed here, so the
+ * upgrading guide cannot fall a release behind it. The parser is shared with
+ * the page's Markdown twin and with the gate that holds the changelog to it.
+ */
+import changelog from '../../../CHANGELOG.md?raw'
+import { breakingChanges } from '../../../tools/breaking-changes.mjs'
+
+const releases = breakingChanges(changelog)
+
+/* Inline code, as the commit wrote it: every other stretch between backticks
+ * is code. */
+const pieces = (text: string) => text.split('`').map((piece, at) => ({ piece, code: at % 2 === 1 }))
+---
+
+<div class="breaking">
+  {
+    releases.map((release) => (
+      <section>
+        <h3 id={`v${release.version.replace(/\./g, '-')}`}>
+          {release.version} <span class="date">{release.date}</span>
+        </h3>
+        {release.changes.map((change) => (
+          <div class="change">
+            <p>
+              <strong>{pieces(change.title).map(({ piece, code }) => (code ? <code>{piece}</code> : piece))}</strong>
+            </p>
+            {change.blocks.map((block) =>
+              block.kind === 'code' ? (
+                // On one line: whitespace inside `pre` is drawn.
+                <pre><code>{block.text}</code></pre>
+              ) : (
+                <p>{pieces(block.text).map(({ piece, code }) => (code ? <code>{piece}</code> : piece))}</p>
+              ),
+            )}
+          </div>
+        ))}
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .date {
+    font-weight: normal;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+  .change {
+    margin-top: 1rem;
+  }
+  /* A long call scrolls inside its box rather than past its edge. */
+  pre {
+    overflow-x: auto;
+  }
+</style>

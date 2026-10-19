@@ -151,6 +151,10 @@ for (const file of files) {
 console.log(`
 ${Pascal} is three files, plus a section on the stand. Next:
   1. Write the component, and the block comment saying what it is for.
-  2. Make the test say what would be wrong if it broke.
-  3. Add a section to stand/src/App.tsx - that is where it is seen.
-  4. \`pnpm build\` to put it in the registry, then install it somewhere real.`)
+  2. Make the test say what would be wrong if it broke - then cut that line
+     and watch it go red.
+  3. Add a section to stand/src/App.tsx and its id to tests/visual/sections.ts -
+     that is where it is seen, photographed and put through axe.
+  4. Declare what it imports in tests/budget.test.ts.
+  5. \`pnpm build\` to put it in the registry, then install it somewhere real.
+CONTRIBUTING.md has the rest.`)
