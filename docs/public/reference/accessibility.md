@@ -27,7 +27,7 @@ whether an error says what to do about it. axe marks some of these for a
 person - they are listed with each item - and the rest are what reading a
 screen with a screen reader is for.
 
-Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 84 items with nothing owed.
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 87 items with nothing owed.
 
 ## Not yet passed
 
@@ -36,18 +36,6 @@ Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-pr
 Text in `faint`, and text on the soft status fills, at the small type steps - 10 to 12px - measures below the 4.5:1 AA asks, in one theme or both. The tokens are held to AA at body size, not at every step they are set in; the work that holds them per step moves these, as it already moved the caption, the notes of a list row and the empty face of the date pickers. Some of it is the stand’s own notes beside the examples.
 
 activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-chart, big-calendar, calendar, chip, code-block, context-menu, diff-lines, diff-view, empty-state, field-draft, json-rows, json-viewer, key-value, line-chart, line-scale, number-format, query-state, relative-time, save-state, skeleton-of, splash, status-dot, stepper, tag-input, tier, timeline, track, track-segments, tree-rows, wizard
-
-### `label-content-name-mismatch` - 4 items
-
-A control named by `aria-label` whose name does not hold the words drawn on it - Copy around the value it copies, the bell around its count, a day of the month view named by its date and its releases. Someone telling voice control what they see says words the name does not have (WCAG 2.5.3). The date pickers had the same defect and are fixed.
-
-big-calendar, copyable, notification-bell, window-frame
-
-### `target-size` - 1 item
-
-A release drawn in a crowded day of the month view comes out smaller than the 24px a pointer is asked to hit (WCAG 2.5.8): the fold that keeps a day in its share of the height decides its size.
-
-big-calendar
 
 ## Rules about a page, off on the stand
 
@@ -73,7 +61,7 @@ big-calendar
 | banner | 9 |  | `color-contrast` |
 | bar-chart | 15 | `color-contrast` | `color-contrast` |
 | big-calendar-item | 8 |  |  |
-| big-calendar | 20 | `color-contrast` `target-size` | `color-contrast` `label-content-name-mismatch` `target-size` |
+| big-calendar | 22 | `color-contrast` | `color-contrast` |
 | breadcrumbs | 15 |  |  |
 | button | 16 |  |  |
 | calendar-math | 4 |  |  |
@@ -90,7 +78,7 @@ big-calendar
 | confirm-dialog | 12 |  |  |
 | context-menu | 3 |  | `color-contrast` |
 | copy-button | 16 |  |  |
-| copyable | 16 |  | `label-content-name-mismatch` |
+| copyable | 18 |  |  |
 | date-picker | 15 |  |  |
 | date-range-picker | 15 |  |  |
 | dialog | 12 |  |  |
@@ -123,7 +111,7 @@ big-calendar
 | marked-text | 13 | `color-contrast` |  |
 | menu | 13 |  |  |
 | nav-rail | 12 |  |  |
-| notification-bell | 13 |  | `label-content-name-mismatch` |
+| notification-bell | 15 |  |  |
 | number-field | 19 |  |  |
 | number-format | 3 |  | `color-contrast` |
 | page-header | 16 |  |  |
@@ -181,5 +169,5 @@ big-calendar
 | tree-view | 20 | `color-contrast` `duplicate-id-aria` |  |
 | truncate | 5 |  |  |
 | virtual-list | 18 | `aria-required-children` `color-contrast` |  |
-| window-frame | 23 | `color-contrast` | `label-content-name-mismatch` |
+| window-frame | 25 | `color-contrast` |  |
 | wizard | 18 |  | `color-contrast` |

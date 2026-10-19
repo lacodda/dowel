@@ -38,7 +38,7 @@ measures one day's room and divides it into lines.
 ```
 
 **A line is one line.** `renderDay` returns what a day holds, one node per line,
-and the fold is arithmetic: a line is twenty pixels and two are four apart.
+and the fold is arithmetic: a line is twenty-four pixels, and lines stand edge to edge.
 [BigCalendarItem](/dowel/components/big-calendar-item/) is that line. A line of
 your own has to keep the height, and read `BigCalendarDayContext` for its
 `tabIndex` (below).
@@ -66,6 +66,12 @@ forty releases is not forty tab stops.
 | `Enter` `Space` | press the day (`onDaySelect`) |
 | `Tab` | into the day: its plus, its lines, its count |
 | `Escape` | fold the open day, from anywhere inside it |
+
+**A day is named by what it draws, in order** — "14 Clip Single 3 more", with
+the hint while something is carried over it — and described by its whole date,
+"Monday, 14 September 2026". The words on its face are what someone telling
+voice control what they see says (WCAG 2.5.3); the date says which 14th it is.
+The plus is not in the name, or every day would say it.
 
 **The week starts where the locale says.** `en-GB` on Monday, `en-US` on Sunday.
 A product that wants Monday whatever the region says so in the tag -
@@ -123,4 +129,4 @@ Everything else goes on the grid element - `onDragOver`, `onDrop`,
 | `dayOf(target)` | the day an element is in, or `null` |
 | `linesThatFit(height)` | how many lines fit in a day's room |
 | `foldDay(count, lines)` | `{ shown, more }` - the count takes a line of its own |
-| `LINE_HEIGHT`, `LINE_GAP` | 20 and 4: a pitch of 24, the floor of a pointer target |
+| `LINE_HEIGHT` | 24: the height of a line and the pitch of the day, the floor of a pointer target |

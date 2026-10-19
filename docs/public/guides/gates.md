@@ -29,6 +29,39 @@ than because it was inconvenient:
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
 
+## Every class compiles
+
+Tailwind takes a class it cannot make and makes nothing: no error, no warning,
+an element without the property. The set paid for it three times before this
+gate - a width off a `--size-*` token, two motion steps in eight primitives
+for a dozen releases, and a sticky table heading whose layer never applied, so
+the body's pinned cells slid over it.
+
+So every class the set writes is put through the real compiler over the real
+theme, and each has to come out as a rule of its own (`tests/classes.test.ts`).
+The source is parsed rather than searched, and where a string stands says
+whether it is a class list: every word of a `className`, of an argument of
+`cn()` and of what `cva()` reads as classes; the words of any other string only
+when one of them is a class - a constant of classes is, a selector is not. A
+string that is compared or handed to another function is not a class list,
+even inside `cn()`.
+
+The few words that compile to nothing on purpose - `group` and `peer`, which
+name an element for other classes to look at - are listed with that reason,
+and a marker the set has stopped writing fails the list.
+
+## Headings stand where the page puts them
+
+Where a heading sits in the outline is the page's to say. A screen that goes
+from its title straight to an accordion needs the accordion's sections at `h2`,
+and a fixed `h3` skips a level for every reader moving by heading. So a
+primitive that draws a heading takes a `level` (`HeadingLevel` from `dowel-ui`),
+defaulting to where it usually stands, and the gate (`tests/headings.test.ts`)
+refuses a literal `<h1>`-`<h6>` in a primitive. Base UI draws headings too: an
+`Accordion.Header` must be given the element to draw, while a dialog's or a
+popover's title stays an `h2` - a window over the page starts an outline of its
+own. Blocks are screens and own their outline from its `h1` down.
+
 ## Motion
 
 The theme carries one rule for `prefers-reduced-motion`: every transition and

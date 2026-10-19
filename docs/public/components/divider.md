@@ -72,7 +72,8 @@ title.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, an `h2` |
+| `title` | `ReactNode` | | Required, a heading at `level` |
 | `description` | `ReactNode` | | The line under it |
 | `actions` | `ReactNode` | | Buttons belonging to this section |
+| `level` | `1`-`6` | `2` | `3` for a section inside a section |
 | `className` | `string` | | Merged so the caller wins a conflict |

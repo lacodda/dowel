@@ -131,6 +131,7 @@ const words: SchemaFieldsWords = {
   pickDate: t('form.pickDate'),
   previousMonth: t('calendar.previous'),
   nextMonth: t('calendar.next'),
+  clearDate: t('calendar.clear'),
   showSecret: t('form.show'),
   hideSecret: t('form.hide'),
   removeTag: (tag) => t('form.removeTag', { tag }),
@@ -159,5 +160,6 @@ const words: SchemaFieldsWords = {
 | `none` | The answer that takes an optional choice back |
 | `choose` | What a required choice says before anything is chosen |
 | `pickDate`, `previousMonth`, `nextMonth` | The date picker's face and its two month buttons |
+| `clearDate` | The button that takes back a date in an optional field |
 | `showSecret`, `hideSecret` | The reveal button of a secret |
 | `removeTag(tag)` | The cross on one tag |

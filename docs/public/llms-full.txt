@@ -1,4 +1,4 @@
-# dowel 0.37.0
+# dowel 0.38.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -27,7 +27,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.37.0.** The theme and its scales, an accent for each of the nineteen
+**v0.38.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
@@ -57,7 +57,11 @@ long way on their own. Components install from the
 registry with `npx shadcn add`, singly or as a
 [set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also
 carries the [migration tools](/dowel/guides/migration/) a project crossing from
-stock shadcn runs on itself. Two products of the line run on it:
+stock shadcn runs on itself, and the [upgrading guide](/dowel/guides/upgrading/)
+lists every change that has broken a product, with the way through, read out
+of the changelog. Every class the set writes is compiled before it ships, and
+every heading a primitive draws stands at the level the page gives it. Two
+products of the line run on it:
 [kilna](https://github.com/lacodda/kilna) and
 [kasl-server](https://github.com/lacodda/kasl-server).
 
@@ -716,6 +720,7 @@ gives it. The plate has no English of its own.
 | `children` | `ReactNode` | | Licence, links, a build hash |
 | `lineLabel` | `string` | | The words beside λ |
 | `lineHref` | `string` | | Makes those words a link |
+| `level` | `1`-`6` | `2` | Where the product's name stands in the page's outline |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ---
@@ -762,7 +767,7 @@ import {
 </Accordion>
 ```
 
-**The trigger sits inside `AccordionHeader`, an `<h3>` - never beside it.**
+**The trigger sits inside `AccordionHeader`, a heading - never beside it.**
 That is the ARIA accordion pattern, and it is the commonest hand-rolled
 accordion bug: a section title that exists only as a button's accessible name
 is not a heading a reader can navigate to, and the gap is invisible until
@@ -808,8 +813,14 @@ a lone trigger are the same control in two places.
 
 ### `AccordionHeader`
 
-The `<h3>` the trigger belongs inside. Passes its props to Base UI
-unchanged, plus `className` merged so the caller wins a conflict.
+The heading the trigger belongs inside, an `<h3>` unless `level` says
+otherwise - a page going from its title straight to the accordion says `2`.
+Passes its props to Base UI unchanged, plus `className` merged so the caller
+wins a conflict.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `level` | `1`-`6` | `3` | Where the sections stand in the page's outline |
 
 ### `AccordionTrigger`
 
@@ -1693,7 +1704,7 @@ measures one day's room and divides it into lines.
 ```
 
 **A line is one line.** `renderDay` returns what a day holds, one node per line,
-and the fold is arithmetic: a line is twenty pixels and two are four apart.
+and the fold is arithmetic: a line is twenty-four pixels, and lines stand edge to edge.
 [BigCalendarItem](/dowel/components/big-calendar-item/) is that line. A line of
 your own has to keep the height, and read `BigCalendarDayContext` for its
 `tabIndex` (below).
@@ -1721,6 +1732,12 @@ forty releases is not forty tab stops.
 | `Enter` `Space` | press the day (`onDaySelect`) |
 | `Tab` | into the day: its plus, its lines, its count |
 | `Escape` | fold the open day, from anywhere inside it |
+
+**A day is named by what it draws, in order** — "14 Clip Single 3 more", with
+the hint while something is carried over it — and described by its whole date,
+"Monday, 14 September 2026". The words on its face are what someone telling
+voice control what they see says (WCAG 2.5.3); the date says which 14th it is.
+The plus is not in the name, or every day would say it.
 
 **The week starts where the locale says.** `en-GB` on Monday, `en-US` on Sunday.
 A product that wants Monday whatever the region says so in the tag -
@@ -1778,7 +1795,7 @@ Everything else goes on the grid element - `onDragOver`, `onDrop`,
 | `dayOf(target)` | the day an element is in, or `null` |
 | `linesThatFit(height)` | how many lines fit in a day's room |
 | `foldDay(count, lines)` | `{ shown, more }` - the count takes a line of its own |
-| `LINE_HEIGHT`, `LINE_GAP` | 20 and 4: a pitch of 24, the floor of a pointer target |
+| `LINE_HEIGHT` | 24: the height of a line and the pitch of the day, the floor of a pointer target |
 
 ---
 
@@ -1795,7 +1812,7 @@ Neutral and in four series colours, a plan, something already out, and a title t
 ## Notes
 
 **One line, always.** [BigCalendar](/dowel/components/big-calendar/) folds a
-day by arithmetic - lines of twenty pixels, four apart - so a line that wrapped
+day by arithmetic - lines of twenty-four pixels, edge to edge - so a line that wrapped
 on a narrow day would break the sum and push the last line out of the day. The
 words truncate; put the whole of them in `title`, or in a hover card through
 `render`. The marks in `start` and `end` do not shrink.
@@ -1843,9 +1860,13 @@ const inCursorDay = useContext(BigCalendarDayContext)
 <MyLine tabIndex={inCursorDay === false ? -1 : 0} />
 ```
 
-**Twenty pixels drawn, twenty-four to hit.** `target-min` grows the target to the
-floor, and the gap between two lines is four - so the targets meet and do not
-overlap.
+**Twenty pixels drawn, twenty-four to hit.** The line is twenty-four pixels -
+the floor of a pointer target - and the chip inside it twenty, so chips come
+out four apart and targets meet without overlapping. The size is the box's
+own, not an invisible extension: a day of the month is a target too, and a
+measurement of the box is the only one anything takes. The element is the
+line; its colour, outline and ring are the chip's, so `className` and `style`
+land on the line.
 
 ## Props
 
@@ -3691,6 +3712,10 @@ able to copy. Selecting a monospaced id by hand is a small daily tax.
 **It is a `<button>`,** so the keyboard reaches it and a screen reader says
 what it does.
 
+**It is named by its label and then by the value it shows** — "Copy a1b2c3".
+The label alone would be a name without the words drawn on the button, and
+someone telling voice control what they see says those words (WCAG 2.5.3).
+
 **The confirmation is announced, not only drawn.** A tick that appears silently
 tells a sighted user it worked and tells nobody else.
 
@@ -3761,6 +3786,18 @@ calendar is the wrong control anyway.
 **It closes when a day is chosen.** Choosing is the whole errand; waiting for
 a second dismissing click is one click too many.
 
+**An optional date can be taken back.** Give `clearLabel` and, while a day is
+chosen, the popup offers it under the month in your words; `onValueChange` is
+then told `undefined`. In the popup rather than as a cross on the field: the
+trigger is a button and cannot hold another, and a cross laid over it is a
+second, smaller target against the first. A required field gives no words and
+cannot be emptied - and the type agrees: only a picker given `clearLabel` takes
+a handler that has to deal with no date.
+
+```tsx
+<DatePicker value={due} onValueChange={setDue} clearLabel={t('clear')} ... />
+```
+
 **`name` puts the value where a form can find it.** A button is not a field,
 so without it a form submits the screen and loses the date — the component
 writes a hidden input instead.
@@ -3788,7 +3825,8 @@ The value, the arithmetic and the keyboard are the
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `value` | `IsoDate` | | `YYYY-MM-DD` |
-| `onValueChange` | `(value) => void` | | |
+| `onValueChange` | `(value) => void` | | Told `undefined` only when `clearLabel` is given |
+| `clearLabel` | `string` | | The button that takes the date back; without it, a chosen date stays |
 | `min`, `max` | `IsoDate` | | Bounds, inclusive |
 | `placeholder` | `string` | | Required — what the trigger says when empty |
 | `previousMonthLabel` | `string` | | Required |
@@ -3840,12 +3878,17 @@ would be correct and unhelpful.
 start rather than an edit of the old end — which is what a reader means by
 clicking a third time.
 
+**A range can be taken back.** Give `clearLabel` and, while anything is chosen
+- half made or whole - the popup offers it under the month, the way DatePicker
+does; `onValueChange` is told the empty range, `{}`.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `value` | `{ start?, end? }` | | Either end may be absent |
-| `onValueChange` | `(value) => void` | | Fires on both clicks |
+| `onValueChange` | `(value) => void` | | Fires on both clicks, and with `{}` when cleared |
+| `clearLabel` | `string` | | The button that takes the range back |
 | `min`, `max` | `IsoDate` | | Bounds, inclusive |
 | `placeholder` | `string` | | Required |
 | `previousMonthLabel` | `string` | | Required |
@@ -4225,9 +4268,10 @@ title.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, an `h2` |
+| `title` | `ReactNode` | | Required, a heading at `level` |
 | `description` | `ReactNode` | | The line under it |
 | `actions` | `ReactNode` | | Buttons belonging to this section |
+| `level` | `1`-`6` | `2` | `3` for a section inside a section |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ---
@@ -6185,6 +6229,11 @@ is given, and `busy` holds it while the product is clearing.
 **See-all closes first, then hands over.** The panel is gone before the
 route changes, so nothing is left open over the page it led to.
 
+**Named by what it shows.** The bell is called by its `label` and then by the
+count on its badge — "Notifications 3" — because someone telling voice control
+what they see says the number (WCAG 2.5.3). The tooltip is the same words, so a
+screen reader does not read them twice.
+
 **Controlled or not.** Leave `open` out and the bell manages itself; pass it
 with `onOpenChange` to drive it — to close it when a row is chosen, say.
 
@@ -6198,6 +6247,7 @@ so the panel opens, positions and closes the way every other panel does.
 | `count` | `number` | | Required; nothing drawn at zero, `9+` past nine |
 | `label` | `string` | | Required — the bell's name for a screen reader |
 | `title` | `string` | | Required — the panel's heading |
+| `level` | `1`-`6` | `3` | Where that heading stands in the page's outline |
 | `emptyLabel` | `string` | | Required — what the list says with no rows |
 | `children` | `ReactNode` | | The rows |
 | `markAllLabel` | `string` | | With `onMarkAll`; shown only while `count > 0` |
@@ -6417,7 +6467,8 @@ container that also padded would double it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, the screen's `h1` |
+| `title` | `ReactNode` | | Required, the screen's `h1` unless `level` says otherwise |
+| `level` | `1`-`6` | `1` | `2` over the open item of a list beside its detail |
 | `description` | `ReactNode` | | One sentence under it |
 | `actions` | `ReactNode` | | Buttons acting on the whole screen |
 | `children` | `ReactNode` | | A trail, a status, a tab strip |
@@ -7806,6 +7857,7 @@ const words: SchemaFieldsWords = {
   pickDate: t('form.pickDate'),
   previousMonth: t('calendar.previous'),
   nextMonth: t('calendar.next'),
+  clearDate: t('calendar.clear'),
   showSecret: t('form.show'),
   hideSecret: t('form.hide'),
   removeTag: (tag) => t('form.removeTag', { tag }),
@@ -7834,6 +7886,7 @@ const words: SchemaFieldsWords = {
 | `none` | The answer that takes an optional choice back |
 | `choose` | What a required choice says before anything is chosen |
 | `pickDate`, `previousMonth`, `nextMonth` | The date picker's face and its two month buttons |
+| `clearDate` | The button that takes back a date in an optional field |
 | `showSecret`, `hideSecret` | The reveal button of a secret |
 | `removeTag(tag)` | The cross on one tag |
 
@@ -8151,14 +8204,16 @@ set in the same type.
 | `render` | `(item) => ReactElement` | | The element each row is drawn as |
 | `onSelect` | `(id) => void` | | Pressed, whatever the row is drawn as |
 | `labelHidden` | `boolean` | `false` | Keep the caption as the name, off the screen |
+| `level` | `1`-`6` | `2` | Where the caption stands in the page's outline |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `SectionHeading`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, an `h2` |
+| `title` | `ReactNode` | | Required, a heading at `level` |
 | `description` | `ReactNode` | | The line under it |
+| `level` | `1`-`6` | `2` | |
 | `className` | `string` | | |
 
 ---
@@ -8578,6 +8633,10 @@ from a help menu.
 
 Takes a `<div>`'s props. Two columns from `sm` up; a group never breaks across
 them.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `level` | `1`-`6` | `3` | Where the group headings stand: under the sheet's title, or a settings page's section; `2` on a page that goes from its title straight to the list |
 
 ---
 
@@ -11109,6 +11168,7 @@ check: `onStepChange` is called only after the checks pass.
 | `nextLabel` | `ReactNode` | | Required |
 | `finishLabel` | `ReactNode` | | Required |
 | `orientation` | `horizontal \| vertical` | `horizontal` | Stepper above the content, or beside it |
+| `level` | `1`-`6` | `2` | Where a step's title stands in the page's outline |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `WizardStep`
@@ -11481,6 +11541,39 @@ than because it was inconvenient:
 - `region`, `page-has-heading-one`, `landmark-one-main`, `html-has-lang` — a
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
+
+## Every class compiles
+
+Tailwind takes a class it cannot make and makes nothing: no error, no warning,
+an element without the property. The set paid for it three times before this
+gate - a width off a `--size-*` token, two motion steps in eight primitives
+for a dozen releases, and a sticky table heading whose layer never applied, so
+the body's pinned cells slid over it.
+
+So every class the set writes is put through the real compiler over the real
+theme, and each has to come out as a rule of its own (`tests/classes.test.ts`).
+The source is parsed rather than searched, and where a string stands says
+whether it is a class list: every word of a `className`, of an argument of
+`cn()` and of what `cva()` reads as classes; the words of any other string only
+when one of them is a class - a constant of classes is, a selector is not. A
+string that is compared or handed to another function is not a class list,
+even inside `cn()`.
+
+The few words that compile to nothing on purpose - `group` and `peer`, which
+name an element for other classes to look at - are listed with that reason,
+and a marker the set has stopped writing fails the list.
+
+## Headings stand where the page puts them
+
+Where a heading sits in the outline is the page's to say. A screen that goes
+from its title straight to an accordion needs the accordion's sections at `h2`,
+and a fixed `h3` skips a level for every reader moving by heading. So a
+primitive that draws a heading takes a `level` (`HeadingLevel` from `dowel-ui`),
+defaulting to where it usually stands, and the gate (`tests/headings.test.ts`)
+refuses a literal `<h1>`-`<h6>` in a primitive. Base UI draws headings too: an
+`Accordion.Header` must be given the element to draw, while a dialog's or a
+popover's title stays an `h2` - a window over the page starts an outline of its
+own. Blocks are screens and own their outline from its `h1` down.
 
 ## Motion
 
@@ -12261,6 +12354,144 @@ rather than the docs site.
 
 ---
 
+# Upgrading dowel
+
+Source: https://lacodda.github.io/dowel/guides/upgrading
+
+A product on dowel holds it in two ways, and they move differently. The
+**package** - the theme, the lint rules, the `dowel` command - is a dependency,
+and upgrading it moves it. The **components** were copied in by the registry
+and are the product's own files: nothing upstream reaches into them, so an
+upgrade leaves them as they are until you decide otherwise.
+
+## The package
+
+```console
+$ npm install dowel-ui@latest
+```
+
+The theme, the lint rules and the command update in place. Lint is where a
+change to the rules shows first; `npx dowel doctor` says whether the
+installation is still wired the way the theme expects.
+
+## The components you copied
+
+```console
+$ npx dowel diff
+```
+
+[`diff`](/dowel/guides/migration/#what-you-changed-since) compares every copy in
+the project with the catalogue of the version just installed, and splits them
+in two:
+
+- **Copies you never changed** are behind, not edited. Add them again and they
+  are current:
+
+  ```console
+  $ npx shadcn add https://lacodda.github.io/dowel/r/date-picker.json --overwrite
+  ```
+
+- **Copies you changed** are yours to merge. Each component's page ends with
+  its history - every release that touched the file, and how - so the merge
+  starts from what changed upstream rather than from a diff of two strangers.
+
+Then `npx dowel check`, the type checker and the linter: a break below is
+almost always a type error or a lint error first.
+
+## What breaks, and the way through
+
+dowel is before 1.0, and a minor release can break a product. Every break is
+listed here, newest first, with what to do about it. Read from the version you
+are on up to the one you are moving to - the list is the changelog's own, read
+out of it, so it is never a release behind.
+
+At 1.0 this is the migration guide from 0.x: everything above the version you
+start from. After 1.0, a break is a major release, and a token renamed is one of
+them - with the old name and the new in the same place.
+
+### 0.35.0 - 2026-10-07
+
+**One list of commands for keys, palette and sheet**
+
+`useShortcut` is removed - declare `useCommand({ id, label, keys: 'Mod+K', run })` instead. `Kbd keys`, `CommandPaletteInput hint` take a string (`keys="Mod+K"`, `hint="Escape"`), and SearchField's `shortcut` is a command: `shortcut={{ id: 'search', label, keys: 'Mod+K' }}`.
+
+### 0.33.0 - 2026-09-25
+
+**No-raw-button and no-arbitrary-scale**
+
+dowel.configs.recommended turns both rules on as errors. A product upgrading runs eslint --fix for the exact steps, then takes a step or writes a reasoned disable for what is left, and moves screen buttons onto Button, RowButton, Chip or SegmentedControl.
+
+### 0.32.0 - 2026-09-24
+
+**Stand on the control rows and size the icon at every size**
+
+Button sm is 32px tall at default density (28 under data-density="compact"); pin a height at the call site to keep 28. An explicit size-* on an icon inside icon-sm/icon-md now wins.
+
+**A layer for popups inside overlays, a body that scrolls alone**
+
+DialogPopup, DrawerPopup and ConfirmDialogPopup no longer pad or scroll their content. Put the title and description in DialogHeader, the content in DialogBody and the buttons in DialogActions (Drawer*/ConfirmDialog* for the other two).
+
+### 0.31.0 - 2026-09-23
+
+**Dates and numbers in the application's language**
+
+formatNumber, formatTime, sortRows and the calendar helpers take the locale as a required argument, and formatRelative takes it second: formatRelative(value, locale, now?, options?). The locale props are `string` rather than a list. Pass useLocale().
+
+### 0.28.0 - 2026-09-19
+
+**Density as a property of a region**
+
+`Table` no longer takes a `density` prop. Row height now follows the region's density, so `<Table density="dense">` becomes a `data-density="compact"` on any ancestor - a wrapper, the panel, the page. The prop's two values map onto the shared vocabulary: `base` is the default density and `dense` is `compact`.
+
+**A judgement has to bring a mark, and the type says so**
+
+`StatTile` with `tone="warn"` or `tone="bad"` now requires an `icon`. Pass the mark the product already uses for a problem - a triangle, a cross - and it is drawn before the figure. Tiles with `default` or `accent` are unchanged.
+
+### 0.9.0 - 2026-09-01
+
+**The recommended config now carries two rules**
+
+`dowel.configs.recommended` now enables `dowel/no-native-select` alongside `dowel/no-raw-color`. A product that uses the recommended config and has a native `<select>`, `<option>` or `<optgroup>` anywhere in its TSX will start failing its lint.
+
+The fix is the Select or Combobox component from the registry. Where a native element is genuinely wanted - a print sheet, a form posting without JavaScript - turn the rule off for those files:
+
+```diff
+{ files: ['src/print/**'], rules: { 'dowel/no-native-select': 'off' } }
+```
+
+### 0.8.0 - 2026-08-31
+
+**Compose with `render`, and drop Radix**
+
+`asChild` is replaced by `render`, which takes the element instead of a boolean.
+
+```diff
+- <Button asChild><a href="/x">Go</a></Button>
++ <Button render={<a href="/x" />}>Go</Button>
+```
+
+`@radix-ui/react-slot` is no longer a dependency of anything here.
+
+### 0.7.0 - 2026-08-31
+
+**Require the words Chip and Copyable announce**
+
+`Copyable` requires `label` and `copiedLabel`, and `Chip` requires `removeLabel` alongside `onRemove` - the two now travel together in the type, so a chip that can be removed but not named does not compile. A primitive with a string of its own cannot be translated: it ships in English to every reader who does not read English, and the product's i18n never reaches it.
+
+```diff
+- <Copyable value={sha}>{short}</Copyable>
++ <Copyable value={sha} label={t('copy')} copiedLabel={t('copied')}>{short}</Copyable>
+```
+
+```diff
+- <Chip onRemove={() => drop(tag)}>{tag}</Chip>
++ <Chip onRemove={() => drop(tag)} removeLabel={t('remove')}>{tag}</Chip>
+```
+
+Neither component was installed in any product of the line yet, so nothing downstream had to change.
+
+---
+
 # Accents
 
 Source: https://lacodda.github.io/dowel/reference/accents
@@ -12397,7 +12628,7 @@ whether an error says what to do about it. axe marks some of these for a
 person - they are listed with each item - and the rest are what reading a
 screen with a screen reader is for.
 
-Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 84 items with nothing owed.
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 87 items with nothing owed.
 
 ## Not yet passed
 
@@ -12406,18 +12637,6 @@ Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-pr
 Text in `faint`, and text on the soft status fills, at the small type steps - 10 to 12px - measures below the 4.5:1 AA asks, in one theme or both. The tokens are held to AA at body size, not at every step they are set in; the work that holds them per step moves these, as it already moved the caption, the notes of a list row and the empty face of the date pickers. Some of it is the stand’s own notes beside the examples.
 
 activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-chart, big-calendar, calendar, chip, code-block, context-menu, diff-lines, diff-view, empty-state, field-draft, json-rows, json-viewer, key-value, line-chart, line-scale, number-format, query-state, relative-time, save-state, skeleton-of, splash, status-dot, stepper, tag-input, tier, timeline, track, track-segments, tree-rows, wizard
-
-### `label-content-name-mismatch` - 4 items
-
-A control named by `aria-label` whose name does not hold the words drawn on it - Copy around the value it copies, the bell around its count, a day of the month view named by its date and its releases. Someone telling voice control what they see says words the name does not have (WCAG 2.5.3). The date pickers had the same defect and are fixed.
-
-big-calendar, copyable, notification-bell, window-frame
-
-### `target-size` - 1 item
-
-A release drawn in a crowded day of the month view comes out smaller than the 24px a pointer is asked to hit (WCAG 2.5.8): the fold that keeps a day in its share of the height decides its size.
-
-big-calendar
 
 ## Rules about a page, off on the stand
 
@@ -12443,7 +12662,7 @@ big-calendar
 | banner | 9 |  | `color-contrast` |
 | bar-chart | 15 | `color-contrast` | `color-contrast` |
 | big-calendar-item | 8 |  |  |
-| big-calendar | 20 | `color-contrast` `target-size` | `color-contrast` `label-content-name-mismatch` `target-size` |
+| big-calendar | 22 | `color-contrast` | `color-contrast` |
 | breadcrumbs | 15 |  |  |
 | button | 16 |  |  |
 | calendar-math | 4 |  |  |
@@ -12460,7 +12679,7 @@ big-calendar
 | confirm-dialog | 12 |  |  |
 | context-menu | 3 |  | `color-contrast` |
 | copy-button | 16 |  |  |
-| copyable | 16 |  | `label-content-name-mismatch` |
+| copyable | 18 |  |  |
 | date-picker | 15 |  |  |
 | date-range-picker | 15 |  |  |
 | dialog | 12 |  |  |
@@ -12493,7 +12712,7 @@ big-calendar
 | marked-text | 13 | `color-contrast` |  |
 | menu | 13 |  |  |
 | nav-rail | 12 |  |  |
-| notification-bell | 13 |  | `label-content-name-mismatch` |
+| notification-bell | 15 |  |  |
 | number-field | 19 |  |  |
 | number-format | 3 |  | `color-contrast` |
 | page-header | 16 |  |  |
@@ -12551,7 +12770,7 @@ big-calendar
 | tree-view | 20 | `color-contrast` `duplicate-id-aria` |  |
 | truncate | 5 |  |  |
 | virtual-list | 18 | `aria-required-children` `color-contrast` |  |
-| window-frame | 23 | `color-contrast` | `label-content-name-mismatch` |
+| window-frame | 25 | `color-contrast` |  |
 | wizard | 18 |  | `color-contrast` |
 
 ---

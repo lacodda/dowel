@@ -40,7 +40,7 @@ import {
 </Accordion>
 ```
 
-**The trigger sits inside `AccordionHeader`, an `<h3>` - never beside it.**
+**The trigger sits inside `AccordionHeader`, a heading - never beside it.**
 That is the ARIA accordion pattern, and it is the commonest hand-rolled
 accordion bug: a section title that exists only as a button's accessible name
 is not a heading a reader can navigate to, and the gap is invisible until
@@ -86,8 +86,14 @@ a lone trigger are the same control in two places.
 
 ### `AccordionHeader`
 
-The `<h3>` the trigger belongs inside. Passes its props to Base UI
-unchanged, plus `className` merged so the caller wins a conflict.
+The heading the trigger belongs inside, an `<h3>` unless `level` says
+otherwise - a page going from its title straight to the accordion says `2`.
+Passes its props to Base UI unchanged, plus `className` merged so the caller
+wins a conflict.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `level` | `1`-`6` | `3` | Where the sections stand in the page's outline |
 
 ### `AccordionTrigger`
 

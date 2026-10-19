@@ -45,6 +45,11 @@ is given, and `busy` holds it while the product is clearing.
 **See-all closes first, then hands over.** The panel is gone before the
 route changes, so nothing is left open over the page it led to.
 
+**Named by what it shows.** The bell is called by its `label` and then by the
+count on its badge — "Notifications 3" — because someone telling voice control
+what they see says the number (WCAG 2.5.3). The tooltip is the same words, so a
+screen reader does not read them twice.
+
 **Controlled or not.** Leave `open` out and the bell manages itself; pass it
 with `onOpenChange` to drive it — to close it when a row is chosen, say.
 
@@ -58,6 +63,7 @@ so the panel opens, positions and closes the way every other panel does.
 | `count` | `number` | | Required; nothing drawn at zero, `9+` past nine |
 | `label` | `string` | | Required — the bell's name for a screen reader |
 | `title` | `string` | | Required — the panel's heading |
+| `level` | `1`-`6` | `3` | Where that heading stands in the page's outline |
 | `emptyLabel` | `string` | | Required — what the list says with no rows |
 | `children` | `ReactNode` | | The rows |
 | `markAllLabel` | `string` | | With `onMarkAll`; shown only while `count > 0` |

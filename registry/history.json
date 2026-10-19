@@ -1,6 +1,19 @@
 {
   "about-plate": [
     {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
+    {
       "version": "0.31.0",
       "changes": [
         {
@@ -15,6 +28,19 @@
     }
   ],
   "accordion": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
     {
       "version": "0.31.0",
       "changes": [
@@ -300,6 +326,19 @@
   ],
   "big-calendar": [
     {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "big-calendar",
+          "breaking": true,
+          "summary": "name a day by what it draws, and make a line a target by its size",
+          "date": "2026-10-19",
+          "commit": "586fc8205a"
+        }
+      ]
+    },
+    {
       "version": "0.34.0",
       "changes": [
         {
@@ -322,6 +361,19 @@
     }
   ],
   "big-calendar-item": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "big-calendar",
+          "breaking": true,
+          "summary": "name a day by what it draws, and make a line a target by its size",
+          "date": "2026-10-19",
+          "commit": "586fc8205a"
+        }
+      ]
+    },
     {
       "version": "0.34.0",
       "changes": [
@@ -1013,6 +1065,19 @@
   ],
   "copyable": [
     {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "copyable",
+          "breaking": false,
+          "summary": "name the button by its label and the value it shows",
+          "date": "2026-10-19",
+          "commit": "04826ea298"
+        }
+      ]
+    },
+    {
       "version": "0.28.0",
       "changes": [
         {
@@ -1053,6 +1118,19 @@
     }
   ],
   "date-picker": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "date-picker,date-range-picker",
+          "breaking": true,
+          "summary": "take a chosen date back",
+          "date": "2026-10-19",
+          "commit": "13d7dd16d7"
+        }
+      ]
+    },
     {
       "version": "0.37.0",
       "changes": [
@@ -1107,6 +1185,19 @@
     }
   ],
   "date-range-picker": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "date-picker,date-range-picker",
+          "breaking": true,
+          "summary": "take a chosen date back",
+          "date": "2026-10-19",
+          "commit": "13d7dd16d7"
+        }
+      ]
+    },
     {
       "version": "0.37.0",
       "changes": [
@@ -1274,6 +1365,19 @@
     }
   ],
   "divider": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -1985,6 +2089,27 @@
   ],
   "notification-bell": [
     {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        },
+        {
+          "type": "fix",
+          "scope": "notification-bell",
+          "breaking": false,
+          "summary": "name the bell by its label and its count",
+          "date": "2026-10-19",
+          "commit": "a63f63602d"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -2115,6 +2240,19 @@
     }
   ],
   "page-header": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
     {
       "version": "0.29.0",
       "changes": [
@@ -2537,6 +2675,19 @@
   ],
   "schema-fields": [
     {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "date-picker,date-range-picker",
+          "breaking": true,
+          "summary": "take a chosen date back",
+          "date": "2026-10-19",
+          "commit": "13d7dd16d7"
+        }
+      ]
+    },
+    {
       "version": "0.37.0",
       "changes": [
         {
@@ -2635,6 +2786,19 @@
     }
   ],
   "section-nav": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -2848,6 +3012,19 @@
     }
   ],
   "shortcuts-dialog": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
     {
       "version": "0.35.0",
       "changes": [
@@ -3119,6 +3296,19 @@
     }
   ],
   "table": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "table",
+          "breaking": false,
+          "summary": "keep a sticky heading above the body",
+          "date": "2026-10-19",
+          "commit": "14f3442123"
+        }
+      ]
+    },
     {
       "version": "0.28.0",
       "changes": [
@@ -3902,6 +4092,19 @@
     }
   ],
   "wizard": [
+    {
+      "version": "0.38.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "a heading stands at the level the page gives it",
+          "date": "2026-10-19",
+          "commit": "101c1831f1"
+        }
+      ]
+    },
     {
       "version": "0.31.0",
       "changes": [

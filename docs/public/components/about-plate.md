@@ -49,4 +49,5 @@ gives it. The plate has no English of its own.
 | `children` | `ReactNode` | | Licence, links, a build hash |
 | `lineLabel` | `string` | | The words beside λ |
 | `lineHref` | `string` | | Makes those words a link |
+| `level` | `1`-`6` | `2` | Where the product's name stands in the page's outline |
 | `className` | `string` | | Merged so the caller wins a conflict |

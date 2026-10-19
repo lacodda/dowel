@@ -90,6 +90,7 @@ check: `onStepChange` is called only after the checks pass.
 | `nextLabel` | `ReactNode` | | Required |
 | `finishLabel` | `ReactNode` | | Required |
 | `orientation` | `horizontal \| vertical` | `horizontal` | Stepper above the content, or beside it |
+| `level` | `1`-`6` | `2` | Where a step's title stands in the page's outline |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
 ### `WizardStep`

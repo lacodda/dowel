@@ -21,7 +21,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.37.0.** The theme and its scales, an accent for each of the nineteen
+**v0.38.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser, the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
@@ -51,7 +51,11 @@ long way on their own. Components install from the
 registry with `npx shadcn add`, singly or as a
 [set](/dowel/guides/registry/); the theme is the `dowel-ui` package, which also
 carries the [migration tools](/dowel/guides/migration/) a project crossing from
-stock shadcn runs on itself. Two products of the line run on it:
+stock shadcn runs on itself, and the [upgrading guide](/dowel/guides/upgrading/)
+lists every change that has broken a product, with the way through, read out
+of the changelog. Every class the set writes is compiled before it ships, and
+every heading a primitive draws stands at the level the page gives it. Two
+products of the line run on it:
 [kilna](https://github.com/lacodda/kilna) and
 [kasl-server](https://github.com/lacodda/kasl-server).
 
