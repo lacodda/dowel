@@ -24,6 +24,24 @@ describe('Copyable', () => {
     expect(screen.getByRole('button')).toBeDefined()
   })
 
+  it('is named by its label and then by the value it shows', async () => {
+    // A name without the words drawn on the button fails WCAG 2.5.3: someone
+    // telling voice control what they see says "abc123".
+    stubClipboard('works')
+    render(<Copyable label="Copy" copiedLabel="Copied">abc123</Copyable>)
+    expect(screen.getByRole('button', { name: 'Copy abc123' })).toBeDefined()
+
+    await userEvent.click(screen.getByRole('button'))
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Copied abc123' })).toBeDefined())
+  })
+
+  it('keeps that name with an id of the product’s', () => {
+    stubClipboard('works')
+    render(<Copyable id="hash" label="Copy" copiedLabel="Copied">abc123</Copyable>)
+    const button = screen.getByRole('button', { name: 'Copy abc123' })
+    expect(button.id).toBe('hash')
+  })
+
   it('copies the text it shows', async () => {
     const writeText = stubClipboard('works')
     render(<Copyable label="Copy" copiedLabel="Copied">abc123</Copyable>)
