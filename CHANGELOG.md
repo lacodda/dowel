@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.38.1] - 2026-10-19
+
+### Bug Fixes
+- Take a key before an editor's keymap when asked
+
+### Build
+- Regenerate the registry and llms.txt
+- Regenerate the registry, the history and llms.txt
+
+### Refactoring
+- Keep the names of the keys with the notation
+
+### Testing
+- Click into the field before walking the groups
+
 ## [0.38.0] - 2026-10-19
 
 ### Breaking Changes
