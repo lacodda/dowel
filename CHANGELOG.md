@@ -2,6 +2,36 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.38.0] - 2026-10-19
+
+### Breaking Changes
+
+- **Name a day by what it draws, and make a line a target by its size**
+LINE_GAP is removed and LINE_HEIGHT is 24 (was 20); linesThatFit divides by LINE_HEIGHT. A line drawn by the product is 24px tall with nothing between lines. BigCalendarItem's className and style land on the line; its colour, outline and ring are on the chip inside.
+
+- **Take a chosen date back**
+SchemaFieldsWords gains clearDate (the button that takes back a date in an optional field), required like every other word.
+
+### Bug Fixes
+- Keep a sticky heading above the body
+- Name the button by its label and the value it shows
+- Name the bell by its label and its count
+- Name a day by what it draws, and make a line a target by its size
+
+### Build
+- Regenerate the registry, its v0.38 snapshot, the history and llms.txt
+
+### Documentation
+- The month, Copyable and the bell owe nothing but contrast
+- An upgrading guide read out of the changelog, and how to add a component
+
+### Features
+- A heading stands at the level the page gives it
+- Take a chosen date back
+
+### Testing
+- Every class the set writes compiles to a rule
+
 ## [0.37.0] - 2026-10-14
 
 ### Bug Fixes

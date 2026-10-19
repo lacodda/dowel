@@ -53,6 +53,16 @@ At 1.0 this is the migration guide from 0.x: everything above the version you
 start from. After 1.0, a break is a major release, and a token renamed is one of
 them - with the old name and the new in the same place.
 
+### 0.38.0 - 2026-10-19
+
+**Name a day by what it draws, and make a line a target by its size**
+
+LINE_GAP is removed and LINE_HEIGHT is 24 (was 20); linesThatFit divides by LINE_HEIGHT. A line drawn by the product is 24px tall with nothing between lines. BigCalendarItem's className and style land on the line; its colour, outline and ring are on the chip inside.
+
+**Take a chosen date back**
+
+SchemaFieldsWords gains clearDate (the button that takes back a date in an optional field), required like every other word.
+
 ### 0.35.0 - 2026-10-07
 
 **One list of commands for keys, palette and sheet**
