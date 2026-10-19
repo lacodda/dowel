@@ -12,3 +12,4 @@ Technical decisions that shape dowel, in the order they were made. Format: Conte
 | [0006](0006-sets-and-a-pinned-registry.md) | Sets install in one command, and each minor is served frozen | accepted |
 | [0007](0007-machine-readable-docs.md) | The documentation is generated for machines from the same source as for people | accepted |
 | [0008](0008-one-list-of-commands.md) | Keys are written once, in one notation, into one list per window | accepted |
+| [0009](0009-a-command-can-come-before-the-editor.md) | A command can take its key before the editor, and be offered though its key is local | accepted |

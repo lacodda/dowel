@@ -135,20 +135,25 @@ describe('what a primitive weighs', () => {
      * all, only the arithmetic every product got wrong a different way. Split
      * further, each half would have to export its internals to the other. */
     commands: {
-      ceiling: 13824,
+      ceiling: 14592,
       because:
         'one list read three ways - the store and its hooks, the keyboard that answers it (sequences, ' +
         'where a key is answered, the innermost scope first) and the conflicts that keep the three ' +
         'agreeing. The list without the keyboard is a list nothing answers, and the keyboard without ' +
-        'the list is the second copy of every key this exists to end (ADR 0008)',
+        'the list is the second copy of every key this exists to end (ADR 0008). Raised in v0.38.1 ' +
+        'for the keyboard heard in both phases (`capture`, so a command keeps a key an editor binds) ' +
+        'and `offered`: both decide how the one list is answered, so neither can live outside it',
     },
     shortcut: {
-      ceiling: 8448,
+      ceiling: 8704,
       because:
         'the notation and the reading of a keystroke into it: the parse, the one spelling, and the ' +
         'layouts - a letter by place when the layout does not type Latin, the number row under a ' +
         'command, punctuation a Cyrillic layout puts a letter on. The parse and the reading share the ' +
-        'tables of named keys; apart, they would disagree about what a key is called',
+        'tables of named keys; apart, they would disagree about what a key is called. Raised in ' +
+        'v0.38.1 when the names of the keys moved here from Kbd: a product without Tailwind prints ' +
+        'keys as text, and the names belong with the notation they name rather than with one way of ' +
+        'drawing them',
     },
     'command-palette': {
       ceiling: 4864,

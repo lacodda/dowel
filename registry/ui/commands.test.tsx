@@ -182,6 +182,101 @@ describe('answering a key', () => {
   })
 })
 
+describe('taking a key before the editor', () => {
+  /** An editor with a keymap of its own: it answers Mod+D on its way past
+   * and claims it, unless something before it already has - which is how
+   * CodeMirror's handlers treat a key. */
+  function editor() {
+    const element = document.createElement('div')
+    element.contentEditable = 'true'
+    document.body.append(element)
+    const answered: string[] = []
+    element.addEventListener('keydown', (event) => {
+      if (event.defaultPrevented || !event.ctrlKey || event.key !== 'd') return
+      answered.push('editor')
+      event.preventDefault()
+    })
+    return { element, answered }
+  }
+
+  afterEach(() => {
+    document.body.innerHTML = ''
+  })
+
+  it('takes a key the editor binds, for a command declared capture', () => {
+    const ran: string[] = []
+    const { element, answered } = editor()
+    render(
+      <Declare
+        commands={[
+          { id: 'duplicate', label: 'Duplicate', keys: 'Mod+D', whileTyping: true, capture: true, run: () => ran.push('duplicate') },
+        ]}
+      />,
+    )
+    const event = press('d', { ctrlKey: true, target: element })
+    expect(ran).toEqual(['duplicate'])
+    expect(answered, 'the editor answered the key as well').toEqual([])
+    expect(event.defaultPrevented).toBe(true)
+  })
+
+  it('leaves the editor its key, for a command that did not ask', () => {
+    // A rebinding onto a key an editor binds is listed and does nothing
+    // there - the reason `capture` exists.
+    const ran: string[] = []
+    const { element, answered } = editor()
+    render(
+      <Declare
+        commands={[{ id: 'duplicate', label: 'Duplicate', keys: 'Mod+D', whileTyping: true, run: () => ran.push('duplicate') }]}
+      />,
+    )
+    press('d', { ctrlKey: true, target: element })
+    expect(ran).toEqual([])
+    expect(answered).toEqual(['editor'])
+  })
+
+  it('answers in the same places on the way down as on the way up', () => {
+    // Capture changes when, not where: still not in a field without
+    // whileTyping, still only inside its element when declared within.
+    const ran: string[] = []
+    const input = document.createElement('input')
+    document.body.append(input)
+    render(
+      <Declare commands={[{ id: 'search', label: 'Search', keys: 'Mod+K', capture: true, run: () => ran.push('search') }]} />,
+    )
+    const event = press('k', { ctrlKey: true, target: input })
+    expect(ran).toEqual([])
+    expect(event.defaultPrevented).toBe(false)
+  })
+
+  it('finishes on the way up a sequence begun on the way down', () => {
+    const ran: string[] = []
+    const seen: string[] = []
+    const nearer = document.createElement('div')
+    document.body.append(nearer)
+    nearer.addEventListener('keydown', (event) => {
+      if (!event.defaultPrevented) seen.push(event.key)
+    })
+    render(
+      <Declare
+        commands={[
+          { id: 'go-dashboard', label: 'Dashboard', keys: 'G D', capture: true, run: () => ran.push('dashboard') },
+          { id: 'go-inbox', label: 'Inbox', keys: 'G I', run: () => ran.push('inbox') },
+        ]}
+      />,
+    )
+    // G begins a command that asked to come first: taken before the nearer
+    // handler sees it. I finishes one that did not: the nearer handler has
+    // its turn, and the sequence is still waiting for the way back up.
+    press('g', { target: nearer })
+    press('i', { target: nearer })
+    expect(seen).toEqual(['i'])
+    expect(ran).toEqual(['inbox'])
+    press('g', { target: nearer })
+    press('d', { target: nearer })
+    expect(ran).toEqual(['inbox', 'dashboard'])
+  })
+})
+
 describe('sequences', () => {
   it('runs G then D', () => {
     const ran: string[] = []
@@ -572,6 +667,30 @@ describe('the list', () => {
     expect(
       [...container.querySelectorAll('li')].map((item) => item.getAttribute('data-runnable')),
     ).toEqual(['yes', 'yes', 'no'])
+  })
+
+  it('offers a command declared within when it says its work needs no focus there', () => {
+    function Pane() {
+      const pane = useRef<HTMLDivElement>(null)
+      useCommands([
+        { id: 'fold', label: 'Fold', keys: 'Mod+{', within: pane, offered: true, run: () => {} },
+        { id: 'next-row', label: 'Next row', keys: 'J', within: pane, run: () => {} },
+      ])
+      return <div ref={pane} />
+    }
+    const { container } = render(
+      <>
+        <Declare commands={[{ id: 'palette', label: 'Commands', keys: 'Mod+Shift+P', offered: false, run: () => {} }]} />
+        <Pane />
+        <Listed />
+      </>,
+    )
+    // Listed all the same - the sheet shows every key - but the palette
+    // offers only the fold.
+    expect(readList(container)).toEqual(['Commands=Mod+Shift+P', 'Fold=Mod+{', 'Next row=J'])
+    expect(
+      [...container.querySelectorAll('li')].map((item) => item.getAttribute('data-runnable')),
+    ).toEqual(['no', 'yes', 'no'])
   })
 
   it('lists a command declared by two mounted copies once', () => {
