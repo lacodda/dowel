@@ -352,11 +352,17 @@ describe('CommandPalette', () => {
     // One listbox, whatever the grouping.
     expect(screen.getAllByRole('listbox')).toHaveLength(1)
 
+    // Into the field first, as a person would be: leaning on the focus the
+    // palette takes when it opens made this pass alone and fail after a test
+    // that had clicked a field of its own.
+    await user.click(screen.getByRole('combobox'))
     await user.keyboard('{ArrowDown}{ArrowDown}')
-    expect(
-      screen.getByRole('combobox').getAttribute('aria-activedescendant'),
-      'the walk stopped at the group boundary',
-    ).toBe(options[1]?.id)
+    await waitFor(() =>
+      expect(
+        screen.getByRole('combobox').getAttribute('aria-activedescendant'),
+        'the walk stopped at the group boundary',
+      ).toBe(options[1]?.id),
+    )
   })
 
   it('passes axe when open', async () => {
