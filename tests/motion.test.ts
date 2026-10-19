@@ -1,17 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, inject, it } from 'vitest'
-import {
-  classStrings,
-  compiled,
-  hasRule,
-  isLoop,
-  isMotion,
-  motionSources,
-  motionStrings,
-  utilityOf,
-  withoutComments,
-} from './motion'
+import { compiled, hasRule, isLoop, isMotion, motionSources, motionStrings, utilityOf } from './motion'
+
+/** The motion a piece of code writes, read the way the set's files are. */
+const motionIn = (text: string) => motionStrings({ file: 'probe.tsx', text, code: text }).flat()
 
 /*
  * Motion, held to the reader who asked for less of it.
@@ -39,7 +32,7 @@ const classes = [...new Set(strings.flatMap((string) => string.classes))].sort()
 
 describe('the scanner', () => {
   it('finds motion in the shapes the set writes it', () => {
-    expect(classStrings("cn(`${a}b`, 'flex transition-colors duration-150', \"animate-spin\")").flat().filter(isMotion)).toEqual([
+    expect(motionIn("cn(`${a}b`, 'flex transition-colors duration-150', \"animate-spin\")")).toEqual([
       'transition-colors',
       'duration-150',
       'animate-spin',
@@ -47,8 +40,14 @@ describe('the scanner', () => {
     // The closing quote of a template is not the opening of a string: read
     // that way, the class below came out as `transition-colors',` and was
     // reported as compiling to nothing.
-    expect(classStrings("a={`${id}n`} b={cn('p-1 transition-colors', 'x')} c={`${id}l`}").flat().filter(isMotion)).toEqual([
+    expect(motionIn("<i a={`${id}n`} className={cn('p-1 transition-colors', 'x')} c={`${id}l`} />")).toEqual([
       'transition-colors',
+    ])
+    // Held in a constant, and in a template beside a value.
+    expect(motionIn("const slide = 'transition-transform duration-base'\nconst x = `animate-pulse ${y}`")).toEqual([
+      'transition-transform',
+      'duration-base',
+      'animate-pulse',
     ])
     expect(isMotion('data-[orientation=vertical]:transition-[top,height]')).toBe(true)
     expect(isMotion('[transition:opacity_var(--duration-quick)_var(--ease-out)]')).toBe(true)
@@ -58,7 +57,7 @@ describe('the scanner', () => {
   })
 
   it('reads code, not the prose about it', () => {
-    expect(classStrings(withoutComments(`/* \`animate-pulse bg-soft\` */\nconst a = 'transition-opacity'`)).flat()).toEqual([
+    expect(motionIn(`/* \`animate-pulse bg-soft\` */\nconst a = 'transition-opacity' // 'animate-spin'`)).toEqual([
       'transition-opacity',
     ])
   })
