@@ -198,6 +198,8 @@ describe('the shell', () => {
     const head = container.querySelector('thead')
     expect(head?.className).toContain('sticky')
     expect(head?.className).toContain('bg-bg')
+    // Above the body's own layers - a pinned cell is sticky too.
+    expect(head?.className).toContain('[z-index:var(--z-sticky)]')
   })
 
   it('does not stick unless asked', () => {
