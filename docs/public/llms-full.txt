@@ -3280,6 +3280,53 @@ This is the half every product gets wrong once.
   the rest of the application. A list's `J` and `K`, a panel's Escape. This is
   also how a command answers plain keys inside a dialog: declared within it.
 
+### Before an editor's keymap
+
+A key is answered after whatever has the focus has had its turn: a dialog's
+Escape, a list's arrows and a field's own keys stay theirs, because they call
+`preventDefault` and a key something nearer handled is never answered here.
+
+An editor with a keymap of its own — CodeMirror, a terminal — handles a long
+list of keys that way, and that is a problem the moment someone can rebind a
+command. Rebound onto `Mod+D`, a command is listed with `Mod+D` in the sheet
+and in the palette's hint, and inside the editor `Mod+D` selects the next
+occurrence instead: the key is promised and not answered, the very drift the
+list exists to end. `capture: true` takes the key on the way down, before the
+editor sees it:
+
+```tsx
+useCommands([
+  { id: 'save', label: t('save'), keys: 'Mod+S', whileTyping: true, capture: true, run: save },
+])
+```
+
+It changes when a key is answered, never where: a `capture` command still
+needs `whileTyping` to fire in a field and `within` to stay inside an element,
+and the conflicts are the same. Declare it on the commands an editor must not
+keep — in a product built around one, usually all of them.
+
+### Offered or not
+
+A palette offers what can be run from it: a command with a `run`, enabled, and
+not declared `within` — a command tied to a place is usually about where the
+focus is, and from inside the palette the focus is in the palette.
+
+`offered` says otherwise where the key and the work part ways. An editor's
+*Fold this section* answers its key only inside the editor (`within`), but its
+work folds the editor the person was last in, and the palette is where someone
+looks for it:
+
+```tsx
+useCommands([
+  { id: 'fold', label: t('fold'), keys: 'Mod+{', within: editor, whileTyping: true, offered: true, run: fold },
+  { id: 'palette', label: t('commands'), keys: 'Mod+Shift+P', offered: false, run: openPalette },
+])
+```
+
+`offered: false` keeps a command out of the palette — the one that opens it,
+which would do nothing from inside. The sheet lists both either way: it lists
+keys, not what can be run.
+
 ### Conflicts
 
 Two commands on the same keys in the same place cannot both work, and neither
@@ -3339,7 +3386,13 @@ fields.
 A settings screen records a new binding with
 [`keysOf(event)`](/dowel/components/shortcut/), in its own `keydown` handler.
 It calls `preventDefault`, and a key something nearer already handled is never
-answered here — so the key being recorded is not also run.
+answered here — so the key being recorded is not also run. With `capture`
+commands declared, that handler listens on the `window` in the capture phase,
+which comes before the list's own:
+
+```tsx
+window.addEventListener('keydown', record, { capture: true })
+```
 
 ### In the palette
 
@@ -3373,6 +3426,8 @@ Declare for as long as the calling component is mounted.
 | `enabled` | `boolean` | `true` | `false` stops it answering; the sheet still lists its keys |
 | `whileTyping` | `boolean` | `false` | Fire into fields too. Refused on a key a field types with |
 | `within` | `RefObject<Element>` | | Answer only while the focus is inside it |
+| `capture` | `boolean` | `false` | Answer before whatever has the focus — an editor's keymap — sees the key |
+| `offered` | `boolean` | not `within` | Whether a palette offers it to be run |
 
 A shortcut that does not parse, and `whileTyping` on a key a field types with,
 throw when declared: a typo in a shortcut is otherwise a key that silently
@@ -3384,7 +3439,7 @@ Every declared command, in the order declared, one line per id — two mounted
 copies of one component declaring the same command in two places are one
 line. Each has `id`, `label`, `group`, `icon`, `keys` (as it answers now,
 after a rebinding and without any lost to a conflict) and `run` (present when
-it can be run from a list).
+it can be run from a list: it has a `run`, is enabled and is offered).
 
 ### `useCommandKeys(id): string[]`
 
@@ -8530,6 +8585,13 @@ first key alone does the job; sequences are left out.
 ```tsx
 <Button aria-keyshortcuts={ariaKeyShortcuts(useCommandKeys('save'))}>{t('save')}</Button>
 ```
+
+### `keyLabel(key, apple?): string`
+
+What a key is called on this platform — `Mod` is `Ctrl` here and `⌘` on a Mac,
+`ArrowRight` is `→`. [`Kbd`](/dowel/components/kbd/) draws its caps with these
+names; a product that prints keys as text, without Tailwind, reads them from
+here. `Kbd` still exports it.
 
 ### `isApplePlatform(): boolean`
 
