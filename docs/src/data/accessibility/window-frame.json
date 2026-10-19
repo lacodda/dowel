@@ -83,6 +83,12 @@
         "1.4.3"
       ]
     },
+    "duplicate-id-aria": {
+      "help": "IDs used in ARIA and labels must be unique",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
     "empty-heading": {
       "help": "Headings should not be empty",
       "criteria": []
@@ -153,9 +159,11 @@
       "aria-valid-attr-value",
       "button-name",
       "color-contrast",
+      "duplicate-id-aria",
       "empty-heading",
       "form-field-multiple-labels",
       "label",
+      "label-content-name-mismatch",
       "label-title-only",
       "landmark-no-duplicate-banner",
       "link-name",
@@ -166,14 +174,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "label-content-name-mismatch",
-        "nodes": [
-          "#base-ui-_r_c_"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -191,9 +192,11 @@
       "aria-valid-attr-value",
       "button-name",
       "color-contrast",
+      "duplicate-id-aria",
       "empty-heading",
       "form-field-multiple-labels",
       "label",
+      "label-content-name-mismatch",
       "label-title-only",
       "landmark-no-duplicate-banner",
       "link-name",
@@ -204,13 +207,6 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "label-content-name-mismatch",
-        "nodes": [
-          "#base-ui-_r_c_"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

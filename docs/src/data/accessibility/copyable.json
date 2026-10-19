@@ -71,6 +71,12 @@
         "1.4.3"
       ]
     },
+    "duplicate-id-aria": {
+      "help": "IDs used in ARIA and labels must be unique",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
     "empty-heading": {
       "help": "Headings should not be empty",
       "criteria": []
@@ -115,22 +121,15 @@
       "aria-valid-attr-value",
       "button-name",
       "color-contrast",
+      "duplicate-id-aria",
       "empty-heading",
+      "label-content-name-mismatch",
       "link-name",
       "nested-interactive",
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "label-content-name-mismatch",
-        "nodes": [
-          ".group.inline-flex.max-w-full:nth-child(1)",
-          ".items-end.p-4.flex-wrap > .group.inline-flex.max-w-full:nth-child(2)",
-          ".p-3 > .group.inline-flex.max-w-full"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -146,21 +145,14 @@
       "aria-valid-attr-value",
       "button-name",
       "color-contrast",
+      "duplicate-id-aria",
       "empty-heading",
+      "label-content-name-mismatch",
       "link-name",
       "nested-interactive",
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "label-content-name-mismatch",
-        "nodes": [
-          ".group.inline-flex.max-w-full:nth-child(1)",
-          ".items-end.p-4.flex-wrap > .group.inline-flex.max-w-full:nth-child(2)",
-          ".p-3 > .group.inline-flex.max-w-full"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

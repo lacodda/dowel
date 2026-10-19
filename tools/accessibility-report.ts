@@ -122,19 +122,4 @@ export const KNOWN: Debt[] = [
       'The tokens are held to AA at body size, not at every step they are set in; the work that holds them per step moves these, as it already moved ' +
       'the caption, the notes of a list row and the empty face of the date pickers. Some of it is the stand’s own notes beside the examples.',
   },
-  {
-    rule: 'label-content-name-mismatch',
-    items: ['big-calendar', 'copyable', 'notification-bell', 'window-frame'],
-    reason:
-      'A control named by `aria-label` whose name does not hold the words drawn on it - Copy around the value it copies, the bell around its count, ' +
-      'a day of the month view named by its date and its releases. Someone telling voice control what they see says words the name does not have ' +
-      '(WCAG 2.5.3). The date pickers had the same defect and are fixed.',
-  },
-  {
-    rule: 'target-size',
-    items: ['big-calendar'],
-    reason:
-      'A release drawn in a crowded day of the month view comes out smaller than the 24px a pointer is asked to hit (WCAG 2.5.8): the fold that keeps ' +
-      'a day in its share of the height decides its size.',
-  },
 ]
