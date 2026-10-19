@@ -45,13 +45,25 @@ describe('NotificationBell', () => {
     expect(screen.getByRole('button', { name: 'Notifications' })).toBeDefined()
   })
 
+  it('is named by its label and then by the count it shows', () => {
+    // A name without the number drawn on the bell fails WCAG 2.5.3: someone
+    // telling voice control what they see says "9+".
+    const { rerender } = render(<NotificationBell count={42} {...labels} />)
+    const bell = screen.getByRole('button', { name: 'Notifications 9+' })
+    // The tooltip is the same words, so the name is not read again as a
+    // description.
+    expect(bell.getAttribute('title')).toBe('Notifications 9+')
+    rerender(<NotificationBell count={0} {...labels} />)
+    expect(bell.getAttribute('title')).toBe('Notifications')
+  })
+
   it('opens the panel under its heading', async () => {
     render(
       <NotificationBell count={1} {...labels}>
         <p>A release lost its slot.</p>
       </NotificationBell>,
     )
-    await userEvent.click(screen.getByRole('button', { name: 'Notifications' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Notifications 1' }))
     expect(await screen.findByRole('heading', { name: 'Recent' })).toBeDefined()
     expect(screen.getByText('A release lost its slot.')).toBeDefined()
   })
@@ -75,14 +87,14 @@ describe('NotificationBell', () => {
   it('calls back when everything is marked read', async () => {
     const onMarkAll = vi.fn()
     render(<NotificationBell count={2} {...labels} onMarkAll={onMarkAll} />)
-    await userEvent.click(screen.getByRole('button', { name: 'Notifications' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Notifications 2' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Mark all read' }))
     expect(onMarkAll).toHaveBeenCalledTimes(1)
   })
 
   it('waits while the product is busy marking', async () => {
     render(<NotificationBell count={2} {...labels} busy />)
-    await userEvent.click(screen.getByRole('button', { name: 'Notifications' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Notifications 2' }))
     const button = await screen.findByRole('button', { name: 'Mark all read' })
     expect((button as HTMLButtonElement).disabled).toBe(true)
   })
@@ -90,7 +102,7 @@ describe('NotificationBell', () => {
   it('hands over to the whole history and closes', async () => {
     const onSeeAll = vi.fn()
     render(<NotificationBell count={2} {...labels} onSeeAll={onSeeAll} />)
-    await userEvent.click(screen.getByRole('button', { name: 'Notifications' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Notifications 2' }))
     await userEvent.click(await screen.findByRole('button', { name: 'See all' }))
     expect(onSeeAll).toHaveBeenCalledTimes(1)
     await vi.waitFor(() => {
