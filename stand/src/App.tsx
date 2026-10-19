@@ -1694,11 +1694,12 @@ function DatePickerSection() {
 
   return (
     <>
-      <Row label="chosen, and empty">
+      <Row label="chosen - and taken back from under the month, for an optional field - and empty">
         <div className="w-56">
           <DatePicker
             value={date}
             onValueChange={setDate}
+            clearLabel="Clear"
             locale="en-GB"
             placeholder="Pick a date"
             aria-label="Release date"
@@ -1752,11 +1753,12 @@ function DateRangePickerSection() {
 
   return (
     <>
-      <Row label="whole, and half made - the middle of the interaction is a state">
+      <Row label="whole, and half made - the middle of the interaction is a state; the first can be taken back">
         <div className="w-64">
           <DateRangePicker
             value={period}
             onValueChange={setPeriod}
+            clearLabel="Clear"
             locale="en-GB"
             placeholder="Pick a range"
             aria-label="Period"

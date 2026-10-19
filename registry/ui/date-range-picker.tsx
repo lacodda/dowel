@@ -1,5 +1,6 @@
 import { useId, useMemo, useState } from 'react'
 import { cn, useLocale } from 'dowel-ui'
+import { Button } from './button'
 import { fieldClasses } from './input'
 import { Popover, PopoverPopup, PopoverTrigger } from './popover'
 import { Calendar } from './calendar'
@@ -23,6 +24,10 @@ import { isIsoDate, type IsoDate } from './calendar-math'
  * The second click can land before the first. Clicking the 20th and then the
  * 10th means the 10th to the 20th, because that is plainly what was meant;
  * refusing it would be correct and unhelpful.
+ *
+ * Given `clearLabel`, the popup offers to take the range back - half made or
+ * whole - under the month, the way DatePicker does, and `onValueChange` is
+ * told the empty range.
  */
 
 export interface DateRange {
@@ -35,6 +40,9 @@ export interface DateRange {
 export interface DateRangePickerProps {
   value?: DateRange
   onValueChange?: (value: DateRange) => void
+  /** The words of the button that takes the range back: "Clear". Leave it out
+   * and a chosen range can only be replaced, not emptied. */
+  clearLabel?: string
   min?: IsoDate
   max?: IsoDate
   /** What the trigger says when nothing is chosen. */
@@ -56,6 +64,7 @@ export interface DateRangePickerProps {
 export function DateRangePicker({
   value,
   onValueChange,
+  clearLabel,
   min,
   max,
   placeholder,
@@ -154,6 +163,20 @@ export function DateRangePicker({
           nextMonthLabel={nextMonthLabel}
           onValueChange={choose}
         />
+        {clearLabel !== undefined && range.start !== undefined && (
+          <div className="mt-2 flex justify-end border-t border-line pt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                onValueChange?.({})
+                setOpen(false)
+              }}
+            >
+              {clearLabel}
+            </Button>
+          </div>
+        )}
       </PopoverPopup>
     </Popover>
   )

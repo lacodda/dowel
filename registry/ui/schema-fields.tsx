@@ -55,6 +55,8 @@ export interface SchemaFieldsWords {
   pickDate: string
   previousMonth: string
   nextMonth: string
+  /** What takes back a date in an optional field: "Clear". */
+  clearDate: string
   /** The secret's reveal button, while hidden and while showing. */
   showSecret: string
   hideSecret: string
@@ -208,7 +210,10 @@ export function SchemaFields({
               previousMonthLabel={words.previousMonth}
               nextMonthLabel={words.nextMonth}
               disabled={disabled || field.readOnly}
-              onValueChange={set}
+              // An optional date can be taken back, and is then absent - or
+              // null, where the schema allows it - like every empty field.
+              {...(field.required ? {} : { clearLabel: words.clearDate })}
+              onValueChange={(next: string | undefined) => set(next === undefined ? empty : next)}
             />
           </Field>
         )

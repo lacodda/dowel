@@ -61,6 +61,7 @@ const words: SchemaFieldsWords = {
   pickDate: 'Pick a day',
   previousMonth: 'Previous month',
   nextMonth: 'Next month',
+  clearDate: 'Clear',
   showSecret: 'Show key',
   hideSecret: 'Hide key',
   removeTag: (tag) => `Remove ${tag}`,

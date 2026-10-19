@@ -35,6 +35,18 @@ calendar is the wrong control anyway.
 **It closes when a day is chosen.** Choosing is the whole errand; waiting for
 a second dismissing click is one click too many.
 
+**An optional date can be taken back.** Give `clearLabel` and, while a day is
+chosen, the popup offers it under the month in your words; `onValueChange` is
+then told `undefined`. In the popup rather than as a cross on the field: the
+trigger is a button and cannot hold another, and a cross laid over it is a
+second, smaller target against the first. A required field gives no words and
+cannot be emptied - and the type agrees: only a picker given `clearLabel` takes
+a handler that has to deal with no date.
+
+```tsx
+<DatePicker value={due} onValueChange={setDue} clearLabel={t('clear')} ... />
+```
+
 **`name` puts the value where a form can find it.** A button is not a field,
 so without it a form submits the screen and loses the date — the component
 writes a hidden input instead.
@@ -62,7 +74,8 @@ The value, the arithmetic and the keyboard are the
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `value` | `IsoDate` | | `YYYY-MM-DD` |
-| `onValueChange` | `(value) => void` | | |
+| `onValueChange` | `(value) => void` | | Told `undefined` only when `clearLabel` is given |
+| `clearLabel` | `string` | | The button that takes the date back; without it, a chosen date stays |
 | `min`, `max` | `IsoDate` | | Bounds, inclusive |
 | `placeholder` | `string` | | Required — what the trigger says when empty |
 | `previousMonthLabel` | `string` | | Required |

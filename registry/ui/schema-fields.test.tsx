@@ -25,6 +25,7 @@ const words: SchemaFieldsWords = {
   pickDate: 'Pick a day',
   previousMonth: 'Back',
   nextMonth: 'On',
+  clearDate: 'Clear',
   showSecret: 'Show',
   hideSecret: 'Hide',
   removeTag: (tag) => `Remove ${tag}`,
@@ -243,6 +244,29 @@ describe('what the fields write', () => {
     await user.click(screen.getByRole('button', { name: /^Born/ }))
     await user.click(await screen.findByRole('button', { name: /September 14, 2026/ }))
     expect(last(onChange)).toMatchObject({ born: '2026-09-14' })
+  })
+
+  it('takes back a day in an optional field, leaving the key absent', async () => {
+    // A date picked by mistake in an optional field is not stuck there.
+    const onChange = vi.fn()
+    const user = userEvent.setup()
+    render(<Harness schema={settings} onChange={onChange} initial={{ born: '2026-09-02', name: 'Ada' }} />)
+    await user.click(screen.getByRole('button', { name: /^Born/ }))
+    await user.click(await screen.findByRole('button', { name: 'Clear' }))
+    expect(last(onChange)).toEqual({ name: 'Ada' })
+  })
+
+  it('offers no way to empty a required day', async () => {
+    const due: JsonSchema = {
+      type: 'object',
+      properties: { due: { type: 'string', title: 'Due', format: 'date' } },
+      required: ['due'],
+    }
+    const user = userEvent.setup()
+    render(<Harness schema={due} initial={{ due: '2026-09-02' }} />)
+    await user.click(screen.getByRole('button', { name: /^Due/ }))
+    await screen.findByRole('grid')
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
   })
 
   it('writes inside a group, making the group on the way', async () => {

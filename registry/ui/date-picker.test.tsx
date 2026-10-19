@@ -109,3 +109,48 @@ describe('DatePicker', () => {
     await expectNoA11yViolations(<Example value="2026-09-02" />)
   })
 })
+
+describe('DatePicker, taking a date back', () => {
+  const trigger = () => screen.getByRole('button', { name: /^Release date/ })
+
+  it('offers it under the month, in the product’s words, while a day is chosen', async () => {
+    const user = userEvent.setup()
+    render(<Example value="2026-09-02" clearLabel="Clear" />)
+    await user.click(trigger())
+    expect(await screen.findByRole('button', { name: 'Clear' })).toBeDefined()
+  })
+
+  it('tells the product nothing is chosen, and closes', async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<Example value="2026-09-02" clearLabel="Clear" onValueChange={onValueChange} />)
+    await user.click(trigger())
+    await user.click(await screen.findByRole('button', { name: 'Clear' }))
+    expect(onValueChange).toHaveBeenCalledWith(undefined)
+    await vi.waitFor(() => expect(screen.queryByRole('grid')).toBeNull())
+  })
+
+  it('has nothing to offer with nothing chosen, or without the words', async () => {
+    // A button that does nothing is worse than none; and a required field
+    // gives no words, so its date cannot be emptied.
+    const user = userEvent.setup()
+    const { unmount } = render(<Example clearLabel="Clear" />)
+    await user.click(trigger())
+    await screen.findByRole('grid')
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    unmount()
+    render(<Example value="2026-09-02" />)
+    await user.click(trigger())
+    await screen.findByRole('grid')
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+  })
+
+  it('hands nothing only to a handler that can take it', () => {
+    const day = (value: string) => value.length
+    // Without the words a picker is never emptied, and a handler of days is
+    // enough.
+    expect(<Example onValueChange={day} />).toBeDefined()
+    // @ts-expect-error - a picker that can be emptied tells its handler so.
+    expect(<DatePicker clearLabel="Clear" onValueChange={day} placeholder="" previousMonthLabel="" nextMonthLabel="" />).toBeDefined()
+  })
+})

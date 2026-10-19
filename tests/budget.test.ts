@@ -160,6 +160,14 @@ describe('what a primitive weighs', () => {
         'Combobox row" and the component wore none, so the rows inherited the popup ' +
         'font and stood a third taller than every other list in the set.',
     },
+    'date-range-picker': {
+      ceiling: 4352,
+      because:
+        'One field with three states the reader moves through - nothing, a start waiting ' +
+        'for its end, a whole range - each named on the trigger with the label first ' +
+        '(WCAG 2.5.3), and the way back to nothing under the month. The calendar, its ' +
+        'sums and the field classes are already their own modules.',
+    },
     'tree-view': {
       ceiling: 4352,
       because:
@@ -460,8 +468,9 @@ describe('what a primitive drags in', () => {
     'calendar-math': [],
     // A field that opens a month: Input's clothes on the trigger, our own
     // Popover for the panel, and the calendar inside it.
-    'date-picker': ['input', 'popover', 'calendar', 'calendar-math'],
-    'date-range-picker': ['input', 'popover', 'calendar', 'calendar-math'],
+    // Button: the way back to no date, in the product's words.
+    'date-picker': ['button', 'input', 'popover', 'calendar', 'calendar-math'],
+    'date-range-picker': ['button', 'input', 'popover', 'calendar', 'calendar-math'],
     // The month view: the Calendar's weeks and keys from `calendar-math`, the
     // overlay scrollbar for a day opened in place, and the line whose height
     // the fold is counted in.

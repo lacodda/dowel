@@ -141,4 +141,36 @@ describe('DateRangePicker', () => {
   it('passes axe', async () => {
     await expectNoA11yViolations(<Example value={{ start: '2026-09-02', end: '2026-09-10' }} />)
   })
+
+  it('takes the range back, whole or half made, when given the words', async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    const { unmount } = render(
+      <Example value={{ start: '2026-09-02', end: '2026-09-10' }} clearLabel="Clear" onValueChange={onValueChange} />,
+    )
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await user.click(await screen.findByRole('button', { name: 'Clear' }))
+    // Strictly empty: a range of two absent keys is still two keys.
+    expect(onValueChange.mock.lastCall?.[0]).toStrictEqual({})
+    await vi.waitFor(() => expect(screen.queryByRole('grid')).toBeNull())
+    unmount()
+
+    render(<Example value={{ start: '2026-09-02' }} clearLabel="Clear" onValueChange={onValueChange} />)
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await user.click(await screen.findByRole('button', { name: 'Clear' }))
+    expect(onValueChange.mock.lastCall?.[0]).toStrictEqual({})
+  })
+
+  it('has nothing to take back with nothing chosen, or without the words', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<Example clearLabel="Clear" />)
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await screen.findByRole('grid')
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    unmount()
+    render(<Example value={{ start: '2026-09-02', end: '2026-09-10' }} />)
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await screen.findByRole('grid')
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+  })
 })
