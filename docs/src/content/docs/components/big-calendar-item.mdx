@@ -14,7 +14,7 @@ $ npx shadcn@latest add https://lacodda.github.io/dowel/r/big-calendar-item.json
 ## Notes
 
 **One line, always.** [BigCalendar](/dowel/components/big-calendar/) folds a
-day by arithmetic - lines of twenty pixels, four apart - so a line that wrapped
+day by arithmetic - lines of twenty-four pixels, edge to edge - so a line that wrapped
 on a narrow day would break the sum and push the last line out of the day. The
 words truncate; put the whole of them in `title`, or in a hover card through
 `render`. The marks in `start` and `end` do not shrink.
@@ -62,9 +62,13 @@ const inCursorDay = useContext(BigCalendarDayContext)
 <MyLine tabIndex={inCursorDay === false ? -1 : 0} />
 ```
 
-**Twenty pixels drawn, twenty-four to hit.** `target-min` grows the target to the
-floor, and the gap between two lines is four - so the targets meet and do not
-overlap.
+**Twenty pixels drawn, twenty-four to hit.** The line is twenty-four pixels -
+the floor of a pointer target - and the chip inside it twenty, so chips come
+out four apart and targets meet without overlapping. The size is the box's
+own, not an invisible extension: a day of the month is a target too, and a
+measurement of the box is the only one anything takes. The element is the
+line; its colour, outline and ring are the chip's, so `className` and `style`
+land on the line.
 
 ## Props
 

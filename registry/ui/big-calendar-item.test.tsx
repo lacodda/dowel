@@ -27,7 +27,7 @@ describe('BigCalendarItem', () => {
 
     rerender(<BigCalendarItem>Clip</BigCalendarItem>)
     expect(screen.queryByRole('button')).toBeNull()
-    expect(screen.getByText('Clip').parentElement!.tagName).toBe('DIV')
+    expect(screen.getByText('Clip').closest('[data-chip]')!.parentElement!.tagName).toBe('DIV')
   })
 
   it('draws as the product’s own element when given one', () => {
@@ -44,16 +44,22 @@ describe('BigCalendarItem', () => {
     const words = screen.getByText('A title far longer than any day is wide')
     expect(words.className).toContain('truncate')
     expect(words.className).toContain('min-w-0')
-    expect(words.parentElement!.className).toMatch(/(^|\s)h-5(\s|$)/)
+    expect(words.closest('[data-chip]')!.parentElement!.className).toMatch(/(^|\s)h-6(\s|$)/)
     expect(screen.getByText('▶').parentElement!.className).toContain('shrink-0')
     expect(screen.getByText('•').parentElement!.className).toContain('shrink-0')
   })
 
-  it('reaches the pointer floor without growing past its line', () => {
-    // Twenty pixels drawn, twenty-four to hit: the gap between two lines is
-    // four, so the targets meet and do not overlap.
+  it('reaches the pointer floor by its own size, and draws its chip inside', () => {
+    // Twenty-four to hit, twenty drawn: the box is the line, so a measurement
+    // of it - the only one anything takes inside a day that is a target too -
+    // sees the floor. Lines stand edge to edge and the chips come out four
+    // apart.
     render(<BigCalendarItem onClick={() => {}}>Clip</BigCalendarItem>)
-    expect(screen.getByRole('button').className).toMatch(/(^|\s)target-min(\s|$)/)
+    const line = screen.getByRole('button')
+    expect(line.className).toMatch(/(^|\s)h-6(\s|$)/)
+    expect(line.className).toMatch(/(^|\s)py-0\.5(\s|$)/)
+    expect(line.className).not.toMatch(/target-min/)
+    expect(line.firstElementChild!.hasAttribute('data-chip')).toBe(true)
   })
 
   it('is drawn in its own colour, mixed with the theme rather than written down', () => {
@@ -80,7 +86,7 @@ describe('BigCalendarItem', () => {
     )
     const line = screen.getByText('Clip').parentElement!
     expect(line.className).toContain('border-dashed')
-    expect(line.hasAttribute('data-tentative')).toBe(true)
+    expect(line.parentElement!.hasAttribute('data-tentative')).toBe(true)
     expect(line.style.borderColor).toBe('var(--series-2)')
     expect(line.style.background).toBe('')
   })
@@ -95,7 +101,7 @@ describe('BigCalendarItem', () => {
       </BigCalendarItem>,
     )
     let line = screen.getByText('Clip').parentElement!
-    expect(line.hasAttribute('data-done')).toBe(true)
+    expect(line.parentElement!.hasAttribute('data-done')).toBe(true)
     expect(line.className).not.toMatch(/\bopacity-/)
     expect(line.style.background).toContain('var(--series-3) 15%')
     // Halfway from the text to dim: quieter than a booking, and AA in every
@@ -127,11 +133,18 @@ describe('BigCalendarItem', () => {
     expect(screen.getByRole('button').tabIndex).toBe(0)
   })
 
-  it('lets the caller win a conflict', () => {
-    render(<BigCalendarItem className="rounded-full">Clip</BigCalendarItem>)
-    const line = screen.getByText('Clip').parentElement!
-    expect(line.className).toContain('rounded-full')
-    expect(line.className).not.toContain('rounded-sm')
+  it('lets the caller win a conflict, on the line', () => {
+    // The product's classes and style land on the element it renders - the
+    // line - and the chip inside keeps its own drawing.
+    render(
+      <BigCalendarItem className="w-auto" style={{ opacity: 0.3 }}>
+        Clip
+      </BigCalendarItem>,
+    )
+    const line = screen.getByText('Clip').closest('[data-chip]')!.parentElement as HTMLElement
+    expect(line.className).toContain('w-auto')
+    expect(line.className).not.toContain('w-full')
+    expect(line.style.opacity).toBe('0.3')
   })
 
   it('carries no colour of its own outside the vocabulary', () => {
@@ -141,9 +154,9 @@ describe('BigCalendarItem', () => {
         Clip
       </BigCalendarItem>,
     )
-    const className = container.firstElementChild?.className ?? ''
-    expect(className).not.toMatch(/\bdark:/)
-    expect(className).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+    const html = container.innerHTML
+    expect(html).not.toMatch(/\bdark:/)
+    expect(html).not.toMatch(/#[0-9a-f]{3,8}\b/i)
   })
 
   it('passes axe, pressable and plain', async () => {

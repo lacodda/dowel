@@ -9,8 +9,8 @@ import { cn } from 'dowel-ui'
  * payment that falls due.
  *
  * One line is the rule the month rests on. BigCalendar folds what a day has
- * no room for into a count, and the count is arithmetic - lines of twenty
- * pixels, four apart - so an item that wraps to two lines on a narrow day
+ * no room for into a count, and the count is arithmetic - lines of
+ * twenty-four pixels, edge to edge - so an item that wraps to two lines on a narrow day
  * breaks the sum and pushes the last line out of the day. The words truncate
  * instead; the whole of them is in `title`, or wherever the product puts a
  * hover card.
@@ -31,6 +31,13 @@ import { cn } from 'dowel-ui'
  * It stands outside the month as well: the queue of things waiting for a date
  * beside it, and the copy that travels under the pointer while one is dragged,
  * are the same line.
+ *
+ * The line is twenty-four pixels and the chip drawn in it is twenty. The box
+ * is the pitch of the month - lines stand edge to edge, and the chips come out
+ * four apart - so the target is the floor a pointer is asked to hit (WCAG
+ * 2.5.8) by its own size, not by an invisible extension: inside a day that is
+ * itself a target, a measurement of the box is the only one anything takes.
+ * The element is the line; its colour, outline and ring are the chip's.
  */
 
 /**
@@ -107,27 +114,35 @@ export function BigCalendarItem({
       'data-tentative': tentative ? '' : undefined,
       'data-done': done ? '' : undefined,
       className: cn(
-        // `target-min`: the line is twenty pixels and the gap four, so the
-        // invisible target reaches the floor of twenty-four and stops exactly
-        // where the next line's begins.
-        'target-min flex h-5 w-full min-w-0 shrink-0 items-center gap-1 rounded-sm px-1 text-left text-xs',
-        'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
-        tentative
-          ? 'border border-dashed border-line-2 font-medium text-dim'
-          : cn(
-              done ? 'font-medium' : 'font-semibold',
-              color === undefined && (done ? 'bg-softer' : 'bg-soft text-text'),
-            ),
-        pressable && 'cursor-pointer hover:inset-ring hover:inset-ring-line-2',
+        // Twenty-four: the pitch of a month's lines, and the floor of a
+        // pointer target. The two pixels above and below the chip are the
+        // four between two chips.
+        'group/line flex h-6 w-full min-w-0 shrink-0 items-stretch rounded-sm py-0.5 text-left text-xs',
+        // Inside the box, so the ring hugs the chip rather than the gap.
+        'focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-accent',
+        pressable && 'cursor-pointer',
         className,
       ),
-      style: { ...tint(color, tentative, done), ...style },
+      style,
       children: (
-        <>
+        <span
+          data-chip
+          className={cn(
+            'flex min-w-0 flex-1 items-center gap-1 rounded-sm px-1',
+            tentative
+              ? 'border border-dashed border-line-2 font-medium text-dim'
+              : cn(
+                  done ? 'font-medium' : 'font-semibold',
+                  color === undefined && (done ? 'bg-softer' : 'bg-soft text-text'),
+                ),
+            pressable && 'group-hover/line:inset-ring group-hover/line:inset-ring-line-2',
+          )}
+          style={tint(color, tentative, done)}
+        >
           {start === undefined ? null : <span className={slot}>{start}</span>}
           <span className="min-w-0 flex-1 truncate">{children}</span>
           {end === undefined ? null : <span className={slot}>{end}</span>}
-        </>
+        </span>
       ),
       ...props,
     },

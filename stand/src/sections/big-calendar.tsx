@@ -152,7 +152,7 @@ export function BigCalendarItemSection() {
   return (
     <>
       <Row label="neutral, then in the colours of four works - the ink leans to the theme's text, so it reads on both">
-        <div className="flex w-48 flex-col gap-1">
+        <div className="flex w-48 flex-col">
           <BigCalendarItem onClick={() => {}}>Without a colour</BigCalendarItem>
           {[1, 2, 3, 4].map((series) => (
             <BigCalendarItem key={series} color={`var(--series-${series})`} onClick={() => {}} end={<Glyph />}>
@@ -163,7 +163,7 @@ export function BigCalendarItemSection() {
       </Row>
 
       <Row label="a plan is an outline; what has happened is quieter; a long title truncates on its one line">
-        <div className="flex w-48 flex-col gap-1">
+        <div className="flex w-48 flex-col">
           <BigCalendarItem tentative color="var(--series-2)">
             Planned, not booked
           </BigCalendarItem>

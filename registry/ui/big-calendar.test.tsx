@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import axe from 'axe-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
-import { BigCalendar, LINE_GAP, LINE_HEIGHT, dayOf, foldDay, linesThatFit, type BigCalendarProps } from './big-calendar'
+import { BigCalendar, LINE_HEIGHT, dayOf, foldDay, linesThatFit, type BigCalendarProps } from './big-calendar'
 import { BigCalendarItem } from './big-calendar-item'
 
 /*
@@ -93,16 +93,36 @@ describe('BigCalendar', () => {
     expect(day('2026-09-14').textContent).toMatch(/Monday,? 14 September 2026/)
   })
 
-  it('names a day by its date and what it holds, not by its plus', () => {
+  it('names a day by what it draws, in order, and not by its plus', () => {
+    // The words on its face, in the order they are drawn: someone telling
+    // voice control what they see says "14", then a release (WCAG 2.5.3).
     // Named from its whole content, every day would also announce "Add",
     // thirty-five times on the way through a month.
     render(<Example onAddDay={() => {}} addDayLabel="Add a release on this day" />)
-    const busiest = screen.getAllByRole('gridcell').find((cell) => cell === day('2026-09-14'))!
-    const name = busiest.getAttribute('aria-labelledby')!.split(' ').map((ref) => document.getElementById(ref)?.textContent).join(' ')
-    expect(name).toMatch(/^Monday,? 14 September 2026 /)
-    expect(name).toContain('Clip')
-    expect(name).toContain('3 more')
-    expect(name).not.toContain('Add')
+    expect(screen.getByRole('gridcell', { name: '14 Clip Single 3 more' })).toBe(day('2026-09-14'))
+    // Two days drawn "1" are both named "1" - the first of this month and of
+    // the next; the description tells them apart.
+    expect(screen.getAllByRole('gridcell', { name: '1' })).toEqual([day('2026-09-01'), day('2026-10-01')])
+    expect(screen.queryByRole('gridcell', { name: /Add/ })).toBeNull()
+  })
+
+  it('describes a day by its whole date', () => {
+    // "14" alone is not a date, and the 31st on the September page is
+    // August's.
+    render(<Example />)
+    const described = (date: string) =>
+      document.getElementById(day(date).getAttribute('aria-describedby')!)?.textContent
+    expect(described('2026-09-14')).toMatch(/^Monday,? 14 September 2026$/)
+    expect(described('2026-08-31')).toMatch(/^Monday,? 31 August 2026$/)
+  })
+
+  it('says the hint in the name of the day it is drawn on', () => {
+    // Drawn on the day's face while something is carried over it, so it is
+    // in the name of that day, and of no other.
+    render(<Example dropTarget="2026-09-02" dropHint="Beside 1 more" />)
+    expect(screen.getByRole('gridcell', { name: '2 Clip Beside 1 more' })).toBe(day('2026-09-02'))
+    expect(within(day('2026-09-03')).queryByText('Beside 1 more')).toBeNull()
+    expect(day('2026-09-03').getAttribute('aria-labelledby')!.split(' ')).toHaveLength(2)
   })
 
   it('does not fade what a neighbouring month holds', () => {
@@ -192,7 +212,7 @@ describe('BigCalendar', () => {
     Object.defineProperty(Element.prototype, 'clientHeight', {
       configurable: true,
       get() {
-        return (this as Element).hasAttribute('data-day-lines') ? 5 * LINE_HEIGHT + 4 * LINE_GAP : 0
+        return (this as Element).hasAttribute('data-day-lines') ? 5 * LINE_HEIGHT : 0
       },
     })
     try {
@@ -400,10 +420,12 @@ describe('BigCalendar', () => {
 })
 
 describe('the sums a day is folded by', () => {
-  it('fits lines at a pitch of twenty-four, the last one needing no gap after it', () => {
-    expect(LINE_HEIGHT + LINE_GAP).toBe(24)
-    expect(linesThatFit(3 * LINE_HEIGHT + 2 * LINE_GAP)).toBe(3)
-    expect(linesThatFit(3 * LINE_HEIGHT + 2 * LINE_GAP - 1)).toBe(2)
+  it('fits lines at a pitch of twenty-four, edge to edge', () => {
+    // The pitch is the floor of a pointer target: a line shorter than it is a
+    // target smaller than the floor.
+    expect(LINE_HEIGHT).toBe(24)
+    expect(linesThatFit(3 * LINE_HEIGHT)).toBe(3)
+    expect(linesThatFit(3 * LINE_HEIGHT - 1)).toBe(2)
     expect(linesThatFit(LINE_HEIGHT)).toBe(1)
     expect(linesThatFit(LINE_HEIGHT - 1)).toBe(0)
   })
@@ -432,11 +454,17 @@ describe('the sums a day is folded by', () => {
     }
   })
 
-  it('draws an item exactly one line tall', () => {
-    // The sum is only exact while the item is the line it assumes.
-    render(<BigCalendarItem>Clip</BigCalendarItem>)
-    expect(screen.getByText('Clip').parentElement!.className).toMatch(/(^|\s)h-5(\s|$)/)
-    expect(LINE_HEIGHT).toBe(5 * 4)
+  it('draws an item exactly one line tall, and the lines of a day edge to edge', () => {
+    // The sum is only exact while the item is the line it assumes, and the
+    // lines stand with nothing between them.
+    const { container } = render(<Example />)
+    const line = within(day('2026-09-14')).getByRole('button', { name: 'Clip' })
+    expect(line.className).toMatch(/(^|\s)h-6(\s|$)/)
+    expect(LINE_HEIGHT).toBe(6 * 4)
+    const room = container.querySelector('[data-day="2026-09-14"] [data-day-lines]')!
+    expect(room.className).not.toMatch(/(^|\s)gap-/)
+    // The count is a line too.
+    expect(within(day('2026-09-14')).getByRole('button', { name: '3 more' }).className).toMatch(/(^|\s)h-6(\s|$)/)
   })
 
   it('finds the day an element is in', () => {

@@ -32,8 +32,8 @@ import { ScrollArea } from './scroll-area'
  *
  * What a day holds is the product's: `renderDay` returns its lines, one node
  * each - BigCalendarItem draws one - and the grid decides how many show. The
- * sum is exact rather than estimated, because a line is twenty pixels and two
- * are four apart: the grid measures one day's room and divides.
+ * sum is exact rather than estimated, because every line is twenty-four pixels and
+ * they stand edge to edge: the grid measures one day's room and divides.
  *
  * Only the weeks the month touches are drawn, four to six, and the days of the
  * neighbouring months in them are real days on a quieter ground - a release
@@ -59,12 +59,11 @@ import { ScrollArea } from './scroll-area'
  * would mean.
  */
 
-/** How tall a line of a day is, in pixels: BigCalendarItem's `h-5`. */
-export const LINE_HEIGHT = 20
-
-/** The gap between two lines, in pixels: the day's `gap-1`. With the line it
- * makes the pitch of twenty-four, the floor of a pointer target. */
-export const LINE_GAP = 4
+/** How tall a line of a day is, in pixels: BigCalendarItem's `h-6`. Lines
+ * stand edge to edge, so this is the pitch as well - the floor of a pointer
+ * target, with the chip drawn twenty pixels tall inside it. A product drawing
+ * its own line draws it this tall. */
+export const LINE_HEIGHT = 24
 
 /* What a day is assumed to hold before it has been measured - the first frame,
  * and every test, since jsdom lays nothing out. Three lines are what a week
@@ -74,7 +73,7 @@ const UNMEASURED_LINES = 3
 /** How many lines fit in `height` pixels of a day. */
 export function linesThatFit(height: number): number {
   if (!Number.isFinite(height) || height <= 0) return 0
-  return Math.floor((height + LINE_GAP) / (LINE_HEIGHT + LINE_GAP))
+  return Math.floor(height / LINE_HEIGHT)
 }
 
 /** What a day of `count` lines draws in `lines` of room: the first `shown`,
@@ -287,10 +286,17 @@ export function BigCalendar({
                   data-outside={outside ? '' : undefined}
                   data-drop-target={target ? '' : undefined}
                   aria-current={date === now ? 'date' : undefined}
-                  // The date and what the day holds. Named from its whole
-                  // content, every day would also say "Add a release on this
-                  // day", thirty-five times over.
-                  aria-labelledby={`${id}${date}n ${id}${date}l`}
+                  // Named by what it draws, in the order it draws it: the
+                  // number, the lines, and the hint while something is carried
+                  // over it. A name that opened with the whole date read
+                  // "Monday, 14 September 2026 Clip" under a face reading
+                  // "14 Clip" - not the words drawn, in their order, which is
+                  // what someone telling voice control what they see says
+                  // (WCAG 2.5.3). The whole date is the description. Named
+                  // from its content, every day would also say "Add a release
+                  // on this day", thirty-five times over.
+                  aria-labelledby={`${id}${date}d ${id}${date}l${target && dropHint != null ? ` ${id}${date}h` : ''}`}
+                  aria-describedby={`${id}${date}n`}
                   tabIndex={date === active ? 0 : -1}
                   onFocus={() => setCursor(date)}
                   onClick={onDaySelect && pressDay(date)}
@@ -312,6 +318,7 @@ export function BigCalendar({
 
                   <div className="flex h-5 shrink-0 items-center justify-between gap-1">
                     <span
+                      id={`${id}${date}d`}
                       aria-hidden
                       className={cn(
                         'rounded-xs px-1 font-mono text-2xs tabular-nums',
@@ -348,11 +355,13 @@ export function BigCalendar({
                       </button>
                     )}
                   </div>
-
+                  {/* A space between the number and the lines: text read off
+                    * the face would otherwise run them together, "14Clip". */}
+                  {' '}
                   <BigCalendarDayContext.Provider value={date === active}>
                     {isOpen ? (
                       <ScrollArea label={format.day.format(asDate(date))} orientation="vertical" className="flex-1">
-                        <div id={`${id}${date}l`} className="flex flex-col gap-1">
+                        <div id={`${id}${date}l`} className="flex flex-col">
                           {items}
                           <Fold onClick={() => { setOpen(null); moveTo(date) }}>{fewerLabel}</Fold>
                         </div>
@@ -362,7 +371,7 @@ export function BigCalendar({
                         // The room `lines` is measured from: the same in every day.
                         data-day-lines
                         id={`${id}${date}l`}
-                        className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden"
+                        className="flex min-h-0 flex-1 flex-col overflow-hidden"
                       >
                         {items.slice(0, fold.shown)}
                         {fold.more > 0 && (
@@ -376,7 +385,10 @@ export function BigCalendar({
                     * day does not grow, and the hint is only up while something
                     * is carried over it. */}
                   {target && dropHint != null && (
-                    <p className="pointer-events-none absolute inset-x-1 bottom-1 rounded-sm bg-raise px-1 py-0.5 text-2xs leading-tight text-dim shadow-lift">
+                    <p
+                      id={`${id}${date}h`}
+                      className="pointer-events-none absolute inset-x-1 bottom-1 rounded-sm bg-raise px-1 py-0.5 text-2xs leading-tight text-dim shadow-lift"
+                    >
                       {dropHint}
                     </p>
                   )}
@@ -390,7 +402,8 @@ export function BigCalendar({
   )
 }
 
-/** The line that folds a day or opens it: a line's height, so the sum holds. */
+/** The line that folds a day or opens it: a line's height, so the sum holds,
+ * and a target by its own size. */
 function Fold({ onClick, children }: { onClick: () => void; children: string }) {
   const inCursorDay = useContext(BigCalendarDayContext)
   return (
@@ -399,8 +412,8 @@ function Fold({ onClick, children }: { onClick: () => void; children: string }) 
       tabIndex={inCursorDay === false ? -1 : 0}
       onClick={onClick}
       className={cn(
-        'target-min h-5 shrink-0 self-start rounded-sm px-1 text-xs text-dim hover:text-text',
-        'focus-visible:outline-2 focus-visible:outline-accent',
+        'h-6 min-w-6 shrink-0 self-start rounded-sm px-1 text-xs text-dim hover:text-text',
+        'focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-accent',
       )}
     >
       {children}
