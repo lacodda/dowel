@@ -73,14 +73,23 @@ describe('the parser', () => {
 describe('the list the guide draws', () => {
   it('has every release whose commits broke something', () => {
     // From git rather than from the changelog: the changelog is what is read.
-    const tags = execFileSync('git', ['tag', '--list', 'v*', '--sort=v:refname'], { cwd: root, encoding: 'utf8' })
-      .split('\n')
-      .filter(Boolean)
-    const breaking = tags.filter((tag, index) => {
-      const range = index === 0 ? tag : `${tags[index - 1]}..${tag}`
-      const log = execFileSync('git', ['log', '--format=%s%n%b%x00', range], { cwd: root, encoding: 'utf8' })
-      return log.split('\0').some((commit) => /^\w+(\([^)]*\))?!:/.test(commit.trim()) || /^BREAKING CHANGE:/m.test(commit))
+    // One walk of the history, oldest first, rather than a `git log` per tag -
+    // forty processes took seven seconds on a Windows runner. A commit
+    // belongs to the first tag at or after it.
+    const log = execFileSync('git', ['log', '--reverse', '--decorate=short', '--format=%D%x01%s%n%b%x00', 'HEAD'], {
+      cwd: root,
+      encoding: 'utf8',
     })
+    const breaking: string[] = []
+    let broke = false
+    for (const entry of log.split('\0')) {
+      const [refs = '', message = ''] = entry.replace(/^\n/, '').split('\x01')
+      if (/^\w+(\([^)]*\))?!:/.test(message.trim()) || /^BREAKING CHANGE:/m.test(message)) broke = true
+      const tag = /tag: (v[\d.]+)/.exec(refs)?.[1]
+      if (tag === undefined) continue
+      if (broke) breaking.push(tag)
+      broke = false
+    }
     expect(breaking.length).toBeGreaterThanOrEqual(8)
     expect(releases.map((release) => `v${release.version}`).sort()).toEqual(expect.arrayContaining(breaking.sort()))
   })
