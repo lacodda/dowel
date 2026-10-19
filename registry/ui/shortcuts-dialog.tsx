@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type HTMLAttributes, type ReactNode } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, type HeadingLevel } from 'dowel-ui'
 import { Button } from './button'
 import { groupCommands, useCommand, useCommandList, type ListedCommand } from './commands'
 import { Dialog, DialogBody, DialogClose, DialogDescription, DialogHeader, DialogPopup, DialogTitle } from './dialog'
@@ -36,8 +36,9 @@ export const SHORTCUTS_COMMAND = 'shortcuts'
  * is a landmark, and a sheet of six headings would put six landmarks into the
  * list a screen reader jumps between - on a settings page, beside the page's
  * own. */
-function Group({ title, commands }: { title: string | undefined; commands: ListedCommand[] }) {
+function Group({ title, commands, level }: { title: string | undefined; commands: ListedCommand[]; level: HeadingLevel }) {
   const heading = useId()
+  const Heading = `h${level}` as const
   return (
     <div
       role="group"
@@ -45,9 +46,9 @@ function Group({ title, commands }: { title: string | undefined; commands: Liste
       className="mb-4 break-inside-avoid last:mb-0"
     >
       {title !== undefined && (
-        <h3 id={heading} className="caption pb-1">
+        <Heading id={heading} className="caption pb-1">
           {title}
-        </h3>
+        </Heading>
       )}
       <dl>
         {commands.map((command) => (
@@ -67,14 +68,20 @@ function Group({ title, commands }: { title: string | undefined; commands: Liste
   )
 }
 
+export interface ShortcutListProps extends HTMLAttributes<HTMLDivElement> {
+  /** Where the group headings stand in the outline: `3` by default - under
+   * the sheet's title, or a settings page's section. */
+  level?: HeadingLevel
+}
+
 /** The list on its own, for a settings page that shows the keys in place. A
  * command with no keys has nothing to show and is left out. */
-export function ShortcutList({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export function ShortcutList({ level = 3, className, ...props }: ShortcutListProps) {
   const groups = groupCommands(useCommandList().filter((command) => command.keys.length > 0))
   return (
     <div className={cn('gap-x-8 sm:columns-2', className)} {...props}>
       {groups.map(({ group, commands }) => (
-        <Group key={group ?? ''} title={group} commands={commands} />
+        <Group key={group ?? ''} title={group} commands={commands} level={level} />
       ))}
     </div>
   )

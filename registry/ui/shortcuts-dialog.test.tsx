@@ -209,6 +209,24 @@ describe('ShortcutList', () => {
     expect(rows()).toEqual(['Search=CtrlK', 'Close a dialog=Esc', 'Dashboard=G›D', 'Calendar=G›C'])
   })
 
+  it('puts its group headings at the level the page gives it', () => {
+    // Under a sheet's title they are `h3`; on a settings page that goes from
+    // its title straight to the list, `h2`.
+    const { unmount } = render(
+      <Declare commands={SHELL}>
+        <ShortcutList />
+      </Declare>,
+    )
+    expect(screen.getByRole('heading', { level: 3, name: 'Going places' })).toBeDefined()
+    unmount()
+    render(
+      <Declare commands={SHELL}>
+        <ShortcutList level={2} />
+      </Declare>,
+    )
+    expect(screen.getByRole('heading', { level: 2, name: 'Going places' })).toBeDefined()
+  })
+
   it('puts alternatives one under another', () => {
     // Side by side, `G S` and `Ctrl ,` read as one shortcut of four keys.
     render(

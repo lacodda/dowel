@@ -1,5 +1,5 @@
 import { Accordion as Base } from '@base-ui/react/accordion'
-import { cn } from 'dowel-ui'
+import { cn, type HeadingLevel } from 'dowel-ui'
 import { collapsibleTriggerClasses } from './collapsible'
 
 /*
@@ -21,7 +21,7 @@ import { collapsibleTriggerClasses } from './collapsible'
  * copied, because a header row and a lone trigger are the same control in two
  * places and two class lists drift.
  *
- * `AccordionTrigger` sits inside `AccordionHeader`, an `<h3>` - the pattern
+ * `AccordionTrigger` sits inside `AccordionHeader`, a heading - the pattern
  * the ARIA accordion spec asks for so a reader moving by heading lands on
  * every section title, open or shut. Skipping the heading and putting the
  * button straight in the item is the commonest hand-rolled accordion bug,
@@ -51,11 +51,19 @@ export const Accordion = Base.Root
 /** One section: a header with its trigger, and the panel it opens. */
 export const AccordionItem = Base.Item
 
-/** The `<h3>` a reader moving by heading lands on, open or shut. The trigger
+export interface AccordionHeaderProps extends Base.Header.Props {
+  /** Where the sections stand in the page's outline: `3` by default, under a
+   * screen's title and a section's. A page that opens straight onto the
+   * accordion says `2`. */
+  level?: HeadingLevel
+}
+
+/** The heading a reader moving by heading lands on, open or shut. The trigger
  * lives inside it, never beside it - a section title that exists only as a
  * button's accessible name is not a heading a reader can navigate to. */
-export function AccordionHeader({ className, ...props }: Base.Header.Props) {
-  return <Base.Header className={cn('text-inherit', className)} {...props} />
+export function AccordionHeader({ level = 3, render, className, ...props }: AccordionHeaderProps) {
+  const Heading = `h${level}` as const
+  return <Base.Header render={render ?? <Heading />} className={cn('text-inherit', className)} {...props} />
 }
 
 /** The button that opens and shuts its section's panel. The chevron rotates

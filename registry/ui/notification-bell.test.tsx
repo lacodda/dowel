@@ -68,6 +68,14 @@ describe('NotificationBell', () => {
     expect(screen.getByText('A release lost its slot.')).toBeDefined()
   })
 
+  it('puts the panel’s heading at the level the page gives it', async () => {
+    const { unmount } = render(<NotificationBell count={0} {...labels} open />)
+    expect(await screen.findByRole('heading', { level: 3, name: 'Recent' })).toBeDefined()
+    unmount()
+    render(<NotificationBell count={0} {...labels} open level={2} />)
+    expect(await screen.findByRole('heading', { level: 2, name: 'Recent' })).toBeDefined()
+  })
+
   it('says so when there is nothing to show', async () => {
     render(<NotificationBell count={0} {...labels} />)
     await userEvent.click(screen.getByRole('button', { name: 'Notifications' }))

@@ -61,7 +61,8 @@ container that also padded would double it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, the screen's `h1` |
+| `title` | `ReactNode` | | Required, the screen's `h1` unless `level` says otherwise |
+| `level` | `1`-`6` | `1` | `2` over the open item of a list beside its detail |
 | `description` | `ReactNode` | | One sentence under it |
 | `actions` | `ReactNode` | | Buttons acting on the whole screen |
 | `children` | `ReactNode` | | A trail, a status, a tab strip |

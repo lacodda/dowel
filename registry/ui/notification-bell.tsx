@@ -1,5 +1,5 @@
 import { Children, useId, useState, type ReactNode } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, type HeadingLevel } from 'dowel-ui'
 import { Button } from './button'
 import { Popover, PopoverPopup, PopoverTrigger } from './popover'
 
@@ -34,6 +34,8 @@ export interface NotificationBellProps {
   label: string
   /** The heading of the panel. */
   title: string
+  /** Where the panel's heading stands in the outline: `3` by default. */
+  level?: HeadingLevel
   /** Open, controlled. Left out, the bell manages itself. */
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -56,6 +58,7 @@ export function NotificationBell({
   count,
   label,
   title,
+  level = 3,
   open,
   onOpenChange,
   markAllLabel,
@@ -77,6 +80,7 @@ export function NotificationBell({
   const badge = count > 9 ? '9+' : count > 0 ? String(count) : undefined
   const labelId = useId()
   const badgeId = useId()
+  const Heading = `h${level}` as const
 
   return (
     <Popover open={isOpen} onOpenChange={setOpen}>
@@ -110,7 +114,7 @@ export function NotificationBell({
       </PopoverTrigger>
       <PopoverPopup align="end" arrow={false} size="lg" className="p-0">
         <header className="flex items-center gap-2 border-b border-line px-3 py-2">
-          <h3 className="text-sm font-semibold">{title}</h3>
+          <Heading className="text-sm font-semibold">{title}</Heading>
           {count > 0 && markAllLabel ? (
             <Button variant="ghost" size="sm" className="ml-auto" disabled={busy} onClick={onMarkAll}>
               {markAllLabel}

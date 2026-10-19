@@ -16,6 +16,12 @@
  */
 
 export { cn } from './cn.js'
+
+/** Where a heading stands in the page's outline. A primitive that draws a
+ * heading takes this as `level`, defaulting to where it usually stands: the
+ * outline is the page's, and a page that goes from its title straight to an
+ * accordion needs the accordion's headings one level down, not two. */
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 export { lineProducts, lineProduct, type LineProduct } from './line.js'
 export {
   documentLocale,

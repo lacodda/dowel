@@ -19,6 +19,11 @@ describe('PageHeader', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Catalogue' })).toBeDefined()
   })
 
+  it('stands one level down over the open item of a list', () => {
+    render(<PageHeader title="Harbour lights" level={2} />)
+    expect(screen.getByRole('heading', { level: 2, name: 'Harbour lights' })).toBeDefined()
+  })
+
   it('leaves the line out rather than drawing an empty one', () => {
     const { container } = render(<PageHeader title="Catalogue" />)
     expect(container.querySelector('p')).toBeNull()

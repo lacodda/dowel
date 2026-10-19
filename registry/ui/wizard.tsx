@@ -8,7 +8,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, type HeadingLevel } from 'dowel-ui'
 import { Button } from './button'
 import { Stepper, type StepStateLabels, type StepperStep } from './stepper'
 
@@ -94,6 +94,9 @@ export interface WizardProps extends Omit<HTMLAttributes<HTMLFormElement>, 'chil
   finishLabel: ReactNode
   /** Stepper above the content, or beside it. */
   orientation?: 'horizontal' | 'vertical'
+  /** Where a step's title stands in the page's outline: `2` by default,
+   * under the screen's title. */
+  level?: HeadingLevel
 }
 
 export function Wizard({
@@ -110,9 +113,11 @@ export function Wizard({
   nextLabel,
   finishLabel,
   orientation = 'horizontal',
+  level = 2,
   className,
   ...props
 }: WizardProps) {
+  const Heading = `h${level}` as const
   const [ownStep, setOwnStep] = useState(defaultStep ?? steps[0]?.id ?? '')
   const current = controlledStep ?? ownStep
   const currentIndex = Math.max(
@@ -314,7 +319,7 @@ export function Wizard({
               className="flex flex-col gap-4"
             >
               <div>
-                <h2
+                <Heading
                   id={headingId}
                   ref={shown ? heading : undefined}
                   // Focusable by script only: it is where the wizard puts the
@@ -323,7 +328,7 @@ export function Wizard({
                   className="rounded-xs text-base font-semibold text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {step.label}
-                </h2>
+                </Heading>
                 {step.description !== undefined && (
                   <p className="mt-1 text-sm text-dim">{step.description}</p>
                 )}

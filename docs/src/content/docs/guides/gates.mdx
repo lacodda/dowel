@@ -51,6 +51,18 @@ The few words that compile to nothing on purpose - `group` and `peer`, which
 name an element for other classes to look at - are listed with that reason,
 and a marker the set has stopped writing fails the list.
 
+## Headings stand where the page puts them
+
+Where a heading sits in the outline is the page's to say. A screen that goes
+from its title straight to an accordion needs the accordion's sections at `h2`,
+and a fixed `h3` skips a level for every reader moving by heading. So a
+primitive that draws a heading takes a `level` (`HeadingLevel` from `dowel-ui`),
+defaulting to where it usually stands, and the gate (`tests/headings.test.ts`)
+refuses a literal `<h1>`-`<h6>` in a primitive. Base UI draws headings too: an
+`Accordion.Header` must be given the element to draw, while a dialog's or a
+popover's title stays an `h2` - a window over the page starts an outline of its
+own. Blocks are screens and own their outline from its `h1` down.
+
 ## Motion
 
 The theme carries one rule for `prefers-reduced-motion`: every transition and

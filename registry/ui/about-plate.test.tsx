@@ -25,8 +25,13 @@ const plate = (extra: Partial<Parameters<typeof AboutPlate>[0]> = {}) => (
 describe('AboutPlate', () => {
   it('names the product as a heading, with its version', () => {
     render(plate())
-    expect(screen.getByRole('heading', { name: 'nitid' })).toBeDefined()
+    expect(screen.getByRole('heading', { level: 2, name: 'nitid' })).toBeDefined()
     expect(screen.getByText('v0.34.0').className).toContain('font-mono')
+  })
+
+  it('stands at the level the page gives it', () => {
+    render(plate({ level: 3 }))
+    expect(screen.getByRole('heading', { level: 3, name: 'nitid' })).toBeDefined()
   })
 
   it('draws the mark with its metaphor', () => {

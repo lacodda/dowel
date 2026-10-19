@@ -89,6 +89,11 @@ describe('SectionHeader', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Versions' })).toBeDefined()
   })
 
+  it('stands at the level the page gives it - a section inside a section', () => {
+    render(<SectionHeader title="Versions" level={3} />)
+    expect(screen.getByRole('heading', { level: 3, name: 'Versions' })).toBeDefined()
+  })
+
   it('takes a line and the actions belonging to this part', () => {
     render(
       <SectionHeader

@@ -63,6 +63,22 @@ function heading(): HTMLElement {
 }
 
 describe('Wizard', () => {
+  it('puts a step’s title at the level the page gives it', () => {
+    render(
+      <Wizard
+        steps={[{ id: 'review', label: 'Review', content: <p>Everything is ready.</p> }]}
+        stepperLabel="Setup steps"
+        stateLabels={labels}
+        backLabel="Back"
+        nextLabel="Next"
+        finishLabel="Create workspace"
+        onFinish={() => {}}
+        level={3}
+      />,
+    )
+    expect(screen.getByRole('heading', { level: 3, name: 'Review' })).toBeDefined()
+  })
+
   it('shows the first step, with Next and without Back', () => {
     render(<Workspace />)
     expect(heading().textContent).toBe('Name the workspace')

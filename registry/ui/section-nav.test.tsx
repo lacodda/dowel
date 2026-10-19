@@ -33,6 +33,14 @@ describe('SectionNav', () => {
     expect(screen.getByRole('navigation', { name: 'Settings' })).toBeDefined()
   })
 
+  it('puts its caption at the level the page gives it', () => {
+    const { unmount } = render(<SectionNav label="Settings" items={items} />)
+    expect(screen.getByRole('heading', { level: 2, name: 'Settings' })).toBeDefined()
+    unmount()
+    render(<SectionNav label="Settings" items={items} level={3} />)
+    expect(screen.getByRole('heading', { level: 3, name: 'Settings' })).toBeDefined()
+  })
+
   it('marks the active item as the current page', () => {
     render(<SectionNav label="Settings" items={items} activeId="data" />)
     expect(screen.getByRole('button', { name: 'Data' }).getAttribute('aria-current')).toBe('page')
@@ -112,8 +120,13 @@ describe('SectionNav', () => {
 describe('SectionHeading', () => {
   it('sets the title as a heading, with the hint under it', () => {
     render(<SectionHeading title="Data" description="Where it lives and how to take it away." />)
-    expect(screen.getByRole('heading', { name: 'Data' })).toBeDefined()
+    expect(screen.getByRole('heading', { level: 2, name: 'Data' })).toBeDefined()
     expect(screen.getByText('Where it lives and how to take it away.')).toBeDefined()
+  })
+
+  it('stands at the level the page gives it', () => {
+    render(<SectionHeading title="Data" level={3} />)
+    expect(screen.getByRole('heading', { level: 3, name: 'Data' })).toBeDefined()
   })
 
   it('draws no hint it was not given', () => {

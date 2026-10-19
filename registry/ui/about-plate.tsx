@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { cn } from 'dowel-ui'
+import { cn, type HeadingLevel } from 'dowel-ui'
 import type { MarkName } from 'dowel-ui/marks'
 import { LineMark, ProductMark } from './product-mark'
 
@@ -36,6 +36,9 @@ export interface AboutPlateProps {
   lineLabel: string
   /** Where those words lead, if anywhere. */
   lineHref?: string
+  /** Where the product's name stands in the page's outline: `2` by default,
+   * under the title of the screen or dialog the plate sits in. */
+  level?: HeadingLevel
   className?: string
 }
 
@@ -47,8 +50,10 @@ export function AboutPlate({
   children,
   lineLabel,
   lineHref,
+  level = 2,
   className,
 }: AboutPlateProps) {
+  const Heading = `h${level}` as const
   const line = (
     <>
       <LineMark size={16} />
@@ -60,7 +65,7 @@ export function AboutPlate({
     <section aria-label={name} className={cn('flex flex-col items-center gap-3 text-center', className)}>
       <ProductMark product={product} size={96} />
       <div className="flex flex-col items-center gap-1">
-        <h2 className="m-0 text-lg font-semibold text-text">{name}</h2>
+        <Heading className="m-0 text-lg font-semibold text-text">{name}</Heading>
         <span className="font-mono text-xs text-dim">{version}</span>
       </div>
       {tagline && <p className="m-0 max-w-prose text-sm text-dim">{tagline}</p>}

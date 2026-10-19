@@ -59,6 +59,23 @@ describe('Accordion', () => {
     expect(heading.querySelector('button')).not.toBeNull()
   })
 
+  it('puts its headings at the level the page gives it', () => {
+    // A page going from its title straight to the accordion needs the
+    // sections at `h2`; a fixed `h3` skips a level.
+    render(
+      <Accordion>
+        <AccordionItem value="shipping">
+          <AccordionHeader level={2}>
+            <AccordionTrigger>Shipping</AccordionTrigger>
+          </AccordionHeader>
+          <AccordionPanel>Orders ship within two business days.</AccordionPanel>
+        </AccordionItem>
+      </Accordion>,
+    )
+    const heading = screen.getByRole('heading', { level: 2, name: 'Shipping' })
+    expect(heading.querySelector('button')).not.toBeNull()
+  })
+
   it('reports each section through aria-expanded', async () => {
     const user = userEvent.setup()
     render(<Faq />)
