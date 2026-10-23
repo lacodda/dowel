@@ -82,7 +82,7 @@ jobs:
 
       - name: Compare the stand with its baselines
         if: ${{ inputs.update_snapshots != true }}
-        run: pnpm exec playwright test tests/visual/stand.spec.ts tests/visual/measured.spec.ts
+        run: pnpm exec playwright test tests/visual/stand.spec.ts tests/visual/measured.spec.ts tests/visual/modes.spec.ts
       - name: Keep the diffs, so a failure can be looked at
         if: ${{ failure() && inputs.update_snapshots != true }}
         uses: actions/upload-artifact@v7
@@ -93,7 +93,7 @@ jobs:
 
       - name: Record new baselines
         if: ${{ inputs.update_snapshots == true }}
-        run: pnpm exec playwright test tests/visual/stand.spec.ts --update-snapshots
+        run: pnpm exec playwright test tests/visual/stand.spec.ts tests/visual/modes.spec.ts --update-snapshots
       - name: Hand the baselines back to be committed
         if: ${{ inputs.update_snapshots == true }}
         uses: actions/upload-artifact@v7
