@@ -24,11 +24,24 @@ later, with nobody to tell.
 Five axe rules are off, and each is off because jsdom cannot evaluate it rather
 than because it was inconvenient:
 
-- `color-contrast` — jsdom resolves no colour. Contrast is computed against the
-  real tokens instead, for both themes and all nineteen accents.
+- `color-contrast` — jsdom resolves no colour. Contrast is measured on the
+  resolved palettes instead (below), and by axe in a browser over the stand.
 - `region`, `page-has-heading-one`, `landmark-one-main`, `html-has-lang` — a
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
+
+## Contrast, pair by pair
+
+`contrastPromises` names every ink, every ground it may stand on and the WCAG
+level it is held to. The palette gate resolves the theme in a browser for each
+of the line's nineteen products, in both themes and under more contrast, and
+measures every pair at every step of the type scale. A second gate reads the
+set's source: wherever one class list names an ink and a fill, the two have to
+be a promised pair - `faint` on a selected row fails there before any browser
+runs.
+
+The stand's axe run sees one accent, dowel's own; this is what sees the other
+eighteen. It is how cobalt's link at 3.7:1 was found, after a clean axe report.
 
 ## Every class compiles
 
@@ -139,6 +152,11 @@ Linux. Pinning one platform is what makes a baseline mean something.
 
 The accent is left at dowel's own amber. Colour is checked numerically for
 every accent of the line; what a picture catches is shape.
+
+A few sections are photographed in the theme's other modes too: printed from a
+dark screen, which has to come out as dark ink on white, and under more
+contrast in both themes. Every frame primitive and block is printed as well,
+and fails if any box in it still cuts off what it holds.
 
 Those pictures go further than the gate. A release note shows the stand's
 picture of everything the release added or changed the look of, linked at the

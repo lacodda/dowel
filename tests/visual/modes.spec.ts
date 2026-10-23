@@ -36,15 +36,25 @@ test.describe('on paper', () => {
   for (const id of PRINTED) {
     test(`${id} prints dark ink on white from a dark screen`, async ({ page }) => {
       const section = await open(page, id, 'dark')
+      const ground = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor)
+      const screen = await ground()
       await page.emulateMedia({ media: 'print' })
-      // The paper's own white, and fills told to print - read from what the
-      // page computed rather than from the stylesheet, which the build has
-      // minified.
-      const paper = await page.evaluate(() => ({
-        ground: getComputedStyle(document.body).backgroundColor,
-        adjust: getComputedStyle(document.documentElement).getPropertyValue('print-color-adjust'),
-      }))
-      expect(paper.ground).toBe('rgb(255, 255, 255)')
+      // The paper's ground is the light theme's raised surface, white, and not
+      // the dark screen's; fills are told to print. Read from what the page
+      // computed rather than from the stylesheet, which the build minified.
+      const paper = await page.evaluate(() => {
+        const probe = document.body.appendChild(document.createElement('i'))
+        probe.style.color = 'var(--raise)'
+        const raise = getComputedStyle(probe).color
+        probe.remove()
+        return {
+          ground: getComputedStyle(document.body).backgroundColor,
+          raise,
+          adjust: getComputedStyle(document.documentElement).getPropertyValue('print-color-adjust'),
+        }
+      })
+      expect(paper.ground).not.toBe(screen)
+      expect(paper.ground).toBe(paper.raise)
       expect(paper.adjust).toBe('exact')
       await expect(section).toHaveScreenshot(`${id}-print.png`)
     })

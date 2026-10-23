@@ -32,6 +32,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { KNOWN, PAGE_RULES, REPORT_DIR, STANDARD } from './accessibility-report.ts'
 import { breakingChanges, breakingChangesMarkdown } from './breaking-changes.mjs'
+import { promiseTable } from './contrast-promises.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = resolve(here, '..')
@@ -133,6 +134,10 @@ function expand(body, frontmatter) {
     // `<AccessibilityReport>`: the whole report, as the page draws it - the
     // figures, what is owed and why, the rules left off, every item.
     out = out.replace(/<AccessibilityReport\s*\/>/g, () => accessibilityReport())
+
+    // `<ContrastPromises>`: the pairs the theme promises in a mode, as the
+    // page's table, from the same grouping.
+    out = out.replace(/<ContrastPromises\s+mode="(\w+)"\s*\/>/g, (_, mode) => promiseTable(mode))
 
     // `<BreakingChanges>`: every break the changelog records, read by the
     // same parser the page uses.

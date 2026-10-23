@@ -13,3 +13,4 @@ Technical decisions that shape dowel, in the order they were made. Format: Conte
 | [0007](0007-machine-readable-docs.md) | The documentation is generated for machines from the same source as for people | accepted |
 | [0008](0008-one-list-of-commands.md) | Keys are written once, in one notation, into one list per window | accepted |
 | [0009](0009-a-command-can-come-before-the-editor.md) | A command can take its key before the editor, and be offered though its key is local | accepted |
+| [0010](0010-contrast-is-a-promise-per-pair.md) | Contrast is a promise per pair, in two modes, and paper is the light theme | accepted |

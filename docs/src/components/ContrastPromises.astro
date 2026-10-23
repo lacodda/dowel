@@ -1,0 +1,55 @@
+---
+/*
+ * The pairs the theme promises, drawn from the package's own list through
+ * `tools/contrast-promises.ts`, which the Markdown twin reads too.
+ *
+ * Not typed here: `contrastPromises` is what the palette gate measures for
+ * every product of the line, so the table and the gate cannot disagree about
+ * what was promised. Grouped by ink and level, with the grounds an ink is
+ * held on listed together, because that is how a reader asks - "where may I
+ * set `faint`?".
+ */
+import type { ContrastMode } from '../../../packages/dowel/src/contrast'
+import { promiseRows } from '../../../tools/contrast-promises'
+
+interface Props {
+  mode: ContrastMode
+}
+
+const { mode } = Astro.props
+const rows = promiseRows(mode)
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>Ink</th>
+      <th>On</th>
+      <th>Held to</th>
+      <th>For</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((row) => (
+        <tr>
+          <td>
+            <code>{row.ink}</code>
+          </td>
+          <td>
+            {row.grounds.map((ground, at) => (
+              <>
+                {at > 0 && ', '}
+                <code>{ground}</code>
+              </>
+            ))}
+          </td>
+          <td>
+            {row.floor}:1 ({row.held})
+          </td>
+          <td>{row.role}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
