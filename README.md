@@ -180,7 +180,10 @@ in daily use across two products of the line, with four blocks - whole screens
 made of them - and a demo built from those. Every component installs from a
 versioned registry and passes its own gate - axe, the keyboard, a dependency
 budget, a scale that refuses a length nobody argued for, a floor under every
-pointer target, and a picture in both themes - before it ships.
+pointer target, and a picture in both themes - before it ships. Every ink is
+held to its contrast floor on every ground it may stand on, for every product,
+in both themes and under more contrast, and a screen prints as dark ink on
+white whatever theme it is in.
 
 Released versions and what landed in each: [CHANGELOG](https://github.com/lacodda/dowel/blob/main/CHANGELOG.md).
 
@@ -190,7 +193,7 @@ Released versions and what landed in each: [CHANGELOG](https://github.com/lacodd
 - [Getting started](https://lacodda.github.io/dowel/getting-started/), [the lint rules](https://lacodda.github.io/dowel/guides/linting/) and [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/)
 - [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration/) - the four commands and what they refuse to do
 - [Components](https://lacodda.github.io/dowel/components/button/), and [blocks](https://lacodda.github.io/dowel/blocks/list-detail-screen/) with [the demo](https://lacodda.github.io/dowel/demo/) built from them
-- [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/)
+- [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/); [contrast](https://lacodda.github.io/dowel/concepts/contrast/) pair by pair, and [printing](https://lacodda.github.io/dowel/guides/printing/)
 - [The vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary/) this system uses for its own parts, and [the mistakes](https://lacodda.github.io/dowel/concepts/anti-patterns/) that actually get made against it
 
 ## For a machine
