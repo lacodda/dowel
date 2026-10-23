@@ -108,15 +108,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".gap-4 > .min-w-16.gap-1.text-faint:nth-child(1)",
-          ".gap-4 > .min-w-16.gap-1.text-faint:nth-child(2)"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -137,14 +129,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".gap-4 > .min-w-16.gap-1.text-faint:nth-child(1)",
-          ".gap-4 > .min-w-16.gap-1.text-faint:nth-child(2)"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

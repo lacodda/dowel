@@ -115,15 +115,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(6) > .items-end.rounded-lg.bg-raise > .bg-bad-soft.text-bad.py-0\\.5",
-          ".mb-4:nth-child(7) > .items-end.rounded-lg.bg-raise > .bg-bad-soft.text-bad.py-0\\.5"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -145,18 +137,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(6) > .items-end.rounded-lg.bg-raise > .bg-good-soft.text-good.py-0\\.5",
-          ".bg-warn-soft",
-          ".mb-4:nth-child(6) > .items-end.rounded-lg.bg-raise > .bg-bad-soft.text-bad.py-0\\.5",
-          ".bg-info-soft",
-          ".mb-4:nth-child(7) > .items-end.rounded-lg.bg-raise > .bg-good-soft.text-good.py-0\\.5",
-          ".mb-4:nth-child(7) > .items-end.rounded-lg.bg-raise > .bg-bad-soft.text-bad.py-0\\.5"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

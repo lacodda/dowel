@@ -47,16 +47,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".px-3.py-2[data-row=\"true\"]:nth-child(1) > .text-faint.text-xs",
-          ".px-3.py-2[data-row=\"true\"]:nth-child(2) > .text-faint.text-xs",
-          ".px-3.py-2[data-row=\"true\"]:nth-child(3) > .text-faint.text-xs"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -68,15 +59,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".px-3.py-2[data-row=\"true\"]:nth-child(1) > .text-faint.text-xs",
-          ".px-3.py-2[data-row=\"true\"]:nth-child(2) > .text-faint.text-xs",
-          ".px-3.py-2[data-row=\"true\"]:nth-child(3) > .text-faint.text-xs"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

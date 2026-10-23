@@ -134,20 +134,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".max-h-96 > .bg-accent-soft.cursor-default[aria-level=\"1\"] > .text-faint:nth-child(2)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(8) > .text-faint:nth-child(4)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(9) > .text-faint:nth-child(4)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(12) > .text-faint:nth-child(4)",
-          "div[aria-label=\"Quoted and unquoted\"] > .bg-accent-soft.cursor-default[aria-level=\"1\"] > .text-faint:nth-child(2)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(2) > .text-faint:nth-child(4)",
-          ".bg-accent-soft.cursor-default[aria-level=\"1\"] > .text-syntax-comment"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -174,19 +161,6 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".max-h-96 > .bg-accent-soft.cursor-default[aria-level=\"1\"] > .text-faint:nth-child(2)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(8) > .text-faint:nth-child(4)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(9) > .text-faint:nth-child(4)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(12) > .text-faint:nth-child(4)",
-          "div[aria-label=\"Quoted and unquoted\"] > .bg-accent-soft.cursor-default[aria-level=\"1\"] > .text-faint:nth-child(2)",
-          ".cursor-default.py-px[aria-level=\"2\"]:nth-child(2) > .text-faint:nth-child(4)",
-          ".bg-accent-soft.cursor-default[aria-level=\"1\"] > .text-syntax-comment"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

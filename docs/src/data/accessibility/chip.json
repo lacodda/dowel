@@ -122,16 +122,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".items-end.rounded-lg.bg-raise > .pr-2\\.5.inline-flex.gap-1 > .font-normal.tabular-nums.text-faint",
-          ".bg-bad-soft",
-          ".cursor-pointer.data-\\[pressed\\]\\:border-transparent.data-\\[pressed\\]\\:bg-accent-soft:nth-child(3) > .font-normal.tabular-nums.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -153,21 +144,7 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".items-end.rounded-lg.bg-raise > .pr-2\\.5.inline-flex.gap-1 > .font-normal.tabular-nums.text-faint",
-          ".bg-good-soft",
-          ".bg-warn-soft",
-          ".bg-bad-soft",
-          ".bg-info-soft",
-          ".cursor-pointer.data-\\[pressed\\]\\:border-transparent.data-\\[pressed\\]\\:bg-accent-soft:nth-child(3) > .font-normal.tabular-nums.text-faint"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   }
 }

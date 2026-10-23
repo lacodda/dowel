@@ -122,15 +122,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".\\[--diff-max\\:28rem\\].\\@container.flex-col > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-bad-soft.text-bad.flex > .whitespace-pre-wrap.break-words.min-w-0",
-          ".\\[--diff-max\\:16rem\\] > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-bad-soft.text-bad.flex > .whitespace-pre-wrap.break-words.min-w-0"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -155,18 +147,6 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".\\[--diff-max\\:28rem\\].\\@container.flex-col > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-bad-soft.text-bad.flex > .whitespace-pre-wrap.break-words.min-w-0",
-          ".\\[--diff-max\\:28rem\\].\\@container.flex-col > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-good-soft.text-good.border-t:nth-child(4) > .whitespace-pre-wrap.break-words.min-w-0",
-          ".\\[--diff-max\\:28rem\\].\\@container.flex-col > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-good-soft.text-good.border-t:nth-child(6) > .whitespace-pre-wrap.break-words.min-w-0",
-          ".\\[--diff-max\\:16rem\\] > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-bad-soft.text-bad.flex > .whitespace-pre-wrap.break-words.min-w-0",
-          ".\\[--diff-max\\:16rem\\] > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-good-soft.text-good.border-t:nth-child(4) > .whitespace-pre-wrap.break-words.min-w-0",
-          ".\\[--diff-max\\:16rem\\] > .overflow-hidden.rounded-lg.border > .max-h-\\[var\\(--diff-max\\)\\].overflow-auto.leading-relaxed > .grid.grid-cols-1.\\@3xl\\:grid-cols-2 > .bg-good-soft.text-good.border-t:nth-child(6) > .whitespace-pre-wrap.break-words.min-w-0"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

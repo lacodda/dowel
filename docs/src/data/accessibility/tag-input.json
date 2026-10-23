@@ -108,14 +108,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".tabular-nums"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -136,13 +129,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".tabular-nums"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

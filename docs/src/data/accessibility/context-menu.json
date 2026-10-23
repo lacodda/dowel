@@ -33,14 +33,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".grid"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -50,13 +43,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".grid"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

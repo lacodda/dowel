@@ -145,22 +145,8 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "div[aria-label=\"A day\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(2) > div[role=\"gridcell\"]:nth-child(1) > .text-faint.hover\\:bg-soft[aria-label=\"31 August 2026\"]",
-          "div[aria-label=\"A day\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(6) > .text-faint.hover\\:bg-soft[aria-label=\"10 October 2026\"]",
-          "div[aria-label=\"A day\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(7) > .text-faint.hover\\:bg-soft[aria-label=\"11 October 2026\"]",
-          "div[aria-label=\"A range\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(2) > div[role=\"gridcell\"]:nth-child(1) > .text-faint.hover\\:bg-soft[aria-label=\"31 August 2026\"]",
-          "div[aria-label=\"A range\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(6) > .text-faint.hover\\:bg-soft[aria-label=\"10 October 2026\"]",
-          "div[aria-label=\"A range\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(7) > .text-faint.hover\\:bg-soft[aria-label=\"11 October 2026\"]"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   },
   "light": {
     "passes": [
@@ -186,21 +172,7 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "div[aria-label=\"A day\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(2) > div[role=\"gridcell\"]:nth-child(1) > .text-faint.hover\\:bg-soft[aria-label=\"31 August 2026\"]",
-          "div[aria-label=\"A day\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(6) > .text-faint.hover\\:bg-soft[aria-label=\"10 October 2026\"]",
-          "div[aria-label=\"A day\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(7) > .text-faint.hover\\:bg-soft[aria-label=\"11 October 2026\"]",
-          "div[aria-label=\"A range\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(2) > div[role=\"gridcell\"]:nth-child(1) > .text-faint.hover\\:bg-soft[aria-label=\"31 August 2026\"]",
-          "div[aria-label=\"A range\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(6) > .text-faint.hover\\:bg-soft[aria-label=\"10 October 2026\"]",
-          "div[aria-label=\"A range\"] > .grid.grid-cols-7[role=\"row\"]:nth-child(7) > div[role=\"gridcell\"]:nth-child(7) > .text-faint.hover\\:bg-soft[aria-label=\"11 October 2026\"]"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   }
 }

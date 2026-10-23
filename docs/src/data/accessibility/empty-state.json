@@ -54,16 +54,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".w-72.bg-raise.rounded-lg:nth-child(1) > .items-start.flex-col.text-left > div > .mt-0\\.5.text-faint",
-          ".w-72.bg-raise.rounded-lg:nth-child(2) > .items-start.flex-col.text-left > div > .mt-0\\.5.text-faint",
-          ".w-72.bg-raise.rounded-lg:nth-child(3) > .items-start.flex-col.text-left > div > .mt-0\\.5.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -76,15 +67,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".w-72.bg-raise.rounded-lg:nth-child(1) > .items-start.flex-col.text-left > div > .mt-0\\.5.text-faint",
-          ".w-72.bg-raise.rounded-lg:nth-child(2) > .items-start.flex-col.text-left > div > .mt-0\\.5.text-faint",
-          ".w-72.bg-raise.rounded-lg:nth-child(3) > .items-start.flex-col.text-left > div > .mt-0\\.5.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

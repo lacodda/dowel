@@ -89,14 +89,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mt-0\\.5"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -114,13 +107,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mt-0\\.5"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

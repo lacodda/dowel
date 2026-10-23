@@ -33,17 +33,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".items-baseline.font-mono.gap-3:nth-child(1) > .w-12.text-faint",
-          ".items-baseline.font-mono.gap-3:nth-child(2) > .w-12.text-faint",
-          ".items-baseline.font-mono.gap-3:nth-child(3) > .w-12.text-faint",
-          ".items-baseline.font-mono.gap-3:nth-child(4) > .w-12.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -53,16 +43,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".items-baseline.font-mono.gap-3:nth-child(1) > .w-12.text-faint",
-          ".items-baseline.font-mono.gap-3:nth-child(2) > .w-12.text-faint",
-          ".items-baseline.font-mono.gap-3:nth-child(3) > .w-12.text-faint",
-          ".items-baseline.font-mono.gap-3:nth-child(4) > .w-12.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

@@ -33,15 +33,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -51,14 +43,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .text-faint"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

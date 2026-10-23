@@ -122,16 +122,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".px-3.flex:nth-child(10) > .mr-3.select-none.text-right",
-          ".px-3.flex:nth-child(11) > .mr-3.select-none.text-right",
-          ".px-3.flex:nth-child(12) > .mr-3.select-none.text-right"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -153,18 +144,7 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".px-3.flex:nth-child(10) > .mr-3.select-none.text-right",
-          ".px-3.flex:nth-child(11) > .mr-3.select-none.text-right",
-          ".px-3.flex:nth-child(12) > .mr-3.select-none.text-right"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   }
 }

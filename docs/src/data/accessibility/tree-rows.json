@@ -40,28 +40,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(5) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(6) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(7) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(8) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(9) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(10) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(11) > .text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -72,27 +51,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(3) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .flex-col.gap-1.font-mono > .items-baseline.gap-2.flex:nth-child(4) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(5) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(6) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(7) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(8) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(9) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(10) > .text-faint",
-          ".items-baseline.gap-2.flex:nth-child(11) > .text-faint"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

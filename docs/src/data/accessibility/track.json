@@ -108,26 +108,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".text-faint.tabular-nums.font-mono",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(1)",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(2)",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(3)",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(4)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(1)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(2)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(3)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(4)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(1)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(2)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(3)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(4)"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -148,25 +129,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".text-faint.tabular-nums.font-mono",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(1)",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(2)",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(3)",
-          ".gap-1.flex-col.flex:nth-child(1) > .text-faint.justify-between.text-2xs > span:nth-child(4)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(1)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(2)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(3)",
-          ".gap-1.flex-col.flex:nth-child(2) > .text-faint.justify-between.text-2xs > span:nth-child(4)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(1)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(2)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(3)",
-          ".gap-1.flex-col.flex:nth-child(3) > .text-faint.justify-between.text-2xs > span:nth-child(4)"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

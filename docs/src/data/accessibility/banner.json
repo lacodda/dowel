@@ -73,15 +73,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".inline-flex",
-          ".border-bad\\/30 > .min-w-0.flex-1"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -97,14 +89,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".border-warn\\/30 > .min-w-0.flex-1",
-          ".border-bad\\/30 > .min-w-0.flex-1"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

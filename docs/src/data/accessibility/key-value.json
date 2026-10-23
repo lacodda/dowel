@@ -59,13 +59,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".inline-flex"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

@@ -27,15 +27,11 @@ whether an error says what to do about it. axe marks some of these for a
 person - they are listed with each item - and the rest are what reading a
 screen with a screen reader is for.
 
-Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 87 items with nothing owed.
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 123 items with nothing owed.
 
 ## Not yet passed
 
-### `color-contrast` - 36 items
-
-Text in `faint`, and text on the soft status fills, at the small type steps - 10 to 12px - measures below the 4.5:1 AA asks, in one theme or both. The tokens are held to AA at body size, not at every step they are set in; the work that holds them per step moves these, as it already moved the caption, the notes of a list row and the empty face of the date pickers. Some of it is the stand’s own notes beside the examples.
-
-activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-chart, big-calendar, calendar, chip, code-block, context-menu, diff-lines, diff-view, empty-state, field-draft, json-rows, json-viewer, key-value, line-chart, line-scale, number-format, query-state, relative-time, save-state, skeleton-of, splash, status-dot, stepper, tag-input, tier, timeline, track, track-segments, tree-rows, wizard
+Nothing: every item passes every rule that applied to it, in both themes.
 
 ## Rules about a page, off on the stand
 
@@ -51,24 +47,24 @@ activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-cha
 | about-plate | 10 | `color-contrast` |  |
 | accordion | 19 |  |  |
 | action-bar | 17 |  |  |
-| activity-heatmap | 15 | `color-contrast` | `color-contrast` |
-| activity-legend | 3 |  | `color-contrast` |
-| activity-weeks | 3 |  | `color-contrast` |
-| alert | 9 |  | `color-contrast` |
+| activity-heatmap | 16 |  |  |
+| activity-legend | 4 |  |  |
+| activity-weeks | 4 |  |  |
+| alert | 10 |  |  |
 | app-shell | 17 |  |  |
 | avatar | 16 |  |  |
-| badge | 3 |  | `color-contrast` |
-| banner | 9 |  | `color-contrast` |
-| bar-chart | 15 | `color-contrast` | `color-contrast` |
+| badge | 4 |  |  |
+| banner | 10 |  |  |
+| bar-chart | 16 |  |  |
 | big-calendar-item | 8 |  |  |
-| big-calendar | 22 | `color-contrast` | `color-contrast` |
+| big-calendar | 23 |  |  |
 | breadcrumbs | 15 |  |  |
 | button | 16 |  |  |
 | calendar-math | 4 |  |  |
-| calendar | 20 | `color-contrast` | `color-contrast` |
+| calendar | 21 |  |  |
 | checkbox | 18 | `aria-toggle-field-name` |  |
-| chip | 16 | `color-contrast` | `color-contrast` |
-| code-block | 16 | `color-contrast` | `color-contrast` |
+| chip | 17 | `color-contrast` |  |
+| code-block | 17 | `color-contrast` |  |
 | collapsible | 15 |  |  |
 | color-field | 19 |  |  |
 | column-resize-handle | 19 |  |  |
@@ -76,21 +72,21 @@ activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-cha
 | command-palette | 7 |  |  |
 | commands | 21 |  |  |
 | confirm-dialog | 12 |  |  |
-| context-menu | 3 |  | `color-contrast` |
+| context-menu | 4 |  |  |
 | copy-button | 16 |  |  |
 | copyable | 18 |  |  |
 | date-picker | 15 |  |  |
 | date-range-picker | 15 |  |  |
 | dialog | 12 |  |  |
-| diff-lines | 3 |  | `color-contrast` |
-| diff-view | 16 | `color-contrast` | `color-contrast` |
+| diff-lines | 4 |  |  |
+| diff-view | 17 | `color-contrast` |  |
 | divider | 16 |  |  |
 | drawer | 12 |  |  |
 | duration-field | 13 |  |  |
 | empty-dashboard-screen | 26 |  |  |
-| empty-state | 6 |  | `color-contrast` |
+| empty-state | 7 |  |  |
 | error-boundary | 6 |  |  |
-| field-draft | 13 |  | `color-contrast` |
+| field-draft | 14 |  |  |
 | field | 24 |  |  |
 | file-drop | 13 |  |  |
 | filter-popover | 18 |  |  |
@@ -98,13 +94,13 @@ activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-cha
 | image | 14 |  |  |
 | inline-field | 13 |  |  |
 | input | 12 |  |  |
-| json-rows | 3 | `color-contrast` | `color-contrast` |
-| json-viewer | 18 | `color-contrast` | `color-contrast` |
+| json-rows | 4 |  |  |
+| json-viewer | 19 | `color-contrast` |  |
 | kbd | 5 | `color-contrast` |  |
-| key-value | 5 |  | `color-contrast` |
+| key-value | 6 |  |  |
 | layer | 12 |  |  |
-| line-chart | 16 |  | `color-contrast` |
-| line-scale | 3 |  | `color-contrast` |
+| line-chart | 17 |  |  |
+| line-scale | 4 |  |  |
 | list-detail-screen | 26 |  |  |
 | list-row | 19 |  |  |
 | login-screen | 23 | `color-contrast` |  |
@@ -113,7 +109,7 @@ activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-cha
 | nav-rail | 12 |  |  |
 | notification-bell | 15 |  |  |
 | number-field | 19 |  |  |
-| number-format | 3 |  | `color-contrast` |
+| number-format | 4 |  |  |
 | page-header | 16 |  |  |
 | page-size | 16 |  |  |
 | pagination | 12 | `label-content-name-mismatch` |  |
@@ -125,12 +121,12 @@ activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-cha
 | product-switcher | 13 | `color-contrast` |  |
 | progress | 16 |  |  |
 | prose | 14 |  |  |
-| query-state | 11 |  | `color-contrast` |
+| query-state | 12 |  |  |
 | radio-group | 18 | `aria-toggle-field-name` `duplicate-id-aria` |  |
 | rating-scale | 17 |  |  |
-| relative-time | 3 |  | `color-contrast` |
+| relative-time | 4 |  |  |
 | reorderable-list | 6 |  |  |
-| save-state | 14 |  | `color-contrast` |
+| save-state | 15 |  |  |
 | schema-check | 4 |  |  |
 | schema-fields | 24 |  |  |
 | schema-shape | 8 |  |  |
@@ -142,32 +138,32 @@ activity-heatmap, activity-legend, activity-weeks, alert, badge, banner, bar-cha
 | settings-screen | 21 |  |  |
 | shortcut | 13 | `color-contrast` |  |
 | shortcuts-dialog | 6 |  |  |
-| skeleton-of | 5 |  | `color-contrast` |
+| skeleton-of | 6 |  |  |
 | skeleton | 5 |  |  |
 | slider | 17 |  |  |
 | sparkline | 15 |  |  |
 | spinner | 16 |  |  |
-| splash | 13 | `color-contrast` | `color-contrast` |
+| splash | 14 | `color-contrast` |  |
 | splitter | 19 |  |  |
 | stat-tile | 7 |  |  |
-| status-dot | 15 |  | `color-contrast` |
-| stepper | 17 | `color-contrast` | `color-contrast` |
+| status-dot | 16 |  |  |
+| stepper | 18 | `color-contrast` |  |
 | switch | 18 |  |  |
 | table-sort | 4 |  |  |
 | table | 23 | `color-contrast` |  |
 | tabs | 20 |  |  |
-| tag-input | 14 |  | `color-contrast` |
+| tag-input | 15 |  |  |
 | textarea | 7 |  |  |
-| tier | 18 | `color-contrast` | `color-contrast` |
+| tier | 19 |  |  |
 | time-field | 13 |  |  |
-| timeline | 17 |  | `color-contrast` |
+| timeline | 18 |  |  |
 | toast | 6 |  |  |
 | tooltip | 12 |  |  |
-| track-segments | 3 |  | `color-contrast` |
-| track | 14 |  | `color-contrast` |
-| tree-rows | 4 |  | `color-contrast` |
+| track-segments | 4 |  |  |
+| track | 15 |  |  |
+| tree-rows | 5 |  |  |
 | tree-view | 20 | `color-contrast` `duplicate-id-aria` |  |
 | truncate | 5 |  |  |
 | virtual-list | 18 | `aria-required-children` `color-contrast` |  |
 | window-frame | 25 | `color-contrast` |  |
-| wizard | 18 |  | `color-contrast` |
+| wizard | 19 |  |  |

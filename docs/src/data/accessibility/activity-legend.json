@@ -33,23 +33,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(1) > span:nth-child(1)",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(1) > span:nth-child(7)",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(1) > .ml-1",
-          ".gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(2)",
-          ".gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(3)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(1)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(7)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > .ml-1",
-          ".flex-col > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(1)",
-          ".flex-col > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(7)"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -59,22 +43,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(1) > span:nth-child(1)",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(1) > span:nth-child(7)",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(1) > .ml-1",
-          ".gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(2)",
-          ".gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex:nth-child(3)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(1)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(7)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .bg-raise.rounded-lg.p-4 > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > .ml-1",
-          ".flex-col > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(1)",
-          ".flex-col > .gap-x-5.gap-y-2.text-faint > .gap-1\\.5.items-center.flex > span:nth-child(7)"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

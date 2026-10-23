@@ -103,16 +103,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".h-80 > .inset-0.flex-col.justify-center > .mt-1\\.5.font-mono.text-faint",
-          "p:nth-child(8)",
-          ".h-64 > .inset-0.flex-col.justify-center > .mt-1\\.5.font-mono.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -134,15 +125,6 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".h-80 > .inset-0.flex-col.justify-center > .mt-1\\.5.font-mono.text-faint",
-          "p:nth-child(8)",
-          ".h-64 > .inset-0.flex-col.justify-center > .mt-1\\.5.font-mono.text-faint"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

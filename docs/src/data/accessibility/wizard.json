@@ -134,19 +134,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".duration-\\(--duration-quick\\).hover\\:bg-soft[aria-current=\"step\"] > .flex-col.min-w-0.flex > .\\@xl\\:truncate.sr-only.\\@xl\\:not-sr-only",
-          ".flex-1.gap-2.min-w-0:nth-child(2) > .text-left.gap-2.min-w-0 > .sr-only.\\@xl\\:not-sr-only.flex-col > .\\@xl\\:truncate.sr-only.\\@xl\\:not-sr-only",
-          ".shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .sr-only.\\@xl\\:not-sr-only.flex-col > .\\@xl\\:truncate.sr-only.\\@xl\\:not-sr-only",
-          ".pb-4.relative:nth-child(1) > .duration-\\(--duration-quick\\).hover\\:bg-soft[aria-current=\"step\"] > .flex-col.min-w-0.flex > .text-faint.text-xs",
-          ".pb-4.relative:nth-child(2) > .items-start.text-left.gap-2 > .flex-col.min-w-0.flex > .text-faint.text-xs",
-          ".relative:nth-child(3) > .items-start.text-left.gap-2 > .flex-col.min-w-0.flex > .text-faint.text-xs"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -171,18 +159,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".duration-\\(--duration-quick\\).hover\\:bg-soft[aria-current=\"step\"] > .flex-col.min-w-0.flex > .\\@xl\\:truncate.sr-only.\\@xl\\:not-sr-only",
-          ".flex-1.gap-2.min-w-0:nth-child(2) > .text-left.gap-2.min-w-0 > .sr-only.\\@xl\\:not-sr-only.flex-col > .\\@xl\\:truncate.sr-only.\\@xl\\:not-sr-only",
-          ".shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .sr-only.\\@xl\\:not-sr-only.flex-col > .\\@xl\\:truncate.sr-only.\\@xl\\:not-sr-only",
-          ".pb-4.relative:nth-child(1) > .duration-\\(--duration-quick\\).hover\\:bg-soft[aria-current=\"step\"] > .flex-col.min-w-0.flex > .text-faint.text-xs",
-          ".pb-4.relative:nth-child(2) > .items-start.text-left.gap-2 > .flex-col.min-w-0.flex > .text-faint.text-xs",
-          ".relative:nth-child(3) > .items-start.text-left.gap-2 > .flex-col.min-w-0.flex > .text-faint.text-xs"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

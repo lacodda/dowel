@@ -131,25 +131,7 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .flex-1.gap-2.min-w-0:nth-child(1) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".flex-1.gap-2.min-w-0:nth-child(2) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink.flex-1.gap-2 > .text-left.gap-2[aria-current=\"step\"] > .flex-col.min-w-0.flex > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .flex-1.gap-2.min-w-0:nth-child(1) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink.flex-1.gap-2 > .text-left.gap-2[aria-current=\"step\"] > .flex-col.min-w-0.flex > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .flex-1.gap-2.min-w-0:nth-child(3) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".cursor-pointer.duration-\\(--duration-quick\\).hover\\:bg-soft > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".shrink.flex-1.gap-2 > .cursor-pointer.duration-\\(--duration-quick\\).hover\\:bg-soft > .flex-col.min-w-0.flex > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          "nav > ol > .flex-1.gap-2.min-w-0:nth-child(3) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          "nav > ol > .shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -175,24 +157,6 @@
     "incomplete": [
       "color-contrast"
     ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .flex-1.gap-2.min-w-0:nth-child(1) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".flex-1.gap-2.min-w-0:nth-child(2) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink.flex-1.gap-2 > .text-left.gap-2[aria-current=\"step\"] > .flex-col.min-w-0.flex > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .flex-1.gap-2.min-w-0:nth-child(1) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink.flex-1.gap-2 > .text-left.gap-2[aria-current=\"step\"] > .flex-col.min-w-0.flex > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .flex-1.gap-2.min-w-0:nth-child(3) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .\\@container[role=\"group\"][aria-label=\"Setup steps\"] > ol > .shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".cursor-pointer.duration-\\(--duration-quick\\).hover\\:bg-soft > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          ".shrink.flex-1.gap-2 > .cursor-pointer.duration-\\(--duration-quick\\).hover\\:bg-soft > .flex-col.min-w-0.flex > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          "nav > ol > .flex-1.gap-2.min-w-0:nth-child(3) > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only",
-          "nav > ol > .shrink-0.gap-2.min-w-0 > .text-left.gap-2.min-w-0 > .flex-col.\\@xl\\:not-sr-only.sr-only > .\\@xl\\:truncate.text-faint.\\@xl\\:not-sr-only"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

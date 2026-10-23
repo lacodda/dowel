@@ -32,32 +32,8 @@
       "link-name",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "div:nth-child(1) > .text-faint:nth-child(3)",
-          "div:nth-child(1) > .text-faint:nth-child(4)",
-          "div:nth-child(2) > .text-faint:nth-child(3)",
-          "div:nth-child(3) > .text-faint:nth-child(3)",
-          "div:nth-child(4) > .text-faint:nth-child(3)",
-          "div:nth-child(5) > .text-faint:nth-child(3)",
-          "div:nth-child(6) > .text-faint:nth-child(3)",
-          "div:nth-child(7) > .text-faint:nth-child(3)",
-          "div:nth-child(8) > .text-faint:nth-child(3)",
-          "div:nth-child(8) > .text-faint:nth-child(4)",
-          "div:nth-child(9) > .text-faint:nth-child(3)",
-          "div:nth-child(9) > .text-faint:nth-child(4)",
-          "div:nth-child(10) > .text-faint:nth-child(3)",
-          "div:nth-child(11) > .text-faint:nth-child(3)",
-          "div:nth-child(12) > .text-faint:nth-child(3)",
-          "div:nth-child(12) > .text-faint:nth-child(4)"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   },
   "light": {
     "passes": [
@@ -66,31 +42,7 @@
       "link-name",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "div:nth-child(1) > .text-faint:nth-child(3)",
-          "div:nth-child(1) > .text-faint:nth-child(4)",
-          "div:nth-child(2) > .text-faint:nth-child(3)",
-          "div:nth-child(3) > .text-faint:nth-child(3)",
-          "div:nth-child(4) > .text-faint:nth-child(3)",
-          "div:nth-child(5) > .text-faint:nth-child(3)",
-          "div:nth-child(6) > .text-faint:nth-child(3)",
-          "div:nth-child(7) > .text-faint:nth-child(3)",
-          "div:nth-child(8) > .text-faint:nth-child(3)",
-          "div:nth-child(8) > .text-faint:nth-child(4)",
-          "div:nth-child(9) > .text-faint:nth-child(3)",
-          "div:nth-child(9) > .text-faint:nth-child(4)",
-          "div:nth-child(10) > .text-faint:nth-child(3)",
-          "div:nth-child(11) > .text-faint:nth-child(3)",
-          "div:nth-child(12) > .text-faint:nth-child(3)",
-          "div:nth-child(12) > .text-faint:nth-child(4)"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   }
 }

@@ -33,25 +33,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(3) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(4) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(5) > .text-faint",
-          "div:nth-child(6) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(3) > .text-faint:nth-child(1)",
-          ".text-faint:nth-child(2)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(4) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(5) > .text-faint"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -61,24 +43,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(3) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(4) > .text-faint",
-          ".mb-4:nth-child(2) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(5) > .text-faint",
-          "div:nth-child(6) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(1) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(2) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(3) > .text-faint:nth-child(1)",
-          ".text-faint:nth-child(2)",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(4) > .text-faint",
-          ".mb-4:nth-child(3) > .items-end.rounded-lg.bg-raise > .w-208.leading-relaxed.font-mono > div:nth-child(5) > .text-faint"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

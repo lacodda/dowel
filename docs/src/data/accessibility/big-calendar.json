@@ -159,17 +159,8 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "#_r_b_2026-08-31d"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   },
   "light": {
     "passes": [
@@ -197,16 +188,7 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "#_r_b_2026-08-31d"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   }
 }

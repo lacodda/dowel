@@ -33,14 +33,7 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".bg-bad-soft"
-        ]
-      }
-    ]
+    "violations": []
   },
   "light": {
     "passes": [
@@ -50,16 +43,6 @@
       "target-size"
     ],
     "incomplete": [],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          ".bg-good-soft",
-          ".bg-warn-soft",
-          ".bg-bad-soft",
-          ".bg-info-soft"
-        ]
-      }
-    ]
+    "violations": []
   }
 }

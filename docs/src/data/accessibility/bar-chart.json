@@ -114,54 +114,8 @@
       "role-img-alt",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(7) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(8) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(9) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(11) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(12) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(7) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(8) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(9) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(11) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(12) > .text-center.text-faint.tabular-nums",
-          ".leading-none",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(7) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(8) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(9) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(11) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(12) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(1) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(2) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(6) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(6) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(6) > .text-center.text-faint.tabular-nums"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   },
   "light": {
     "passes": [
@@ -182,53 +136,7 @@
       "role-img-alt",
       "target-size"
     ],
-    "incomplete": [
-      "color-contrast"
-    ],
-    "violations": [
-      {
-        "rule": "color-contrast",
-        "nodes": [
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(7) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(8) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(9) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(11) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Twelve weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(12) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(7) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(8) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(9) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(11) > .text-center.text-faint.tabular-nums",
-          ".pr-16 > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(12) > .text-center.text-faint.tabular-nums",
-          ".leading-none",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(7) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(8) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(9) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(11) > .text-center.text-faint.tabular-nums",
-          ".mb-4:nth-child(4) > .flex-wrap.p-4.gap-2 > .w-112.p-5.bg-raise > .relative > .\\[--plot\\:112px\\].gap-1.border-chart-axis > .flex-col.gap-1\\.5.min-w-0:nth-child(12) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(1) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(2) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          "div[aria-label=\"Six weeks of work\"] > .flex-col.gap-1\\.5.min-w-0:nth-child(6) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".w-80.gap-3.p-4 > .\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(1) > .flex-col.gap-1\\.5.min-w-0:nth-child(6) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(3) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(4) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(5) > .text-center.text-faint.tabular-nums",
-          ".\\[--plot\\:72px\\].gap-1.border-chart-axis:nth-child(3) > .flex-col.gap-1\\.5.min-w-0:nth-child(6) > .text-center.text-faint.tabular-nums"
-        ]
-      }
-    ]
+    "incomplete": [],
+    "violations": []
   }
 }
