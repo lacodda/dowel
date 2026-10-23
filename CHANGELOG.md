@@ -2,6 +2,30 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.39.0] - 2026-10-23
+
+### Bug Fixes
+- Draw only promised inks on fills
+
+### Build
+- Regenerate the registry and llms.txt
+- Regenerate the registry and llms.txt
+- Regenerate the registry, its v0.39 snapshot, the history and llms.txt
+
+### CI
+- Compare and record the print and more-contrast pictures
+
+### Documentation
+- Contrast pair by pair, more contrast, and printing
+
+### Features
+- Hold every ink to its floor on every ground, for every product
+- Let the frame go on paper, and keep a panel or a chart on one sheet
+
+### Testing
+- Owe nothing to axe
+- Photograph print and more contrast, and fail a frame that clips on paper
+
 ## [0.38.1] - 2026-10-19
 
 ### Bug Fixes
