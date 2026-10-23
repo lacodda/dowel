@@ -142,7 +142,9 @@ export function TierBadge({ label, value, status, className, ...props }: TierBad
   return (
     <span className={cn(tierBadgeVariants({ status }), className)} {...props}>
       {label}
-      {value !== undefined && <span className="font-normal opacity-70">{value}</span>}
+      {/* Set apart by weight, not by fading: an opacity on text is a colour
+        * nobody promised, and at 70% the value on its soft fill came to 3.4:1. */}
+      {value !== undefined && <span className="font-normal">{value}</span>}
     </span>
   )
 }

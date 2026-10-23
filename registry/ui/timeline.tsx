@@ -43,12 +43,19 @@ export const timelineMarkerVariants = cva(
         warn: 'bg-warn text-on-warn',
         bad: 'bg-bad text-on-bad',
         info: 'bg-info text-on-info',
-        neutral: 'bg-line-2 text-dim',
+        /* A fill like the others, with the page's ground as its glyph. It was
+         * a hairline token, `line-2`, with `dim` on it - which reads as long
+         * as `line-2` is a veil, and stops reading the moment more contrast
+         * turns the hairlines into lines: a glyph cannot sit on a colour that
+         * is allowed to move toward its own. */
+        neutral: 'bg-faint text-bg',
       },
       /** A step not taken yet: the ring of a dot with nothing in it, which is
-       * how every other tool draws "not done" and is worth borrowing. */
+       * how every other tool draws "not done" and is worth borrowing. Its
+       * glyph is `dim`, whatever the status: the fill it was paired with is
+       * not there to read it against. */
       pending: {
-        true: 'border-2 border-line-2 bg-bg',
+        true: 'border-2 border-line-2 bg-bg text-dim',
         false: '',
       },
     },

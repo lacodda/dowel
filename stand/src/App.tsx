@@ -827,6 +827,7 @@ export function App() {
   const { theme, setTheme } = useThemeSwitch('dowel.stand.theme')
   const [accent, setAccent] = useStoredState('dowel.stand.accent', 'dowel')
   const [density, setDensity] = useStoredState('dowel.stand.density', 'default')
+  const [contrast, setContrast] = useStoredState('dowel.stand.contrast', 'system')
   const { path, navigate } = useRoute()
 
   /*
@@ -854,6 +855,17 @@ export function App() {
     if (product) root.style.setProperty('--accent-base', product.accent)
     else root.style.removeProperty('--accent-base')
   }, [accent])
+
+  /*
+   * More contrast is pinned on the root by class, the way a product offering
+   * it would; `system` leaves the root alone, so the operating system's own
+   * setting decides.
+   */
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle('contrast-more', contrast === 'more')
+    root.classList.toggle('contrast-normal', contrast === 'normal')
+  }, [contrast])
 
   return (
     <div
@@ -935,6 +947,20 @@ export function App() {
                   <SelectItem value="system">system</SelectItem>
                   <SelectItem value="light">light</SelectItem>
                   <SelectItem value="dark">dark</SelectItem>
+                </SelectPopup>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs text-dim">
+              <span id="contrast-label">contrast</span>
+              <Select value={contrast} onValueChange={(value) => setContrast(value as string)}>
+                <SelectTrigger size="sm" aria-labelledby="contrast-label">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  <SelectItem value="system">system</SelectItem>
+                  <SelectItem value="more">more</SelectItem>
+                  <SelectItem value="normal">normal</SelectItem>
                 </SelectPopup>
               </Select>
             </div>
@@ -2486,7 +2512,10 @@ function BannerSection() {
             <Banner
               tone="accent"
               action={
-                <Button size="sm" variant="soft">
+                /* Not `soft`: a tinted button on a tinted banner stacks two
+                 * tints, and the accent's word on both together is a pair
+                 * nobody promised - 3.6:1 in the dark theme. */
+                <Button size="sm" variant="primary">
                   Install
                 </Button>
               }

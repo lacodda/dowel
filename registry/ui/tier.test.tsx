@@ -43,10 +43,13 @@ describe('tierAt', () => {
 })
 
 describe('TierBadge', () => {
-  it('shows the band, and the score quieter behind it', () => {
+  it('shows the band, and the score quieter behind it - by weight, not by fading', () => {
+    // An opacity on the score made a colour nobody promised: 3.4:1 on the
+    // soft fill, found by axe in the browser.
     const { container } = render(<TierBadge label="Publishable" value="78.4" />)
     expect(screen.getByText('Publishable')).toBeDefined()
-    expect(screen.getByText('78.4').className).toContain('opacity-70')
+    expect(screen.getByText('78.4').className).toContain('font-normal')
+    expect(screen.getByText('78.4').className).not.toMatch(/\bopacity-/)
     expect(container.firstElementChild?.className).toContain('rounded-md')
   })
 

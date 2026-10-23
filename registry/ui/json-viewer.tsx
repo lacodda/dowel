@@ -183,9 +183,16 @@ export function JsonViewer({
               onActivate?.(row)
             }}
             className={cn(
-              'flex cursor-default items-baseline gap-1.5 px-2 py-px',
-              'hover:bg-softer',
-              row.path === cursor && 'bg-accent-soft',
+              /* A row says where the pointer and the cursor are at its edge,
+               * not with a fill. The viewer is already a `soft` surface, and a
+               * row is drawn in the syntax colours and in `faint`, which are
+               * promised on one neutral layer and not on a tint or on a second
+               * layer: on `accent-soft` the comment colour came to 3.9:1 and
+               * the count to 3.2, and on `soft` over `soft` the count still
+               * missed. */
+              'flex cursor-default items-baseline gap-1.5 border-l-2 border-transparent px-2 py-px',
+              'hover:border-line-2',
+              row.path === cursor && 'border-accent hover:border-accent',
             )}
             // Indentation as padding rather than nested elements: a row four
             // levels down is still a sibling of every other row, which is what
