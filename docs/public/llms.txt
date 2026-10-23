@@ -12,6 +12,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 ## Concepts
 
 - [Anti-patterns](https://lacodda.github.io/dowel/concepts/anti-patterns.md): The mistakes that actually get made against this system, each with what happens and what to do instead.
+- [Contrast](https://lacodda.github.io/dowel/concepts/contrast.md): Which ink may stand on which ground, how far apart the two are held, and the mode for a reader who asked for more.
 - [Doctrine](https://lacodda.github.io/dowel/concepts/doctrine.md): The rules of the line that have a name - each one a sentence you can cite, the failure it prevents, and where it is enforced.
 - [Scrollbars](https://lacodda.github.io/dowel/concepts/scrollbars.md): Why every product of the line draws overlay scrollbars, and what the theme does about it.
 - [Vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary.md): The words dowel uses for its own parts, each defined once, so a page can use one without explaining it again.
@@ -151,6 +152,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [The lint rules](https://lacodda.github.io/dowel/guides/linting.md): Five conventions the system rests on, enforced rather than remembered.
 - [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration.md): The four commands that read a project, rewrite the token names that can be rewritten, and say what is left.
 - [Choosing an overlay](https://lacodda.github.io/dowel/guides/overlays.md): Six components that all float above the page, and the question each one answers.
+- [Printing](https://lacodda.github.io/dowel/guides/printing.md): What the theme and the set do on paper, and the one thing a product does itself.
 - [Installing from the registry](https://lacodda.github.io/dowel/guides/registry.md): Sets that install in one command, and how to pin a version of the registry so an install can be repeated.
 - [Upgrading dowel](https://lacodda.github.io/dowel/guides/upgrading.md): What moves when dowel does, what stays put because it is yours, and every change that breaks a product - with the way through each.
 

@@ -57,11 +57,16 @@ Borders and separators. `line-2` is the one that has to be seen — a scrollbar 
 
 ## Ink
 
-Three weights of text: what you read, what you glance at, and what is only there when you look for it.
+Three weights of text: what you read, what you glance at, and what you find when you look. All three are text, and clear AA on every neutral ground.
 
 - `--text`
 - `--dim`
 - `--faint`
+
+`faint` is held to AA on `bg`, `raise`, `soft` and `softer` for every accent
+of the line; on a tinted fill - a selected row, a status - the quiet ink is
+`dim`. [Contrast](/dowel/concepts/contrast/) lists every pair the theme
+promises and how far apart each is held.
 
 ## Accent
 
@@ -71,6 +76,11 @@ The product's own colour. `accent-2` is the hover and active partner; `on-accent
 - `--accent-2`
 - `--accent-soft`
 - `--on-accent`
+
+In the dark theme an accent too dark to read as text is lifted to a floor of
+lightness, keeping its hue and chroma; lime and gold start above it and are
+drawn as the registry states them. The light theme darkens every accent to one
+lightness.
 
 `on-accent` is worked out rather than chosen. A light accent — gold, lime,
 amber — takes dark glyphs; a dark one takes white. This is the same rule the
@@ -265,4 +275,18 @@ a name in the vocabulary.
 
 Outside Tailwind they are ordinary custom properties:
 
- FENCE4
+```css
+.thing {
+  background: var(--raise);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+```
+
+## More contrast, and paper
+
+Two modes change the values above without changing a name. Under
+`prefers-contrast: more`, or the `contrast-more` class on the root, `dim` and
+`faint` move toward `text` and the hairlines become lines a reader can find -
+see [Contrast](/dowel/concepts/contrast/). On paper every root takes the light
+theme on white, whatever is on screen - see [Printing](/dowel/guides/printing/).

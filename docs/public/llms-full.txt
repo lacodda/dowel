@@ -330,6 +330,134 @@ first exception is always reasonable.
 
 ---
 
+# Contrast
+
+Source: https://lacodda.github.io/dowel/concepts/contrast
+
+Contrast in dowel is not a property of a colour. It is a property of a pair -
+an ink on a ground - and the theme states, pair by pair, which ones it
+promises. Every promise is measured in CI for every product of the line, in
+both themes and both contrast modes, from the colours a browser actually
+resolved. A pair that is not on the list is a pair the set does not draw.
+
+## What is promised
+
+| Ink | On | Held to | For |
+| --- | --- | --- | --- |
+| `text` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise`, `good-soft over bg`, `good-soft over raise`, `warn-soft over bg`, `warn-soft over raise`, `bad-soft over bg`, `bad-soft over raise`, `info-soft over bg`, `info-soft over raise` | 7:1 (AAA) | body text |
+| `dim` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise`, `good-soft over bg`, `good-soft over raise`, `warn-soft over bg`, `warn-soft over raise`, `bad-soft over bg`, `bad-soft over raise`, `info-soft over bg`, `info-soft over raise` | 4.5:1 (AA) | secondary text |
+| `faint` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise` | 4.5:1 (AA) | quiet text |
+| `accent` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise` | 4.5:1 (AA) | a link, the word on its fill |
+| `accent-2` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise` | 4.5:1 (AA) | a link under the pointer |
+| `good` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `good-soft over bg`, `good-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `warn` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `warn-soft over bg`, `warn-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `bad` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `bad-soft over bg`, `bad-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `info` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `info-soft over bg`, `info-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `on-accent` | `accent`, `accent-2` | 4.5:1 (AA) | text on a fill |
+| `bg` | `faint` | 4.5:1 (AA) | a glyph on a neutral mark |
+| `on-good` | `good` | 4.5:1 (AA) | text on a fill |
+| `on-warn` | `warn` | 4.5:1 (AA) | text on a fill |
+| `on-bad` | `bad` | 4.5:1 (AA) | text on a fill |
+| `on-info` | `info` | 4.5:1 (AA) | text on a fill |
+
+A translucent ground is measured the way the screen draws it: `soft over raise`
+is the raised surface with the soft veil composited on top. The floor is WCAG's
+rule for the kind of thing drawn, asked at every step of the type scale. The
+scale stops at 21px and a weight of 600, which is never large text in WCAG's
+sense, so every text floor here is the small-text one - there is no size in
+the line at which a quieter ink would be enough.
+
+## Three inks, and all of them are text
+
+`text`, `dim` and `faint` are what you read, what you glance at, and what you
+find when you look. All three clear AA on every neutral ground for every
+accent; on a raised surface they sit at about 12.5, 7.9 and 5.3 to 1 in the
+dark theme and 15, 9 and 5.9 in the light one - far enough apart to read as
+three.
+
+**`faint` is not for a tinted fill.** A selected row, a status, the accent's
+soft fill: the quiet ink there is `dim`. Holding `faint` to AA on tints as well
+would have pushed it above `dim` and left two inks where there were three.
+
+**Fills do not stack.** An ink on two translucent layers - a soft button on a
+tinted banner, a soft row on a soft surface - is a pair nobody promised, and
+both layers darken or lighten the same way. Put the state somewhere else: a
+solid button on the banner, a mark at the row's edge.
+
+## The accent
+
+The light theme darkens every accent to one lightness. The dark theme leaves
+an accent as the registry states it unless it is too dark to read as text, and
+then lifts it to a floor - same hue, same chroma. Cobalt, crimson and iris were
+3.7:1 as a link on a raised surface before it; every accent of the line now
+clears AA as a link, and as the word on its own soft fill.
+
+## More contrast
+
+A reader who asks their system for more contrast gets it, with nothing for a
+product to do:
+
+| Ink | As drawn | Under more contrast |
+| --- | --- | --- |
+| `text` | AAA, 7:1 | AAA, 7:1 |
+| `dim` | AA, 4.5:1 | AAA, 7:1, on every ground |
+| `faint` | AA on the neutral grounds | AA on every ground, tints included |
+| `line`, `line-2` | a hairline | a boundary, 3:1 |
+
+| Ink | On | Held to | For |
+| --- | --- | --- | --- |
+| `text` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise`, `good-soft over bg`, `good-soft over raise`, `warn-soft over bg`, `warn-soft over raise`, `bad-soft over bg`, `bad-soft over raise`, `info-soft over bg`, `info-soft over raise` | 7:1 (AAA) | body text |
+| `dim` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise`, `good-soft over bg`, `good-soft over raise`, `warn-soft over bg`, `warn-soft over raise`, `bad-soft over bg`, `bad-soft over raise`, `info-soft over bg`, `info-soft over raise` | 7:1 (AAA) | secondary text |
+| `faint` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise`, `good-soft over bg`, `good-soft over raise`, `warn-soft over bg`, `warn-soft over raise`, `bad-soft over bg`, `bad-soft over raise`, `info-soft over bg`, `info-soft over raise` | 4.5:1 (AA) | quiet text |
+| `accent` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise` | 4.5:1 (AA) | a link, the word on its fill |
+| `accent-2` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise` | 4.5:1 (AA) | a link under the pointer |
+| `good` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `good-soft over bg`, `good-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `warn` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `warn-soft over bg`, `warn-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `bad` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `bad-soft over bg`, `bad-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `info` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `info-soft over bg`, `info-soft over raise` | 4.5:1 (AA) | a status, the word on its fill |
+| `on-accent` | `accent`, `accent-2` | 4.5:1 (AA) | text on a fill |
+| `bg` | `faint` | 4.5:1 (AA) | a glyph on a neutral mark |
+| `on-good` | `good` | 4.5:1 (AA) | text on a fill |
+| `on-warn` | `warn` | 4.5:1 (AA) | text on a fill |
+| `on-bad` | `bad` | 4.5:1 (AA) | text on a fill |
+| `on-info` | `info` | 4.5:1 (AA) | text on a fill |
+| `line` | `bg`, `raise` | 3:1 (a boundary) | a divider |
+| `line-2` | `bg`, `raise`, `soft over bg`, `soft over raise`, `softer over bg`, `softer over raise`, `accent-soft over bg`, `accent-soft over raise`, `good-soft over bg`, `good-soft over raise`, `warn-soft over bg`, `warn-soft over raise`, `bad-soft over bg`, `bad-soft over raise`, `info-soft over bg`, `info-soft over raise` | 3:1 (a boundary) | the edge of a control |
+
+The mode follows `prefers-contrast: more`. A product that offers it as a
+setting pins it with a class on the root, the same way it pins a theme:
+
+```html
+<html class="contrast-more">   <!-- on, whatever the system says -->
+<html class="contrast-normal"> <!-- off, whatever the system says -->
+```
+
+It is written once for both themes, as mixes of the theme's own `text` with
+its own ground, so it works in the light theme, the dark one and on paper
+alike. The accent, the statuses and the fills already clear AA and stay as
+they are.
+
+## Where it is checked
+
+- **The palette gate** resolves the theme in a browser for each of the line's
+  products, in both themes and both modes, and measures every pair above.
+- **The ink gate** reads the set's source: where one class list names an ink
+  and a fill, the two have to be a promised pair.
+- **axe**, in a browser, over every item of the stand in both themes - see the
+  [accessibility report](/dowel/reference/accessibility/). It sees one accent;
+  the palette gate sees all of them.
+
+The [stand](/dowel/stand/) measures the same list live, in the accent, theme
+and contrast mode on screen.
+
+## What is not covered
+
+Windows' contrast themes (`forced-colors: active`) replace the palette with the
+system's own; the tokens do not reach that far, and the set has not yet been
+walked in that mode.
+
+---
+
 # Doctrine
 
 Source: https://lacodda.github.io/dowel/concepts/doctrine
@@ -11598,11 +11726,24 @@ later, with nobody to tell.
 Five axe rules are off, and each is off because jsdom cannot evaluate it rather
 than because it was inconvenient:
 
-- `color-contrast` — jsdom resolves no colour. Contrast is computed against the
-  real tokens instead, for both themes and all nineteen accents.
+- `color-contrast` — jsdom resolves no colour. Contrast is measured on the
+  resolved palettes instead (below), and by axe in a browser over the stand.
 - `region`, `page-has-heading-one`, `landmark-one-main`, `html-has-lang` — a
   primitive rendered on its own is legitimately not a page. Those are the
   product's to satisfy.
+
+## Contrast, pair by pair
+
+`contrastPromises` names every ink, every ground it may stand on and the WCAG
+level it is held to. The palette gate resolves the theme in a browser for each
+of the line's nineteen products, in both themes and under more contrast, and
+measures every pair at every step of the type scale. A second gate reads the
+set's source: wherever one class list names an ink and a fill, the two have to
+be a promised pair - `faint` on a selected row fails there before any browser
+runs.
+
+The stand's axe run sees one accent, dowel's own; this is what sees the other
+eighteen. It is how cobalt's link at 3.7:1 was found, after a clean axe report.
 
 ## Every class compiles
 
@@ -11713,6 +11854,11 @@ Linux. Pinning one platform is what makes a baseline mean something.
 
 The accent is left at dowel's own amber. Colour is checked numerically for
 every accent of the line; what a picture catches is shape.
+
+A few sections are photographed in the theme's other modes too: printed from a
+dark screen, which has to come out as dark ink on white, and under more
+contrast in both themes. Every frame primitive and block is printed as well,
+and fails if any box in it still cuts off what it holds.
 
 Those pictures go further than the gate. A release note shows the stand's
 picture of everything the release added or changed the look of, linked at the
@@ -12288,6 +12434,67 @@ a product's own full-screen stage takes `LayerProvider above="overlay"`.
 
 ---
 
+# Printing
+
+Source: https://lacodda.github.io/dowel/guides/printing
+
+A report is printed - a month of hours, a dashboard for a meeting - and a
+screen built for a window prints badly by default: the dark theme comes out as
+near-white ink on white paper, because a browser drops backgrounds to save
+ink; a chart loses its bars, which are backgrounds; the app's frame clips
+everything below the fold to one page.
+
+The theme and the set handle all three. A product marks its own chrome.
+
+## What the theme does
+
+```css
+@import 'dowel-ui/theme.css';
+```
+
+Under `@media print`:
+
+- **The light theme, whatever is on screen.** Every root takes the light
+  theme's values, a product pinned to `dark` included, on the paper's own
+  white. Shadows are none: a sheet has no light to cast them.
+- **Fills print.** `print-color-adjust: exact` is set on the root and
+  inherited, so a bar, a heatmap cell or a status on its badge is printed as
+  drawn. On the light theme's grounds that costs little ink.
+- **Rows, figures and headings keep whole.** A table row, an image, an SVG, a
+  block of code is not cut across two sheets, and a heading is not left alone
+  at the foot of one. These are in the base layer, so a product can let a very
+  long row break.
+
+[More contrast](/dowel/concepts/contrast/) applies on paper too, when the
+reader has asked for it.
+
+## What the set does
+
+- **The frame lets go.** `AppShell` stops filling the window and becomes a
+  block; a `Screen`, a `Pane` and a `ScrollArea` stop scrolling and run on
+  over as many pages as the content takes.
+- **Chrome is left off.** The bar across the top, the `NavRail`, the window's
+  own buttons and edges, and the toasts are hidden on paper.
+- **Wholes stay whole.** A `Panel`, a `StatTile`, an `Alert` and the charts
+  (`BarChart`, `LineChart`, `ActivityHeatmap`) keep to one sheet.
+
+A browser test prints every frame primitive and block and fails if any box
+still cuts off what it holds.
+
+## What a product does
+
+Hide what is for getting somewhere rather than for reading - a header of your
+own, the tabs at the bottom of a phone layout, a filter bar, an export button:
+
+```tsx
+<header className="print:hidden">…</header>
+```
+
+To see it, print to PDF, or in Chrome's DevTools open the Rendering panel and
+set *Emulate CSS media type* to `print`.
+
+---
+
 # Installing from the registry
 
 Source: https://lacodda.github.io/dowel/guides/registry
@@ -12689,9 +12896,11 @@ the one thing this report must not be.
 them, closed. The unit tests put every primitive through axe as well, in every
 variant and open - a menu with its list showing, a dialog with its focus
 trapped - and drive the interactive ones by the keyboard. Colour contrast is
-also computed from the tokens for every accent of the line, the floor of a
-pointer target is a token at WCAG's 24px, and every animation comes to rest for
-a reader who asked for less motion. The [gates](/dowel/guides/gates/) say what
+also measured pair by pair - every ink on every ground it is promised on, for
+every accent of the line, in both themes and under more contrast (see
+[Contrast](/dowel/concepts/contrast/)) - the floor of a pointer target is a
+token at WCAG's 24px, and every animation comes to rest for a reader who asked
+for less motion. The [gates](/dowel/guides/gates/) say what
 each one catches.
 
 **What no automated check sees.** Whether a name makes sense when it is read
@@ -13241,11 +13450,16 @@ Borders and separators. `line-2` is the one that has to be seen — a scrollbar 
 
 ## Ink
 
-Three weights of text: what you read, what you glance at, and what is only there when you look for it.
+Three weights of text: what you read, what you glance at, and what you find when you look. All three are text, and clear AA on every neutral ground.
 
 - `--text`
 - `--dim`
 - `--faint`
+
+`faint` is held to AA on `bg`, `raise`, `soft` and `softer` for every accent
+of the line; on a tinted fill - a selected row, a status - the quiet ink is
+`dim`. [Contrast](/dowel/concepts/contrast/) lists every pair the theme
+promises and how far apart each is held.
 
 ## Accent
 
@@ -13255,6 +13469,11 @@ The product's own colour. `accent-2` is the hover and active partner; `on-accent
 - `--accent-2`
 - `--accent-soft`
 - `--on-accent`
+
+In the dark theme an accent too dark to read as text is lifted to a floor of
+lightness, keeping its hue and chroma; lime and gold start above it and are
+drawn as the registry states them. The light theme darkens every accent to one
+lightness.
 
 `on-accent` is worked out rather than chosen. A light accent — gold, lime,
 amber — takes dark glyphs; a dark one takes white. This is the same rule the
@@ -13449,4 +13668,18 @@ a name in the vocabulary.
 
 Outside Tailwind they are ordinary custom properties:
 
- FENCE4
+```css
+.thing {
+  background: var(--raise);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+```
+
+## More contrast, and paper
+
+Two modes change the values above without changing a name. Under
+`prefers-contrast: more`, or the `contrast-more` class on the root, `dim` and
+`faint` move toward `text` and the hairlines become lines a reader can find -
+see [Contrast](/dowel/concepts/contrast/). On paper every root takes the light
+theme on white, whatever is on screen - see [Printing](/dowel/guides/printing/).

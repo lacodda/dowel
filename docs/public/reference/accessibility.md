@@ -16,9 +16,11 @@ the one thing this report must not be.
 them, closed. The unit tests put every primitive through axe as well, in every
 variant and open - a menu with its list showing, a dialog with its focus
 trapped - and drive the interactive ones by the keyboard. Colour contrast is
-also computed from the tokens for every accent of the line, the floor of a
-pointer target is a token at WCAG's 24px, and every animation comes to rest for
-a reader who asked for less motion. The [gates](/dowel/guides/gates/) say what
+also measured pair by pair - every ink on every ground it is promised on, for
+every accent of the line, in both themes and under more contrast (see
+[Contrast](/dowel/concepts/contrast/)) - the floor of a pointer target is a
+token at WCAG's 24px, and every animation comes to rest for a reader who asked
+for less motion. The [gates](/dowel/guides/gates/) say what
 each one catches.
 
 **What no automated check sees.** Whether a name makes sense when it is read
