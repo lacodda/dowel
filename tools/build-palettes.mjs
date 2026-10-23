@@ -16,8 +16,8 @@
  * is the thing every web product of the line is actually drawn by.
  *
  * Output: `dist/palettes/<product>.json`, Design Tokens Format Module 2025.10,
- * every colour the theme declares, in both themes, as `#rrggbb` or
- * `#rrggbbaa`. Eight bits per channel is what the browser itself keeps for
+ * every colour the theme declares, in both themes and in both of them under
+ * more contrast, as `#rrggbb` or `#rrggbbaa`. Eight bits per channel is what the browser itself keeps for
  * alpha (`0.045` comes back as `0.043`), so nothing finer is lost.
  */
 import { readFileSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
@@ -114,15 +114,30 @@ function hex({ rgb, alpha }) {
   return alpha >= 1 ? opaque : `${opaque}${byte(alpha)}`
 }
 
+/*
+ * The groups a palette holds: each theme as drawn, and each under more
+ * contrast - what a native product shows when its system asks for it, and
+ * what the contrast gate holds to the stronger promise.
+ */
+const MODES = [
+  ['dark', 'dark', 'normal'],
+  ['light', 'light', 'normal'],
+  ['dark-contrast-more', 'dark', 'more'],
+  ['light-contrast-more', 'light', 'more'],
+]
+
 const browser = await chromium.launch()
 try {
   const page = await browser.newPage()
 
-  /** Every colour of the theme for one accent, in one theme. */
-  async function resolveTheme(accent, theme) {
-    await page.emulateMedia({ colorScheme: theme })
+  /** Every colour of the theme for one accent, in one theme and one contrast
+   * mode. Pinned by class and by the media queries alike, so neither can leave
+   * the other's values in place. */
+  async function resolveTheme(accent, theme, contrast) {
+    await page.emulateMedia({ colorScheme: theme, contrast: contrast === 'more' ? 'more' : 'no-preference' })
+    const pins = contrast === 'more' ? `${theme} contrast-more` : theme
     await page.setContent(
-      `<!doctype html><html class="${theme}"><head><style>${css}</style>` +
+      `<!doctype html><html class="${pins}"><head><style>${css}</style>` +
         `<style>:root { --accent-base: ${accent}; }</style></head><body><i id="probe"></i></body></html>`,
     )
     // The callback runs in the page, not in Node, so it sees the browser's globals.
@@ -149,14 +164,14 @@ try {
 
   for (const { name, code, accent, colorName } of lineProducts) {
     const color = { $type: 'color' }
-    for (const theme of ['dark', 'light']) {
-      color[theme] = Object.fromEntries(
-        (await resolveTheme(accent, theme)).map(([token, value]) => [token, { $value: hex(parseColor(value)) }]),
+    for (const [group, theme, contrast] of MODES) {
+      color[group] = Object.fromEntries(
+        (await resolveTheme(accent, theme, contrast)).map(([token, value]) => [token, { $value: hex(parseColor(value)) }]),
       )
     }
 
     const palette = {
-      $description: `${name} - every colour of the dowel theme on the ${colorName} accent ${accent}, resolved by a browser, in both themes. For a consumer that cannot evaluate CSS; the formulas live in theme.css.`,
+      $description: `${name} - every colour of the dowel theme on the ${colorName} accent ${accent}, resolved by a browser, in both themes, and in both under more contrast. For a consumer that cannot evaluate CSS; the formulas live in theme.css.`,
       $extensions: {
         'com.lacodda.dowel': { package: 'dowel-ui', version, product: name, code, accent },
       },

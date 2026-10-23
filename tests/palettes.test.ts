@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { beforeAll, describe, expect, inject, it } from 'vitest'
+import { contrastFloor, contrastPromises, measure, promiseName, type ContrastMode, type Rgba } from '../packages/dowel/src/contrast'
 import { lineProducts } from '../packages/dowel/src/line'
 import { paintedProducts } from './browser.setup'
 
@@ -17,9 +18,12 @@ import { paintedProducts } from './browser.setup'
 const root = resolve(import.meta.dirname, '..')
 
 type Theme = Record<string, { $value: string }>
+/** The groups a palette holds: each theme as drawn, and under more contrast. */
+const GROUPS = ['dark', 'light', 'dark-contrast-more', 'light-contrast-more'] as const
+type Group = (typeof GROUPS)[number]
 interface Palette {
   $extensions: { 'com.lacodda.dowel': { version: string; product: string; accent: string } }
-  color: { $type: string; dark: Theme; light: Theme }
+  color: { $type: string } & Record<Group, Theme>
 }
 
 const palettes = new Map<string, Palette>()
@@ -57,18 +61,21 @@ describe('shape', () => {
     expect([...palettes.keys()].sort()).toEqual(lineProducts.map((p) => p.name).sort())
   })
 
-  it('gives every palette both themes with the same names', () => {
+  it('gives every palette both themes, as drawn and under more contrast, with the same names', () => {
     for (const [name, palette] of palettes) {
       expect(palette.color.$type, `${name} is not typed as colour`).toBe('color')
-      expect(Object.keys(palette.color.light), `${name} names different colours in each theme`).toEqual(
-        Object.keys(palette.color.dark),
-      )
+      expect(Object.keys(palette.color).sort(), name).toEqual(['$type', ...GROUPS].sort())
+      for (const group of GROUPS) {
+        expect(Object.keys(palette.color[group]), `${name} names different colours in ${group}`).toEqual(
+          Object.keys(palette.color.dark),
+        )
+      }
     }
   })
 
   it('writes every colour as hex a native consumer can parse', () => {
     for (const [name, palette] of palettes) {
-      for (const theme of ['dark', 'light'] as const) {
+      for (const theme of GROUPS) {
         for (const [token, { $value }] of Object.entries(palette.color[theme])) {
           expect($value, `${name} ${theme} ${token}`).toMatch(/^#[0-9a-f]{6}([0-9a-f]{2})?$/)
         }
@@ -97,12 +104,16 @@ describe('it asked the right question', () => {
   })
 
   it('paints each product in its own accent', () => {
-    // The dark theme uses the accent as it is, so the file must state the
-    // registry's value exactly. If the accent never reached the page, every
-    // product would come back in dowel's amber.
-    for (const { name, accent } of lineProducts) {
-      expect(value(palettes.get(name)!.color.dark, 'accent'), name).toBe(accent.toLowerCase())
-    }
+    // The dark theme uses the accent as it is when it is light enough to be
+    // text, so for those the file must state the registry's value exactly; the
+    // rest are lifted to the floor and differ. If the accent never reached the
+    // page, every product would come back in dowel's amber - so at least the
+    // two that start above the floor have to come back as themselves, and no
+    // two products may share an accent.
+    const untouched = lineProducts.filter(({ name, accent }) => value(palettes.get(name)!.color.dark, 'accent') === accent.toLowerCase())
+    expect(untouched.map(({ name }) => name)).toEqual(expect.arrayContaining(['kasl', 'kasl-server']))
+    const drawn = new Set(lineProducts.map(({ name }) => value(palettes.get(name)!.color.dark, 'accent')))
+    expect(drawn.size).toBe(new Set(lineProducts.map(({ accent }) => accent.toLowerCase())).size)
   })
 
   it('tints the greys with the accent too', () => {
@@ -176,17 +187,57 @@ describe('the notation is converted, not changed', () => {
   })
 })
 
+/** The type scale and its weights, read out of the theme: a pair is held to
+ * what the smallest text set in it needs, at every step the scale has. */
+const themeCss = readFileSync(resolve(root, 'packages/dowel/src/theme.css'), 'utf8')
+const typeSteps = [...themeCss.matchAll(/--text-(?:2xs|xs|sm|base|lg|xl|2xl):\s*(\d+)px;/g)].map((m) => Number(m[1]))
+const weights = [...themeCss.matchAll(/--font-weight-[a-z]+:\s*(\d+);/g)].map((m) => Number(m[1]))
+
+/** `#rrggbb` or `#rrggbbaa` as channels 0-255 and an alpha. */
+function rgba(hex: string): Rgba {
+  const [r, g, b] = [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)) as [number, number, number]
+  return [r, g, b, hex.length === 9 ? Number.parseInt(hex.slice(7, 9), 16) / 255 : 1]
+}
+
 describe('what the numbers promise', () => {
-  it('keeps body text legible on both grounds, for every product', () => {
+  it('reads a scale to hold the pairs at', () => {
+    // Guards the floors below: an empty scale would make every floor the
+    // maximum of nothing.
+    expect(typeSteps).toHaveLength(7)
+    expect(weights).toEqual([400, 500, 600])
+  })
+
+  const modes: [Group, ContrastMode][] = [
+    ['dark', 'normal'],
+    ['light', 'normal'],
+    ['dark-contrast-more', 'more'],
+    ['light-contrast-more', 'more'],
+  ]
+
+  it.each(modes)('holds every pair %s promises, for every product, at every step of the type scale', (group, mode) => {
+    const misses: string[] = []
+    let measured = 0
     for (const [name, { color }] of palettes) {
-      for (const theme of ['dark', 'light'] as const) {
-        const t = color[theme]
-        for (const ground of ['bg', 'raise']) {
-          expect(contrast(value(t, 'text'), value(t, ground)), `${name} ${theme} text on ${ground}`).toBeGreaterThanOrEqual(7)
-          expect(contrast(value(t, 'dim'), value(t, ground)), `${name} ${theme} dim on ${ground}`).toBeGreaterThanOrEqual(4.5)
-        }
+      const theme = color[group]
+      for (const promise of contrastPromises(mode)) {
+        const ratio = measure(promise, (token) => rgba(value(theme, token)))
+        const floor = Math.max(...typeSteps.flatMap((size) => weights.map((weight) => contrastFloor(promise, { size, weight }))))
+        measured += 1
+        if (ratio < floor) misses.push(`${name}: ${promiseName(promise)} at ${ratio.toFixed(2)}, needs ${floor}`)
       }
     }
+    expect(misses).toEqual([])
+    expect(measured).toBe(palettes.size * contrastPromises(mode).length)
+  })
+
+  it('asks more of more contrast than of the theme as drawn', () => {
+    // The mode is only worth its name if it raises a floor somewhere; this
+    // keeps the two lists from being edited into the same list.
+    const floors = (mode: ContrastMode) =>
+      new Map(contrastPromises(mode).map((promise) => [promiseName(promise), contrastFloor(promise)]))
+    const [normal, more] = [floors('normal'), floors('more')]
+    for (const [pair, floor] of normal) expect(more.get(pair), pair).toBeGreaterThanOrEqual(floor)
+    expect([...more].filter(([pair, floor]) => (normal.get(pair) ?? 0) < floor).length).toBeGreaterThan(20)
   })
 
   it('keeps a month view’s line legible in every series colour, booked and done', () => {
@@ -274,7 +325,7 @@ describe('what the numbers promise', () => {
 
   it('puts legible glyphs on every fill', () => {
     for (const [name, { color }] of palettes) {
-      for (const theme of ['dark', 'light'] as const) {
+      for (const theme of GROUPS) {
         const t = color[theme]
         for (const fill of ['accent', 'good', 'warn', 'bad', 'info']) {
           expect(

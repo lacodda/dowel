@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { cn } from 'dowel-ui'
-import { contrastPairs, contrastRatio, paintedColour } from './contrast'
+import { contrastFloor, measure, paintedColour, promiseName, promisesInForce } from './contrast'
 
 /*
- * The contrast of every pair the theme promises, for the accent and the
- * theme on screen now.
+ * The contrast of every pair the theme promises, for the accent, the theme
+ * and the contrast mode on screen now.
  *
  * Re-measured whenever the root changes - the accent switch writes
  * `--accent-base` on it, the theme switch a class - so the table follows the
@@ -14,18 +14,33 @@ import { contrastPairs, contrastRatio, paintedColour } from './contrast'
  */
 
 interface Measured {
+  name: string
   ink: string
   ground: string
+  over: string | undefined
   role: string
   needs: number
   ratio: number | null
 }
 
-function measure(): Measured[] {
-  return contrastPairs.map((pair) => {
-    const ink = paintedColour(pair.ink)
-    const ground = paintedColour(pair.ground)
-    return { ...pair, ratio: ink && ground ? contrastRatio(ink, ground) : null }
+function measureAll(): Measured[] {
+  const painted = new Map<string, ReturnType<typeof paintedColour>>()
+  const colour = (token: string) => {
+    if (!painted.has(token)) painted.set(token, paintedColour(token))
+    return painted.get(token)
+  }
+  return promisesInForce().map((promise) => {
+    const tokens = [promise.ink, promise.ground, promise.over].filter((token) => token !== undefined)
+    const resolved = tokens.every((token) => colour(token))
+    return {
+      name: promiseName(promise),
+      ink: promise.ink,
+      ground: promise.ground,
+      over: promise.over,
+      role: promise.role,
+      needs: contrastFloor(promise),
+      ratio: resolved ? measure(promise, (token) => colour(token)!) : null,
+    }
   })
 }
 
@@ -38,13 +53,18 @@ export function ContrastReport() {
     let frame = 0
     const update = () => {
       cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => setRows(measure()))
+      frame = requestAnimationFrame(() => setRows(measureAll()))
     }
     update()
     const observer = new MutationObserver(update)
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] })
+    // The system's own contrast setting changes the pairs without touching
+    // the root.
+    const system = window.matchMedia?.('(prefers-contrast: more)')
+    system?.addEventListener('change', update)
     return () => {
       observer.disconnect()
+      system?.removeEventListener('change', update)
       cancelAnimationFrame(frame)
     }
   }, [])
@@ -54,11 +74,11 @@ export function ContrastReport() {
   return (
     <section aria-labelledby="contrast-heading" className="mt-8">
       <h2 id="contrast-heading" className="mb-1 text-lg font-semibold">
-        Contrast, in this accent and this theme
+        Contrast, in this accent, theme and contrast mode
       </h2>
       <p className="mb-3 max-w-prose text-sm text-dim">
         Measured from the colours the browser painted, so the shades derived from the accent are
-        included. {rows.length > 0 && (misses === 0 ? 'Every pair clears its floor.' : `${misses} pair(s) below the floor.`)}
+        included, and a translucent ground is laid over the surface under it. {rows.length > 0 && (misses === 0 ? 'Every pair clears its floor.' : `${misses} pair(s) below the floor.`)}
       </p>
       <div className="overflow-x-auto rounded-lg border border-line">
         <table className="w-full border-collapse text-sm">
@@ -75,19 +95,22 @@ export function ContrastReport() {
             {rows.map((row) => {
               const passes = row.ratio !== null && row.ratio >= row.needs
               return (
-                <tr key={`${row.ink}/${row.ground}`} className="border-b border-line last:border-b-0">
+                <tr key={row.name} className="border-b border-line last:border-b-0">
                   <td className="px-3 py-2">
                     <span className="inline-flex items-center gap-2">
                       <span
                         aria-hidden
                         className="inline-flex size-6 items-center justify-center rounded-sm border border-line text-xs font-semibold"
-                        style={{ background: `var(--${row.ground})`, color: `var(--${row.ink})` }}
+                        style={{
+                          background: row.over
+                            ? `linear-gradient(var(--${row.ground}), var(--${row.ground})), var(--${row.over})`
+                            : `var(--${row.ground})`,
+                          color: `var(--${row.ink})`,
+                        }}
                       >
                         Aa
                       </span>
-                      <code className="font-mono text-xs">
-                        {row.ink} on {row.ground}
-                      </code>
+                      <code className="font-mono text-xs">{row.name}</code>
                     </span>
                   </td>
                   <td className="px-3 py-2 text-dim">{row.role}</td>

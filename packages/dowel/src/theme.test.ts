@@ -94,6 +94,45 @@ describe('themes', () => {
     expect(values(pinned)).toEqual(values(system))
   })
 
+  it('prints the light theme on paper, pinned dark or not', () => {
+    // At the pins' own weight, so neither `.dark` nor the system's light block
+    // wins on paper; the values are the light theme's, value for value, but
+    // for the paper's white and the shadows a sheet has no light for.
+    const paper = blockBody('@media print')
+    expect(paper).toMatch(/:root:not\(\.dark\),\s*:root\.dark\s*\{/)
+    expect(paper).toContain('color-scheme: light;')
+    expect(paper).toContain('print-color-adjust: exact;')
+
+    const values = (body: string) =>
+      Object.fromEntries([...body.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)].map((m) => [m[1]!, m[2]!.trim()]))
+    const paperValues = values(paper)
+    expect(paperValues).toEqual({
+      ...values(blockBody(':root.light')),
+      '--bg': '#ffffff',
+      '--shadow-lift': 'none',
+      '--shadow-raise': 'none',
+      '--shadow-float': 'none',
+    })
+  })
+
+  it('pins more contrast by class and follows the system without one, with the same values', () => {
+    const system = blockBody('@media (prefers-contrast: more)')
+    expect(system).toContain(':root:not(.contrast-normal)')
+    const values = (body: string) =>
+      Object.fromEntries([...body.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)].map((m) => [m[1]!, m[2]!.trim()]))
+    expect(values(system)).toEqual(values(blockBody(':root.contrast-more')))
+    expect(Object.keys(values(system)).sort()).toEqual(['--dim', '--faint', '--line', '--line-2'])
+  })
+
+  it('lays print over the themes and more contrast over all three', () => {
+    // Same weight everywhere, so the order is the cascade: a block earlier in
+    // the file loses to a later one on every token both declare.
+    const at = (selector: string) => withoutComments.indexOf(selector)
+    expect(at('@media print')).toBeGreaterThan(at(':root.light'))
+    expect(at('@media (prefers-contrast: more)')).toBeGreaterThan(at('@media print'))
+    expect(at(':root.contrast-more')).toBeGreaterThan(at('@media print'))
+  })
+
   it('redefines every theme-dependent colour in the light theme', () => {
     // A colour defined only in the dark theme would survive into the light one
     // and read as a bug on a white ground. Translucent surfaces and the
@@ -110,17 +149,33 @@ describe('accent', () => {
     // The point of the parameter: a product sets `--accent-base` and the rest
     // of the accent family follows. Any of these written as a literal colour
     // would silently ignore the product's hue.
-    for (const name of ['accent', 'accent-2', 'accent-soft']) {
+    // `--accent-2` may follow it through `--accent`, which the dark theme
+    // lifts to a floor; `--accent` itself always reads the base.
+    for (const value of declarationsOf('--accent')) {
+      expect(value, '`--accent` does not follow `--accent-base`').toContain('var(--accent-base)')
+    }
+    for (const name of ['accent-2', 'accent-soft']) {
       for (const value of declarationsOf(`--${name}`)) {
-        expect(value, `\`--${name}\` does not follow \`--accent-base\``).toContain('var(--accent-base)')
+        expect(value, `\`--${name}\` does not follow \`--accent-base\``).toMatch(/var\(--accent(-base)?\)/)
       }
     }
   })
 
+  it('lifts a dark accent to a lightness that reads, and leaves a light one alone', () => {
+    // A floor, not a pin: `max(l, …)` keeps the registry's colour for every
+    // accent already light enough, which a fixed lightness would not.
+    expect(blockBody(':root {')).toMatch(/--accent: oklch\(from var\(--accent-base\) max\(l, 0\.\d+\) c h\);/)
+  })
+
   it('tints the neutrals with the product hue', () => {
+    // Directly, or through `--text` and `--bg`, which are: more contrast mixes
+    // its inks from those. The paper's white in print is the one exception,
+    // and only the print block may state it.
+    const paper = blockBody('@media print')
     for (const name of ['bg', 'text', 'dim', 'faint']) {
       for (const value of declarationsOf(`--${name}`)) {
-        expect(value, `\`--${name}\` is not tinted with \`--neutral-base\``).toContain('var(--neutral-base)')
+        if (value === '#ffffff' && paper.includes(`--${name}: #ffffff;`)) continue
+        expect(value, `\`--${name}\` is not tinted with \`--neutral-base\``).toMatch(/var\(--neutral-base\)|var\(--text\)/)
       }
     }
   })
@@ -191,6 +246,13 @@ describe('scales', () => {
 describe('base layer', () => {
   it('honours reduced motion', () => {
     expect(css).toContain('@media (prefers-reduced-motion: reduce)')
+  })
+
+  it('keeps a row, a figure and a heading whole across a printed page, in a layer a product can undo', () => {
+    const layered = withoutComments.slice(withoutComments.lastIndexOf('@layer base'))
+    const paper = layered.slice(layered.indexOf('@media print'))
+    expect(paper).toMatch(/tr,[\s\S]*?break-inside: avoid;/)
+    expect(paper).toMatch(/h1,[\s\S]*?break-after: avoid;/)
   })
 
   it('draws the focus ring in the accent', () => {

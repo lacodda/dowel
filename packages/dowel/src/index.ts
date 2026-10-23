@@ -24,6 +24,24 @@ export { cn } from './cn.js'
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 export { lineProducts, lineProduct, type LineProduct } from './line.js'
 export {
+  composite,
+  contrastFloor,
+  contrastPromises,
+  contrastRatio,
+  isLargeText,
+  luminance,
+  measure,
+  promiseName,
+  type ContrastKind,
+  type ContrastLevel,
+  type ContrastMode,
+  type ContrastPromise,
+  type ContrastToken,
+  type Rgb,
+  type Rgba,
+  type TypeStep,
+} from './contrast.js'
+export {
   documentLocale,
   fallbackLocale,
   LocaleProvider,

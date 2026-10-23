@@ -105,20 +105,32 @@ const onStatusThreshold = statedNumber(
   /--on-warn:\s*oklch\(from var\(--warn\) clamp\(0,\s*\(([\d.]+) - l\)/,
   'the on-status lightness threshold',
 )
+const darkAccentFloor = statedNumber(
+  /--accent:\s*oklch\(from var\(--accent-base\) max\(l, ([\d.]+)\) c h\)/,
+  'the dark-theme accent floor',
+)
+
+/** The accent as the dark theme draws it: the registry's colour, lifted to the
+ * floor when it starts below it. Mirrors `max(l, …)`. */
+function darkAccent(hex: string): Rgb {
+  const [L] = linearToOklab(hexToLinear(hex))
+  return L >= darkAccentFloor ? hexToLinear(hex) : atLightness(hex, darkAccentFloor)
+}
 
 describe('on-accent, dark theme', () => {
   it.each(Object.entries(lineAccents))('%s is legible under its own glyphs', (_product, accent) => {
-    // What the theme's rule picks for this accent.
-    const chosen = lightness(accent) > onAccentThreshold ? BLACK : WHITE
-    expect(contrast(chosen, hexToLinear(accent))).toBeGreaterThanOrEqual(AA)
+    // What the theme's rule picks for this accent, as drawn.
+    const fill = darkAccent(accent)
+    const chosen = linearToOklab(fill)[0] > onAccentThreshold ? BLACK : WHITE
+    expect(contrast(chosen, fill)).toBeGreaterThanOrEqual(AA)
   })
 
   it.each(Object.entries(lineAccents))('%s gets the better of black and white', (_product, accent) => {
     // Not merely passable - the rule should agree with the better choice, or
     // it is leaving contrast on the table for no reason.
-    const rgb = hexToLinear(accent)
-    const chosen = lightness(accent) > onAccentThreshold ? BLACK : WHITE
-    const best = contrast(BLACK, rgb) > contrast(WHITE, rgb) ? BLACK : WHITE
+    const fill = darkAccent(accent)
+    const chosen = linearToOklab(fill)[0] > onAccentThreshold ? BLACK : WHITE
+    const best = contrast(BLACK, fill) > contrast(WHITE, fill) ? BLACK : WHITE
     expect(chosen).toEqual(best)
   })
 })
@@ -194,34 +206,11 @@ describe('on-status, both themes', () => {
   })
 })
 
-describe('ink on grounds', () => {
-  // The neutral tint is mixed from the accent, so the greys are product-
-  // dependent too. These check the untinted bases the theme mixes from: the
-  // tint is a few percent and moves them very little, and a base that fails
-  // here fails for every product in the line.
-  const darkGround = statedColor(darkBlock, 'ground')
-  const lightGround = statedColor(lightBlock, 'ground')
-
-  it('reads text against the dark ground', () => {
-    expect(contrast(hexToLinear(statedColor(darkBlock, 'ink')), hexToLinear(darkGround))).toBeGreaterThanOrEqual(AA)
-  })
-
-  it('reads text against the light ground', () => {
-    expect(contrast(hexToLinear(statedColor(lightBlock, 'ink')), hexToLinear(lightGround))).toBeGreaterThanOrEqual(AA)
-  })
-
-  it('reads the dim ink against the dark ground', () => {
-    expect(contrast(hexToLinear(statedColor(darkBlock, 'dim')), hexToLinear(darkGround))).toBeGreaterThanOrEqual(AA)
-  })
-
-  it('reads the dim ink against the light ground', () => {
-    expect(contrast(hexToLinear(statedColor(lightBlock, 'dim')), hexToLinear(lightGround))).toBeGreaterThanOrEqual(AA)
-  })
-
-  it('keeps the faint ink visible, if only just', () => {
-    // `faint` is deliberately below AA for body text - it is for marks you
-    // find when you look for them - but it still has to be seen at all.
-    expect(contrast(hexToLinear(statedColor(darkBlock, 'faint')), hexToLinear(darkGround))).toBeGreaterThanOrEqual(3)
-    expect(contrast(hexToLinear(statedColor(lightBlock, 'faint')), hexToLinear(lightGround))).toBeGreaterThanOrEqual(3)
-  })
-})
+/*
+ * Ink on grounds is not checked here any more. These tests read the untinted
+ * bases out of the stylesheet and measured them against the bare ground; the
+ * palette gate (`tests/palettes.test.ts`) measures what a browser resolved -
+ * tinted, translucent grounds laid over the surfaces, every product, both
+ * themes, both contrast modes - against every pair `contrastPromises` names.
+ * The weaker copy is what let `faint` be held to 3:1 for a year.
+ */

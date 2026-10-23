@@ -57,23 +57,59 @@
   --line: rgb(255 255 255 / 0.08);
   --line-2: rgb(255 255 255 / 0.15);
 
+  /*
+   * Three inks, and every one of them is text.
+   *
+   * `faint` used to be the exception: held to 3:1 against the ground, "for
+   * marks you find when you look for them". But WCAG asks 4.5:1 of any text
+   * under 24px, and the type scale stops at 21 - there is no step where 3:1
+   * is enough. A live axe run found 36 items of the set drawing `faint` text
+   * at 10 to 12px, at 2.3 to 3.6:1. So `faint` clears AA on every neutral
+   * ground (`bg`, `raise`, `soft` over either) for every product, and `dim`
+   * sits half again above it so the three still read as three. On a tinted
+   * fill - a selected row, a status - the quiet ink is `dim`; `faint` is not
+   * promised there, and the contrast gate holds the set to that.
+   *
+   * The ratios on a raised surface: text 12.5, dim 7.9, faint 5.3 - the
+   * steps the mature systems keep (Atlassian's text, subtle and subtlest sit
+   * at 14, 7.6 and 5.0).
+   */
   --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
-  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #a7a2ad);
-  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #6e6a76);
+  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #bfbac5);
+  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #9894a1);
 
-  --accent: var(--accent-base);
+  /*
+   * The accent, lifted to a lightness where it reads.
+   *
+   * The light theme already darkens every accent to one lightness; here an
+   * accent is left as the registry states it unless it is too dark to be
+   * text on this ground, and then raised to the floor - same hue, same
+   * chroma. Cobalt, crimson and iris sat at 3.7:1 on a raised surface as a
+   * link, and 3.1:1 as the word on their own soft fill. 0.72 is the lightness
+   * where every accent of the line clears AA as text on every neutral ground
+   * and on `accent-soft`; the two that start above it (lime and gold) are
+   * untouched. A fill gets lighter too, and its glyphs were already dark:
+   * every accent of the line sits above the `--on-accent` threshold.
+   */
+  --accent: oklch(from var(--accent-base) max(l, 0.72) c h);
   /* The hover/active partner: lighter on dark, where the ground is what the
-   * accent has to separate from. */
-  --accent-2: color-mix(in oklab, white 22%, var(--accent-base));
+   * accent has to separate from. From the accent as drawn, so it stays the
+   * lighter of the two after the floor. */
+  --accent-2: color-mix(in oklab, white 22%, var(--accent));
   --accent-soft: color-mix(in oklab, var(--accent-base) 16%, transparent);
 
   /* Status hues are the line's own and do not follow the product accent: a
    * green that shifted per product would stop meaning "good". Meaning never
    * rests on colour alone - a badge carries an icon and a word - so these
-   * exist for emphasis, not as the message. */
+   * exist for emphasis, not as the message.
+   *
+   * Each is also text - the word on its own soft fill, an error under a
+   * field - so each clears 4.5:1 there, over `bg` and over `raise`. `bad` was
+   * lifted for that in v0.39: at #ef6a6a the word on its fill over a raised
+   * surface came to 4.2:1. */
   --good: #45d18f;
   --warn: #e8b13f;
-  --bad: #ef6a6a;
+  --bad: #fa7473;
   --info: #4cc4e0;
   --good-soft: color-mix(in oklab, var(--good) 14%, transparent);
   --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
@@ -258,22 +294,28 @@
     --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);
 
     --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
-    --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
-    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);
+    --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #45424d);
+    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #635f6a);
 
     /* On a light ground the accent has to darken to stay legible as text and
      * as a fill. It darkens *to* a lightness rather than *by* an amount: how
      * far a hue has to travel depends on where it starts, and a fixed step
      * that suits magenta leaves lime and gold short. Pinning the lightness and
-     * keeping the hue and chroma clears 5:1 for every accent in the line. */
-    --accent: oklch(from var(--accent-base) 0.5 c h);
+     * keeping the hue and chroma clears 5:1 for every accent in the line on a
+     * raised surface, and 4.5:1 as the word on its own soft fill over the
+     * ground - which 0.5 missed for emerald, at 4.35.
+     *
+     * The status hues below were darkened in v0.39 for the same reason: each
+     * is the word on its own soft fill, and at their old values that came to
+     * 3.4 to 3.7:1 over the ground. */
+    --accent: oklch(from var(--accent-base) 0.48 c h);
     --accent-2: oklch(from var(--accent-base) 0.4 c h);
     --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
 
-    --good: #0c8554;
-    --warn: #9a6b0c;
-    --bad: #c93b3b;
-    --info: #0d7f9c;
+    --good: #006d3e;
+    --warn: #825400;
+    --bad: #b42429;
+    --info: #006885;
     --good-soft: color-mix(in oklab, var(--good) 12%, transparent);
     --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
     --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
@@ -346,18 +388,18 @@
   --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);
 
   --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
-  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #63606b);
-  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #8a8692);
+  --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #45424d);
+  --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #635f6a);
 
   /* Darkened to a lightness, not by an amount - see the note above. */
-  --accent: oklch(from var(--accent-base) 0.5 c h);
+  --accent: oklch(from var(--accent-base) 0.48 c h);
   --accent-2: oklch(from var(--accent-base) 0.4 c h);
   --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
 
-  --good: #0c8554;
-  --warn: #9a6b0c;
-  --bad: #c93b3b;
-  --info: #0d7f9c;
+  --good: #006d3e;
+  --warn: #825400;
+  --bad: #b42429;
+  --info: #006885;
   --good-soft: color-mix(in oklab, var(--good) 12%, transparent);
   --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
   --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
@@ -411,6 +453,125 @@
   --shadow-lift: 0 2px 8px rgb(30 24 38 / 0.08);
   --shadow-raise: 0 10px 30px rgb(30 24 38 / 0.14);
   --shadow-float: 0 24px 60px rgb(30 24 38 / 0.18);
+}
+
+/*
+ * Print: the light theme, on paper - whichever theme is on screen.
+ *
+ * A dark screen printed is the failure this exists for. A browser drops
+ * backgrounds when it prints, unless told otherwise, so a page in the dark
+ * theme comes out as its near-white ink on white paper: a report that prints
+ * blank. And a page printed with its backgrounds is a sheet of black.
+ *
+ * So the light values, a third time, for every root - pinned dark or not -
+ * at the pins' own weight, so neither class wins on paper. Three things
+ * differ from the screen's light theme, and only three: the ground is the
+ * paper's own white, and shadows, which a sheet has no light for, are none.
+ * The tests hold the rest to the light theme value for value.
+ *
+ * `print-color-adjust: exact` is the other half, and it is inherited, so it
+ * is said once here. What a product draws as a fill - a bar of a chart, a
+ * cell of a heatmap, a status on its badge - is the value, not decoration,
+ * and a browser saving ink would print the chart without its bars.
+ */
+@media print {
+  :root:not(.dark),
+  :root.dark {
+    color-scheme: light;
+    print-color-adjust: exact;
+
+    --ground: #f6f5f7;
+    --ink: #232027;
+    --bg: #ffffff;
+    --raise: #ffffff;
+    --soft: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.05);
+    --softer: oklch(from color-mix(in oklab, var(--neutral-base) 45%, #181420) l c h / 0.03);
+    --line: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.11);
+    --line-2: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.2);
+    --text: color-mix(in oklab, var(--neutral-base) var(--neutral-tint), var(--ink));
+    --dim: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #45424d);
+    --faint: color-mix(in oklab, var(--neutral-base) var(--neutral-tint-strong), #635f6a);
+    --accent: oklch(from var(--accent-base) 0.48 c h);
+    --accent-2: oklch(from var(--accent-base) 0.4 c h);
+    --accent-soft: color-mix(in oklab, var(--accent-base) 12%, transparent);
+    --good: #006d3e;
+    --warn: #825400;
+    --bad: #b42429;
+    --info: #006885;
+    --good-soft: color-mix(in oklab, var(--good) 12%, transparent);
+    --warn-soft: color-mix(in oklab, var(--warn) 14%, transparent);
+    --bad-soft: color-mix(in oklab, var(--bad) 12%, transparent);
+    --info-soft: color-mix(in oklab, var(--info) 11%, transparent);
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --series-4: #eda100;
+    --series-5: #e87ba4;
+    --series-6: #008300;
+    --series-7: #4a3aa7;
+    --series-8: #85284d;
+    --scale-100: #cde2fb;
+    --scale-200: #9ec5f4;
+    --scale-300: #6da7ec;
+    --scale-400: #3987e5;
+    --scale-500: #2a78d6;
+    --scale-600: #1c5cab;
+    --scale-700: #104281;
+    --chart-grid: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.08);
+    --chart-axis: oklch(from color-mix(in oklab, var(--neutral-base) 30%, #181420) l c h / 0.18);
+    --heat-1: #84a8fd;
+    --heat-2: #7193e7;
+    --heat-3: #5e7fd1;
+    --heat-4: #4c6cbb;
+    --heat-5: #3b58a6;
+    --syntax-keyword: #7c3aad;
+    --syntax-string: #276c2b;
+    --syntax-number: #b5451b;
+    --syntax-comment: #6f6b78;
+    --syntax-name: #1a5fb4;
+    --syntax-type: #00695c;
+    --syntax-punctuation: #4a4753;
+    --syntax-meta: #9c4a00;
+    --shadow-lift: none;
+    --shadow-raise: none;
+    --shadow-float: none;
+  }
+}
+
+/*
+ * More contrast, for whoever asked their system for it - or a product that
+ * offers it: the `contrast-more` class pins it on, `contrast-normal` off,
+ * the way `light` and `dark` pin a theme.
+ *
+ * What it means is stated as numbers, and `contrastPromises('more')` holds
+ * them for every product in both themes: the three neutral inks rise a
+ * level - `text` and `dim` to AAA (7:1) on every ground, `faint` to AA on the
+ * tinted fills as well as the neutral ones - and the hairlines become
+ * boundaries that clear 3:1 (WCAG 1.4.11), `line` against both surfaces and
+ * `line-2`, the edge of a control, against every ground a control stands on.
+ *
+ * Written once for both themes: each is a mix of the theme's own text with
+ * its own ground, so the light theme's values come out of the same lines as
+ * the dark one's. The accent, the statuses and the fills already clear AA
+ * and stay as they are.
+ *
+ * After the themes and print, at the pins' weight, so it lands on whichever
+ * of them is in force.
+ */
+@media (prefers-contrast: more) {
+  :root:not(.contrast-normal) {
+    --dim: color-mix(in oklab, var(--text) 90%, var(--bg));
+    --faint: color-mix(in oklab, var(--text) 74%, var(--bg));
+    --line: oklch(from var(--text) l c h / 0.52);
+    --line-2: oklch(from var(--text) l c h / 0.62);
+  }
+}
+
+:root.contrast-more {
+  --dim: color-mix(in oklab, var(--text) 90%, var(--bg));
+  --faint: color-mix(in oklab, var(--text) 74%, var(--bg));
+  --line: oklch(from var(--text) l c h / 0.52);
+  --line-2: oklch(from var(--text) l c h / 0.62);
 }
 
 /*
@@ -1026,6 +1187,36 @@ body {
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+}
+
+/*
+ * Where a printed page may break. A row, a figure, a block of code cut in two
+ * across a sheet is read as two broken things; a heading left alone at the
+ * foot of a page heads nothing. What the set draws as a whole - a panel, a
+ * tile, a chart - says so itself with `print:break-inside-avoid`; these are
+ * the elements every page has. In the base layer, so a product can let a long
+ * table row break when it has to.
+ */
+@layer base {
+  @media print {
+    tr,
+    figure,
+    img,
+    svg,
+    pre,
+    blockquote {
+      break-inside: avoid;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      break-after: avoid;
+    }
   }
 }
 
