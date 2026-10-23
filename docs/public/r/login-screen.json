@@ -5,7 +5,7 @@
   "title": "LoginScreen",
   "description": "The page a product opens on for someone who is not signed in yet: a name, a password, a button, and the two ways it can go wrong said differently - the server refused, or the server could not be reached.",
   "dependencies": [
-    "dowel-ui@^0.38.1"
+    "dowel-ui@^0.39.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/alert.json",

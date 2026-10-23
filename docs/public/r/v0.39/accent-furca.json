@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-furca",
+  "type": "registry:file",
+  "title": "furca accent",
+  "description": "terracotta (paired with olive) #D9704A - the colour of the furca mark (fr). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/furca.css",
+      "target": "~/dowel/accents/furca.css",
+      "type": "registry:file",
+      "content": "/*\n * furca - terracotta (paired with olive) #D9704A, the colour of its mark (fr).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #D9704A;\n}\n"
+    }
+  ]
+}

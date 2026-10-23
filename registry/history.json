@@ -72,6 +72,19 @@
   ],
   "activity-heatmap": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -197,6 +210,19 @@
   ],
   "alert": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
+    {
       "version": "0.32.0",
       "changes": [
         {
@@ -224,6 +250,19 @@
     }
   ],
   "app-shell": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.29.0",
       "changes": [
@@ -297,6 +336,19 @@
     }
   ],
   "bar-chart": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -597,6 +649,19 @@
     }
   ],
   "chip": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "draw only promised inks on fills",
+          "date": "2026-10-23",
+          "commit": "6ccd89f459"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -1628,6 +1693,19 @@
   ],
   "frame": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "test",
+          "scope": "visual",
+          "breaking": false,
+          "summary": "photograph print and more contrast, and fail a frame that clips on paper",
+          "date": "2026-10-23",
+          "commit": "abacafc65c"
+        }
+      ]
+    },
+    {
       "version": "0.36.0",
       "changes": [
         {
@@ -1776,6 +1854,19 @@
   ],
   "json-viewer": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "draw only promised inks on fills",
+          "date": "2026-10-23",
+          "commit": "6ccd89f459"
+        }
+      ]
+    },
+    {
       "version": "0.25.0",
       "changes": [
         {
@@ -1869,6 +1960,19 @@
     }
   ],
   "line-chart": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -2073,6 +2177,19 @@
     }
   ],
   "nav-rail": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -2324,6 +2441,19 @@
     }
   ],
   "panel": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -2743,6 +2873,19 @@
     }
   ],
   "scroll-area": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.34.0",
       "changes": [
@@ -3250,6 +3393,19 @@
   ],
   "stat-tile": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
+    {
       "version": "0.28.0",
       "changes": [
         {
@@ -3488,6 +3644,19 @@
     }
   ],
   "theme": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "hold every ink to its floor on every ground, for every product",
+          "date": "2026-10-23",
+          "commit": "114a3fad77"
+        }
+      ]
+    },
     {
       "version": "0.37.0",
       "changes": [
@@ -3731,6 +3900,19 @@
   ],
   "tier": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "draw only promised inks on fills",
+          "date": "2026-10-23",
+          "commit": "6ccd89f459"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -3813,6 +3995,19 @@
   ],
   "timeline": [
     {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "draw only promised inks on fills",
+          "date": "2026-10-23",
+          "commit": "6ccd89f459"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -3840,6 +4035,19 @@
     }
   ],
   "toast": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.26.1",
       "changes": [
@@ -4077,6 +4285,19 @@
     }
   ],
   "window-frame": [
+    {
+      "version": "0.39.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let the frame go on paper, and keep a panel or a chart on one sheet",
+          "date": "2026-10-23",
+          "commit": "354d583983"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [

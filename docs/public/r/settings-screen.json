@@ -5,7 +5,7 @@
   "title": "SettingsScreen",
   "description": "Settings in sections: a column of destinations, each named with a line of what is in it, beside the open section - and on a phone, the column first and then the section, with the way back.",
   "dependencies": [
-    "dowel-ui@^0.38.1"
+    "dowel-ui@^0.39.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/frame.json",
