@@ -85,7 +85,8 @@ export function Pane({ label, head, foot, children, className, bodyClassName, vi
     <section
       data-pane
       className={cn(
-        'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-line bg-raise',
+        // On paper the body runs on rather than being cut at the pane's edge.
+        'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-line bg-raise print:overflow-visible',
         className,
       )}
       {...props}
