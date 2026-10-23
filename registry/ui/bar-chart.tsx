@@ -30,7 +30,7 @@ import { cn } from 'dowel-ui'
  * hover to find out.
  */
 
-export const barChartVariants = cva('flex items-end gap-1 border-b border-chart-axis', {
+export const barChartVariants = cva('flex items-end gap-1 border-b border-chart-axis print:break-inside-avoid', {
   variants: {
     size: {
       /* Inside a panel, beside other things. */

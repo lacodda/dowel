@@ -141,7 +141,7 @@ export function ToastViewport({ container, className, ...props }: ToastViewportP
       <Base.Viewport
         className={cn(
           'fixed bottom-4 right-4 flex w-[min(22rem,calc(100vw-2rem))] flex-col-reverse gap-2',
-          '[z-index:var(--z-toast)]',
+          '[z-index:var(--z-toast)] print:hidden',
           className,
         )}
         {...props}

@@ -38,7 +38,7 @@ import {
  * separate five blues.
  */
 
-export const activityHeatmapVariants = cva('inline-flex flex-col gap-2', {
+export const activityHeatmapVariants = cva('inline-flex flex-col gap-2 print:break-inside-avoid', {
   variants: {
     size: {
       /* The year view, where a square is small enough that 53 columns fit. */
