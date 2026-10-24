@@ -1,7 +1,7 @@
 import { Children, useId, useState, type ReactNode } from 'react'
 import { cn, type HeadingLevel } from 'dowel-ui'
 import { Button } from './button'
-import { Popover, PopoverPopup, PopoverTrigger } from './popover'
+import { Popover, PopoverPopup, PopoverTitle, PopoverTrigger } from './popover'
 
 /*
  * The bell in the title bar, lit by what asks to be looked at.
@@ -114,14 +114,16 @@ export function NotificationBell({
       </PopoverTrigger>
       <PopoverPopup align="end" arrow={false} size="lg" className="p-0">
         <header className="flex items-center gap-2 border-b border-line px-3 py-2">
-          <Heading className="text-sm font-semibold">{title}</Heading>
+          {/* The popover's title, drawn at the level asked for: Base UI names
+            * the popup by it. A bare heading left the dialog with no name. */}
+          <PopoverTitle render={<Heading />}>{title}</PopoverTitle>
           {count > 0 && markAllLabel ? (
             <Button variant="ghost" size="sm" className="ml-auto" disabled={busy} onClick={onMarkAll}>
               {markAllLabel}
             </Button>
           ) : null}
         </header>
-        <div className="max-h-80 overflow-y-auto px-3">
+        <div className="max-h-80 overflow-y-auto overscroll-contain px-3">
           {empty ? <p className="py-3 text-sm text-dim">{emptyLabel}</p> : children}
         </div>
         {seeAllLabel ? (
