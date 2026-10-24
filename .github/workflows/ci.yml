@@ -80,9 +80,11 @@ jobs:
       - name: Build the stand
         run: pnpm stand:build
 
+      # The pictures, the measurements, and the keyboard driving every overlay
+      # and menu: all three need the stand served in a real browser.
       - name: Compare the stand with its baselines
         if: ${{ inputs.update_snapshots != true }}
-        run: pnpm exec playwright test tests/visual/stand.spec.ts tests/visual/measured.spec.ts tests/visual/modes.spec.ts
+        run: pnpm exec playwright test tests/visual/stand.spec.ts tests/visual/measured.spec.ts tests/visual/modes.spec.ts tests/visual/keyboard.spec.ts
       - name: Keep the diffs, so a failure can be looked at
         if: ${{ failure() && inputs.update_snapshots != true }}
         uses: actions/upload-artifact@v7

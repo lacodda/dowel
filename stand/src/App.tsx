@@ -105,11 +105,15 @@ import {
 } from '../../registry/ui/preview-card'
 import {
   Menu,
+  MenuCheckboxIndicator,
+  MenuCheckboxItem,
   MenuGroup,
   MenuGroupLabel,
   MenuItem,
   MenuPopup,
   MenuSeparator,
+  MenuSub,
+  MenuSubTrigger,
   MenuTrigger,
 } from '../../registry/ui/menu'
 import { NumberField } from '../../registry/ui/number-field'
@@ -2198,20 +2202,73 @@ function MenuSection() {
           </MenuPopup>
         </Menu>
       </Row>
+
+      <Row label="a tick, a submenu, and an item that cannot be chosen - the arrows reach it, Enter does nothing">
+        <ViewMenu />
+      </Row>
     </>
+  )
+}
+
+function ViewMenu() {
+  const [grid, setGrid] = useState(true)
+  const [zoom, setZoom] = useState('100%')
+
+  return (
+    <>
+      <Menu>
+        <MenuTrigger render={<Button variant="ghost" />}>View</MenuTrigger>
+        <MenuPopup>
+          <MenuCheckboxItem checked={grid} onCheckedChange={setGrid}>
+            <span className="grid size-3.5 place-items-center">
+              <MenuCheckboxIndicator>
+                <Tick />
+              </MenuCheckboxIndicator>
+            </span>
+            Show the grid
+          </MenuCheckboxItem>
+          <MenuSub>
+            <MenuSubTrigger>Zoom</MenuSubTrigger>
+            <MenuPopup>
+              <MenuItem onClick={() => setZoom('125%')}>Zoom in</MenuItem>
+              <MenuItem onClick={() => setZoom('80%')}>Zoom out</MenuItem>
+              <MenuItem onClick={() => setZoom('100%')}>Actual size</MenuItem>
+            </MenuPopup>
+          </MenuSub>
+          <MenuItem disabled>Export the view</MenuItem>
+          <MenuItem onClick={() => setZoom('100%')}>Reset the layout</MenuItem>
+        </MenuPopup>
+      </Menu>
+      <span className="text-xs text-dim" data-probe="view-state">
+        grid {grid ? 'on' : 'off'}, {zoom}
+      </span>
+    </>
+  )
+}
+
+function Tick() {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+      <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }
 
 function ContextMenuSection() {
   return (
-    <Row label="right-click the area">
+    <Row label="right-click a row - or focus one and press Shift+F10 or the Menu key">
+      {/* Rows that take focus, because the keyboard opens a context menu from
+          whatever has focus inside the area: an area nothing in can be
+          focused is one only a pointer can open. */}
       <ContextMenu>
         <ContextMenuTrigger
-          render={
-            <div className="grid h-24 w-full place-items-center rounded-md border border-dashed border-line-2 text-xs text-faint" />
-          }
+          render={<div className="flex w-full flex-col gap-0.5 rounded-md border border-dashed border-line-2 p-1" />}
         >
-          right-click anywhere here
+          {['Harbour lights', 'Paper boats', 'Low tide'].map((title) => (
+            <Button key={title} variant="ghost" size="sm" className="justify-start">
+              {title}
+            </Button>
+          ))}
         </ContextMenuTrigger>
         <ContextMenuPopup>
           <ContextMenuItem>Open</ContextMenuItem>
