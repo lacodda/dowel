@@ -65,9 +65,12 @@ export const tooltipPopupVariants = cva(
        * that nothing can be clicked in, which loses the hover and focus
        * behaviour to gain a width.
        */
+      // Each width is held to the room as well: a plain `max-w-64` here is
+      // the later class in the same group as the room's own cap, and
+      // tailwind-merge kept it and dropped the cap.
       size: {
-        sm: 'max-w-64',
-        wide: 'max-w-96',
+        sm: 'max-w-[min(16rem,var(--available-width))]',
+        wide: 'max-w-[min(24rem,var(--available-width))]',
       },
     },
     defaultVariants: { size: 'sm' },

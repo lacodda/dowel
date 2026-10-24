@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import ts from 'typescript'
+import { cn } from '../packages/dowel/src/cn'
 import { registrySources } from './classes'
 
 /*
@@ -60,9 +61,15 @@ export interface Surface {
 
 /** The window every surface is measured in, and the room a positioner says
  * an anchored one has inside it - smaller than the window, so that a surface
- * held to the window but not to its room is told apart. */
+ * held to the window but not to its room is told apart.
+ *
+ * The room is narrower than every width a surface asks for by itself (a 16rem
+ * tooltip, a 16rem popover), so a surface that keeps its own width and drops
+ * the room's is too wide here. 240 is about what a phone leaves beside a
+ * trigger near its edge; a room wider than a surface's own cap would let the
+ * cap pass for a ceiling. */
 export const CEILING_WINDOW = { width: 800, height: 600 }
-export const CEILING_ROOM = { width: 300, height: 240 }
+export const CEILING_ROOM = { width: 240, height: 240 }
 
 /** One shape of one surface, as the browser laid it out around far more
  * content than it can hold. */
@@ -279,7 +286,13 @@ function evaluate(file: string, expression: ts.Expression, env: Map<string, stri
     return constant(file, expression.text)
   }
   if (ts.isCallExpression(expression) && ts.isIdentifier(expression.expression)) {
-    if (expression.expression.text === 'cn') return expression.arguments.flatMap((argument) => evaluate(file, argument, env))
+    // Through the real `cn`, because it is not a join: tailwind-merge drops
+    // the earlier of two classes in one group, and a ceiling written first can
+    // be dropped for a size written after it - the tooltip's `max-w-64` took
+    // out its room's `max-w-[var(--available-width)]` exactly so.
+    if (expression.expression.text === 'cn') {
+      return words(cn(expression.arguments.map((argument) => evaluate(file, argument, env).join(' '))))
+    }
     const config = cvaNamed(file, expression.expression.text)
     const chosen = new Map(axesOf(expression).map((axis) => [axis, env.get(axis) ?? config.defaults[axis]] as const))
     return run(config, chosen)
