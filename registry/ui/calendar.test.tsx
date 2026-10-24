@@ -183,11 +183,30 @@ function Example(props: Partial<React.ComponentProps<typeof Calendar>> = {}) {
 
 describe('the grid on screen', () => {
   it('is one control, not forty-two tab stops', () => {
-    const { container } = render(<Example />)
-    expect(screen.getByRole('grid').getAttribute('tabindex')).toBe('0')
-    for (const day of container.querySelectorAll('[role="gridcell"] button')) {
-      expect(day.getAttribute('tabindex')).toBe('-1')
-    }
+    const { container } = render(<Example value="2026-09-14" />)
+    const stops = Array.from(container.querySelectorAll('[role="grid"] [tabindex="0"]'))
+    expect(stops.map((day) => day.getAttribute('aria-label'))).toEqual(['14 September 2026'])
+    // The grid itself is not a stop: the focus is on a day, where a screen
+    // reader can say which one.
+    expect(screen.getByRole('grid').hasAttribute('tabindex')).toBe(false)
+  })
+
+  it('keeps a tab stop on a month the cursor has left', () => {
+    // Paged by the buttons to a month with neither the cursor nor the chosen
+    // day in it, the grid still has a way in: the first of that month.
+    const { container } = render(<Example month="2026-11-01" value="2026-09-14" />)
+    const stops = Array.from(container.querySelectorAll('[role="grid"] [tabindex="0"]'))
+    expect(stops.map((day) => day.getAttribute('aria-label'))).toEqual(['1 November 2026'])
+  })
+
+  it('takes the cursor with the focus, onto the day itself', async () => {
+    const user = userEvent.setup()
+    render(<Example value="2026-09-14" />)
+    screen.getByRole('button', { name: /^14 September 2026/ }).focus()
+    await user.keyboard('{ArrowRight}')
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: /^15 September 2026/ }))
+    expect(document.activeElement?.getAttribute('tabindex')).toBe('0')
+    expect(screen.getByRole('button', { name: /^14 September 2026/ }).getAttribute('tabindex')).toBe('-1')
   })
 
   it('names every day in full, not by its number', () => {
@@ -212,15 +231,25 @@ describe('the grid on screen', () => {
     const onValueChange = vi.fn()
     render(<Example value="2026-09-14" onValueChange={onValueChange} />)
 
-    // The grid is focused directly: the first Tab lands on the month-paging
-    // button, which comes before it in the DOM. What is under test is the
-    // grid's keyboard, not the tab order around it.
-    screen.getByRole('grid').focus()
+    // The cursor's day is focused directly: the first Tab lands on the
+    // month-paging button, which comes before it in the DOM. What is under
+    // test is the grid's keyboard, not the tab order around it.
+    screen.getByRole('button', { name: /^14 September 2026/ }).focus()
     await user.keyboard('{ArrowRight}{ArrowDown}')
     expect(onValueChange).not.toHaveBeenCalled()
 
     await user.keyboard('{Enter}')
     expect(onValueChange).toHaveBeenCalledWith('2026-09-22')
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+  })
+
+  it('chooses with Space as well as Enter, once each', async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<Example value="2026-09-14" onValueChange={onValueChange} />)
+    screen.getByRole('button', { name: /^14 September 2026/ }).focus()
+    await user.keyboard('{ArrowLeft} ')
+    expect(onValueChange.mock.calls).toEqual([['2026-09-13']])
   })
 
   it('pages the month when the cursor leaves it', async () => {
@@ -228,7 +257,7 @@ describe('the grid on screen', () => {
     const onMonthChange = vi.fn()
     render(<Example value="2026-09-30" onMonthChange={onMonthChange} />)
 
-    screen.getByRole('grid').focus()
+    screen.getByRole('button', { name: /^30 September 2026/ }).focus()
     await user.keyboard('{ArrowRight}')
     expect(onMonthChange).toHaveBeenCalledWith('2026-10-01')
   })
@@ -249,17 +278,19 @@ describe('the grid on screen', () => {
       <Example min="2026-09-10" max="2026-09-20" onValueChange={onValueChange} />,
     )
 
-    /* Found through the DOM rather than by role: `getByRole` skips disabled
-     * elements by default, so asking for the day that must be unclickable
-     * fails to find it - which reads as the component being wrong when it is
-     * the query. */
     const day = (label: string) =>
       Array.from(container.querySelectorAll('[role="gridcell"] button')).find((button) =>
         button.getAttribute('aria-label')?.startsWith(label),
       ) as HTMLButtonElement
 
-    expect(day('2 September').disabled).toBe(true)
+    // Said, not enforced by the element: a `disabled` button cannot take the
+    // focus, and the cursor has to be able to stand on it.
+    expect(day('2 September').getAttribute('aria-disabled')).toBe('true')
+    expect(day('2 September').disabled).toBe(false)
     await user.click(day('2 September'))
+    expect(onValueChange).not.toHaveBeenCalled()
+    day('2 September').focus()
+    await user.keyboard('{Enter} ')
     expect(onValueChange).not.toHaveBeenCalled()
 
     await user.click(day('15 September'))

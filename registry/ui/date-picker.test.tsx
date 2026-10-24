@@ -49,6 +49,22 @@ describe('DatePicker', () => {
     )
   })
 
+  it('opens from the keyboard on the chosen day, in a named dialog', async () => {
+    // Not on the month-paging button, where the first focusable thing in the
+    // popup put it: the days were two Tabs away from a reader who came to
+    // choose one.
+    const user = userEvent.setup()
+    render(<Example value="2026-09-14" />)
+    screen.getByRole('button', { name: /^Release date/ }).focus()
+    await user.keyboard('{Enter}')
+    expect(await screen.findByRole('dialog', { name: 'Release date' })).toBeDefined()
+    await vi.waitFor(() =>
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: /^14 September 2026/ })),
+    )
+    await user.keyboard('{ArrowRight}')
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: /^15 September 2026/ }))
+  })
+
   it('opens the calendar and chooses a day', async () => {
     const user = userEvent.setup()
     const onValueChange = vi.fn()

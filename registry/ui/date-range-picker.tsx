@@ -151,8 +151,18 @@ export function DateRangePicker({
         </span>
       </PopoverTrigger>
 
-      <PopoverPopup arrow={false} className="w-auto p-3">
+      {/* The calendar takes the focus to the day under the cursor itself, so
+        * the popup moves it nowhere first. And the popup is a dialog, so it is
+        * named - for the field. */}
+      <PopoverPopup
+        arrow={false}
+        className="w-auto p-3"
+        initialFocus={false}
+        aria-label={labelledBy === undefined ? (ariaLabel ?? placeholder) : undefined}
+        aria-labelledby={labelledBy}
+      >
         <Calendar
+          autoFocus
           value={range.start}
           rangeEnd={range.end}
           min={min}

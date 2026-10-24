@@ -62,6 +62,17 @@ describe('DateRangePicker', () => {
     expect(label).toContain('10 Sept 2026')
   })
 
+  it('opens from the keyboard on the start of the range, in a named dialog', async () => {
+    const user = userEvent.setup()
+    render(<Example value={{ start: '2026-09-08', end: '2026-09-19' }} />)
+    screen.getByRole('button', { name: /^Period/ }).focus()
+    await user.keyboard('{Enter}')
+    expect(await screen.findByRole('dialog', { name: 'Period' })).toBeDefined()
+    await vi.waitFor(() =>
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: /^8 September 2026/ })),
+    )
+  })
+
   it('reports the first click as a start with no end', async () => {
     /* Fires on both clicks, which is what lets a product show "from 2
      * September" while the reader is still deciding. */

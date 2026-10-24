@@ -167,12 +167,22 @@ describe('what a primitive weighs', () => {
         'the room it hangs in on both axes, per size, which tests/ceilings.test.ts holds.',
     },
     'date-range-picker': {
-      ceiling: 4352,
+      ceiling: 4608,
       because:
         'One field with three states the reader moves through - nothing, a start waiting ' +
         'for its end, a whole range - each named on the trigger with the label first ' +
         '(WCAG 2.5.3), and the way back to nothing under the month. The calendar, its ' +
-        'sums and the field classes are already their own modules.',
+        'sums and the field classes are already their own modules. Then (v0.40) a name ' +
+        'for its popup, which is a dialog, and the focus on the day rather than the first ' +
+        'button in it.',
+    },
+    'date-picker': {
+      ceiling: 4352,
+      because:
+        'The trigger named with its label first (WCAG 2.5.3), a hidden input for a form, ' +
+        'the way back to nothing under the month, and (v0.40) a name for its popup and ' +
+        'the focus on the chosen day. The calendar, its sums and the field classes are ' +
+        'already their own modules; what the two pickers still share is one popup shape.',
     },
     'tree-view': {
       ceiling: 4352,
