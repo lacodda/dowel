@@ -161,6 +161,37 @@ Those pictures go further than the gate. A release note shows the stand's
 picture of everything the release added or changed the look of, linked at the
 tag, so the note keeps showing that release after the next one changes it.
 
+## The keyboard, for everything that opens
+
+Every overlay and menu, and every component that opens one, is driven without
+a pointer in a real browser against the stand: opened from its trigger, walked,
+chosen from, closed — with the focus followed the whole way.
+
+- a modal takes the focus in, keeps it there on every Tab and Shift+Tab, and
+  gives it back to its trigger on Escape;
+- a popover, a picker or a bell takes it in, gives it back on Escape, and
+  closes when Tab walks out of it;
+- a menu opens on Enter, Space or Down with its first item ready, goes round
+  from the last item to the first and back, answers Home, End and the first
+  letters of an item, reaches an item that cannot be chosen without choosing
+  it, opens a submenu on Right and closes one level per Escape;
+- a select opens on the chosen option; a combobox keeps the focus in its field
+  while the arrows walk the list; a date picker opens on the chosen day, not
+  on the button that pages the month;
+- a tooltip and a preview card show for the focused trigger and go on Escape;
+  a toast is reached with F6; a context menu opens from a focused row on
+  Shift+F10 or the Menu key.
+
+```console
+$ pnpm visual           # the pictures, the measurements and the keyboard
+```
+
+It is a browser and not jsdom because jsdom lays nothing out: a menu's wrap
+from the last item to the first never fires there, and Shift+F10 is never
+turned into a `contextmenu`. Whether everything is covered is checked in the
+ordinary test run — a new popup, or a new component that opens one, with no
+keyboard block fails `pnpm test`.
+
 ## The room a popup has
 
 Every surface the set draws over the page — a Base UI `Popup` of any kind, and

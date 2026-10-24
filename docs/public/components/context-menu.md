@@ -29,6 +29,13 @@ room for a button beside it - a row in a long table, an item on a canvas.
 undiscoverable: nobody finds a context menu they were not expecting. A context
 menu should repeat actions that are reachable some other way, not hide them.
 
+**The keyboard opens it from inside the area.** `Shift+F10` and the Menu key
+fire the same `contextmenu` event a right click does, on whatever has focus -
+so the menu opens for a focused row, a focused tile, a focused button inside
+the area, and `Escape` puts the focus back there. An area with nothing in it
+that can take focus is a menu only a pointer can open: wrap things a reader can
+tab to.
+
 It positions against the point that was clicked, so there is no `side` or
 `align` to give it, and no anchor to attach it to from elsewhere. Base UI also
 withholds `openOnHover`, `modal` and `handle` here for the same reason.
@@ -70,7 +77,7 @@ import {
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
 | `tone` | `default \| danger` | `default` | `danger` draws the destructive one apart |
-| `disabled` | `boolean` | `false` | Skipped by the keyboard, not only dimmed |
+| `disabled` | `boolean` | `false` | Reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists and why it is not there |
 | `closeOnClick` | `boolean` | `true` | For the item that should leave the menu open |
 | `className` | `string` | | Merged so the caller wins a conflict |
 
