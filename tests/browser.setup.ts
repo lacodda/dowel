@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import type { TestProject } from 'vitest/node'
 import { lineProducts } from '../packages/dowel/src/line'
 import { compiled, motionSources, motionStrings } from './motion'
+import { CEILING_ROOM, CEILING_WINDOW, surfaces, type CeilingMeasure, type Surface } from './ceilings'
 
 /*
  * Every browser the suite needs, launched once and before any worker starts.
@@ -34,6 +35,7 @@ export default async function setup(project: TestProject) {
   project.provide('palettesDir', dir)
   project.provide('painted', await paint(dir))
   project.provide('motion', await measureMotion())
+  project.provide('ceilings', await measureCeilings())
   return () => rmSync(dir, { recursive: true, force: true })
 }
 
@@ -153,10 +155,74 @@ async function measureMotion(): Promise<MotionMeasure[]> {
   }
 }
 
+/*
+ * Every surface the set draws over the page, in every shape, laid out by a
+ * real browser around a block of content far larger than any window. jsdom
+ * lays nothing out, so the classes alone say a ceiling was written; only here
+ * is it seen holding - a `max-h-[var(--available-heigth)]` compiles, and
+ * stops nothing.
+ */
+async function measureCeilings(): Promise<CeilingMeasure[] | { error: string }> {
+  let found: Surface[]
+  try {
+    found = surfaces()
+  } catch (error) {
+    return { error: String(error) }
+  }
+  const css = await compiled([
+    ...new Set(found.flatMap((surface) => surface.shapes.flatMap((shape) => [...shape.layers.flatMap((layer) => layer.classes), ...(shape.body ?? [])]))),
+  ])
+  const attribute = (classes: string[]) => classes.join(' ').replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+  // What a positioner publishes, set where Base UI sets it.
+  const room = `position:absolute;left:0;top:0;--available-width:${CEILING_ROOM.width}px;--available-height:${CEILING_ROOM.height}px;--anchor-width:120px;--anchor-height:32px`
+  const content = '<div style="width:3000px;height:3000px"></div>'
+
+  const { chromium } = await import('@playwright/test')
+  const browser = await chromium.launch()
+  const measures: CeilingMeasure[] = []
+  try {
+    const page = await browser.newPage({ viewport: CEILING_WINDOW })
+    for (const surface of found) {
+      for (const shape of surface.shapes) {
+        const inner = shape.body ? `<div data-body class="${attribute(shape.body)}">${content}</div>` : content
+        const html = shape.layers.reduceRight((within, layer, at) => {
+          const last = at === shape.layers.length - 1
+          const style = layer.part === 'Positioner' ? ` style="${room}"` : ''
+          return `<div${last ? ' data-surface' : ''} class="${attribute(layer.classes)}"${style}>${within}</div>`
+        }, inner)
+        await page.setContent(`<html><head><style>${css}</style></head><body>${html}</body></html>`)
+        const read = await page.evaluate(() => {
+          const surface = document.querySelector('[data-surface]')!
+          const body = document.querySelector('[data-body]')
+          const scroller = body ?? surface
+          const rect = surface.getBoundingClientRect()
+          const own = getComputedStyle(surface)
+          const style = getComputedStyle(scroller)
+          return {
+            box: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+            overflow: { x: own.overflowX, y: own.overflowY },
+            scroller: body ? ('body' as const) : ('surface' as const),
+            scroll: {
+              overflowY: style.overflowY,
+              overscrollY: style.overscrollBehaviorY,
+              scrolls: scroller.scrollHeight > scroller.clientHeight,
+            },
+          }
+        })
+        measures.push({ file: surface.file, line: surface.line, variant: shape.variant, anchored: surface.anchored, ...read })
+      }
+    }
+  } finally {
+    await browser.close()
+  }
+  return measures
+}
+
 declare module 'vitest' {
   export interface ProvidedContext {
     palettesDir: string
     painted: Painted
     motion: MotionMeasure[]
+    ceilings: CeilingMeasure[] | { error: string }
   }
 }

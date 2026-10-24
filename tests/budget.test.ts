@@ -156,14 +156,15 @@ describe('what a primitive weighs', () => {
         'drawing them',
     },
     'command-palette': {
-      ceiling: 4864,
+      ceiling: 5120,
       because:
         'The explicit viewport anchor, and the clothes its three parts were missing. ' +
         'A palette has no trigger to point at, so without the anchor the positioner ' +
         'never resolves and the popup renders fully transparent. The item, list and ' +
         'empty state were bare re-exports - the comment claimed "the same clothes as a ' +
         'Combobox row" and the component wore none, so the rows inherited the popup ' +
-        'font and stood a third taller than every other list in the set.',
+        'font and stood a third taller than every other list in the set. Then (v0.40) ' +
+        'the room it hangs in on both axes, per size, which tests/ceilings.test.ts holds.',
     },
     'date-range-picker': {
       ceiling: 4352,

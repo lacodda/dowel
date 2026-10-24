@@ -31,7 +31,7 @@ import { LayerProvider } from './layer'
 
 export const commandPalettePopupVariants = cva(
   [
-    'flex w-[min(36rem,calc(100vw-2rem))] flex-col overflow-hidden',
+    'flex w-[min(36rem,calc(100vw-2rem))] max-w-[var(--available-width)] flex-col overflow-hidden',
     'rounded-xl border border-line bg-raise text-text shadow-float',
     'focus-visible:outline-none',
     '[transition:opacity_var(--duration-quick)_var(--ease-out),transform_var(--duration-quick)_var(--ease-out)]',
@@ -40,9 +40,12 @@ export const commandPalettePopupVariants = cva(
   ],
   {
     variants: {
+      // A height the palette asks for, and never more than the window leaves
+      // under the point it hangs from: a laptop held sideways has less than
+      // 32rem below a fifth of its height.
       size: {
-        md: 'max-h-96',
-        lg: 'max-h-128',
+        md: 'max-h-[min(24rem,var(--available-height))]',
+        lg: 'max-h-[min(32rem,var(--available-height))]',
       },
     },
     defaultVariants: { size: 'md' },
@@ -66,7 +69,7 @@ export function CommandPaletteItem({ className, ...props }: Base.Item.Props) {
 
 /** The list. Takes a render function over the filtered items. */
 export function CommandPaletteList({ className, ...props }: Base.List.Props) {
-  return <Base.List className={cn('overflow-y-auto p-1', className)} {...props} />
+  return <Base.List className={cn('min-h-0 overflow-y-auto overscroll-contain p-1', className)} {...props} />
 }
 
 /** Shown when nothing matches. The words are the product's.
