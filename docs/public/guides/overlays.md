@@ -85,6 +85,23 @@ What is dowel's is the clothes — and the enter and the leave, which are class
 lists rather than a state machine, because Base UI puts `data-open`,
 `data-closed` and `data-starting-style` on the element for you.
 
+And one rule about size, which holds for every one of them and for menus,
+lists and toasts too: **anything drawn over the page fits the window on both
+axes, and scrolls inside itself when there is more than fits.** A popup placed
+against a trigger is held to the room its positioner says is left between the
+trigger and the window's edges; a dialog, a drawer or a toast, to the window.
+The scroll is contained, so reaching the end of a long menu does not start
+scrolling the page underneath it.
+
+A dialog, a drawer, a confirmation, the palette and a toast are columns, and
+only one part of each gives way — the body, the list, the description — so the
+title and the answer stay in reach while a long form moves between them. Put a
+long form in `DialogBody`, not straight into the popup.
+
+The short example on the stand always fits, so the rule is not checked by
+looking at one: [a gate](/dowel/guides/gates/#the-room-a-popup-has) hands every
+surface in every variant far more content than any window holds.
+
 ## Stacking
 
 Overlays sit on named layers rather than on numbers picked in the moment:

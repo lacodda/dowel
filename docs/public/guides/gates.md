@@ -161,6 +161,27 @@ Those pictures go further than the gate. A release note shows the stand's
 picture of everything the release added or changed the look of, linked at the
 tag, so the note keeps showing that release after the next one changes it.
 
+## The room a popup has
+
+Every surface the set draws over the page — a Base UI `Popup` of any kind, and
+a toast — is found in the source by its part, not listed by hand, and every
+combination of its variants is written out as the classes it would carry. A
+real browser then lays each one out around a block of content far larger than
+any window, and the gate asks:
+
+- does it fit its room on both axes — the room its positioner publishes
+  (`--available-width`, `--available-height`) when it is placed against a
+  trigger, and the window otherwise?
+- does what does not fit scroll — in the surface itself, or in the one part it
+  names as its body — and is that scroll contained, so it is not handed on to
+  the page?
+
+A ceiling on one axis is a defect waiting for the long case: the dialog was
+capped across from its first release and not down, and hung off both ends of
+the window the first time a product gave it a real form. The browser is there
+because a class can compile and still hold nothing — a misspelt custom
+property is a valid class and no ceiling at all.
+
 ## Nothing here is anybody's
 
 The stand, the [demo](/dowel/demo/) and every picture of them are drawn on one

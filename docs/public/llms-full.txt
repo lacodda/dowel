@@ -5854,6 +5854,14 @@ Where a popup opened here should portal to: the host of the layer it is in, or
 The CSS expression a layer's floor is declared with, for a product that needs
 to place something of its own on it.
 
+### `popupRoom`
+
+The classes that hold a popup placed against a trigger to the room its
+positioner publishes, on both axes, and scroll it inside itself past that:
+`max-h-[var(--available-height)] max-w-[var(--available-width)]
+overflow-y-auto overscroll-contain`. Menu, Popover, PreviewCard and Tooltip
+wear it; a product's own anchored popup should too.
+
 ---
 
 # LineChart
@@ -11868,6 +11876,27 @@ Those pictures go further than the gate. A release note shows the stand's
 picture of everything the release added or changed the look of, linked at the
 tag, so the note keeps showing that release after the next one changes it.
 
+## The room a popup has
+
+Every surface the set draws over the page — a Base UI `Popup` of any kind, and
+a toast — is found in the source by its part, not listed by hand, and every
+combination of its variants is written out as the classes it would carry. A
+real browser then lays each one out around a block of content far larger than
+any window, and the gate asks:
+
+- does it fit its room on both axes — the room its positioner publishes
+  (`--available-width`, `--available-height`) when it is placed against a
+  trigger, and the window otherwise?
+- does what does not fit scroll — in the surface itself, or in the one part it
+  names as its body — and is that scroll contained, so it is not handed on to
+  the page?
+
+A ceiling on one axis is a defect waiting for the long case: the dialog was
+capped across from its first release and not down, and hung off both ends of
+the window the first time a product gave it a real form. The browser is there
+because a class can compile and still hold nothing — a misspelt custom
+property is a valid class and no ceiling at all.
+
 ## Nothing here is anybody's
 
 The stand, the [demo](/dowel/demo/) and every picture of them are drawn on one
@@ -12402,6 +12431,23 @@ them and it is the part that is hard to write:
 What is dowel's is the clothes — and the enter and the leave, which are class
 lists rather than a state machine, because Base UI puts `data-open`,
 `data-closed` and `data-starting-style` on the element for you.
+
+And one rule about size, which holds for every one of them and for menus,
+lists and toasts too: **anything drawn over the page fits the window on both
+axes, and scrolls inside itself when there is more than fits.** A popup placed
+against a trigger is held to the room its positioner says is left between the
+trigger and the window's edges; a dialog, a drawer or a toast, to the window.
+The scroll is contained, so reaching the end of a long menu does not start
+scrolling the page underneath it.
+
+A dialog, a drawer, a confirmation, the palette and a toast are columns, and
+only one part of each gives way — the body, the list, the description — so the
+title and the answer stay in reach while a long form moves between them. Put a
+long form in `DialogBody`, not straight into the popup.
+
+The short example on the stand always fits, so the rule is not checked by
+looking at one: [a gate](/dowel/guides/gates/#the-room-a-popup-has) hands every
+surface in every variant far more content than any window holds.
 
 ## Stacking
 

@@ -99,3 +99,11 @@ Where a popup opened here should portal to: the host of the layer it is in, or
 
 The CSS expression a layer's floor is declared with, for a product that needs
 to place something of its own on it.
+
+### `popupRoom`
+
+The classes that hold a popup placed against a trigger to the room its
+positioner publishes, on both axes, and scroll it inside itself past that:
+`max-h-[var(--available-height)] max-w-[var(--available-width)]
+overflow-y-auto overscroll-contain`. Menu, Popover, PreviewCard and Tooltip
+wear it; a product's own anchored popup should too.
