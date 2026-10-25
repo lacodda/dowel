@@ -25,9 +25,16 @@ const probe = (page: Page, name: string) => page.locator(`[data-probe="${name}"]
 const row = (page: Page, label: string) => page.getByText(label, { exact: true }).locator('xpath=following-sibling::div[1]')
 
 /** Whether the focus is inside the element - on it, or on anything in it.
- * False, rather than a wait, once the element has gone. */
-const holdsFocus = async (locator: Locator) =>
-  (await locator.count()) > 0 && (await locator.evaluate((element) => element.contains(document.activeElement)))
+ * Never a wait: the handles are taken as they are, and one that has gone
+ * holds nothing. A count followed by an evaluate waited for an element that
+ * left in between - a popover in its exit animation - until the test timed
+ * out, on CI's slower machine. */
+const holdsFocus = async (locator: Locator) => {
+  for (const handle of await locator.elementHandles()) {
+    if (await handle.evaluate((element) => element.isConnected && element.contains(document.activeElement))) return true
+  }
+  return false
+}
 
 const expectFocusIn = async (locator: Locator) => expect.poll(() => holdsFocus(locator)).toBe(true)
 
