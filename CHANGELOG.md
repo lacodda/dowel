@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.40.0] - 2026-10-25
+
+### Bug Fixes
+- Hold every surface over the page to its room on both axes
+- Put the calendar's cursor on the focus, and open a picker on the day
+- Name the notification bell's popup by its title
+- Hold the tooltip's width to its room
+- Open a right-hand drawer at the right-hand edge
+- Take no room for the combobox's empty message while something matched
+- Let ContextMenuCheckboxItem take checked and onCheckedChange
+
+### Build
+- Regenerate the registry and llms.txt
+- Regenerate the registry and llms.txt
+- Regenerate the registry and llms.txt
+- Regenerate the registry, its v0.40 snapshot, the history and llms.txt
+
+### Documentation
+- An unavailable item is reached, not skipped, and a context menu opens from the keyboard
+
+### Refactoring
+- Say state on the element, and measure the palette's anchor apart
+
+### Testing
+- Drive every overlay and menu by the keyboard in a browser
+- Hold every overlay's wiring, and what mutation found unheld
+- Run Stryker weekly, with a floor under every file
+
 ## [0.39.0] - 2026-10-23
 
 ### Bug Fixes
