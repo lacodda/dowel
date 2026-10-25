@@ -1,6 +1,12 @@
 {
   "axe": "4.14.0",
   "rules": {
+    "button-name": {
+      "help": "Buttons must have discernible text",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
     "color-contrast": {
       "help": "Elements must meet minimum color contrast ratio thresholds",
       "criteria": [
@@ -18,6 +24,12 @@
         "4.1.2"
       ]
     },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
     "target-size": {
       "help": "All touch targets must be 24px large, or leave sufficient space",
       "criteria": [
@@ -27,9 +39,11 @@
   },
   "dark": {
     "passes": [
+      "button-name",
       "color-contrast",
       "empty-heading",
       "link-name",
+      "nested-interactive",
       "target-size"
     ],
     "incomplete": [],
@@ -37,9 +51,11 @@
   },
   "light": {
     "passes": [
+      "button-name",
       "color-contrast",
       "empty-heading",
       "link-name",
+      "nested-interactive",
       "target-size"
     ],
     "incomplete": [],
