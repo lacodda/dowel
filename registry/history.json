@@ -519,6 +519,27 @@
   ],
   "calendar": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "say state on the element, and measure the palette's anchor apart",
+          "date": "2026-10-25",
+          "commit": "8d9b4e1183"
+        },
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "put the calendar's cursor on the focus, and open a picker on the day",
+          "date": "2026-10-24",
+          "commit": "fe23f69082"
+        }
+      ]
+    },
+    {
       "version": "0.34.0",
       "changes": [
         {
@@ -785,6 +806,19 @@
   ],
   "combobox": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "take no room for the combobox's empty message while something matched",
+          "date": "2026-10-25",
+          "commit": "24b2fcf8f3"
+        }
+      ]
+    },
+    {
       "version": "0.36.0",
       "changes": [
         {
@@ -903,6 +937,27 @@
     }
   ],
   "command-palette": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "say state on the element, and measure the palette's anchor apart",
+          "date": "2026-10-25",
+          "commit": "8d9b4e1183"
+        },
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -1074,6 +1129,19 @@
   ],
   "context-menu": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "let ContextMenuCheckboxItem take checked and onCheckedChange",
+          "date": "2026-10-25",
+          "commit": "290b4dc10e"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -1197,6 +1265,27 @@
   ],
   "date-picker": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "say state on the element, and measure the palette's anchor apart",
+          "date": "2026-10-25",
+          "commit": "8d9b4e1183"
+        },
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "put the calendar's cursor on the focus, and open a picker on the day",
+          "date": "2026-10-24",
+          "commit": "fe23f69082"
+        }
+      ]
+    },
+    {
       "version": "0.38.0",
       "changes": [
         {
@@ -1263,6 +1352,27 @@
     }
   ],
   "date-range-picker": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "say state on the element, and measure the palette's anchor apart",
+          "date": "2026-10-25",
+          "commit": "8d9b4e1183"
+        },
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "put the calendar's cursor on the focus, and open a picker on the day",
+          "date": "2026-10-24",
+          "commit": "fe23f69082"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -1485,6 +1595,19 @@
   ],
   "drawer": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "open a right-hand drawer at the right-hand edge",
+          "date": "2026-10-25",
+          "commit": "c851eb4a5a"
+        }
+      ]
+    },
+    {
       "version": "0.32.0",
       "changes": [
         {
@@ -1677,6 +1800,19 @@
     }
   ],
   "filter-popover": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "say state on the element, and measure the palette's anchor apart",
+          "date": "2026-10-25",
+          "commit": "8d9b4e1183"
+        }
+      ]
+    },
     {
       "version": "0.26.0",
       "changes": [
@@ -1938,6 +2074,19 @@
   ],
   "layer": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
+    {
       "version": "0.32.0",
       "changes": [
         {
@@ -2116,6 +2265,19 @@
   ],
   "menu": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -2231,6 +2393,19 @@
     }
   ],
   "notification-bell": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "name the notification bell's popup by its title",
+          "date": "2026-10-24",
+          "commit": "8c1843eef6"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -2524,6 +2699,19 @@
   ],
   "popover": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
+    {
       "version": "0.32.0",
       "changes": [
         {
@@ -2564,6 +2752,19 @@
     }
   ],
   "preview-card": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
     {
       "version": "0.32.0",
       "changes": [
@@ -3050,6 +3251,19 @@
     }
   ],
   "select": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -4036,6 +4250,27 @@
   ],
   "toast": [
     {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "refactor",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "say state on the element, and measure the palette's anchor apart",
+          "date": "2026-10-25",
+          "commit": "8d9b4e1183"
+        },
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
+    {
       "version": "0.39.0",
       "changes": [
         {
@@ -4076,6 +4311,27 @@
     }
   ],
   "tooltip": [
+    {
+      "version": "0.40.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold the tooltip's width to its room",
+          "date": "2026-10-24",
+          "commit": "3f1d375178"
+        },
+        {
+          "type": "fix",
+          "scope": "ui",
+          "breaking": false,
+          "summary": "hold every surface over the page to its room on both axes",
+          "date": "2026-10-24",
+          "commit": "d0436a7a18"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [

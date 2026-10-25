@@ -5,7 +5,7 @@
   "title": "ProductMark",
   "description": "The product-mark primitive.",
   "dependencies": [
-    "dowel-ui@^0.39.0"
+    "dowel-ui@^0.40.0"
   ],
   "registryDependencies": [],
   "files": [

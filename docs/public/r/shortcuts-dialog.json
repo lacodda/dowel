@@ -5,7 +5,7 @@
   "title": "ShortcutsDialog",
   "description": "The sheet of every key the application answers to, opened by `?` - written from the list of commands rather than by hand, so it cannot promise a key that does not work.",
   "dependencies": [
-    "dowel-ui@^0.39.0"
+    "dowel-ui@^0.40.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/button.json",
