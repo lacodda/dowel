@@ -74,7 +74,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | command-palette | 7 |  |  |
 | commands | 21 |  |  |
 | confirm-dialog | 12 |  |  |
-| context-menu | 4 |  |  |
+| context-menu | 6 |  |  |
 | copy-button | 16 |  |  |
 | copyable | 18 |  |  |
 | date-picker | 15 |  |  |
