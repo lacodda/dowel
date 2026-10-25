@@ -66,7 +66,9 @@ export function FilterPopover({
       >
         <svg
           viewBox="0 0 16 16"
-          className={cn('size-3', active && 'fill-current')}
+          // Filled while the column is narrowing - read from the trigger's
+          // `data-active`, the one place that state is said.
+          className="size-3 in-data-[active]:fill-current"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.4"

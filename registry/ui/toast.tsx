@@ -118,7 +118,7 @@ export interface ToastProps extends Base.Root.Props, VariantProps<typeof toastVa
 /** One toast. The tone comes from the caller or from `toast.type`, so a
  * product that raises them through the manager gets the stripe for free. */
 export function Toast({ tone, className, toast, ...props }: ToastProps) {
-  const fromType = TONE_FOR_TYPE[toast.type ?? ''] ?? undefined
+  const fromType = toast.type === undefined ? undefined : TONE_FOR_TYPE[toast.type]
   return (
     <Base.Root
       toast={toast}

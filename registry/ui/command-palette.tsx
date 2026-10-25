@@ -52,6 +52,13 @@ export const commandPalettePopupVariants = cva(
   },
 )
 
+/** The point the palette hangs from in a window of this size: its middle, a
+ * fifth of the way down - where the eye already is, rather than dead centre.
+ * A zero-sized rectangle, since there is no trigger to point at. */
+export function commandPaletteAnchor(width: number, height: number): DOMRect {
+  return new DOMRect(width / 2, height * 0.18, 0, 0)
+}
+
 /** The root. Controlled by `open`/`onOpenChange`, because what opens a palette
  * is a shortcut somewhere else in the application. */
 export const CommandPalette = Base.Root
@@ -151,15 +158,9 @@ export function CommandPalettePopup({
          * Found by reading the computed style off the positioner rather than
          * the popup, which was opaque the whole time.
          *
-         * A zero-height rectangle a fifth of the way down puts the palette
-         * where the eye already is rather than dead centre. */
-        anchor={{
-          getBoundingClientRect: () => {
-            const width = typeof window === 'undefined' ? 0 : window.innerWidth
-            const top = typeof window === 'undefined' ? 0 : window.innerHeight * 0.18
-            return new DOMRect(width / 2, top, 0, 0)
-          },
-        }}
+         * Measured only in a browser, when the palette is placed - never
+         * while it renders on a server. */
+        anchor={{ getBoundingClientRect: () => commandPaletteAnchor(window.innerWidth, window.innerHeight) }}
         positionMethod="fixed"
         side="bottom"
         align="center"

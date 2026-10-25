@@ -146,7 +146,7 @@ export function DateRangePicker({
           <path d="M2 6.5h12M5.5 2v2M10.5 2v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
         </svg>
         {/* The empty face in `dim`: `faint` at this size measured 3.2:1. */}
-        <span id={shownId} className={cn('truncate', shown === undefined && 'text-dim')}>
+        <span id={shownId} data-placeholder={shown === undefined ? '' : undefined} className="truncate data-[placeholder]:text-dim">
           {shown ?? placeholder}
         </span>
       </PopoverTrigger>

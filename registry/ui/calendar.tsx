@@ -241,6 +241,11 @@ export function Calendar({
                     aria-disabled={disabled || undefined}
                     aria-label={fullDate.format(new Date(parts(date).year, parts(date).month - 1, parts(date).day))}
                     aria-current={date === now ? 'date' : undefined}
+                    // The day's state, said once on the element: the styles
+                    // below read it, and so can a product's own or a test.
+                    data-outside={outside || undefined}
+                    data-selected={selected || undefined}
+                    data-in-range={inRange || undefined}
                     onClick={() => {
                       setFocused(date)
                       if (!disabled) onValueChange?.(date)
@@ -248,13 +253,13 @@ export function Calendar({
                     className={cn(
                       'flex h-8 w-full items-center justify-center rounded-md text-sm tabular-nums',
                       'transition-colors',
-                      outside ? 'text-faint' : 'text-text',
-                      inRange && 'bg-accent-soft',
-                      selected && 'bg-accent font-medium text-on-accent',
-                      !selected && !disabled && 'hover:bg-soft',
-                      date === now && !selected && 'font-medium text-accent',
+                      'text-text data-[outside]:text-faint',
+                      'data-[in-range]:bg-accent-soft',
+                      'data-[selected]:bg-accent data-[selected]:font-medium data-[selected]:text-on-accent',
+                      'not-data-[selected]:not-aria-disabled:hover:bg-soft',
+                      'not-data-[selected]:aria-[current=date]:font-medium not-data-[selected]:aria-[current=date]:text-accent',
                       'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent',
-                      disabled && 'cursor-not-allowed opacity-40',
+                      'aria-disabled:cursor-not-allowed aria-disabled:opacity-40',
                     )}
                   >
                     {dayNumber.format(new Date(parts(date).year, parts(date).month - 1, parts(date).day))}
