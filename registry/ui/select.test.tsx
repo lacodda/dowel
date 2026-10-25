@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import {
   Select,
@@ -9,6 +10,7 @@ import {
   SelectGroupLabel,
   SelectItem,
   SelectPopup,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
   selectItemVariants,
@@ -189,12 +191,53 @@ describe('Select', () => {
     expect(await screen.findByRole('group', { name: 'Stone fruit' })).toBeDefined()
   })
 
+  it('draws the line between groups', () => {
+    render(
+      <Select open>
+        <SelectTrigger aria-label="Fruit">
+          <SelectValue placeholder="Choose a fruit" />
+        </SelectTrigger>
+        <SelectPopup>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectSeparator />
+          <SelectItem value="plum">Plum</SelectItem>
+        </SelectPopup>
+      </Select>,
+    )
+    // Inside a listbox a separator is not one of the options, so Base UI
+    // marks it presentational rather than as a separator.
+    const lines = screen.getByRole('listbox').querySelectorAll('[role="presentation"]')
+    expect(lines).toHaveLength(1)
+    expect(lines[0]!.className).toContain('bg-line')
+  })
+
   it('draws every size, and draws each one differently', () => {
     const sizes = ['sm', 'md', 'lg'] as const
     const triggers = new Set(sizes.map((size) => selectTriggerVariants({ size })))
     expect(triggers.size).toBe(sizes.length)
     const popups = new Set(sizes.map((size) => selectPopupVariants({ size })))
     expect(popups.size).toBe(sizes.length)
+  })
+
+  it('draws the field and its list at the size they are asked for', () => {
+    // The wires from the props to the variants, which the variant tests do
+    // not cross: a part that dropped `size` would pass them all.
+    render(
+      <Select open>
+        <SelectTrigger size="lg" aria-label="Fruit">
+          <SelectValue placeholder="Choose a fruit" />
+        </SelectTrigger>
+        <SelectPopup size="lg">
+          <SelectItem value="apple">Apple</SelectItem>
+        </SelectPopup>
+      </Select>,
+    )
+    expect(screen.getByRole('combobox', { name: 'Fruit' }).className).toBe(cn(selectTriggerVariants({ size: 'lg' })))
+    // The popup is the list's nearest drawn ancestor-or-self: under load Base
+    // UI had the role on an inner element without classes of its own.
+    const drawn = (element: HTMLElement | null): HTMLElement | null =>
+      element === null || element.className !== '' ? element : drawn(element.parentElement)
+    expect(drawn(screen.getByRole('listbox'))?.className).toBe(cn(selectPopupVariants({ size: 'lg' })))
   })
 
   it('carries no colour outside the vocabulary', () => {

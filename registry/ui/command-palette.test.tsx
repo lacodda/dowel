@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import {
   CommandPalette,
@@ -15,6 +16,7 @@ import {
   CommandPaletteGroupLabel,
   CommandPalettePopup,
   CommandPaletteRow,
+  commandPaletteAnchor,
   commandPalettePopupVariants,
 } from './command-palette'
 
@@ -294,6 +296,47 @@ describe('CommandPalette', () => {
     // outside the variants; what is checked here is that no hex slipped into
     // the box itself.
     expect(all).not.toMatch(/#[0-9a-f]{3,8}\b/i)
+  })
+
+  it('draws the size it is asked for', async () => {
+    // The wire from the prop, which the variant tests do not cross.
+    render(
+      <CommandPalette items={commands} open>
+        <CommandPalettePopup aria-label="Commands" size="lg">
+          <CommandPaletteInput aria-label="Command" />
+        </CommandPalettePopup>
+      </CommandPalette>,
+    )
+    expect((await screen.findByRole('dialog')).className).toBe(cn(commandPalettePopupVariants({ size: 'lg' })))
+  })
+
+  it('hangs from the middle of the window, a fifth of the way down', () => {
+    // Arithmetic only: where the popup then lands is measured on the stand
+    // (tests/visual/measured.spec.ts), in a browser that lays it out.
+    const point = commandPaletteAnchor(1000, 500)
+    expect([point.x, point.y, point.width, point.height]).toEqual([500, 90, 0, 0])
+  })
+
+  it('draws a row with its hint only when it has one', () => {
+    const { container, rerender } = render(<CommandPaletteRow>Open file</CommandPaletteRow>)
+    expect(container.querySelectorAll('span')).toHaveLength(1)
+    rerender(<CommandPaletteRow hint="Files">Open file</CommandPaletteRow>)
+    expect(container.querySelectorAll('span')).toHaveLength(2)
+    expect(container.textContent).toBe('Open fileFiles')
+  })
+
+  it('marks the field as a search with an icon, and shows the hint beside it', () => {
+    const { container } = render(
+      <CommandPalette items={commands} open>
+        <CommandPalettePopup aria-label="Commands">
+          <CommandPaletteInput aria-label="Command" hint="Escape" />
+        </CommandPalettePopup>
+      </CommandPalette>,
+    )
+    const field = screen.getByRole('combobox', { name: 'Command' }).parentElement!
+    expect(field.querySelector('svg circle')).not.toBeNull()
+    expect(field.textContent).toContain('Esc')
+    expect(container).toBeDefined()
   })
 
   it('lets the caller win a conflict', async () => {

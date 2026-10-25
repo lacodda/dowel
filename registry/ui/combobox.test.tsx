@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import {
   Combobox,
@@ -10,6 +11,8 @@ import {
   ComboboxChips,
   ComboboxClear,
   ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxGroupLabel,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
@@ -214,6 +217,41 @@ describe('Combobox', () => {
     const sizes = ['sm', 'md', 'lg'] as const
     expect(new Set(sizes.map((size) => comboboxInputVariants({ size }))).size).toBe(sizes.length)
     expect(new Set(sizes.map((size) => comboboxPopupVariants({ size }))).size).toBe(sizes.length)
+  })
+
+  it('draws the field and its list at the size they are asked for', () => {
+    render(
+      <Combobox items={['Apple', 'Pear']} open>
+        <ComboboxInput size="lg" aria-label="Fruit" />
+        <ComboboxPopup size="lg">
+          <ComboboxList>{(fruit: string) => <ComboboxItem key={fruit} value={fruit}>{fruit}</ComboboxItem>}</ComboboxList>
+        </ComboboxPopup>
+      </Combobox>,
+    )
+    expect(screen.getByRole('combobox', { name: 'Fruit' }).className).toBe(cn(comboboxInputVariants({ size: 'lg' })))
+    // The popup is the list's nearest ancestor that is drawn: Base UI wraps
+    // the rows in an element of its own.
+    const drawn = (element: HTMLElement | null): HTMLElement | null =>
+      element === null || element.className !== '' ? element : drawn(element.parentElement)
+    expect(drawn(screen.getByRole('listbox'))?.className).toBe(cn(comboboxPopupVariants({ size: 'lg' })))
+  })
+
+  it('names a group by its label', () => {
+    render(
+      <Combobox items={['Plum']} open>
+        <ComboboxInput aria-label="Fruit" />
+        <ComboboxPopup>
+          <ComboboxList>
+            <ComboboxGroup items={['Plum']}>
+              <ComboboxGroupLabel>Stone fruit</ComboboxGroupLabel>
+              <ComboboxItem value="Plum">Plum</ComboboxItem>
+            </ComboboxGroup>
+          </ComboboxList>
+        </ComboboxPopup>
+      </Combobox>,
+    )
+    const group = screen.getByRole('group', { name: 'Stone fruit' })
+    expect(group.textContent).toContain('Plum')
   })
 
   it('carries no colour outside the vocabulary', () => {

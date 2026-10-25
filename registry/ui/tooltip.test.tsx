@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
 import {
@@ -206,6 +207,50 @@ describe('Tooltip', () => {
     await user.hover(screen.getByRole('button', { name: 'Archive' }))
     const popup = await screen.findByText('Move to the archive')
     expect(popup.className).toContain('rounded-full')
+  })
+
+  it('draws the label at the size it is asked for', () => {
+    // The wire from the prop to the variants: a popup that dropped `size`
+    // would pass every test of the variants themselves.
+    render(
+      <Tooltip open>
+        <TooltipTrigger render={<Button variant="icon" aria-label="Archive" />} delay={0} />
+        <TooltipPopup size="wide">Move to the archive</TooltipPopup>
+      </Tooltip>,
+    )
+    expect(screen.getByText('Move to the archive').className).toBe(cn(tooltipPopupVariants({ size: 'wide' })))
+  })
+
+  it('points back at its trigger unless told not to', () => {
+    const notch = () => screen.getByText('Move to the archive').querySelector('.rotate-45')
+    const { unmount } = render(
+      <Tooltip open>
+        <TooltipTrigger render={<Button variant="icon" aria-label="Archive" />} delay={0} />
+        <TooltipPopup>Move to the archive</TooltipPopup>
+      </Tooltip>,
+    )
+    expect(notch()).not.toBeNull()
+    unmount()
+    render(
+      <Tooltip open>
+        <TooltipTrigger render={<Button variant="icon" aria-label="Archive" />} delay={0} />
+        <TooltipPopup arrow={false}>Move to the archive</TooltipPopup>
+      </Tooltip>,
+    )
+    expect(notch()).toBeNull()
+  })
+
+  it('opens into the container it is given', () => {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    render(
+      <Tooltip open>
+        <TooltipTrigger render={<Button variant="icon" aria-label="Archive" />} delay={0} />
+        <TooltipPopup container={host}>Move to the archive</TooltipPopup>
+      </Tooltip>,
+    )
+    expect(host.contains(screen.getByText('Move to the archive'))).toBe(true)
+    host.remove()
   })
 
   it('carries no colour outside the vocabulary', () => {

@@ -2,15 +2,20 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
 import {
   Menu,
+  MenuCheckboxIndicator,
+  MenuCheckboxItem,
   MenuGroup,
   MenuGroupLabel,
   MenuItem,
   MenuPopup,
   MenuSeparator,
+  MenuSub,
+  MenuSubTrigger,
   MenuTrigger,
   menuItemVariants,
   menuPopupVariants,
@@ -196,6 +201,110 @@ describe('Menu', () => {
     const tones = ['default', 'danger'] as const
     const drawnTones = new Set(tones.map((tone) => menuItemVariants({ tone })))
     expect(drawnTones.size, 'the danger item is drawn like the rest').toBe(tones.length)
+  })
+
+  it('draws the popup at the size it is asked for', async () => {
+    // The variants are tested above as functions; this is the wire from the
+    // prop to them, which a popup that dropped `size` would cut silently.
+    const user = userEvent.setup()
+    render(
+      <Menu>
+        <MenuTrigger render={<Button variant="ghost" />}>Actions</MenuTrigger>
+        <MenuPopup size="lg">
+          <MenuItem>Rename</MenuItem>
+        </MenuPopup>
+      </Menu>,
+    )
+    await user.click(screen.getByRole('button', { name: 'Actions' }))
+    expect((await screen.findByRole('menu')).className).toBe(cn(menuPopupVariants({ size: 'lg' })))
+  })
+
+  it('draws every kind of row in the tone it is asked for', async () => {
+    const user = userEvent.setup()
+    render(
+      <Menu>
+        <MenuTrigger render={<Button variant="ghost" />}>Actions</MenuTrigger>
+        <MenuPopup>
+          <MenuItem tone="danger">Delete</MenuItem>
+          <MenuCheckboxItem tone="danger" checked={false}>
+            Purge on close
+          </MenuCheckboxItem>
+          <MenuSub>
+            <MenuSubTrigger tone="danger">Remove from</MenuSubTrigger>
+            <MenuPopup>
+              <MenuItem>This album</MenuItem>
+            </MenuPopup>
+          </MenuSub>
+        </MenuPopup>
+      </Menu>,
+    )
+    await user.click(screen.getByRole('button', { name: 'Actions' }))
+    const danger = cn(menuItemVariants({ tone: 'danger' }))
+    expect((await screen.findByRole('menuitem', { name: 'Delete' })).className).toBe(danger)
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Purge on close' }).className).toBe(danger)
+    expect(screen.getByRole('menuitem', { name: 'Remove from' }).className).toBe(danger)
+  })
+
+  it('opens a submenu from its row and chooses in it', async () => {
+    const user = userEvent.setup()
+    const chosen: string[] = []
+    render(
+      <Menu>
+        <MenuTrigger render={<Button variant="ghost" />}>View</MenuTrigger>
+        <MenuPopup>
+          <MenuSub>
+            <MenuSubTrigger>Zoom</MenuSubTrigger>
+            <MenuPopup>
+              <MenuItem onClick={() => chosen.push('in')}>Zoom in</MenuItem>
+              <MenuItem onClick={() => chosen.push('out')}>Zoom out</MenuItem>
+            </MenuPopup>
+          </MenuSub>
+        </MenuPopup>
+      </Menu>,
+    )
+    await user.click(screen.getByRole('button', { name: 'View' }))
+    const row = await screen.findByRole('menuitem', { name: 'Zoom' })
+    expect(row.getAttribute('aria-haspopup')).toBe('menu')
+    // By the keyboard: jsdom positions nothing, and a positioner that has not
+    // measured keeps its popup out of the pointer's reach.
+    await user.keyboard('{ArrowDown}')
+    await waitFor(() => expect(document.activeElement).toBe(row))
+    await user.keyboard('{ArrowRight}')
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Zoom in' })))
+    await user.keyboard('{ArrowDown}{Enter}')
+    await waitFor(() => expect(chosen).toEqual(['out']))
+  })
+
+  it('ticks a checkbox row, and says whether it is ticked', async () => {
+    const user = userEvent.setup()
+    const changes: boolean[] = []
+    render(
+      <Menu>
+        <MenuTrigger render={<Button variant="ghost" />}>View</MenuTrigger>
+        <MenuPopup>
+          <MenuCheckboxItem checked onCheckedChange={(checked) => changes.push(checked)}>
+            <MenuCheckboxIndicator data-testid="tick">*</MenuCheckboxIndicator>
+            Show the grid
+          </MenuCheckboxItem>
+        </MenuPopup>
+      </Menu>,
+    )
+    await user.click(screen.getByRole('button', { name: 'View' }))
+    const item = await screen.findByRole('menuitemcheckbox', { name: /Show the grid/ })
+    expect(item.getAttribute('aria-checked')).toBe('true')
+    expect(screen.getByTestId('tick')).toBeDefined()
+    await user.click(item)
+    expect(changes).toEqual([false])
+  })
+
+  it('draws the line between groups', async () => {
+    const user = userEvent.setup()
+    render(<Example />)
+    await user.click(screen.getByRole('button', { name: 'Actions' }))
+    const menu = await screen.findByRole('menu')
+    const lines = menu.querySelectorAll('[role="separator"]')
+    expect(lines).toHaveLength(1)
+    expect(lines[0]!.className).toContain('bg-line')
   })
 
   it('carries no colour outside the vocabulary', () => {

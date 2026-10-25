@@ -142,6 +142,73 @@ test.describe('Dialog', () => {
   })
 })
 
+test.describe('Drawer', () => {
+  test('lands on the edge it is asked for', async ({ page }) => {
+    // A right-hand drawer opened on the left for releases: the edge was
+    // chosen on a frame whose child filled its width. The stand photographs
+    // overlays closed, so only a measure of an open one can see it.
+    await page.setViewportSize({ width: 1200, height: 800 })
+    await page.goto('./drawer')
+    for (const [trigger, edge] of [
+      ['The assistant', 'right'],
+      ['From the bottom', 'bottom'],
+    ] as const) {
+      await page.getByRole('button', { name: trigger, exact: true }).click()
+      const drawer = page.getByRole('dialog')
+      await expect(drawer).toBeVisible()
+      // Measured once it has slid in: the box mid-transition is somewhere
+      // between the edge and off the screen.
+      await expect
+        .poll(async () => {
+          const at = await box(drawer)
+          return edge === 'right' ? Math.round(at.x + at.width) : Math.round(at.y + at.height)
+        }, trigger)
+        .toBe(edge === 'right' ? 1200 : 800)
+      const at = await box(drawer)
+      if (edge === 'right') expect(at.x, `${trigger} reaches the left edge`).toBeGreaterThan(400)
+      else expect(at.y, `${trigger} reaches the top`).toBeGreaterThan(300)
+      await page.keyboard.press('Escape')
+      await expect(drawer).toBeHidden()
+    }
+  })
+})
+
+test.describe('CommandPalette', () => {
+  test('hangs in the middle of the window, a fifth of the way down', async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 800 })
+    await page.goto('./command-palette')
+    await page.getByRole('button', { name: 'Open the palette' }).click()
+    const palette = page.getByRole('dialog', { name: 'Commands' })
+    await expect(palette).toBeVisible()
+    await expect
+      .poll(async () => {
+        const at = await box(palette)
+        return [Math.round(at.x + at.width / 2), Math.round(at.y)]
+      })
+      .toEqual([600, 144])
+  })
+})
+
+test.describe('Combobox', () => {
+  test('spends no room on the empty message while something matched', async ({ page }) => {
+    // The message stays mounted for its announcement, and its padding stood
+    // as a 24px gap above every list that did match.
+    await page.goto('./combobox')
+    await page.getByRole('combobox', { name: 'Fruit', exact: true }).fill('ap')
+    const list = page.getByRole('listbox')
+    await expect(list.getByRole('option')).toHaveCount(2)
+    const first = await box(list.getByRole('option').first())
+    // From the popup's edge, not the list's: the message stands above the
+    // list, inside the popup - the nearest ancestor that draws a border.
+    const top = await list.evaluate((element) => {
+      let node: Element | null = element
+      while (node && getComputedStyle(node).borderTopWidth === '0px') node = node.parentElement
+      return node?.getBoundingClientRect().top ?? Number.NaN
+    })
+    expect(first.y - top, 'a gap above the first row').toBeLessThanOrEqual(8)
+  })
+})
+
 test.describe('Layer', () => {
   test('a select in a dialog opens above the dialog, and a reader reaches it', async ({ page }) => {
     await page.goto('./dialog')

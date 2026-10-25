@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -61,6 +61,10 @@ describe('DatePicker', () => {
     await vi.waitFor(() =>
       expect(document.activeElement).toBe(screen.getByRole('button', { name: /^14 September 2026/ })),
     )
+    // And it stays there: the popup's own first focus, if it ran, would land
+    // a few frames later and take it to the month-paging button.
+    await new Promise((settle) => setTimeout(settle, 100))
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: /^14 September 2026/ }))
     await user.keyboard('{ArrowRight}')
     expect(document.activeElement).toBe(screen.getByRole('button', { name: /^15 September 2026/ }))
   })
@@ -104,6 +108,82 @@ describe('DatePicker', () => {
     const hidden = container.querySelector('input[type="hidden"]') as HTMLInputElement
     expect(hidden.name).toBe('released_on')
     expect(hidden.value).toBe('2026-09-02')
+  })
+
+  it('leaves the form alone without a name, and sends nothing for no date', () => {
+    const { container, rerender } = render(<Example value="2026-09-02" />)
+    expect(container.querySelector('input[type="hidden"]')).toBeNull()
+    rerender(<Example name="released_on" />)
+    expect((container.querySelector('input[type="hidden"]') as HTMLInputElement).value).toBe('')
+  })
+
+  it('says when it is showing its placeholder, and reads a value that is no date as none', () => {
+    const shown = () => screen.getByText(/Pick a date|September/)
+    const { rerender } = render(<Example />)
+    expect(shown().hasAttribute('data-placeholder')).toBe(true)
+    rerender(<Example value="2026-09-02" />)
+    expect(shown().hasAttribute('data-placeholder')).toBe(false)
+    rerender(<Example value={'2026-13-45' as never} />)
+    expect(shown().textContent).toBe('Pick a date')
+    expect(shown().hasAttribute('data-placeholder')).toBe(true)
+  })
+
+  it('names itself only through a label it was given', () => {
+    // No label: nothing to point at, so no `aria-labelledby` pointing at the
+    // trigger itself - a Field names it by its id instead.
+    render(
+      <DatePicker
+        locale="en-GB"
+        placeholder="Pick a date"
+        previousMonthLabel="Previous month"
+        nextMonthLabel="Next month"
+      />,
+    )
+    expect(screen.getByRole('button').hasAttribute('aria-labelledby')).toBe(false)
+  })
+
+  it('names its popup and its month for the field, without a notch', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(
+      <>
+        <span id="field-label">Released on</span>
+        <DatePicker
+          aria-labelledby="field-label"
+          locale="en-GB"
+          placeholder="Pick a date"
+          previousMonthLabel="Previous month"
+          nextMonthLabel="Next month"
+        />
+      </>,
+    )
+    await user.click(screen.getByRole('button', { name: /^Released on/ }))
+    const popup = await screen.findByRole('dialog', { name: 'Released on' })
+    expect(popup.hasAttribute('aria-label')).toBe(false)
+    expect(popup.querySelector('.rotate-45')).toBeNull()
+    // The month is named by the placeholder when the field gave no label of
+    // its own words.
+    expect(screen.getByRole('grid', { name: 'Pick a date' })).toBeDefined()
+    unmount()
+
+    render(<Example />)
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
+    expect(await screen.findByRole('grid', { name: 'Release date' })).toBeDefined()
+  })
+
+  it('takes the date back with nobody listening, and closes', async () => {
+    const user = userEvent.setup()
+    render(<Example value="2026-09-02" clearLabel="Clear" />)
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
+    await user.click(await screen.findByRole('button', { name: 'Clear' }))
+    await waitFor(() => expect(screen.queryByRole('grid')).toBeNull())
+  })
+
+  it('chooses with nobody listening, and closes', async () => {
+    const user = userEvent.setup()
+    render(<Example value="2026-09-02" />)
+    await user.click(screen.getByRole('button', { name: /^Release date/ }))
+    await user.click(await screen.findByRole('button', { name: /^14 September 2026/ }))
+    await waitFor(() => expect(screen.queryByRole('grid')).toBeNull())
   })
 
   it('does not open when disabled', async () => {
@@ -157,8 +237,12 @@ describe('DatePicker, taking a date back', () => {
     unmount()
     render(<Example value="2026-09-02" />)
     await user.click(trigger())
-    await screen.findByRole('grid')
+    const grid = await screen.findByRole('grid')
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    // Not a button without words either: the days and the two month buttons
+    // are all there is.
+    const days = grid.querySelectorAll('button').length
+    expect(within(screen.getByRole('dialog')).getAllByRole('button')).toHaveLength(days + 2)
   })
 
   it('hands nothing only to a handler that can take it', () => {

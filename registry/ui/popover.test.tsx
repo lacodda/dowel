@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
 import {
@@ -167,6 +168,59 @@ describe('Popover', () => {
       expect(classes, `\`${size}\` adds nothing - is it still defined?`).not.toBe(base)
     }
     expect(new Set(drawn.values()).size, 'two sizes draw the same').toBe(sizes.length)
+  })
+
+  it('draws the panel at the size it is asked for', () => {
+    // The wire from the prop to the variants, which the test above does not
+    // cross: a popup that dropped `size` would still pass it.
+    render(
+      <Popover open>
+        <PopoverTrigger render={<Button />}>Filters</PopoverTrigger>
+        <PopoverPopup size="lg">
+          <PopoverTitle>Filters</PopoverTitle>
+        </PopoverPopup>
+      </Popover>,
+    )
+    expect(screen.getByRole('dialog').className).toBe(cn(popoverPopupVariants({ size: 'lg' })))
+  })
+
+  it('points back at its trigger unless told not to', () => {
+    const notch = (dialog: HTMLElement) => dialog.querySelector('.rotate-45')
+    const { unmount } = render(
+      <Popover open>
+        <PopoverTrigger render={<Button />}>Filters</PopoverTrigger>
+        <PopoverPopup>
+          <PopoverTitle>Filters</PopoverTitle>
+        </PopoverPopup>
+      </Popover>,
+    )
+    expect(notch(screen.getByRole('dialog'))).not.toBeNull()
+    unmount()
+
+    render(
+      <Popover open>
+        <PopoverTrigger render={<Button />}>Filters</PopoverTrigger>
+        <PopoverPopup arrow={false}>
+          <PopoverTitle>Filters</PopoverTitle>
+        </PopoverPopup>
+      </Popover>,
+    )
+    expect(notch(screen.getByRole('dialog'))).toBeNull()
+  })
+
+  it('opens into the container it is given', () => {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    render(
+      <Popover open>
+        <PopoverTrigger render={<Button />}>Filters</PopoverTrigger>
+        <PopoverPopup container={host}>
+          <PopoverTitle>Filters</PopoverTitle>
+        </PopoverPopup>
+      </Popover>,
+    )
+    expect(host.contains(screen.getByRole('dialog'))).toBe(true)
+    host.remove()
   })
 
   it('lets the caller win a conflict', () => {

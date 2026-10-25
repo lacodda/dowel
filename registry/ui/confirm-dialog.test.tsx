@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
 import { DialogActions, DialogBody, DialogHeader } from './dialog'
@@ -225,6 +226,29 @@ describe('ConfirmDialog', () => {
     expect(ConfirmDialogHeader).toBe(DialogHeader)
     expect(ConfirmDialogBody).toBe(DialogBody)
     expect(ConfirmDialogActions).toBe(DialogActions)
+  })
+
+  it('draws the size it is asked for, over a scrim unless told not to', () => {
+    const { unmount } = render(
+      <ConfirmDialog open>
+        <ConfirmDialogPopup size="lg">
+          <ConfirmDialogTitle>Title</ConfirmDialogTitle>
+        </ConfirmDialogPopup>
+      </ConfirmDialog>,
+    )
+    expect(screen.getByRole('alertdialog').className).toBe(
+      cn(confirmDialogPopupVariants({ size: 'lg' }), '[z-index:var(--z-modal)]'),
+    )
+    expect(document.querySelector('.inset-0[class*="bg-black"]')).not.toBeNull()
+    unmount()
+    render(
+      <ConfirmDialog open>
+        <ConfirmDialogPopup backdrop={false}>
+          <ConfirmDialogTitle>Title</ConfirmDialogTitle>
+        </ConfirmDialogPopup>
+      </ConfirmDialog>,
+    )
+    expect(document.querySelector('.inset-0[class*="bg-black"]')).toBeNull()
   })
 
   it('lets the caller win a conflict', () => {

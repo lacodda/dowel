@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -308,6 +308,149 @@ describe('the grid on screen', () => {
       (button) => button.getAttribute('aria-label'),
     )
     expect(marked).toEqual(['2 September 2026'])
+  })
+
+  it('says on each day what state it is in', () => {
+    // Said on the element (`data-*`, and `aria-selected` on the cell), so the
+    // drawing reads one fact and a screen reader hears the same one.
+    const { container } = render(<Example value="2026-09-08" rangeEnd="2026-09-11" />)
+    const days = (attribute: string) =>
+      Array.from(container.querySelectorAll(`[role="grid"] button[${attribute}]`)).map((day) => day.textContent)
+    expect(days('data-selected')).toEqual(['8', '11'])
+    expect(days('data-in-range')).toEqual(['9', '10'])
+    // September 2026 starts on a Tuesday and ends on a Wednesday: Monday the
+    // 31st before it, and the first days of October after it.
+    expect(days('data-outside')).toEqual(['31', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
+    const selectedCells = Array.from(container.querySelectorAll('[role="gridcell"][aria-selected="true"]'))
+    expect(selectedCells.map((cell) => cell.textContent)).toEqual(['8', '11'])
+    expect(container.querySelectorAll('[role="gridcell"][aria-selected="false"]')).toHaveLength(0)
+  })
+
+  it('selects one day when there is no other end', () => {
+    const { container } = render(<Example value="2026-09-08" />)
+    const selected = Array.from(container.querySelectorAll('[role="grid"] button[data-selected]'))
+    expect(selected.map((day) => day.textContent)).toEqual(['8'])
+    expect(container.querySelectorAll('[data-in-range]')).toHaveLength(0)
+  })
+
+  it('selects nothing without a value, even with an end', () => {
+    const { container } = render(<Example rangeEnd="2026-09-11" />)
+    expect(container.querySelectorAll('[data-selected], [data-in-range]')).toHaveLength(0)
+  })
+
+  it('holds its bounds to the day, inclusive at both ends', () => {
+    const { container } = render(<Example min="2026-09-10" max="2026-09-20" />)
+    const unavailable = (label: string) =>
+      Array.from(container.querySelectorAll('[role="gridcell"] button'))
+        .find((day) => day.getAttribute('aria-label') === label)!
+        .getAttribute('aria-disabled')
+    expect(unavailable('9 September 2026')).toBe('true')
+    expect(unavailable('10 September 2026')).toBeNull()
+    expect(unavailable('20 September 2026')).toBeNull()
+    expect(unavailable('21 September 2026')).toBe('true')
+  })
+
+  it('holds one bound without the other', () => {
+    const { container, rerender } = render(<Example min="2026-09-10" />)
+    const disabled = () => container.querySelectorAll('[role="grid"] [aria-disabled="true"]').length
+    // Monday 31 August and the first nine days of September.
+    expect(disabled()).toBe(10)
+    rerender(<Example max="2026-09-20" />)
+    // The rest of September, and the first days of October on the last row.
+    expect(disabled()).toBe(10 + 11)
+  })
+
+  it('heads the grid with the month and the year, and numbers each day', () => {
+    render(<Example />)
+    expect(screen.getByText('September 2026')).toBeDefined()
+    expect(screen.getByRole('button', { name: /^14 September 2026/ }).textContent).toBe('14')
+  })
+
+  it('turns its own month with the buttons when nobody holds it', async () => {
+    const user = userEvent.setup()
+    render(
+      <Calendar
+        value="2026-09-14"
+        locale="en-GB"
+        aria-label="Choose a date"
+        previousMonthLabel="Previous month"
+        nextMonthLabel="Next month"
+      />,
+    )
+    await user.click(screen.getByRole('button', { name: 'Previous month' }))
+    expect(screen.getByText('August 2026')).toBeDefined()
+    await user.click(screen.getByRole('button', { name: 'Next month' }))
+    await user.click(screen.getByRole('button', { name: 'Next month' }))
+    expect(screen.getByText('October 2026')).toBeDefined()
+  })
+
+  it('leaves a month it is given where it is, and only says where it was asked to go', async () => {
+    const user = userEvent.setup()
+    const onMonthChange = vi.fn()
+    render(<Example onMonthChange={onMonthChange} />)
+    await user.click(screen.getByRole('button', { name: 'Previous month' }))
+    expect(onMonthChange).toHaveBeenCalledWith('2026-08-01')
+    expect(screen.getByText('September 2026')).toBeDefined()
+  })
+
+  it('pages only when the cursor leaves the month', async () => {
+    const user = userEvent.setup()
+    const onMonthChange = vi.fn()
+    render(<Example value="2026-09-14" onMonthChange={onMonthChange} />)
+    screen.getByRole('button', { name: /^14 September 2026/ }).focus()
+    await user.keyboard('{ArrowRight}{ArrowDown}{ArrowLeft}')
+    expect(onMonthChange).not.toHaveBeenCalled()
+  })
+
+  it('pages across a year', async () => {
+    const user = userEvent.setup()
+    const onMonthChange = vi.fn()
+    render(<Example month="2026-12-01" value="2026-12-31" onMonthChange={onMonthChange} />)
+    screen.getByRole('button', { name: /^31 December 2026/ }).focus()
+    await user.keyboard('{ArrowRight}')
+    expect(onMonthChange).toHaveBeenCalledWith('2027-01-01')
+  })
+
+  it('keeps the arrows from scrolling the page', () => {
+    render(<Example value="2026-09-14" />)
+    const day = screen.getByRole('button', { name: /^14 September 2026/ })
+    // `fireEvent` answers false when the event was cancelled.
+    expect(fireEvent.keyDown(day, { key: 'ArrowDown' })).toBe(false)
+    expect(fireEvent.keyDown(day, { key: 'a' })).toBe(true)
+  })
+
+  it('starts the cursor on today when nothing is chosen', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 8, 2, 12))
+    const { container } = render(<Example />)
+    const stops = Array.from(container.querySelectorAll('[role="grid"] [tabindex="0"]'))
+    expect(stops.map((day) => day.getAttribute('aria-label'))).toEqual(['2 September 2026'])
+  })
+
+  it('brings the cursor back to the chosen day when the month moves to it', () => {
+    // The cursor was on a September day; shown November with a November
+    // day chosen, the way in is that day, not the first of the month.
+    const { container, rerender } = render(<Example month="2026-09-01" value="2026-09-14" />)
+    rerender(<Example month="2026-11-01" value="2026-11-20" />)
+    const stops = Array.from(container.querySelectorAll('[role="grid"] [tabindex="0"]'))
+    expect(stops.map((day) => day.getAttribute('aria-label'))).toEqual(['20 November 2026'])
+  })
+
+  it('does not take the focus by being drawn, unless asked', () => {
+    const { rerender } = render(<Example value="2026-09-14" />)
+    expect(document.activeElement).toBe(document.body)
+    rerender(<Example value="2026-09-15" />)
+    expect(document.activeElement).toBe(document.body)
+    rerender(<Example value="2026-09-15" autoFocus key="again" />)
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: /^15 September 2026/ }))
+  })
+
+  it('chooses without a listener, and says so to one', async () => {
+    const user = userEvent.setup()
+    render(<Example />)
+    // No `onValueChange`: a click is still harmless.
+    await user.click(screen.getByRole('button', { name: /^14 September 2026/ }))
+    expect(screen.getByRole('button', { name: /^14 September 2026/ }).getAttribute('tabindex')).toBe('0')
   })
 
   it('carries no colour outside the vocabulary', () => {

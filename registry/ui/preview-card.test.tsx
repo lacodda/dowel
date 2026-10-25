@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import {
   PreviewCard,
@@ -164,6 +165,38 @@ describe('PreviewCard', () => {
       expect(classes, `\`${size}\` adds nothing - is it still defined?`).not.toBe(base)
     }
     expect(new Set(drawn.values()).size, 'two sizes draw the same').toBe(sizes.length)
+  })
+
+  it('draws the card at the size it is asked for, with or without its notch', () => {
+    // The wires from the props to the drawing, which the variant tests above
+    // do not cross.
+    const text = 'Wrote the first algorithm intended for a machine.'
+    const popup = () => screen.getByText(text).parentElement!
+    const { unmount } = render(
+      <PreviewCard open>
+        <PreviewCardTrigger render={<a href="/people/ada" />}>Ada Lovelace</PreviewCardTrigger>
+        <PreviewCardPopup size="lg">
+          <p>{text}</p>
+        </PreviewCardPopup>
+      </PreviewCard>,
+    )
+    expect(popup().className).toBe(cn(previewCardPopupVariants({ size: 'lg' })))
+    expect(popup().querySelector('.rotate-45')).not.toBeNull()
+    unmount()
+
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    render(
+      <PreviewCard open>
+        <PreviewCardTrigger render={<a href="/people/ada" />}>Ada Lovelace</PreviewCardTrigger>
+        <PreviewCardPopup arrow={false} container={host}>
+          <p>{text}</p>
+        </PreviewCardPopup>
+      </PreviewCard>,
+    )
+    expect(popup().querySelector('.rotate-45')).toBeNull()
+    expect(host.contains(popup())).toBe(true)
+    host.remove()
   })
 
   it('lets the caller win a conflict', () => {

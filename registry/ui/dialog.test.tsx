@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
 import {
@@ -330,6 +331,24 @@ describe('Dialog', () => {
     expect(column.parentElement!.contains(close)).toBe(true)
   })
 
+  it('leaves no empty box where an action or a start was not given', () => {
+    // An empty `mr-auto` box still pushes; an empty action box still takes
+    // a gap beside the title.
+    const { container } = render(
+      <div>
+        <DialogHeader data-testid="header">
+          <span>Title</span>
+        </DialogHeader>
+        <DialogActions data-testid="actions-bare">
+          <button type="button">Save</button>
+        </DialogActions>
+      </div>,
+    )
+    expect(screen.getByTestId('header').children).toHaveLength(1)
+    expect(screen.getByTestId('actions-bare').children).toHaveLength(1)
+    expect(container).toBeDefined()
+  })
+
   it('pads the parts rather than the popup', () => {
     // The popup carries none, so the body's scroll runs edge to edge; a body
     // that is first or last takes the edge the missing part would have given.
@@ -337,6 +356,28 @@ describe('Dialog', () => {
     expect(screen.getByRole('dialog').className.split(/\s+/)).not.toContain('p-5')
     const body = screen.getByTestId('body').className.split(/\s+/)
     expect(body).toEqual(expect.arrayContaining(['px-5', 'first:pt-5', 'last:pb-5']))
+  })
+
+  it('draws the size it is asked for, over a scrim unless told not to', () => {
+    // The wires from the props, which the variant tests do not cross.
+    const { unmount } = render(
+      <Dialog open>
+        <DialogPopup size="lg">
+          <DialogTitle>Title</DialogTitle>
+        </DialogPopup>
+      </Dialog>,
+    )
+    expect(screen.getByRole('dialog').className).toBe(cn(dialogPopupVariants({ size: 'lg' }), '[z-index:var(--z-modal)]'))
+    expect(document.querySelector('.inset-0[class*="bg-black"]')).not.toBeNull()
+    unmount()
+    render(
+      <Dialog open>
+        <DialogPopup backdrop={false}>
+          <DialogTitle>Title</DialogTitle>
+        </DialogPopup>
+      </Dialog>,
+    )
+    expect(document.querySelector('.inset-0[class*="bg-black"]')).toBeNull()
   })
 
   it('lets the caller win a conflict', () => {

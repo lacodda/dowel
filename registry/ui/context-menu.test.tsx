@@ -2,14 +2,18 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import {
   ContextMenu,
+  ContextMenuCheckboxItem,
   ContextMenuGroup,
   ContextMenuGroupLabel,
   ContextMenuItem,
   ContextMenuPopup,
   ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from './context-menu'
 import { menuItemVariants, menuPopupVariants } from './menu'
@@ -143,6 +147,66 @@ describe('ContextMenu', () => {
 
     await open(user, screen.getByTestId('area'))
     expect(await screen.findByRole('group', { name: 'Danger' })).toBeDefined()
+  })
+
+  it('draws the size and the tones it is asked for', async () => {
+    // The wires from the props: a popup or a row that dropped them would still
+    // wear Menu's clothes.
+    const user = userEvent.setup()
+    render(
+      <ContextMenu>
+        <ContextMenuTrigger data-testid="area">Right click here</ContextMenuTrigger>
+        <ContextMenuPopup size="lg">
+          <ContextMenuItem tone="danger">Delete</ContextMenuItem>
+        </ContextMenuPopup>
+      </ContextMenu>,
+    )
+    await open(user, screen.getByTestId('area'))
+    expect((await screen.findByRole('menu')).className).toBe(cn(menuPopupVariants({ size: 'lg' })))
+    expect(screen.getByRole('menuitem', { name: 'Delete' }).className).toBe(cn(menuItemVariants({ tone: 'danger' })))
+  })
+
+  it('draws a submenu row and a ticked row in the tone asked for, and the line between groups', async () => {
+    const user = userEvent.setup()
+    render(
+      <ContextMenu>
+        <ContextMenuTrigger data-testid="area">Right click here</ContextMenuTrigger>
+        <ContextMenuPopup>
+          <ContextMenuCheckboxItem tone="danger" checked={false}>
+            Purge on close
+          </ContextMenuCheckboxItem>
+          <ContextMenuSeparator />
+          <ContextMenuSub>
+            <ContextMenuSubTrigger tone="danger">Remove from</ContextMenuSubTrigger>
+            <ContextMenuPopup>
+              <ContextMenuItem>This album</ContextMenuItem>
+            </ContextMenuPopup>
+          </ContextMenuSub>
+        </ContextMenuPopup>
+      </ContextMenu>,
+    )
+    await open(user, screen.getByTestId('area'))
+    const danger = cn(menuItemVariants({ tone: 'danger' }))
+    expect((await screen.findByRole('menuitemcheckbox', { name: 'Purge on close' })).className).toBe(danger)
+    expect(screen.getByRole('menuitem', { name: 'Remove from' }).className).toBe(danger)
+    expect(screen.getByRole('menu').querySelectorAll('[role="separator"]')).toHaveLength(1)
+  })
+
+  it('opens into the container it is given', async () => {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const user = userEvent.setup()
+    render(
+      <ContextMenu>
+        <ContextMenuTrigger data-testid="area">Right click here</ContextMenuTrigger>
+        <ContextMenuPopup container={host}>
+          <ContextMenuItem>Rename</ContextMenuItem>
+        </ContextMenuPopup>
+      </ContextMenu>,
+    )
+    await open(user, screen.getByTestId('area'))
+    expect(host.contains(await screen.findByRole('menu'))).toBe(true)
+    host.remove()
   })
 
   it('wears the same clothes as Menu rather than its own', async () => {

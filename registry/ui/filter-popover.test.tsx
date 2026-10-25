@@ -76,6 +76,30 @@ describe('FilterPopover', () => {
     expect(clear.disabled).toBe(true)
   })
 
+  it('opens along the start of its column unless told otherwise, without a notch', async () => {
+    // The panel hangs from the column's heading; a notch pointing at a 20px
+    // funnel reads as a stray mark.
+    const user = userEvent.setup()
+    const { unmount } = render(
+      <FilterPopover {...labels} active={false} onClear={() => {}}>
+        <span>boxes</span>
+      </FilterPopover>,
+    )
+    await user.click(screen.getByRole('button', { name: 'Filter by owner' }))
+    const panel = await screen.findByRole('dialog', { name: 'Owner' })
+    expect(panel.getAttribute('data-align')).toBe('start')
+    expect(panel.querySelector('.rotate-45')).toBeNull()
+    unmount()
+
+    render(
+      <FilterPopover {...labels} active={false} onClear={() => {}} align="end">
+        <span>boxes</span>
+      </FilterPopover>,
+    )
+    await user.click(screen.getByRole('button', { name: 'Filter by owner' }))
+    expect((await screen.findByRole('dialog', { name: 'Owner' })).getAttribute('data-align')).toBe('end')
+  })
+
   it('carries no colour outside the vocabulary', () => {
     const { container } = render(
       <FilterPopover {...labels} active onClear={() => {}}>

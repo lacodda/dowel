@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Button } from './button'
 import { DialogActions, DialogBody, DialogHeader } from './dialog'
@@ -221,6 +222,33 @@ describe('Drawer', () => {
 
   it('comes from the right unless told otherwise', () => {
     expect(drawerPopupVariants({})).toBe(drawerPopupVariants({ side: 'right' }))
+  })
+
+  it('draws the side and size it is asked for, pinned to that edge, over a scrim unless told not to', () => {
+    // The edge is the Viewport's: a right-hand drawer whose Viewport did not
+    // know its side opened on the left (austeris found it in a browser; the
+    // stand measures it in tests/visual/measured.spec.ts). Here, the wires.
+    const { unmount } = render(
+      <Drawer open>
+        <DrawerPopup side="left" size="lg">
+          <DrawerTitle>Filters</DrawerTitle>
+        </DrawerPopup>
+      </Drawer>,
+    )
+    const popup = screen.getByRole('dialog')
+    expect(popup.className).toBe(cn(drawerPopupVariants({ side: 'left', size: 'lg' })))
+    expect(popup.parentElement!.className.split(/\s+/)).toContain('justify-start')
+    expect(document.querySelector('.inset-0[class*="bg-black"]')).not.toBeNull()
+    unmount()
+    render(
+      <Drawer open>
+        <DrawerPopup backdrop={false}>
+          <DrawerTitle>Filters</DrawerTitle>
+        </DrawerPopup>
+      </Drawer>,
+    )
+    expect(screen.getByRole('dialog').parentElement!.className.split(/\s+/)).toContain('justify-end')
+    expect(document.querySelector('.inset-0[class*="bg-black"]')).toBeNull()
   })
 
   it('lets the caller win a conflict', () => {

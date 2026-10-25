@@ -176,6 +176,32 @@ describe('ShortcutsDialog', () => {
     expect(await screen.findByRole('dialog', { name: 'Keys' })).toBeDefined()
   })
 
+  it('describes itself only with words it was given, and closes with a drawn cross', async () => {
+    render(
+      <Declare commands={SHELL}>
+        <ShortcutsDialog title="Keyboard shortcuts" closeLabel="Close" group="Everywhere" open onOpenChange={() => {}} />
+      </Declare>,
+    )
+    const dialog = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' })
+    expect(dialog.hasAttribute('aria-describedby')).toBe(false)
+    expect(screen.getByRole('button', { name: 'Close' }).querySelector('svg path')).not.toBeNull()
+  })
+
+  it('stays as it is told when it is told', async () => {
+    // Controlled: asked to close, it says so, and closes only when the
+    // product does.
+    const user = userEvent.setup()
+    const changes: boolean[] = []
+    render(
+      <Declare commands={SHELL}>
+        <ShortcutsDialog title="Keyboard shortcuts" closeLabel="Close" group="Everywhere" open onOpenChange={(next) => changes.push(next)} />
+      </Declare>,
+    )
+    await user.click(await screen.findByRole('button', { name: 'Close' }))
+    expect(changes).toEqual([false])
+    expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeDefined()
+  })
+
   it('puts what keys cannot say after the list', async () => {
     render(
       <ShortcutsDialog title="Keys" closeLabel="Close" description="Letters wait while you type.">
@@ -207,6 +233,23 @@ describe('ShortcutList', () => {
       </Declare>,
     )
     expect(rows()).toEqual(['Search=CtrlK', 'Close a dialog=Esc', 'Dashboard=G›D', 'Calendar=G›C'])
+  })
+
+  it('labels a group by its heading, and leaves a group with none unlabelled', () => {
+    render(
+      <Declare commands={[...SHELL, { id: 'loose', label: 'Loose', keys: 'L', run: () => {} }]}>
+        <ShortcutList data-testid="list" />
+      </Declare>,
+    )
+    const groups = screen.getAllByRole('group', { hidden: true })
+    const named = groups.filter((group) => group.hasAttribute('aria-labelledby'))
+    expect(named.map((group) => document.getElementById(group.getAttribute('aria-labelledby')!)?.textContent)).toEqual([
+      'Everywhere',
+      'Going places',
+    ])
+    const loose = groups.find((group) => group.textContent?.includes('Loose'))!
+    expect(loose.hasAttribute('aria-labelledby')).toBe(false)
+    expect(loose.querySelector('h3')).toBeNull()
   })
 
   it('puts its group headings at the level the page gives it', () => {

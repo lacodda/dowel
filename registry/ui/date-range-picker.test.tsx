@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { useState } from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -181,7 +181,64 @@ describe('DateRangePicker', () => {
     unmount()
     render(<Example value={{ start: '2026-09-02', end: '2026-09-10' }} />)
     await user.click(screen.getByRole('button', { name: /^Period/ }))
-    await screen.findByRole('grid')
+    const grid = await screen.findByRole('grid')
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    // Not a button without words either.
+    expect(within(screen.getByRole('dialog')).getAllByRole('button')).toHaveLength(grid.querySelectorAll('button').length + 2)
+  })
+
+  it('says when it is showing its placeholder, and reads a start that is no date as none', () => {
+    const shown = () => screen.getByText(/Pick a range|Sept/)
+    const { rerender } = render(<Example />)
+    expect(shown().hasAttribute('data-placeholder')).toBe(true)
+    rerender(<Example value={{ start: '2026-09-02' }} />)
+    expect(shown().hasAttribute('data-placeholder')).toBe(false)
+    rerender(<Example value={{ start: 'soon' as never }} />)
+    expect(shown().textContent).toBe('Pick a range')
+  })
+
+  it('names itself only through a label it was given, and names its popup for the field', async () => {
+    const user = userEvent.setup()
+    render(
+      <>
+        <span id="field-label">Reporting period</span>
+        <DateRangePicker
+          aria-labelledby="field-label"
+          locale="en-GB"
+          placeholder="Pick a range"
+          previousMonthLabel="Previous month"
+          nextMonthLabel="Next month"
+        />
+        <DateRangePicker locale="en-GB" placeholder="Unnamed" previousMonthLabel="Previous month" nextMonthLabel="Next month" />
+      </>,
+    )
+    expect(screen.getByText('Unnamed').closest('button')!.hasAttribute('aria-labelledby')).toBe(false)
+    await user.click(screen.getByRole('button', { name: /^Reporting period/ }))
+    const popup = await screen.findByRole('dialog', { name: 'Reporting period' })
+    expect(popup.hasAttribute('aria-label')).toBe(false)
+    expect(popup.querySelector('.rotate-45')).toBeNull()
+    expect(screen.getByRole('grid', { name: 'Pick a range' })).toBeDefined()
+  })
+
+  it('takes a first end, and takes the range back, with nobody listening', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<Example />)
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await user.click(await screen.findByRole('button', { name: /^9 September 2026/ }))
+    // A first end only: it stays open for the second.
+    expect(screen.getByRole('grid')).toBeDefined()
+    unmount()
+    render(<Example value={{ start: '2026-09-02', end: '2026-09-10' }} clearLabel="Clear" />)
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await user.click(await screen.findByRole('button', { name: 'Clear' }))
+    await waitFor(() => expect(screen.queryByRole('grid')).toBeNull())
+  })
+
+  it('takes both ends with nobody listening', async () => {
+    const user = userEvent.setup()
+    render(<Example value={{ start: '2026-09-02' }} />)
+    await user.click(screen.getByRole('button', { name: /^Period/ }))
+    await user.click(await screen.findByRole('button', { name: /^9 September 2026/ }))
+    await waitFor(() => expect(screen.queryByRole('grid')).toBeNull())
   })
 })

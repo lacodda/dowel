@@ -29,6 +29,25 @@ describe('ProductSwitcher', () => {
     expect(screen.getByRole('button', { name: 'kasl Switch product' })).toBeDefined()
   })
 
+  it('says what a product is under its name, when it is said', async () => {
+    const user = userEvent.setup()
+    render(
+      <ProductSwitcher
+        current="rigger"
+        currentName="rigger"
+        products={products}
+        label="Switch product"
+      />,
+    )
+    await user.click(screen.getByRole('button', { name: 'rigger Switch product' }))
+    const [kasl, server] = await screen.findAllByRole('menuitem')
+    // The name, and the line under it; without a description, the name alone
+    // - not an empty line.
+    const lines = (item: HTMLElement) => [...item.querySelector('.flex-col')!.children].map((line) => line.textContent)
+    expect(lines(kasl!)).toEqual(['kasl', 'Tracks the working day'])
+    expect(lines(server!)).toEqual(['kasl-server'])
+  })
+
   it('offers the others, not the one already open', async () => {
     const user = userEvent.setup()
     render(switcher())

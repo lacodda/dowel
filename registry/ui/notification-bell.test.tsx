@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -38,6 +38,36 @@ describe('NotificationBell', () => {
   it('caps the count past nine', () => {
     const { container } = render(<NotificationBell count={42} {...labels} />)
     expect(badge(container)?.textContent).toBe('9+')
+  })
+
+  it('counts up to nine and caps from ten', () => {
+    const { container, rerender } = render(<NotificationBell count={9} {...labels} />)
+    expect(badge(container)?.textContent).toBe('9')
+    rerender(<NotificationBell count={10} {...labels} />)
+    expect(badge(container)?.textContent).toBe('9+')
+  })
+
+  it('draws the bell itself, and a panel without a notch', async () => {
+    const user = userEvent.setup()
+    render(<NotificationBell count={1} {...labels} />)
+    const bell = screen.getByRole('button', { name: /^Notifications/ })
+    expect(bell.querySelector('svg path')).not.toBeNull()
+    await user.click(bell)
+    expect((await screen.findByRole('dialog', { name: 'Recent' })).querySelector('.rotate-45')).toBeNull()
+  })
+
+  it('names itself without a count by its label alone', () => {
+    render(<NotificationBell count={0} {...labels} />)
+    const bell = screen.getByRole('button', { name: 'Notifications' })
+    expect(bell.getAttribute('aria-labelledby')?.split(' ')).toHaveLength(1)
+  })
+
+  it('closes on See all with nobody listening', async () => {
+    const user = userEvent.setup()
+    render(<NotificationBell count={1} {...labels} seeAllLabel="See all" />)
+    await user.click(screen.getByRole('button', { name: /^Notifications/ }))
+    await user.click(await screen.findByRole('button', { name: 'See all' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it('is named for a screen reader', () => {

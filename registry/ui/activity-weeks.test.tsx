@@ -1,6 +1,4 @@
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { datesBetween, isWeekend, stepFor, STEPS, weekdayRows, weeks } from './activity-weeks'
 
 /*
@@ -189,29 +187,37 @@ describe('the range', () => {
     ])
   })
 
-  it('reads a date as a label, not as a moment in any zone', () => {
-    /* A date here is a label. Parsed at local midnight instead, a date in a
-     * zone AHEAD of UTC lands on the previous day once it is read back: in
-     * Berlin (+2) the walk from 2026-09-07 comes out starting 2026-09-06, and
-     * every cell in the grid carries a day it is not.
+  describe('a date is a label, not a moment in any zone', () => {
+    /* Parsed at local midnight instead, a date in a zone AHEAD of UTC lands
+     * on the previous day once it is read back: in Tokyo the walk from
+     * 2026-09-07 came out starting 2026-09-06, and every cell in the grid
+     * carried a day it is not. Behind UTC the offset cancels on the way in and
+     * on the way out, so a suite run in Paraguay or in CI's UTC sees nothing -
+     * which is why the zone of the process is changed here on purpose (Node
+     * reads TZ again on assignment).
      *
-     * This cannot be asserted by running it: the runner takes the machine's
-     * zone, and on a machine BEHIND UTC a local parse survives every check
-     * because the offset cancels on the way in and on the way out. A mutation
-     * swapping `T00:00:00Z` for `T00:00:00` passed the whole suite here for
-     * exactly that reason - the test was measuring the machine, not the code.
-     *
-     * So the invariant is read off the source instead, which is true in every
-     * zone: no date in this module is parsed without one. */
-    const source = readFileSync(fileURLToPath(new URL('./activity-weeks.tsx', import.meta.url)), 'utf8')
-    const parses = [...source.matchAll(/Date\.parse\(([^)]*)\)/g)].map((match) => match[1]!)
+     * This used to be read off the source instead - every `Date.parse` call
+     * had to carry a `Z` - which held the text rather than the behaviour, and
+     * broke the moment the source was not the text written (Stryker's
+     * instrumented copy). */
+    const original = process.env.TZ
+    afterEach(() => {
+      if (original === undefined) delete process.env.TZ
+      else process.env.TZ = original
+    })
 
-    expect(parses.length, 'the module no longer parses any date - has it moved?').toBeGreaterThan(0)
-    for (const call of parses) {
-      expect(call, `\`Date.parse(${call})\` reads local midnight: in a zone ahead of UTC that is yesterday`).toContain(
-        'Z',
-      )
-    }
+    it.each(['Pacific/Kiritimati', 'Asia/Tokyo', 'UTC', 'America/Asuncion', 'Pacific/Pago_Pago'])(
+      'walks the same days in %s',
+      (zone) => {
+        process.env.TZ = zone
+        expect(datesBetween('2026-09-07', '2026-09-09')).toEqual(['2026-09-07', '2026-09-08', '2026-09-09'])
+        // 12 September 2026 is a Saturday, the 11th a Friday, everywhere.
+        expect(isWeekend('2026-09-12')).toBe(true)
+        expect(isWeekend('2026-09-11')).toBe(false)
+        const grid = weeks([{ date: '2026-09-07', value: 1 }], { from: '2026-09-07', to: '2026-09-13', weekStartsOn: 1 })
+        expect(grid.flat().find((cell) => cell.date === '2026-09-07')).toBeDefined()
+      },
+    )
   })
 
   it('carries a date through the grid unchanged', () => {
