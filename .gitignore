@@ -39,3 +39,8 @@ Thumbs.db
 /test-results/
 /playwright-report/
 /blob-report/
+
+# Stryker's sandbox and its reports. The mutation report is read, not kept:
+# CI hands it back as an artifact.
+/.stryker-tmp/
+/reports/

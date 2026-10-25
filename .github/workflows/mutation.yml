@@ -1,0 +1,54 @@
+name: Mutation
+
+# Whether the tests would notice the code being wrong.
+#
+# Stryker changes the primitives one small way at a time and runs the tests
+# that cover each change; a change no test notices is code no test holds. A
+# full run is hours of work - ten thousand mutants - so it runs once a week
+# and by hand, split across eight jobs that each mutate their own share of the
+# files (`tools/mutation-shard.mjs`) and keep their own last result between
+# runs: unchanged code is not mutated again, so a run after an ordinary week
+# takes minutes. Each file's score has a floor of its own
+# (`tests/mutation-floor.json`), checked by the job that measured it - one
+# number for the whole set would let one primitive's tests decay while
+# another's improved.
+on:
+  schedule:
+    # Monday morning, before the week's first stage.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  mutation:
+    name: mutation score ${{ matrix.shard }}/8
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # This shard's last results, so only what changed since is mutated again.
+      - uses: actions/cache@v6
+        with:
+          path: reports/stryker-incremental.json
+          key: stryker-incremental-${{ matrix.shard }}-${{ github.sha }}
+          restore-keys: stryker-incremental-${{ matrix.shard }}-
+      - name: Mutate this shard's files and run their tests
+        run: pnpm mutate --mutate "$(node tools/mutation-shard.mjs ${{ matrix.shard }} 8)"
+      - name: Hold every file it measured to its floor
+        run: node tools/mutation-floor.mjs
+      - name: Keep the report, so the survivors can be read
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: mutation-report-${{ matrix.shard }}
+          path: reports/mutation/
+          retention-days: 30

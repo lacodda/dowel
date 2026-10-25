@@ -175,15 +175,13 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 
 ## Status
 
-The theme, the scales, an accent per product, and a hundred and eighteen primitives are
-in daily use across two products of the line, with four blocks - whole screens
-made of them - and a demo built from those. Every component installs from a
-versioned registry and passes its own gate - axe, the keyboard, a dependency
-budget, a scale that refuses a length nobody argued for, a floor under every
-pointer target, and a picture in both themes - before it ships. Every ink is
-held to its contrast floor on every ground it may stand on, for every product,
-in both themes and under more contrast, and a screen prints as dark ink on
-white whatever theme it is in.
+The theme, the scales, an accent per product and a hundred and eighteen
+primitives are in daily use across two products of the line, with four blocks
+and a demo built from them. Every component installs from a versioned registry
+and passes its gate before it ships: axe, a dependency budget, the scale, a
+picture in both themes, every ink at its contrast floor for every product, the
+keyboard driven in a real browser, every overlay held inside the window, and
+tests that a weekly mutation run proves would notice a fault.
 
 Released versions and what landed in each: [CHANGELOG](https://github.com/lacodda/dowel/blob/main/CHANGELOG.md).
 

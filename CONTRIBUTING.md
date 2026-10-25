@@ -26,8 +26,17 @@ Red stops a commit. Two more checks need a browser and run in CI on every push:
 
 ```console
 $ pnpm stand:build
-$ pnpm visual                                         # the stand's pictures
+$ pnpm visual                                         # pictures, measures, the keyboard
 $ pnpm exec playwright test tests/visual/a11y.spec.ts # the accessibility report
+```
+
+And one runs weekly, because it is long: mutation testing, which changes the
+code one small way at a time and checks that some test notices. Each file has
+a floor under its score in `tests/mutation-floor.json`.
+
+```console
+$ pnpm mutate --mutate registry/ui/<name>.tsx   # one file, a few minutes
+$ node tools/mutation-floor.mjs                 # every file at its floor?
 ```
 
 The pictures are compared on Linux only - the theme uses the system's own
@@ -57,7 +66,12 @@ source.
    it. Every class has to compile to something.
 4. **Make the test say what would be wrong** if the component broke - then cut
    the line it is about and watch it go red. A green test that stays green
-   with the code removed is not a test.
+   with the code removed is not a test. `pnpm mutate --mutate
+   registry/ui/<name>.tsx` does the cutting for every line; read what
+   survived, kill it with a test or say in the code why it may live, and
+   write the component's floor with `node tools/mutation-floor.mjs --raise`.
+   If it opens over the page, give it a block in
+   `tests/visual/keyboard.spec.ts`.
 5. **Give it a section on the stand** - `stand/src/App.tsx`, or a file in
    `stand/src/sections/` - and add its id to `tests/visual/sections.ts`, the
    list the pictures and the accessibility report both walk.

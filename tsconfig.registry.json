@@ -30,6 +30,8 @@
     "tools/build-history.d.ts",
     "tools/release-notes.d.ts",
     "tools/breaking-changes.d.ts",
+    "tools/mutation-floor.d.ts",
+    "tools/mutation-shard.d.ts",
     "tools/marks-module.d.ts"
   ]
 }

@@ -193,6 +193,26 @@ turned into a `contextmenu`. Whether everything is covered is checked in the
 ordinary test run — a new popup, or a new component that opens one, with no
 keyboard block fails `pnpm test`.
 
+## Tests that notice
+
+A green test proves the code passes it, not that it checks anything. Once a
+week, and on demand, [Stryker](https://stryker-mutator.io/) changes each
+primitive one small way at a time — a condition flipped, a branch emptied, a
+prop dropped on its way down — and runs the tests that cover the change. A
+change that no test notices is code no test holds.
+
+```console
+$ pnpm mutate --mutate registry/ui/menu.tsx   # one primitive
+$ node tools/mutation-floor.mjs               # every file at its floor?
+```
+
+Class lists are not mutated: an empty class list is a change no unit test
+should catch, and what classes promise is held by the gates above and by the
+pictures. Every file has a floor under its own score, kept with the source; a
+run that leaves any file under its floor fails, and the floor only rises — one
+number for the whole set would let one primitive's tests decay while
+another's improved.
+
 ## The room a popup has
 
 Every surface the set draws over the page — a Base UI `Popup` of any kind, and

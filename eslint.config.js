@@ -10,8 +10,10 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import dowel from './packages/dowel/dist/eslint/index.js'
 
 export default tseslint.config(
-  // `docs` is its own Astro project with its own toolchain.
-  { ignores: ['**/dist', 'docs'] },
+  // `docs` is its own Astro project with its own toolchain. Stryker's sandbox
+  // is a copy of this repository with every mutant compiled in, and its
+  // reports are output: neither is code anyone writes.
+  { ignores: ['**/dist', 'docs', '.stryker-tmp', 'reports'] },
   js.configs.recommended,
   tseslint.configs.recommended,
   reactHooks.configs.flat['recommended-latest'],
