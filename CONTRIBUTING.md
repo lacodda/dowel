@@ -39,6 +39,15 @@ $ pnpm mutate --mutate registry/ui/<name>.tsx   # one file, a few minutes
 $ node tools/mutation-floor.mjs                 # every file at its floor?
 ```
 
+The floors are the weekly run's measure, not a laptop's: under a dozen
+runners a keyboard test can fail by load, and every mutant it covers then
+counts as caught. Read and raise them from the CI run that holds them:
+
+```console
+$ gh run download <run> -D reports/ci
+$ node tools/mutation-floor.mjs --from reports/ci --raise
+```
+
 The pictures are compared on Linux only - the theme uses the system's own
 typeface, so a picture from Windows never equals one from Linux. New or changed
 baselines, and the accessibility report of a new item, are recorded in CI: run
