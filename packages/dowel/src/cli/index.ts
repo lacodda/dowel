@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 import { collectFiles, scanProject, type Finding } from './scan.js'
 import { rewriteSource } from './codemod.js'
+import { rewriteBaseUi } from './base-ui.js'
 import { diagnose, readCatalogue, type Catalogue, type Diagnosis, type ProjectFacts } from './doctor.js'
 import { differs, diffLines, hunks } from './diff.js'
 import { snippetsFile, snippetsFor, type PropsCatalogue } from './snippets.js'
@@ -174,6 +175,7 @@ function commandCodemod(options: Options): Outcome {
 
   const touched: { file: string; changes: number }[] = []
   const skipped: { file: string; line: number; name: string; note: string }[] = []
+  const renamedInBaseUi: { file: string; line: number; from: string; to: string }[] = []
   let total = 0
 
   for (const path of collectFiles(options.root)) {
@@ -187,24 +189,35 @@ function commandCodemod(options: Options): Outcome {
     const name = relative(options.root, path).split(sep).join('/')
     const result = rewriteSource(source)
     for (const entry of result.skipped) skipped.push({ file: name, ...entry })
-    if (result.changes.length === 0) continue
+    // Then what Base UI renamed, over the same text: two tables, one pass each,
+    // and neither one's names can be the other's.
+    const baseUi = rewriteBaseUi(result.source)
+    const changes = result.changes.length + baseUi.edits.length
+    if (changes === 0) continue
 
-    total += result.changes.length
-    touched.push({ file: name, changes: result.changes.length })
-    if (options.write) writeFileSync(path, result.source)
+    total += changes
+    touched.push({ file: name, changes })
+    for (const edit of baseUi.edits) renamedInBaseUi.push({ file: name, ...edit })
+    if (options.write) writeFileSync(path, baseUi.source)
   }
 
   if (options.json) {
-    process.stdout.write(`${JSON.stringify({ written: options.write, touched, skipped }, null, 2)}\n`)
+    process.stdout.write(
+      `${JSON.stringify({ written: options.write, touched, skipped, baseUi: renamedInBaseUi }, null, 2)}\n`,
+    )
     return 0
   }
 
   if (total === 0) {
-    process.stdout.write(`${green('Nothing to rewrite.')} No stock token names found.\n`)
+    process.stdout.write(`${green('Nothing to rewrite.')} No stock token names, nothing Base UI has renamed.\n`)
   } else {
     for (const entry of touched) {
       process.stdout.write(`  ${bold(entry.file)} ${dim(`${entry.changes} renamed`)}\n`)
     }
+    // Base UI's renames by name: fewer, and each a reason to read the file's
+    // behaviour as well as its spelling.
+    const renames = [...new Set(renamedInBaseUi.map((edit) => `${edit.from} -> ${edit.to}`))]
+    if (renames.length > 0) process.stdout.write(`\n${cyan('Base UI')} ${renames.join(', ')}\n`)
     const verb = options.write ? 'Rewrote' : 'Would rewrite'
     process.stdout.write(
       `\n${verb} ${bold(String(total))} ${total === 1 ? 'name' : 'names'} in ${touched.length} file${
@@ -490,7 +503,7 @@ function commandSnippets(options: Options): Outcome {
 const USAGE = `dowel - migration tools for the lacodda design system
 
   dowel check               What in this project is not on the dowel vocabulary
-  dowel codemod [--write]   Rewrite stock shadcn token names into dowel's
+  dowel codemod [--write]   Rewrite stock shadcn token names, and what Base UI renamed
   dowel doctor              Whether this project's dowel installation is coherent
   dowel diff [component]    How a copied component differs from the registry's
   dowel snippets [--write]  Editor snippets for the components this project has
