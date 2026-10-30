@@ -94,6 +94,10 @@ describe('Select', () => {
 
     await user.keyboard('{Enter}')
     await screen.findByRole('listbox')
+    // Opened from the keyboard, the list highlights its first item a moment
+    // after it appears; an arrow pressed before that lands on the first item
+    // rather than moving past it. A person presses once they see the highlight.
+    await waitFor(() => expect(screen.getByRole('option', { name: 'Apple' }).hasAttribute('data-highlighted')).toBe(true))
     await user.keyboard('{ArrowDown}{Enter}')
 
     await waitFor(() => expect(picked).toEqual(['pear']))

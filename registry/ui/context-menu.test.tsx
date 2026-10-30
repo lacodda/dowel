@@ -33,6 +33,16 @@ function open(user: ReturnType<typeof userEvent.setup>, target: Element) {
   return user.pointer({ target, keys: '[MouseRight]' })
 }
 
+/** The menu once it can be driven: shown, and holding the focus. Base UI moves
+ * the focus into the popup a moment after it appears, and a key pressed in
+ * between goes to the page - under load that moment is long enough to lose an
+ * arrow, which is what a person never does: they press once the menu is up. */
+async function ready() {
+  const menu = await screen.findByRole('menu')
+  await waitFor(() => expect(menu.contains(document.activeElement)).toBe(true))
+  return menu
+}
+
 function Example({ onChoose }: { onChoose?: (what: string) => void } = {}) {
   return (
     <ContextMenu>
@@ -92,7 +102,7 @@ describe('ContextMenu', () => {
     render(<Example />)
 
     await open(user, screen.getByTestId('area'))
-    await screen.findByRole('menu')
+    await ready()
     const items = screen.getAllByRole('menuitem')
 
     await user.keyboard('{ArrowDown}')
@@ -111,7 +121,7 @@ describe('ContextMenu', () => {
     render(<Example onChoose={(what) => chosen.push(what)} />)
 
     await open(user, screen.getByTestId('area'))
-    await screen.findByRole('menu')
+    await ready()
     await user.keyboard('{ArrowDown}{ArrowDown}{Enter}')
 
     await waitFor(() => expect(chosen).toEqual(['duplicate']))
