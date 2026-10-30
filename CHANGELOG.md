@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.41.0] - 2026-10-30
+
+### Bug Fixes
+- Describe the components whose title runs over a line
+
+### Build
+- Regenerate the registry and llms.txt
+- Regenerate the registry and llms.txt
+- Regenerate the registry, its v0.41 snapshot, the history and llms.txt
+
+### Documentation
+- Read every props table from the component's types
+- A searchable catalogue of the registry, and recipes from tested files
+- Four more recipes - a table, deleting, settings, a detail drawer
+- Point the README at the recipes, the catalogue and props.json
+
+### Features
+- One generator for every form of the theme, with Rust
+- Editor snippets for the components a project has copied
+- Carry a product across what Base UI renamed
+- Print the codemod's plan line by line
+
+### Testing
+- Press keys once the select and the context menu are ready
+- Hold where the switch puts the caller's class
+- Read the mutation floors from the shards of a CI run
+- Hold the mutation floors to the weekly run's measure
+
 ## [0.40.0] - 2026-10-25
 
 ### Bug Fixes
