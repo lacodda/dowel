@@ -28,6 +28,8 @@ export default defineConfig({
       'stand/src/**/*.test.{ts,tsx}',
       // The demo, walked as a visitor walks it.
       'demo/src/**/*.test.{ts,tsx}',
+      // The recipes, which are code a product copies by reading it.
+      'recipes/**/*.test.tsx',
       'tests/**/*.test.ts',
     ],
     // `dowel-ui` is what a copied component imports; here it is the source.

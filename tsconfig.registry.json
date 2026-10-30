@@ -16,6 +16,9 @@
   "include": [
     "registry/**/*.tsx",
     "registry/**/*.ts",
+    // The recipes: screens composed of the components, written the way a
+    // product writes them, and shown on the site from these very files.
+    "recipes/**/*.tsx",
     // The fictional world the stand, the blocks' pictures and the demo are
     // drawn from.
     "fixtures/**/*.ts",

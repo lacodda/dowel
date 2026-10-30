@@ -1,0 +1,23 @@
+---
+/*
+ * A recipe's code, read from the file it lives in.
+ *
+ * A recipe is code a product copies by reading it, and code printed on a page
+ * rots the day the component under it changes. So the page holds no code: it
+ * draws `recipes/<name>.tsx`, the file the typecheck compiles and the tests
+ * render, axe included.
+ */
+import { Code } from '@astrojs/starlight/components'
+
+interface Props {
+  /** The recipe's file, without `.tsx`. */
+  name: string
+}
+
+const { name } = Astro.props
+const files = import.meta.glob<string>('../../../recipes/*.tsx', { query: '?raw', import: 'default', eager: true })
+const source = files[`../../../recipes/${name}.tsx`]
+if (source === undefined) throw new Error(`no recipe called \`${name}\` in recipes/`)
+---
+
+<Code code={source} lang="tsx" title={`recipes/${name}.tsx`} />

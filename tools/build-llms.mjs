@@ -111,6 +111,33 @@ export function propsMarkdown(item) {
   return lines.join('\n').trim()
 }
 
+/** The registry's items as Markdown, grouped as the catalogue page groups
+ * them, from the catalogue the registry serves. */
+function catalogueMarkdown() {
+  const registry = JSON.parse(readFileSync(resolve(outDir, 'r/registry.json'), 'utf8'))
+  const kinds = [
+    ['registry:ui', 'Components'],
+    ['registry:block', 'Blocks'],
+    ['registry:style', 'Sets'],
+  ]
+  const firstSentence = (text = '') => text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text
+  return kinds
+    .flatMap(([type, heading]) => {
+      const items = registry.items.filter((item) => item.type === type).sort((a, b) => a.name.localeCompare(b.name))
+      return [
+        `### ${heading}`,
+        '',
+        ...items.map((item) => {
+          const exported = (props[item.name]?.components ?? []).map((component) => `\`${component.name}\``)
+          return `- **${item.title ?? item.name}** (\`${site}/r/${item.name}.json\`): ${firstSentence(item.description)}${exported.length > 1 ? ` Exports ${exported.join(', ')}.` : ''}`
+        }),
+        '',
+      ]
+    })
+    .join('\n')
+    .trim()
+}
+
 /** Frontmatter and body, with the MDX machinery turned into prose. */
 function parse(source) {
   const match = source.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/)
@@ -183,6 +210,15 @@ function expand(body, frontmatter) {
     // `<ContrastPromises>`: the pairs the theme promises in a mode, as the
     // page's table, from the same grouping.
     out = out.replace(/<ContrastPromises\s+mode="(\w+)"\s*\/>/g, (_, mode) => promiseTable(mode))
+
+    // `<Recipe>`: the recipe's file, as the page draws it.
+    out = out.replace(/<Recipe\s+name="([\w-]+)"\s*\/>/g, (_, name) =>
+      ['```tsx', readFileSync(resolve(root, 'recipes', `${name}.tsx`), 'utf8').replace(/\r\n/g, '\n').trimEnd(), '```'].join('\n'),
+    )
+
+    // `<RegistrySearch>`: the catalogue a reader searches on the page, as the
+    // list it searches - every item, what it is for, what it exports.
+    out = out.replace(/<RegistrySearch\s*\/>/g, () => catalogueMarkdown())
 
     // `<BreakingChanges>`: every break the changelog records, read by the
     // same parser the page uses.
@@ -269,6 +305,7 @@ const sections = [
   ['Concepts', (page) => page.slug.startsWith('concepts/')],
   ['Components', (page) => page.slug.startsWith('components/')],
   ['Blocks', (page) => page.slug.startsWith('blocks/')],
+  ['Recipes', (page) => page.slug.startsWith('recipes/')],
   ['Guides', (page) => page.slug.startsWith('guides/')],
   ['Reference', (page) => page.slug.startsWith('reference/')],
 ]

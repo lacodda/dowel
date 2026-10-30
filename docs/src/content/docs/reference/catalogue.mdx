@@ -1,0 +1,16 @@
+---
+title: Catalogue
+description: Every item the registry serves - components, blocks and sets - searchable by name, by what it is for, and by the props its components take.
+---
+
+import RegistrySearch from '../../../components/RegistrySearch.astro'
+
+Every item the registry serves, with the command that copies it into a
+project. Search by a name, by a word from what an item is for, or by a prop:
+`onRetry` finds the components that take one, and says so under each.
+
+<RegistrySearch />
+
+The same list is served as data at
+[`/r/registry.json`](https://lacodda.github.io/dowel/r/registry.json), and each
+component's props at `dowel-ui/props.json` in the package.

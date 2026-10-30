@@ -57,6 +57,12 @@ export default defineConfig({
 					label: 'Blocks',
 					items: [{ autogenerate: { directory: 'blocks' } }],
 				},
+				// Screens composed of the components - code a product reads and
+				// writes again in its own words, where a block is copied whole.
+				{
+					label: 'Recipes',
+					items: [{ autogenerate: { directory: 'recipes' } }],
+				},
 				{
 					label: 'Guides',
 					items: [{ autogenerate: { directory: 'guides' } }],

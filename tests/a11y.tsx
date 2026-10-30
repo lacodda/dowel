@@ -56,8 +56,15 @@ function describeViolations(violations: Result[]): string {
  * Returns what `render` returned, so a test can go on to press keys against
  * the same tree rather than rendering it twice.
  */
-export async function expectNoA11yViolations(ui: ReactElement, options?: RunOptions) {
+export async function expectNoA11yViolations(
+  ui: ReactElement,
+  options?: RunOptions,
+  /** For a screen that loads: what to wait for before checking, so axe reads
+   * the screen a reader is left with rather than its first frame. */
+  ready?: () => Promise<unknown>,
+) {
   const rendered = render(ui)
+  await ready?.()
   const results = await axe.run(rendered.container, {
     ...options,
     rules: { ...NOT_APPLICABLE_IN_JSDOM, ...options?.rules },

@@ -1,0 +1,35 @@
+---
+title: A list that loads
+description: Rows from somewhere slow, a search over them, pages when there are many - and the three moments that are not the list.
+---
+
+import Recipe from '../../../components/Recipe.astro'
+
+The screen every product builds first, and the one every product gets
+slightly wrong in its own way: a spinner where the shape was known, an empty
+state that cannot tell "none yet" from "none match", a failure with no way to
+try again. Composed from [QueryState](/dowel/components/query-state/),
+[SearchField](/dowel/components/search-field/),
+[RowButton](/dowel/components/list-row/) and
+[Pagination](/dowel/components/pagination/).
+
+<Recipe name="list-that-loads" />
+
+## What it gets right
+
+**The order of the moments.** `QueryState` shows pending first, then the
+error, then empty, then the list - so a reload that already has rows does not
+blank the screen, and a failure is never drawn as "nothing here".
+
+**Two kinds of nothing.** No works at all and no works matching the search
+are different news; the filtered one is drawn as a filter that caught
+nothing, and says what it was looking for.
+
+**A failure has a way out.** `onRetry` puts a button on the error screen. A
+product on TanStack Query passes `refetch`.
+
+**A new search starts at page one.** Page four of a different question is
+usually empty, which reads as "nothing found".
+
+**A late answer cannot win.** The effect ignores a response to an attempt
+that has been replaced - the fault that shows the old list after a retry.
