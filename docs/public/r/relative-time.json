@@ -3,7 +3,7 @@
   "name": "relative-time",
   "type": "registry:ui",
   "title": "RelativeTime",
-  "description": "The relative-time primitive.",
+  "description": "The rule the component is built on: **relative time is a convenience, never the only copy of the fact.** \"Last week\" is quicker to read than a date and useless the moment the reader needs to say when something actually happened - and they cannot get it back, because the page has thrown it away. So the element is a `<time dateTime=…>` with the exact moment in its `title`: the machine-readable value stays, hovering shows the real date, and copying the text still yields something a person can act on.",
   "dependencies": [
     "dowel-ui@^0.40.0"
   ],

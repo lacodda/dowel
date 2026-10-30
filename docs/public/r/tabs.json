@@ -3,7 +3,7 @@
   "name": "tabs",
   "type": "registry:ui",
   "title": "Tabs",
-  "description": "The tabs primitive.",
+  "description": "Two shapes, because the line has two needs and they look nothing alike.",
   "dependencies": [
     "@base-ui/react",
     "class-variance-authority",

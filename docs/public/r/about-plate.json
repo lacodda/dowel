@@ -3,7 +3,7 @@
   "name": "about-plate",
   "type": "registry:ui",
   "title": "AboutPlate",
-  "description": "The about-plate primitive.",
+  "description": "Every desktop product has an About box and every one of them was written from scratch: the mark at whatever size came to hand, the version as a string in the middle of a sentence, a line about the family somewhere or nowhere. Read side by side they looked like products of different makers, which is the one thing a line of products is supposed not to look like.",
   "dependencies": [
     "dowel-ui@^0.40.0"
   ],

@@ -305,7 +305,7 @@
       "name": "about-plate",
       "type": "registry:ui",
       "title": "AboutPlate",
-      "description": "The about-plate primitive.",
+      "description": "Every desktop product has an About box and every one of them was written from scratch: the mark at whatever size came to hand, the version as a string in the middle of a sentence, a line about the family somewhere or nowhere. Read side by side they looked like products of different makers, which is the one thing a line of products is supposed not to look like.",
       "dependencies": [
         "dowel-ui@^0.40.0"
       ],
@@ -1689,7 +1689,7 @@
       "name": "product-mark",
       "type": "registry:ui",
       "title": "ProductMark",
-      "description": "The product-mark primitive.",
+      "description": "Every product of the line has one mark, a hexagonal tile with a two-letter code, in three levels that are a rule rather than options: from 64px it carries the product's metaphor under the code, from 28px it is the code alone and larger, and at 27px and under it is the tile filled with the product's colour and a heavy code - a metaphor at sixteen pixels is noise, and a thin outline disappears. A product that drew its own mark picked one level and used it at every size, so the same mark was a smudge in the tab strip and a bare tile on the About screen. Here the size is the only input, and the level follows.",
       "dependencies": [
         "dowel-ui@^0.40.0"
       ],
@@ -1806,7 +1806,7 @@
       "name": "relative-time",
       "type": "registry:ui",
       "title": "RelativeTime",
-      "description": "The relative-time primitive.",
+      "description": "The rule the component is built on: **relative time is a convenience, never the only copy of the fact.** \"Last week\" is quicker to read than a date and useless the moment the reader needs to say when something actually happened - and they cannot get it back, because the page has thrown it away. So the element is a `<time dateTime=…>` with the exact moment in its `title`: the machine-readable value stays, hovering shows the real date, and copying the text still yields something a person can act on.",
       "dependencies": [
         "dowel-ui@^0.40.0"
       ],
@@ -2182,7 +2182,7 @@
       "name": "splitter",
       "type": "registry:ui",
       "title": "Splitter",
-      "description": "The splitter primitive.",
+      "description": "Three parts - `Splitter`, `SplitterPane`, `SplitterHandle` - rather than a component with a `first` and a `second`. A two-pane prop shape is the one every product outgrows on the day it wants a third pane, and the rewrite is every call site. Here a third pane is two more lines of markup. Each handle moves only the boundary it sits on: the pane before it and the pane after it trade size, and the others stay where they are, which is what a reader dragging one edge expects.",
       "dependencies": [
         "class-variance-authority",
         "dowel-ui@^0.40.0"
@@ -2314,7 +2314,7 @@
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
-      "description": "The tabs primitive.",
+      "description": "Two shapes, because the line has two needs and they look nothing alike.",
       "dependencies": [
         "@base-ui/react",
         "class-variance-authority",
@@ -2376,7 +2376,7 @@
       "name": "tier",
       "type": "registry:ui",
       "title": "Tier",
-      "description": "The tier primitive.",
+      "description": "The shape comes from kilna, where a work is scored on several axes and the total lands in a named band - \"draft\", \"publishable\", \"a clip\". Two more products of the line grade things the same way (a health score, a review verdict), which is what makes this a primitive rather than a screen.",
       "dependencies": [
         "class-variance-authority",
         "dowel-ui@^0.40.0"

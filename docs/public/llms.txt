@@ -146,6 +146,10 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [LoginScreen](https://lacodda.github.io/dowel/blocks/login-screen.md): The page for someone not signed in yet - a name, a password, a button, and the two ways it can go wrong said differently.
 - [SettingsScreen](https://lacodda.github.io/dowel/blocks/settings-screen.md): Settings in sections - a column of destinations, each named with what is in it, beside the open section; on a phone, the column first and then the section.
 
+## Recipes
+
+- [A list that loads](https://lacodda.github.io/dowel/recipes/list-that-loads.md): Rows from somewhere slow, a search over them, pages when there are many - and the three moments that are not the list.
+
 ## Guides
 
 - [What a component has to pass](https://lacodda.github.io/dowel/guides/gates.md): The checks every primitive runs through, and what each one is there to catch.
@@ -154,12 +158,14 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Choosing an overlay](https://lacodda.github.io/dowel/guides/overlays.md): Six components that all float above the page, and the question each one answers.
 - [Printing](https://lacodda.github.io/dowel/guides/printing.md): What the theme and the set do on paper, and the one thing a product does itself.
 - [Installing from the registry](https://lacodda.github.io/dowel/guides/registry.md): Sets that install in one command, and how to pin a version of the registry so an install can be repeated.
+- [Snippets for your editor](https://lacodda.github.io/dowel/guides/snippets.md): One command writes VS Code snippets for the components a project has copied, read from their types in the version it installed.
 - [Upgrading dowel](https://lacodda.github.io/dowel/guides/upgrading.md): What moves when dowel does, what stays put because it is yours, and every change that breaks a product - with the way through each.
 
 ## Reference
 
 - [Accents](https://lacodda.github.io/dowel/reference/accents.md): One colour per product of the lacodda line, and the theme derives the rest from it.
 - [Accessibility](https://lacodda.github.io/dowel/reference/accessibility.md): What axe finds on every component and block, in a browser, in both themes - a report the build writes, not one typed by hand.
+- [Catalogue](https://lacodda.github.io/dowel/reference/catalogue.md): Every item the registry serves - components, blocks and sets - searchable by name, by what it is for, and by the props its components take.
 - [Palettes for native products](https://lacodda.github.io/dowel/reference/palettes.md): Every colour of the theme, resolved for each product of the line, for code that cannot evaluate CSS.
 - [Scales](https://lacodda.github.io/dowel/reference/scales.md): Radius, type, motion, elevation and stacking order - the sizes and speeds every product of the lacodda line is drawn on.
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens.md): The token vocabulary every product of the lacodda line shares, in the dark and light themes.

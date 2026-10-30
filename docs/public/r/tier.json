@@ -3,7 +3,7 @@
   "name": "tier",
   "type": "registry:ui",
   "title": "Tier",
-  "description": "The tier primitive.",
+  "description": "The shape comes from kilna, where a work is scored on several axes and the total lands in a named band - \"draft\", \"publishable\", \"a clip\". Two more products of the line grade things the same way (a health score, a review verdict), which is what makes this a primitive rather than a screen.",
   "dependencies": [
     "class-variance-authority",
     "dowel-ui@^0.40.0"

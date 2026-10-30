@@ -3,7 +3,7 @@
   "name": "splitter",
   "type": "registry:ui",
   "title": "Splitter",
-  "description": "The splitter primitive.",
+  "description": "Three parts - `Splitter`, `SplitterPane`, `SplitterHandle` - rather than a component with a `first` and a `second`. A two-pane prop shape is the one every product outgrows on the day it wants a third pane, and the rewrite is every call site. Here a third pane is two more lines of markup. Each handle moves only the boundary it sits on: the pane before it and the pane after it trade size, and the others stay where they are, which is what a reader dragging one edge expects.",
   "dependencies": [
     "class-variance-authority",
     "dowel-ui@^0.40.0"
