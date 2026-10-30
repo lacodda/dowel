@@ -1,0 +1,44 @@
+---
+title: A table people sort and filter
+description: A table of works the reader orders by a column, narrows through a filter, sizes and pages - with one set of state behind all of it.
+---
+
+import Recipe from '../../../components/Recipe.astro'
+
+The "all of our things" page. Sorting, filtering and paging are each easy
+alone and get wrong together: a sort that only reorders the visible page, a
+filter that leaves the reader on a page that no longer exists, an empty grid
+that reads as broken. Composed from [Table](/dowel/components/table/) with its
+sort helpers, [FilterPopover](/dowel/components/filter-popover/),
+[Checkbox](/dowel/components/checkbox/), [Badge](/dowel/components/badge/),
+[PageSize](/dowel/components/page-size/) and
+[Pagination](/dowel/components/pagination/).
+
+<Recipe name="table-people-sort" />
+
+## What it gets right
+
+**The sort is announced.** The sorted column's heading carries `aria-sort`
+(ascending or descending) and no other heading does, so a screen reader hears
+which column the table is in order of, and nothing is repeated on the rest.
+
+**One order across the pages.** Rows are filtered and sorted first and the
+page is cut afterwards, so page two continues where page one stopped and
+clicking a page does not touch the sort.
+
+**Unjudged sorts last.** A work with no score is not a zero. It stays at the
+bottom whichever way the Score column points.
+
+**A filter that hides everything says so.** The table stays, with its headings,
+and one row says no works match these filters, with a button that clears them.
+No filter ticked means all rows, never none.
+
+**Changing what the pages are made of starts at page one.** A filter or a new
+page size puts the reader back on the first page, instead of leaving them on
+page three of a different table.
+
+**Numbers line up.** The Score heading and its cells use `numeric`, so the
+column is right-aligned with lining figures.
+
+**The stage is a word.** The badge says Draft or Released; colour only adds to
+it.

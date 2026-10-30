@@ -1,0 +1,40 @@
+---
+title: Settings that save as you go
+description: A settings section with no Save button - each field keeps itself when it is committed, and says whether it did.
+---
+
+import Recipe from '../../../components/Recipe.astro'
+
+A form with no Save button has to say what it did anyway, or the reader is
+left wondering whether their edit survived. Composed from
+[Field](/dowel/components/field/), [Input](/dowel/components/input/),
+[Switch](/dowel/components/switch/),
+[SegmentedControl](/dowel/components/segmented-control/) and
+[SaveState](/dowel/components/save-state/). It is the inside of one section of
+a settings screen: that block lays out the sections and the way between them,
+this is what a section holds when there is no Save bar at its foot.
+
+<Recipe name="settings-saved-as-you-go" />
+
+## What it gets right
+
+**Nothing is sent while someone is typing.** A text field saves when it is
+left or when Enter is pressed - never per keystroke - and leaving it
+unchanged sends nothing at all.
+
+**A switch or a choice saves at once.** There is no half-typed state of a
+switch, so waiting for a blur would only make the reader wonder.
+
+**The outcome is announced.** The line beside each field is a polite live
+region that is always on the page, so a screen reader hears "Saving" and then
+"Saved" change in place; the tick fades on its own.
+
+**A failure keeps what was typed.** The box still shows the text, a message
+says it was not saved, and it is announced as an alert - never "Saved" over a
+save that was not.
+
+**A failure has a way out.** "Try again" sends the same value again, and its
+name says which setting it is for, since several can be showing at once.
+
+**Each field saves on its own.** A slow or failed save on one does not hold up
+the others, and a late answer to an old attempt cannot land over a newer one.

@@ -1,0 +1,45 @@
+---
+title: Details in a drawer
+description: A list of works where choosing one opens its details from the right edge, without leaving the list.
+---
+
+import Recipe from '../../../components/Recipe.astro'
+
+The detail view that is not a page: the list stays where it was, and a panel
+holds the chosen item's facts, history and actions until the reader is done.
+It goes wrong quietly - a panel with no name, focus lost on close, an empty
+cell where a score should be. Composed from
+[RowButton](/dowel/components/list-row/),
+[Drawer](/dowel/components/drawer/),
+[KeyValue](/dowel/components/key-value/),
+[Badge](/dowel/components/badge/),
+[RelativeTime](/dowel/components/relative-time/) and
+[Button](/dowel/components/button/).
+
+<Recipe name="detail-in-a-drawer" />
+
+## What it gets right
+
+**The drawer is a dialog named by the work.** `DrawerTitle` holds the work's
+title and Base UI points the dialog at it, so a screen reader hears "Harbour
+lights, dialog" rather than an anonymous panel.
+
+**Escape closes it and the focus goes home.** The reader lands back on the
+row they chose, not at the top of the page.
+
+**The list stays where it was.** The list is never unmounted, and the chosen
+row is marked current while the drawer is open, so even behind the scrim it
+says where the reader is.
+
+**A missing score is said in words.** A work nobody has judged reads "Not
+scored yet", and one with no versions reads "No versions yet." - never an
+empty cell that looks like a fault.
+
+**A relative date keeps its exact one.** "2 hours ago" is a `<time>` with the
+machine-readable moment and the full date in its title, for the reader who
+has to say when. The recipe passes `now`, so every phrase is measured from the
+same moment.
+
+**The actions stay in reach.** Close and the main action sit in the drawer's
+footer, pinned to the bottom edge however short the body is; the main action
+is handed the id of the work that is open.

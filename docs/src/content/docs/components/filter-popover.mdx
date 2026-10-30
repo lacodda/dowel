@@ -32,7 +32,9 @@ since a stage is ticked and a title is typed and the popover has no opinion.
       className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[active]:opacity-100 data-[popup-open]:opacity-100"
     >
       {owners.map((owner) => (
-        <Checkbox key={owner} label={owner} checked={chosen.includes(owner)} onCheckedChange={…} />
+        <Checkbox key={owner} checked={chosen.includes(owner)} onCheckedChange={…}>
+          {owner}
+        </Checkbox>
       ))}
     </FilterPopover>
   </span>

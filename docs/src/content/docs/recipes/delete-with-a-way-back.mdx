@@ -1,0 +1,39 @@
+---
+title: Deleting, with a way back
+description: Archiving acts at once and offers Undo; deleting for good asks first. Two destructive actions, treated as the different things they are.
+---
+
+import Recipe from '../../../components/Recipe.astro'
+
+A list of works where two things can be taken away. One can be put back and
+one cannot, and a screen that treats them alike is wrong in one direction or
+the other: a dialog before every archive, or an Undo that cannot undo.
+Composed from [ConfirmDialog](/dowel/components/confirm-dialog/),
+[Toast](/dowel/components/toast/), [Button](/dowel/components/button/) and
+[ListRow](/dowel/components/list-row/).
+
+<Recipe name="delete-with-a-way-back" />
+
+## What it gets right
+
+**What can be undone does not ask.** Archive acts at once; the work leaves the
+list and a toast says so, with an Undo that stays for a few seconds.
+
+**Undo puts the work back in its place.** The list is always drawn from the
+same ordered array and archiving only hides an id, so a work from the middle
+returns to the middle.
+
+**What cannot be undone asks, and names the thing.** The dialog title says
+which work, and the description says it cannot be undone. Asking changes
+nothing: the work is still in the list behind it.
+
+**Focus starts on the safe choice.** `initialFocus` points at "Keep it", so a
+hurried Enter cancels.
+
+**Cancel changes nothing; Confirm removes it.** "Delete for good" is the
+danger button and the only path that removes the work, and no Undo is offered
+afterwards because none could be kept.
+
+**The buttons say which work.** Each row's buttons carry the work's title in
+their accessible name, so a list of buttons read out of context is not
+"Archive, Archive, Archive".
