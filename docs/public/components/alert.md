@@ -71,23 +71,15 @@ reader interrupts whatever it was saying to read the furniture.
 
 Only the product knows which it has.
 
-```tsx
-{/* Already on the screen. Read in its turn. */}
-<Alert tone="info">{t('exportIsStale')}</Alert>
-
-{/* Appeared just now, because saving failed. Announce it. */}
-<Alert tone="bad" role="alert">{t('couldNotSave')}</Alert>
-```
+ FENCE3
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `tone` | `neutral \| good \| warn \| bad \| info` | `neutral` | |
-| `icon` | `ReactNode` | | Drawn before the text; the product's own |
-| `title` | `ReactNode` | | The heading. Optional — a one-line alert needs none |
-| `action` | `ReactNode` | | Drawn at the end: a link, a fix, a dismiss the product owns |
-| `role` | `string` | | No default. `alert` when it appeared just now |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `tone` | `neutral \| good \| warn \| bad \| info` | `'neutral'` |  |
+| `icon` | `ReactNode` |  | Drawn before the text. The product's own, because an icon that means "warning" here should be the one it means everywhere else in the product. |
+| `title` | `ReactNode` |  | The heading. Optional: a one-line alert does not need one. |
+| `action` | `ReactNode` |  | Anything that goes at the end - a link to the thing that fixes it, a dismiss button the product owns. |
 
-`children` is the body. Anything else goes to the `<div>`.
+And every prop of `HTMLAttributes<HTMLDivElement>` except `title`, passed on.

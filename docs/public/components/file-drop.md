@@ -51,3 +51,21 @@ file twice in a row fires nothing the second time.
 fires when the pointer crosses onto a *child* of the zone, so a zone that
 toggled on it flickers as the pointer moves over its own text — the commonest
 defect in hand-written drop zones.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `onFiles` (required) | `(files: File[]) => void` |  | Called with the files that passed the filters. |
+| `onReject` | `(rejections: FileRejection[]) => void` |  | Called with the ones that did not, so the product can say why. |
+| `accept` | `string` |  | What to take, in the form `<input accept>` uses: `image/*`, `.pdf,.docx`. |
+| `maxSize` | `number` |  | Largest file, in bytes. |
+| `maxFiles` | `number` |  | How many at once. Without it, any number. |
+| `multiple` | `boolean` |  | Whether several may be chosen in the picker. |
+| `disabled` | `boolean` |  | Dims the zone, ignores drops and disables the input underneath. |
+| `children` | `ReactNode` |  | What the zone says. The product's words, in the product's language. |
+| `className` | `string` |  |  |
+| `id` | `string` |  | The `id` of the hidden file input, which the zone's label points at. A generated one if omitted. |
+| `aria-label` | `string` |  | Names the field for a screen reader, when there is no visible label. |
+| `aria-labelledby` | `string` |  | The `id` of the element that names the field, when it is not the zone's own text. |
+| `aria-describedby` | `string` |  | The `id` of the element that describes the field - the accepted types, the size limit. |

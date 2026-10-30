@@ -47,10 +47,19 @@ on the first click, with the password half typed.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | Controlled |
-| `defaultValue` | `string` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | |
-| `showLabel` | `string` | | Required. The button while masked |
-| `hideLabel` | `string` | | Required. The button while showing |
-| `autoComplete` | `string` | | `current-password` or `new-password` |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
+| `value` | `string` |  | The controlled password. |
+| `defaultValue` | `string` |  | The starting password of an uncontrolled field. |
+| `onValueChange` | `(value: string) => void` |  | Called with the new text on every change. |
+| `showLabel` (required) | `string` |  | What the reveal button is called while the password is hidden. |
+| `hideLabel` (required) | `string` |  | ...and while it is showing. |
+| `autoComplete` | `string` |  | `current-password` for a login, `new-password` for a sign-up. |
+| `placeholder` | `string` |  | Shown in the box while it is empty. |
+| `disabled` | `boolean` |  | Turns the field and its reveal button off. |
+| `readOnly` | `boolean` |  | The password can be read and selected but not changed. |
+| `required` | `boolean` |  | Marks the field as required, for a form to check. |
+| `name` | `string` |  | The name the password is submitted under in a form. |
+| `id` | `string` |  | The `id` of the input, which the reveal button controls. A generated one if omitted. |
+| `ref` | `Ref<HTMLInputElement>` |  | A ref to the `<input>`, to focus it after a failed sign-in. |
+| `aria-label` | `string` |  | Names the field for a screen reader, when there is no visible label. |
+| `aria-describedby` | `string` |  | The `id` of the element that describes the field - the rules a new password must meet. |
+| `className` | `string` |  |  |

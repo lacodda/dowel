@@ -114,34 +114,32 @@ they can be translated.
 
 ## Props
 
-### `TitleBar`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `labels` | `{ minimize, maximize, restore, close }` | | Required; passed to `WindowButtons` |
-| `mark` | `ReactNode` | | The product's mark, at the left edge |
-| `children` | `ReactNode` | | Tabs, a trail or a title |
-| `actions` | `ReactNode` | | The product's controls, before the window buttons |
-| `center` | `ReactNode` | | Held at the window's centre — the search box, most often |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
 ### `WindowButtons`
 
+The window controls, in the order Windows puts them.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `labels` | `{ minimize, maximize, restore, close }` | | Required — `restore` replaces `maximize` while maximised |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `useTitleBarGestures()`
-
-Returns `{ onPointerDown, onDoubleClick }` to spread on the bar.
+| `labels` (required) | `{ minimize: string; maximize: string; restore: string; close: string; }` |  | What each button is called. Required, and deliberately without a default: a string this component invents is a string the product cannot translate. `restore` replaces `maximize` while the window is maximised. |
+| `className` | `string` |  |  |
 
 ### `ResizeEdges`
 
+Invisible strips along the window's edges.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `className` | `string` | | Merged into every strip; `absolute` moves them onto the nearest positioned box |
+| `className` | `string` |  | Merged into every strip. `fixed` to the viewport by default, which is where a window's edges are; `absolute` puts them on the nearest positioned box instead, for a frame drawn inside a page. |
 
-### `useMaximized()`
+### `TitleBar`
 
-Returns `boolean`, kept current as the window resizes. `false` outside Tauri.
+A frameless window's title bar, assembled.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `labels` (required) | `{ minimize: string; maximize: string; restore: string; close: string; }` |  | The window buttons' names; see `WindowButtons`. |
+| `mark` | `ReactNode` |  | The product's mark, at the left edge, where the system put the icon. |
+| `children` | `ReactNode` |  | What the window shows at the top: its open documents as `<Tabs><TabsList variant="bar">`, a trail, or a title. |
+| `actions` | `ReactNode` |  | The product's own controls, between the handle and the window buttons. |
+| `center` | `ReactNode` |  | Something that belongs to the whole window rather than to either end - the search box, most often - held at the window's centre. |
+| `className` | `string` |  |  |

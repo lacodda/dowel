@@ -73,39 +73,6 @@ other:
 Left unmatched, the drawer slides in from one edge and is flicked away towards
 another.
 
-## Props
-
-### `Drawer` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-| `swipeDirection` | `up \| down \| left \| right` | `down` | Which way a finger dismisses it — match it to `side` |
-| `modal` | `boolean \| 'trap-focus'` | `true` | |
-| `snapPoints` | `DrawerSnapPoint[]` | | Partial heights for a bottom sheet |
-
-### `DrawerPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `side` | `right \| left \| bottom` | `right` | The edge it comes from, and the axis it slides along |
-| `size` | `sm \| md \| lg \| xl \| full` | `md` | Across the edge it comes from: the width of a side panel (20, 24, 32, 48rem, the window less a margin), the height cap of a sheet (40, 80, 90vh, the window) - `full` sets the sheet's height |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `DrawerTrigger` | | What opens it. `render` to use your own button |
-| `DrawerHeader` | `action` | The title and the line under it, with an action beside them; stays put |
-| `DrawerTitle` | | The popup's `aria-labelledby` points at it |
-| `DrawerDescription` | | The popup's `aria-describedby` |
-| `DrawerBody` | | The part that scrolls |
-| `DrawerActions` | `start` | Pinned to the bottom of the panel, right-aligned; `start` at the other end |
-| `DrawerClose` | | Closes it. `render` to use your own button |
-
 ## Notes
 
 **Base UI positions none of it.** Unlike Popover there is no positioner and no
@@ -132,3 +99,74 @@ than fits.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+**`size` is measured across the edge the drawer comes from.** For a side panel it is the width (20, 24, 32, 48rem, or the window less a margin); for a bottom sheet it is the height cap (40, 80, 90vh, or the window), and `full` sets the sheet's height.
+
+## Props
+
+### `Drawer`
+
+The root. Controlled with `open` and `onOpenChange`, or left to manage itself around a `DrawerTrigger`.
+
+Base UI's `Drawer.Root`, unchanged under dowel's name.
+
+### `DrawerTrigger`
+
+What opens it. Give it `render` to use your own button.
+
+Base UI's `Drawer.Trigger`, unchanged under dowel's name.
+
+### `DrawerClose`
+
+What closes it - the same, for a cancel button or an X.
+
+Base UI's `Drawer.Close`, unchanged under dowel's name.
+
+### `DrawerBackdrop`
+
+The scrim. Dark because a drawer is modal: what is behind it is out of reach, and saying so with contrast is the only thing that reads at a glance.
+
+Every prop of Base UI's `Drawer.Backdrop`, passed on.
+
+### `DrawerPopup`
+
+The panel. Portalled, and wrapped in its own viewport so the edge it is pinned to holds still while the body scrolls. Put a `DrawerHeader`, a `DrawerBody` and `DrawerActions` inside it.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `side` | `right \| left \| bottom` | `'right'` |  |
+| `size` | `sm \| md \| lg \| xl \| full` | `'md'` |  |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the document body, which is what keeps the popup from being clipped by an ancestor. Pass an element to put it somewhere else - inside an overlay that is already open, or into a container being screenshotted. |
+| `backdrop` | `boolean` | `true` | Whether to draw the scrim. On by default, and it should stay on for anything a person actually uses: the dim is what says the page behind is out of reach. Turn it off where the popup is shown alongside other things on purpose - a component gallery, a screenshot - because a scrim is `position: fixed` and covers everything, not only its own container. |
+
+And every prop of Base UI's `Drawer.Popup`, passed on.
+
+### `DrawerTitle`
+
+The heading. Base UI points the popup's `aria-labelledby` at it, so a drawer with one is named for a screen reader without anyone arranging it.
+
+Every prop of Base UI's `Drawer.Title`, passed on.
+
+### `DrawerDescription`
+
+The line under the heading, and the popup's `aria-describedby`.
+
+Every prop of Base UI's `Drawer.Description`, passed on.
+
+### `DrawerHeader`
+
+The top of the panel: the title, the line under it, and an action beside them. The dialog's part, under the drawer's name.
+
+`DialogHeader`, unchanged under dowel's name.
+
+### `DrawerBody`
+
+The part that scrolls. The dialog's part, under the drawer's name.
+
+`DialogBody`, unchanged under dowel's name.
+
+### `DrawerActions`
+
+Where the actions go, pinned to the bottom edge of the panel however little is in it - a drawer is tall, and its buttons should not wander up the page. The dialog's part, under the drawer's name.
+
+`DialogActions`, unchanged under dowel's name.

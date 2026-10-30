@@ -54,9 +54,12 @@ the shape of what is coming is known,
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `number \| null` | | Leave out when not known — a state, not a gap |
-| `max` | `number` | `100` | |
-| `size` | `sm \| md` | `md` | |
-| `tone` | `accent \| good \| warn \| bad` | `accent` | |
-| `label` | `string` | | Required. What is progressing |
-| `children` | `ReactNode` | | A visible label beside the bar |
+| `size` | `sm \| md` | `'md'` |  |
+| `tone` | `accent \| good \| warn \| bad` | `'accent'` |  |
+| `value` | `number \| null` |  | The fraction done, 0 to `max`. Leave it out when it is not known - that is not a missing value but a different, honest state. |
+| `max` | `number` | `100` | The maximum value. |
+| `label` (required) | `string` |  | What is progressing, for a screen reader. Required: a bar with no name is announced as a percentage of nothing, and the word belongs to the product. |
+| `className` | `string` |  |  |
+| `children` | `ReactNode` |  | A visible label beside the bar, when there is room. |
+
+And every prop of Base UI's `Progress.Root` except `className`, `value`, passed on.

@@ -55,14 +55,14 @@ and that is a decision about the data, not about formatting. See
 [table-sort](/dowel/components/table-sort/) for the same distinction in the
 ordering.
 
+`formatNumber(value, locale, options?)` gives the string alone, for a `title`,
+an `aria-label` or a CSV.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `number` | | Required |
-| `locale` | `string` | the application's (`useLocale`) | |
-| …`Intl.NumberFormatOptions` | | | `style`, `currency`, `notation`, `maximumFractionDigits`, … |
-| `className` | `string` | | Merged; `tabular-nums` stays |
+| `value` (required) | `number` |  | The number to format. |
+| `locale` | `string` |  | The application's language by default - see `useLocale`. |
 
-`formatNumber(value, locale, options?)` gives the string alone, for a `title`,
-an `aria-label` or a CSV.
+And every prop of `HTMLAttributes<HTMLSpanElement>` except `children`, `style`, `Intl.NumberFormatOptions`, passed on.

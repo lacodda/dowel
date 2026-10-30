@@ -56,20 +56,16 @@ list scrolls sideways by the length of its longest title. `orientation="vertical
 holds the content to the viewport's width, so rows truncate, and draws no
 sideways bar; `horizontal` does the same the other way, for a strip of chips.
 
-```tsx
-<ScrollArea label={t('queue')} orientation="vertical" className="h-64">
-  <Queue />
-</ScrollArea>
-```
+ FENCE2
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required. Names the viewport when it is a tab stop |
-| `fade` | `boolean` | `false` | Fade the edges that have more past them |
-| `orientation` | `'both' \| 'vertical' \| 'horizontal'` | `'both'` | Which way the content may move; `vertical` truncates rows to the column |
-| `viewportRef` | `Ref<HTMLDivElement>` | | The scrolling element |
-| `className` | `string` | | On the root: its size is the area's size |
-| `viewportClassName` | `string` | | On the scrolling element |
-| `children` | `ReactNode` | | The content |
+| `label` (required) | `string` |  | Names the viewport, which becomes a tab stop when its content overflows: "Recent activity", "Diff of main.rs". No default - it is the product's word. |
+| `fade` | `boolean` | `false` | Fade the edges that have more content past them. |
+| `orientation` | `horizontal \| vertical \| both` | `'both'` | Which way the content may move. `vertical` for a list whose rows truncate to the column; `both` for a table or a picture. |
+| `viewportRef` | `Ref<HTMLDivElement>` |  | The scrolling element itself, for a product that sets or reads its position - a virtual list, a scroll-to-latest. |
+| `className` | `string` |  | On the root: its size is the area's size, so the height goes here. |
+| `viewportClassName` | `string` |  | On the scrolling element, for padding that should scroll with the content. |
+| `children` (required) | `ReactNode` |  |  |

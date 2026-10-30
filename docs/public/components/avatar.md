@@ -54,25 +54,24 @@ labelled image.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `name` | `string` | | Required — the label, and the source of the initials |
-| `src` | `string` | | Absent or failing, falls back to the initials |
-| `fallback` | `ReactNode` | | Drawn instead of the initials |
-| `size` | `xs \| sm \| md \| lg \| xl` | `md` | |
-| `shape` | `circle \| square` | `circle` | |
-| `imgProps` | `ImgHTMLAttributes` | | For `loading`, `referrerPolicy` |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `xs \| sm \| md \| lg \| xl` | `'md'` |  |
+| `shape` | `circle \| square` | `'circle'` |  |
+| `name` (required) | `string` |  | Who or what this stands for. Always required: it is the name a reader who does not see the picture gets, and the source of the initials. |
+| `src` | `string` |  | The picture. Absent, or failing to load, falls back to the initials. |
+| `fallback` | `ReactNode` |  | Anything to draw instead of the initials when there is no picture - an icon for a thing that is not a person. |
+| `imgProps` | `Omit<ImgHTMLAttributes<HTMLImageElement>, 'onError' \| 'src' \| 'alt'>` |  | Passed to the `<img>`, for `loading` or `referrerPolicy`. |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>` except `children`, passed on.
 
 ### `AvatarGroup`
 
+A row of faces, overlapping, with a count for the rest.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `people` | `{ name, src? }[]` | | Required |
-| `max` | `number` | `4` | Tiles before the rest become a count |
-| `size` | `Avatar['size']` | `sm` | |
-| `label` | `string` | | Names the row for a screen reader |
+| `max` | `number` | `4` | How many tiles to show before the rest become a count. |
+| `people` (required) | `{ name: string; src?: string \| undefined; }[]` |  | The people. Given as data rather than as children, because the group has to know how many there are to say how many are hidden. |
+| `size` | `sm \| md \| xs \| lg \| xl \| null` | `'sm'` | The size of every tile in the row, the count included. |
+| `label` | `string` |  | What the whole row is called, for a screen reader - "Assignees", in the product's word. |
 
-### `initialsOf`
-
-| | |
-| --- | --- |
-| `initialsOf(name, count = 2)` | The letters a tile shows, by the rule above |
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

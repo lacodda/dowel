@@ -63,11 +63,12 @@ frame of the signed-in product, where there is no rail beside it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | "Sign in to kilna" |
-| `description` | `ReactNode` | | A line under it |
-| `mark` | `ReactNode` | | The product's mark, above the title |
-| `identifier` | `email \| username` | `email` | What the first field asks for |
-| `onSubmit` | `(credentials) => Promise<ReactNode \| void>` | | Nothing when signed in, words when refused; reject when there was no answer |
-| `extra` | `ReactNode` | | Under the password: "Forgot your password?" |
-| `footer` | `ReactNode` | | Under the panel |
-| `words` | `LoginScreenWords` | | `{ identifier, password, show, hide, submit, submitting, failed }` |
+| `title` (required) | `ReactNode` |  | "Sign in to kilna". |
+| `description` | `ReactNode` |  | A line under it, when the title does not say enough. |
+| `mark` | `ReactNode` |  | The product's mark, above the title: `<ProductMark product="kilna" size={40} />`. |
+| `identifier` | `email \| username` | `'email'` | What the first field asks for. An email gets the keyboard and the check a browser gives an address; a user name gets neither. |
+| `onSubmit` (required) | `(credentials: LoginCredentials) => Promise<void \| ReactNode>` |  | Resolve with nothing when signed in; with words when refused - "That email and password do not match." Reject when there was no answer. |
+| `extra` | `ReactNode` |  | Under the password: "Forgot your password?" |
+| `footer` | `ReactNode` |  | Under the panel: "No account? Ask whoever runs this server." |
+| `words` (required) | `LoginScreenWords` |  | Every string the screen shows: the two field labels, the show and hide names of the password toggle, the submit button in both states, and the message for a server that could not be reached. The block has no words of its own. |
+| `className` | `string` |  |  |

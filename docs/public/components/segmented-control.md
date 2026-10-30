@@ -51,18 +51,24 @@ segment that is only an icon takes `aria-label`.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `aria-label` | `string` | | What is being chosen |
-| `value` | `string` | | Controlled |
-| `defaultValue` | `string` | | |
-| `onValueChange` | `(value: string) => void` | | |
-| `disabled` | `boolean` | | |
-| `name` | `string` | | For a form that posts it |
+| `aria-label` | `string` |  | What is being chosen: "Theme", "View". Required - a row of words with no name for the question is a riddle to anyone who cannot see the heading above it. |
+| `aria-labelledby` | `string` |  | The id of the element that names the question, when a visible heading already does. Use it instead of `aria-label`. |
+| `value` | `string` |  | The chosen segment's `value`, for a controlled control. Pair it with `onValueChange`. |
+| `defaultValue` | `string` |  | The segment chosen first, for an uncontrolled control. |
+| `onValueChange` | `(value: string) => void` |  | Called with the new segment's `value` each time the choice changes. |
+| `disabled` | `boolean` |  | Disables every segment at once. |
+| `name` | `string` |  | The field name, for a form that posts it. |
+| `className` | `string` |  |  |
+| `children` (required) | `ReactNode` |  |  |
 
 ### `Segment`
 
+One option of a SegmentedControl.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | Required |
-| `children` | `ReactNode` | | The option's words |
-| `aria-label` | `string` | | For an icon alone |
-| `disabled` | `boolean` | | |
+| `value` (required) | `string` |  | What the control's `value` becomes when this segment is chosen. |
+| `children` (required) | `ReactNode` |  | The option's words. An icon alone needs `aria-label` beside it. |
+| `aria-label` | `string` |  | The segment's name for a screen reader. Needed when the content is an icon alone. |
+| `disabled` | `boolean` |  | Disables this segment only. |
+| `className` | `string` |  |  |

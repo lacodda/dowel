@@ -59,41 +59,6 @@ pinned to the bottom. The popup is capped at the window, which it did not
 promise before — a long list of what a deletion takes pushed both answers off
 the bottom edge.
 
-## Props
-
-### `ConfirmDialog` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-
-`modal` and `disablePointerDismissal` are not accepted here. Base UI forces
-both on for an alert dialog, which is the whole difference from Dialog.
-
-### `ConfirmDialogPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's - and it has none of Dialog's large ones: a question that needs an editor's width is an editor, and belongs in a Dialog |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-It renders its own portal and its own backdrop, so there is nothing to arrange
-around it.
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `ConfirmDialogTrigger` | | What opens it. `render` to use your own button |
-| `ConfirmDialogHeader` | `action` | The question and what it costs |
-| `ConfirmDialogTitle` | | The question. The popup's `aria-labelledby` points at it |
-| `ConfirmDialogDescription` | | What the answer costs. The popup's `aria-describedby` |
-| `ConfirmDialogBody` | | What the answer takes with it, scrolling if it runs long |
-| `ConfirmDialogActions` | `start` | Pinned to the bottom, right-aligned row for the two answers |
-| `ConfirmDialogClose` | | Closes it. `render` to use your own button |
-
 ## Notes
 
 **It announces itself as `alertdialog`.** That is the semantic half of the
@@ -117,3 +82,75 @@ anyone on a touch screen.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+**Its sizes run one step narrower than Dialog's**, and it has none of Dialog's large ones: a question that needs an editor's width is an editor, and belongs in a Dialog. It renders its own portal and its own backdrop, so there is nothing to arrange around it.
+
+**`modal` is not accepted.** Base UI forces it on for an alert dialog, which is the whole difference from Dialog.
+
+## Props
+
+### `ConfirmDialog`
+
+The root. Controlled with `open` and `onOpenChange`, or left to manage itself around a `ConfirmDialogTrigger`.
+
+Base UI's `AlertDialog.Root`, unchanged under dowel's name.
+
+### `ConfirmDialogTrigger`
+
+What opens it. Give it `render` to use your own button.
+
+Base UI's `AlertDialog.Trigger`, unchanged under dowel's name.
+
+### `ConfirmDialogClose`
+
+What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap.
+
+Base UI's `AlertDialog.Close`, unchanged under dowel's name.
+
+### `ConfirmDialogBackdrop`
+
+The scrim. Darker than the Dialog's, because what is behind it is not just out of reach for a moment - it is waiting on an answer.
+
+Every prop of Base UI's `AlertDialog.Backdrop`, passed on.
+
+### `ConfirmDialogPopup`
+
+The dialog itself, announced as `alertdialog`. Portalled, so it is not clipped by whatever it was opened from.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the document body, which is what keeps the popup from being clipped by an ancestor. Pass an element to put it somewhere else - inside an overlay that is already open, or into a container being screenshotted. |
+| `backdrop` | `boolean` | `true` | Whether to draw the scrim. On by default, and it should stay on for anything a person actually uses: the dim is what says the page behind is out of reach. Turn it off where the popup is shown alongside other things on purpose - a component gallery, a screenshot - because a scrim is `position: fixed` and covers everything, not only its own container. |
+
+And every prop of Base UI's `AlertDialog.Popup`, passed on.
+
+### `ConfirmDialogTitle`
+
+The question. Base UI points the popup's `aria-labelledby` at it, so this is what a screen reader reads out when the dialog interrupts.
+
+Every prop of Base UI's `AlertDialog.Title`, passed on.
+
+### `ConfirmDialogDescription`
+
+What the answer costs, and the popup's `aria-describedby`. On this dialog it is close to required: the title asks, the description says what happens.
+
+Every prop of Base UI's `AlertDialog.Description`, passed on.
+
+### `ConfirmDialogHeader`
+
+The top: the question and what it costs. The dialog's part, under this one's name.
+
+`DialogHeader`, unchanged under dowel's name.
+
+### `ConfirmDialogBody`
+
+The part that scrolls, for consequences too long to fit. The dialog's part, under this one's name.
+
+`DialogBody`, unchanged under dowel's name.
+
+### `ConfirmDialogActions`
+
+Where the two answers go, pinned to the bottom and right-aligned, because the choice belongs where the eye leaves the sentence. The dialog's part, under this one's name.
+
+`DialogActions`, unchanged under dowel's name.

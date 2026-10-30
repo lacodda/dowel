@@ -78,16 +78,75 @@ table, so the heading stays where it is and the table does not change shape
 between having rows and not; `colSpan` is required, because without it the
 message sits under the first column.
 
-## Parts
+**`Table` follows the region's density**, so row height changes with it.
 
-| | |
-| --- | --- |
-| `TableScroll` | The scroll container. Where the scrollbar and the sticky heading live |
-| `Table` | The `<table>`. Row height follows the region's density |
-| `TableHead` | `sticky`: keep the heading in view while the body scrolls |
-| `TableBody` | |
-| `TableRow` | `selected`: the row picked out. Announced, not only coloured |
-| `TableHeader` | A plain heading. `numeric` |
-| `TableSortHeader` | `column`, `sort`, `onSortChange`, `numeric` |
-| `TableCell` | `numeric`: right-aligned, tabular figures |
-| `TableEmpty` | `colSpan` required |
+## Props
+
+### `Table`
+
+Every prop of `HTMLAttributes<HTMLTableElement>`, passed on.
+
+### `TableScroll`
+
+The scroll container a table needs, and the one a sticky heading sticks in.
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `TableHead`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `sticky` | `boolean` | `false` | Keep the heading in view while the body scrolls under it. |
+
+And every prop of `HTMLAttributes<HTMLTableSectionElement>`, passed on.
+
+### `TableBody`
+
+Every prop of `HTMLAttributes<HTMLTableSectionElement>`, passed on.
+
+### `TableRow`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `selected` | `boolean` | `false` | The row the reader has picked out - the one open in the panel beside the table, the one a keyboard cursor is on. Not a hover state. |
+
+And every prop of `HTMLAttributes<HTMLTableRowElement>`, passed on.
+
+### `TableCell`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `numeric` | `boolean` | `false` | Right-align and use the lining figures. For a column of numbers, and the reason it is a prop rather than a class the caller adds: a column of numbers that is not aligned is the most common defect in a table, and the one nobody files a bug about. |
+
+And every prop of `TdHTMLAttributes<HTMLTableCellElement>`, passed on.
+
+### `TableHeader`
+
+A plain heading, for a column that does not sort.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `numeric` | `boolean` | `false` | Right-align the heading, to sit over a `numeric` column of cells. |
+
+And every prop of `ThHTMLAttributes<HTMLTableCellElement>`, passed on.
+
+### `TableSortHeader`
+
+A heading that reorders the table when clicked.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `numeric` | `boolean` | `false` | Right-align the heading, to sit over a `numeric` column of cells. |
+| `column` (required) | `string` |  | This column's id - the key the accessor sorts by. |
+| `sort` (required) | `Sort<string>` |  | What is sorted now, across the whole table. |
+| `onSortChange` (required) | `(column: string) => void` |  | Called with this column's id when the heading is clicked. The product decides what comes next - the table does not sort or flip the direction. |
+
+And every prop of `ThHTMLAttributes<HTMLTableCellElement>` except `onClick`, passed on.
+
+### `TableEmpty`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `colSpan` (required) | `number` |  | How many columns the message spans: the table's column count. |
+
+And every prop of `TdHTMLAttributes<HTMLTableCellElement>`, passed on.

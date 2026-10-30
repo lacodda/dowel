@@ -17,12 +17,12 @@ status, a label. If it can be clicked, it is a [Chip](/dowel/components/chip/).
 in words as well. Colour alone is invisible to a reader who does not separate
 red from green, and to anyone printing the screen.
 
-```tsx
-<Badge variant="bad">Failed</Badge>
-```
+ FENCE1
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `outline \| soft \| accent \| good \| warn \| bad \| info` | `outline` | |
+| `variant` | `outline \| soft \| accent \| good \| warn \| bad \| info` | `'outline'` |  |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>`, passed on.

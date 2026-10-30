@@ -98,26 +98,32 @@ does on its own.
 
 ## Props
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required. Always rendered |
-| `children` | `ReactElement` | | The control. One element |
-| `help` | `ReactNode` | | A hint, hidden while an error shows |
-| `error` | `ReactNode` | | Its presence marks the control invalid |
-| `labelHidden` | `boolean` | `false` | Keep the label for readers, not the screen |
-| `required` | `boolean` | `false` | Adds the mark a reader looks for |
-| `name` | `string` | | So a `Form` can attach a server error by name |
-| `disabled` | `boolean` | `false` | |
-| `beside` | `boolean` | `false` | The control beside its name, inside the label - for a Switch or a Checkbox |
-
-### FieldGroup
+### `Field`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required. The legend |
-| `children` | `ReactNode` | | The controls — anything |
-| `help` | `ReactNode` | | The group's description, hidden while an error shows |
-| `error` | `ReactNode` | | What is wrong with the group as a whole |
-| `labelHidden` | `boolean` | `false` | Keep the legend for readers, not the screen |
-| `required` | `boolean` | `false` | |
-| `disabled` | `boolean` | `false` | Disables every native control inside |
+| `label` (required) | `ReactNode` |  | What the control is called. Always rendered; `labelHidden` only takes it off the screen. |
+| `children` (required) | `ReactElement<unknown, string \| JSXElementConstructor<any>>` |  | The control itself - Input, Textarea, Select, Checkbox, anything. |
+| `help` | `ReactNode` |  | A hint under the control. Hidden while an error is showing: two lines of small print under one field is one line too many, and the error is the one that matters. |
+| `error` | `ReactNode` |  | What is wrong, if anything. Its presence is what marks the control invalid - there is no separate `invalid` prop to keep in step. |
+| `labelHidden` | `boolean` | `false` | Keep the label for screen readers but take it off the screen. For a field whose meaning is obvious in context - a search box in a toolbar. |
+| `className` | `string` |  |  |
+| `required` | `boolean` | `false` | Marks the field required, which is a statement about the form rather than about validation: the label gets the mark a reader looks for. |
+| `name` | `string` |  | The control's `name`, forwarded so a `Form` can attach a server error to this field by name. |
+| `disabled` | `boolean` | `false` | Disables the control, and dims a `beside` control's label with it. |
+| `beside` | `boolean` | `false` | The control beside its name, inside the label, rather than under a caption: for a Switch or a Checkbox. |
+
+### `FieldGroup`
+
+FieldGroup - one name for several controls.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` (required) | `ReactNode` |  | What the group is called - "Type", "References". Always rendered; `labelHidden` only takes it off the screen. |
+| `children` (required) | `ReactNode` |  | The controls: a row of chips, a segment, a grid of pictures, several checkboxes. Anything - a group names its contents rather than handing them an id. |
+| `help` | `ReactNode` |  | A hint under the group, read as the group's description. Hidden while an error is showing, as in Field. |
+| `error` | `ReactNode` |  | What is wrong with the group as a whole - "choose at least one". |
+| `labelHidden` | `boolean` | `false` | Keep the legend for screen readers but take it off the screen. |
+| `required` | `boolean` | `false` | Adds the mark a reader looks for to the legend. A statement about the form; the group does not validate anything itself. |
+| `disabled` | `boolean` | `false` | Disables every native control inside, which is what a `<fieldset>` does on its own. |
+| `className` | `string` |  |  |

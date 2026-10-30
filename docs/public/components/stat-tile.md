@@ -94,21 +94,20 @@ delta stands taller than its neighbours, and the numbers stop sharing a line.
 
 ## Props
 
-### StatTile
+### `StatTile`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `ReactNode` | | What the figure is |
-| `value` | `ReactNode` | | The figure, already formatted |
-| `tone` | `default` `accent` `warn` `bad` | `default` | How the value itself reads |
-| `icon` | `ReactNode` | | A mark before the figure. **Required** with `warn` or `bad` |
-| `delta` | `ReactNode` | | Which way it moved, in the caller's words |
-| `deltaTone` | `default` `good` `bad` | `default` | Whether that movement is good news |
-| `size` | `md` `lg` | `md` | `lg` for a figure that leads a page |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `md \| lg` | `'md'` |  |
+| `tone` (with `icon`) | `default \| accent \| warn \| bad` |  | The reading tone. `default` and `accent` carry no judgement, so they need no mark. |
+| `icon` (with `tone`) | `ReactNode` |  | A glyph before the figure. Optional here. |
+| `label` (required) | `ReactNode` |  | What the figure is. |
+| `value` (required) | `ReactNode` |  | The figure. Already formatted - a duration, a count, a percentage: this component decides how a number looks, never what it says. |
+| `delta` | `ReactNode` |  | Which way it moved, in words the caller chooses: `+12% vs last week`, `3 fewer than yesterday`. Omitted when there is nothing to compare to - an empty line here reads as "unchanged", which is a claim. |
+| `deltaTone` | `good \| bad \| default` |  | Whether that movement is good news. Stated rather than read off the sign, because for a figure like time-to-answer a fall is the good direction. |
 
-### StatRow
+And every prop of `HTMLAttributes<HTMLDListElement>` except `title`, passed on.
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `className` | `string` | | Merged so the caller wins a conflict |
+### `StatRow`
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

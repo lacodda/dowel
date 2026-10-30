@@ -39,28 +39,31 @@ default because it stays readable as labels grow.
 Name the group. It is the question the options answer, and without it a reader
 hears three values and no subject:
 
-```tsx
-<RadioGroup aria-label="Ripeness">        {/* or */}
-<Field label="Ripeness"><RadioGroup>...   {/* named by the field */}
-```
+ FENCE2
 
 ## Props
 
-### RadioGroup
+### `RadioGroup`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | Controlled |
-| `defaultValue` | `string` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | |
-| `orientation` | `vertical` \| `horizontal` | `vertical` | |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
-| `name` | `string` | | For a form |
+| `children` (required) | `ReactNode` |  |  |
+| `value` | `string` |  | The `value` of the selected radio. Controlled; pair it with `onValueChange`. |
+| `defaultValue` | `string` |  | The `value` selected at first, when the group is uncontrolled. |
+| `onValueChange` | `(value: string) => void` |  | Called with the `value` of the radio the reader chose. |
+| `disabled` | `boolean` |  | Disables every radio in the group. |
+| `readOnly` | `boolean` |  | Shows the selection but does not let it change. |
+| `required` | `boolean` |  | Marks the group as requiring a choice for form validation. |
+| `name` | `string` |  | The field name submitted with a form. |
+| `orientation` | `horizontal \| vertical \| null` |  | Lay the options out in a row. For two or three short ones; a column is the default because it stays readable as labels grow. |
+| `aria-label` | `string` |  | The accessible name of the group, when no visible label names it. |
+| `className` | `string` |  |  |
 
-### Radio
+### `Radio`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | Required |
-| `children` | `ReactNode` | | The words next to the dot |
-| `disabled` | `boolean` | `false` | |
+| `value` (required) | `string` |  | What the group's `value` becomes when this radio is chosen. |
+| `children` | `ReactNode` |  | The words next to the dot. |
+| `disabled` | `boolean` |  | Disables this radio alone; the label dims with it. |
+| `className` | `string` |  |  |

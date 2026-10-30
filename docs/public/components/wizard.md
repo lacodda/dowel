@@ -71,33 +71,26 @@ are required props. There are no English defaults.
 controlled product decides whether to move. It never decides whether to
 check: `onStepChange` is called only after the checks pass.
 
-## Props
+**A server can fail a step from outside.** A step's `error` marks it failed
+when something the wizard cannot see rejected what it holds.
 
-### `Wizard`
+## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `steps` | `WizardStep[]` | | Required. A `StepperStep` plus `content`, `canAdvance?`, `onNext?`, `error?` |
-| `step` | `string` | | The step shown, controlled |
-| `defaultStep` | `string` | first step | The step shown first, uncontrolled |
-| `onStepChange` | `(id) => void` | | Called after the checks pass |
-| `onFinish` | `() => void \| Promise<void>` | | Required. Called when Finish is pressed and the last step passes |
-| `onError` | `(error, stepId) => void` | | Receives a thrown `onNext`. Without it the error is rethrown |
-| `stepperLabel` | `string` | | Required |
-| `stateLabels` | `{ done, error, upcoming? }` | | Required |
-| `summary` | `(position, total) => ReactNode` | | Passed to the stepper |
-| `backLabel` | `ReactNode` | | Required |
-| `nextLabel` | `ReactNode` | | Required |
-| `finishLabel` | `ReactNode` | | Required |
-| `orientation` | `horizontal \| vertical` | `horizontal` | Stepper above the content, or beside it |
-| `level` | `1`-`6` | `2` | Where a step's title stands in the page's outline |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `steps` (required) | `readonly WizardStep[]` |  | The steps, in order. Each has an `id`, a label, its `content`, and optional checks that run before the wizard moves on. |
+| `step` | `string` |  | The step shown, for a controlled wizard. |
+| `defaultStep` | `string` |  | The step shown first, for an uncontrolled one. The first step if omitted. |
+| `onStepChange` | `(id: string) => void` |  | Called with the step to move to - after its checks have passed, when moving forward. A controlled wizard moves when the product sets `step`. |
+| `onFinish` (required) | `() => void \| Promise<void>` |  | Called when Finish is pressed on the last step and its checks pass. |
+| `onError` | `(error: unknown, stepId: string) => void` |  | Called when a step's `onNext` throws. The step is blocked and marked failed either way; without this the error is rethrown so it is not lost. |
+| `stepperLabel` (required) | `string` |  | The stepper's name for a reader. |
+| `stateLabels` (required) | `StepStateLabels` |  | The words for a step's state - done, failed, and optionally not yet reached - which the stepper says to a screen reader beside the mark. |
+| `summary` | `(position: number, total: number) => ReactNode` |  | The position in words, such as `(2, 5) => 'Step 2 of 5'`. The stepper shows it when it is too narrow for its labels. |
+| `backLabel` (required) | `ReactNode` |  | The buttons' words. Required: the component has none of its own. |
+| `nextLabel` (required) | `ReactNode` |  | The words of the button that goes to the next step. |
+| `finishLabel` (required) | `ReactNode` |  | The words of the button on the last step that finishes the wizard. |
+| `orientation` | `horizontal \| vertical` | `'horizontal'` | Stepper above the content, or beside it. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | Where a step's title stands in the page's outline: `2` by default, under the screen's title. |
 
-### `WizardStep`
-
-| Field | Type | |
-| --- | --- | --- |
-| `content` | `ReactNode` | The step itself. Stays mounted once visited |
-| `canAdvance` | `() => boolean` | A synchronous check, run first |
-| `onNext` | `() => boolean \| void \| Promise<…>` | Run after `canAdvance`. `false` or a throw blocks |
-| `error` | `boolean` | Marks the step failed from outside |
+And every prop of `HTMLAttributes<HTMLFormElement>` except `children`, `onSubmit`, `onError`, passed on.

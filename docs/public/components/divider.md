@@ -62,18 +62,22 @@ title.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `orientation` | `horizontal \| vertical` | `horizontal` | |
-| `spacing` | `none \| sm \| md \| lg` | `none` | Follows the axis |
-| `label` | `ReactNode` | | A caption in the line; horizontal only |
-| `decorative` | `boolean` | `false` | Drawing rather than structure |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `spacing` | `none \| sm \| md \| lg` | `'none'` |  |
+| `orientation` | `horizontal \| vertical` | `'horizontal'` | Declared here rather than taken from the variants: cva types a variant as nullable, and `aria-orientation` is not - a `null` passed through would be a type error at the call site and an attribute React drops. |
+| `label` | `ReactNode` |  | A caption sitting in the line: "Today", "Archived", "or". Horizontal only - there is no reading direction that puts a word inside a vertical rule. |
+| `decorative` | `boolean` | `false` | A rule that is styling rather than structure. Taken out of the accessibility tree, so a reader is not told about it. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
 ### `SectionHeader`
 
+The heading over a part of a screen, with what belongs to that part at the far end of the same row.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, a heading at `level` |
-| `description` | `ReactNode` | | The line under it |
-| `actions` | `ReactNode` | | Buttons belonging to this section |
-| `level` | `1`-`6` | `2` | `3` for a section inside a section |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `title` (required) | `ReactNode` |  | The section's heading, drawn at `level`. |
+| `description` | `ReactNode` |  | One line under the title, saying what the section holds. |
+| `actions` | `ReactNode` |  | Buttons belonging to this section rather than to the screen - Add, Collapse, a link out. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | Where the section stands in the outline: `2` by default. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `title`, passed on.

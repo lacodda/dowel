@@ -115,11 +115,12 @@ twice.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `mark` | `ReactNode` | | The product's mark, drawn at 56px |
-| `name` | `string` | | Required |
-| `tagline` | `string` | | |
-| `version` | `string` | | Drawn in the mono face; the `v` is yours |
-| `status` | `string` | | What the application is doing, announced |
-| `tip` | `string` | | One thing worth knowing |
-| `busy` | `boolean` | `true` | `false` draws the bar full and still |
-| `className` | `string` | | Merged so the caller wins a conflict — `absolute` puts it in a box |
+| `mark` | `ReactNode` |  | The product's mark, drawn at 56px. |
+| `name` (required) | `string` |  | The product's name. |
+| `tagline` | `string` |  | The line under the name. |
+| `version` | `string` |  | The version, drawn in the mono face; the `v` is the product's to add. |
+| `status` | `string` |  | What the application is doing right now. |
+| `tip` | `string` |  | One thing worth knowing while it does it. |
+| `busy` | `boolean` | `true` | Whether the bar is sweeping. Still and full when the application is waiting on something that has no progress, such as a person. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.

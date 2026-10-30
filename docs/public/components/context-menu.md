@@ -40,50 +40,89 @@ It positions against the point that was clicked, so there is no `side` or
 `align` to give it, and no anchor to attach it to from elsewhere. Base UI also
 withholds `openOnHover`, `modal` and `handle` here for the same reason.
 
-```tsx
-import {
-  ContextMenu,
-  ContextMenuItem,
-  ContextMenuPopup,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from '@/components/ui/context-menu'
-
-<ContextMenu>
-  <ContextMenuTrigger render={<tr />}>{row}</ContextMenuTrigger>
-  <ContextMenuPopup>
-    <ContextMenuItem onClick={rename}>{t('rename')}</ContextMenuItem>
-    <ContextMenuItem onClick={duplicate}>{t('duplicate')}</ContextMenuItem>
-    <ContextMenuSeparator />
-    <ContextMenuItem tone="danger" onClick={remove}>
-      {t('delete')}
-    </ContextMenuItem>
-  </ContextMenuPopup>
-</ContextMenu>
-```
+ FENCE1
 
 ## Props
 
+### `ContextMenu`
+
+The root. It positions against the pointer, so there is nothing to anchor and nothing to control but `onOpenChange`.
+
+Base UI's `ContextMenu.Root`, unchanged under dowel's name.
+
+### `ContextMenuTrigger`
+
+The area that opens it. A `<div>`, not a button: give it `render` to make it the row or the canvas it belongs to rather than a wrapper.
+
+Base UI's `ContextMenu.Trigger`, unchanged under dowel's name.
+
+### `ContextMenuGroup`
+
+A labelled group of items, for a menu long enough to need headings.
+
+Base UI's `ContextMenu.Group`, unchanged under dowel's name.
+
+### `ContextMenuSub`
+
+A submenu, opened from a `ContextMenuSubTrigger` inside the parent.
+
+Base UI's `ContextMenu.SubmenuRoot`, unchanged under dowel's name.
+
 ### `ContextMenuPopup`
+
+The panel. Portalled, and positioned against the point that was clicked rather than against an element.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | How wide the popup starts |
-| `container` | `Element \| Ref` | document body | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md \| lg` |  | How wide the popup starts. The same three as Menu's. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
+
+And every prop of Base UI's `ContextMenu.Popup`, passed on.
 
 ### `ContextMenuItem`
 
+An action.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `tone` | `default \| danger` | `default` | `danger` draws the destructive one apart |
-| `disabled` | `boolean` | `false` | Reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists and why it is not there |
-| `closeOnClick` | `boolean` | `true` | For the item that should leave the menu open |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `tone` | `default \| danger` |  | `danger` draws the destructive one apart, in the colour of something that cannot be undone. |
 
-### The rest
+And every prop of Base UI's `ContextMenu.Item`, passed on.
 
-`ContextMenu` (root), `ContextMenuTrigger` (the area), `ContextMenuGroup`,
-`ContextMenuGroupLabel`, `ContextMenuSeparator`, `ContextMenuSub`,
-`ContextMenuSubTrigger`, `ContextMenuCheckboxItem` and
-`ContextMenuCheckboxIndicator` pass their props to Base UI unchanged.
+### `ContextMenuSubTrigger`
+
+An item that opens a submenu. Drawn like any other, because it is one.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default \| danger` |  | `danger` draws the destructive one apart, in the colour of something that cannot be undone. |
+
+And every prop of Base UI's `ContextMenu.Item`, passed on.
+
+### `ContextMenuCheckboxItem`
+
+An item that carries a tick. The state is the caller's.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default \| danger` |  | `danger` draws the destructive one apart. |
+
+And every prop of Base UI's `ContextMenu.CheckboxItem`, passed on.
+
+### `ContextMenuCheckboxIndicator`
+
+The tick itself, drawn only when the item is checked.
+
+Base UI's `ContextMenu.CheckboxItemIndicator`, unchanged under dowel's name.
+
+### `ContextMenuSeparator`
+
+A line between groups of items. Decorative, and marked as such.
+
+Every prop of Base UI's `ContextMenu.Separator`, passed on.
+
+### `ContextMenuGroupLabel`
+
+The caption above a group.
+
+Every prop of Base UI's `ContextMenu.GroupLabel`, passed on.

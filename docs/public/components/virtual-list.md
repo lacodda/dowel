@@ -69,16 +69,16 @@ opens, a window the reader resizes, a font that loads late — all change the
 height after mount, and a list that measured once draws the wrong number of
 rows until something scrolls it.
 
+**`windowFor` is exported on its own.** `windowFor({ count, rowHeight, viewportHeight, scrollTop, overscan? })` returns `{ start, end, totalHeight, offsetTop }` - for a product windowing its own rows.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `rows` | `readonly Row[]` | | |
-| `rowHeight` | `number` | | Fixed. Every row is this tall |
-| `children` | `(row, index) => ReactNode` | | |
-| `rowKey` | `(row, index) => string \| number` | | Required. Stable identity |
-| `overscan` | `number` | `3` | Extra rows drawn beyond each edge |
-| `label` | `string` | | Required. What a reader calls the list |
-
-`windowFor({ count, rowHeight, viewportHeight, scrollTop, overscan? })` returns
-`{ start, end, totalHeight, offsetTop }` — for a product windowing its own rows.
+| `rows` (required) | `readonly Row[]` |  | Every row there is, in order. Only the ones in view are drawn. |
+| `rowHeight` (required) | `number` |  | How tall one row is. Fixed, and the component enforces it - a row that grows past this height overlaps its neighbour, which is why the value is required rather than measured. |
+| `children` (required) | `(row: Row, index: number) => ReactNode` |  |  |
+| `rowKey` (required) | `(row: Row, index: number) => string \| number` |  | A stable identity per row. Without it React keys by index, and a list that is sorted or filtered reuses the wrong DOM node - the row moves but its input keeps the text that was typed into a different row. |
+| `overscan` | `number` | `3` | How many extra rows to draw beyond each edge, so a fast scroll does not paint blank. |
+| `label` (required) | `string` |  | What a screen reader calls the list. Required: a scrolling box of rows with no name is announced as "list" and nothing else, and the word is the product's to give. |
+| `className` | `string` |  |  |

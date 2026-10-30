@@ -66,45 +66,40 @@ not touch trees. A reader moves between headers with Tab.
 `accordionTriggerClasses` rather than restating it, because a header row and
 a lone trigger are the same control in two places.
 
+**`disabled` goes where it is put.** On `Accordion` it reaches every item; on `AccordionItem` it closes off that section only. An item with no `value` gets a generated one, so give it one when it has to be open by default.
+
 ## Props
 
-### `Accordion` (root)
+### `Accordion`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` / `onValueChange` | | | Controlled |
-| `defaultValue` | `any[]` | | Uncontrolled - the values initially open |
-| `multiple` | `boolean` | `false` | Lets more than one section stay open |
-| `disabled` | `boolean` | `false` | Reaches every item |
+Groups the items and decides how many can be open. `single` (the default, `multiple={false}`) closes the others when one opens; `multiple` lets any number stay open together. Controlled with `value` and `onValueChange`, or left to manage itself with `defaultValue`.
+
+Base UI's `Accordion.Root`, unchanged under dowel's name.
 
 ### `AccordionItem`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `any` | generated | Identifies the section; needed to set it open by default |
-| `disabled` | `boolean` | `false` | This section only |
+One section: a header with its trigger, and the panel it opens.
+
+Base UI's `Accordion.Item`, unchanged under dowel's name.
 
 ### `AccordionHeader`
 
-The heading the trigger belongs inside, an `<h3>` unless `level` says
-otherwise - a page going from its title straight to the accordion says `2`.
-Passes its props to Base UI unchanged, plus `className` merged so the caller
-wins a conflict.
+The heading a reader moving by heading lands on, open or shut. The trigger lives inside it, never beside it - a section title that exists only as a button's accessible name is not a heading a reader can navigate to.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `level` | `1`-`6` | `3` | Where the sections stand in the page's outline |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` | Where the sections stand in the page's outline: `3` by default, under a screen's title and a section's. A page that opens straight onto the accordion says `2`. |
+
+And every prop of Base UI's `Accordion.Header`, passed on.
 
 ### `AccordionTrigger`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words on the button |
-| `className` | `string` | | Merged so the caller wins a conflict |
+The button that opens and shuts its section's panel. The chevron rotates with `data-panel-open`, the same attribute a reader's `aria-expanded` follows, so the two can never disagree.
+
+Every prop of Base UI's `Accordion.Trigger`, passed on.
 
 ### `AccordionPanel`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The section's content |
-| `className` | `string` | | Merged so the caller wins a conflict |
+The section's content. Animates by its own measured height through `--accordion-panel-height`, exactly as `CollapsiblePanel` does - the same reasoning applies unchanged: a fixed max-height guess is either too small for long content or a visible pause for short content, and the measured variable is neither.
+
+Every prop of Base UI's `Accordion.Panel`, passed on.

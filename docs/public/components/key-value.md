@@ -50,12 +50,16 @@ is a component rather than something the caller assembles.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `layout` | `rows \| stacked` | `rows` | Names beside, or names above |
+| `layout` | `rows \| stacked` | `'rows'` |  |
+
+And every prop of `HTMLAttributes<HTMLDListElement>`, passed on.
 
 ### `KeyValueRow`
 
+One pair.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `ReactNode` | | The name of the fact |
-| `children` | `ReactNode` | | What it is |
-| `className` | `string` | | Dresses the pair when stacked, the term in rows |
+| `label` (required) | `ReactNode` |  | The name of the fact. |
+| `children` (required) | `ReactNode` |  | What it is. A node rather than a string: half the values in a real panel are a Badge, a RelativeTime or a link. |
+| `className` | `string` |  | Dresses the pair as a whole when the layout is `stacked`, and the term alone in `rows`. |

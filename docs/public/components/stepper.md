@@ -51,21 +51,19 @@ Clicking a step ahead is the usual way a wizard's validation gets skipped, so
 `reach="any"` has to be chosen on purpose. The Wizard goes further: a click
 forward still runs every check in between.
 
-## Props
+**A step's state is stated or inferred.** `StepperStep.status` is `done` or `error`; without it a step before the current one is done and a step after it is upcoming.
 
-### `Stepper`
+## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required. The list's name for a reader |
-| `steps` | `StepperStep[]` | | Required. `{ id, label, description?, status? }` |
-| `current` | `string` | | Required. The id of the step being shown |
-| `stateLabels` | `{ done, error, upcoming? }` | | Required. The words a reader hears for each state |
-| `summary` | `(position, total) => ReactNode` | | "Step 2 of 5", shown only in the narrow form |
-| `orientation` | `horizontal \| vertical` | `horizontal` | Only horizontal folds |
-| `onStepSelect` | `(id) => void` | | Makes reachable steps buttons, and the list a `nav` |
-| `reach` | `visited \| any` | `visited` | `any` opens the steps ahead |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `label` (required) | `string` |  | What the list is called for a reader - "Setup steps". |
+| `steps` (required) | `readonly StepperStep[]` |  | The steps in the order they are taken. Each has an `id`, a `label` and an optional `description` and `status`. |
+| `current` (required) | `string` |  | The id of the step being shown. |
+| `stateLabels` (required) | `StepStateLabels` |  | The words for the states, read by a screen reader beside each label. |
+| `summary` | `(position: number, total: number) => ReactNode` |  | The position in words - `(2, 5) => 'Step 2 of 5'`. Shown only when a horizontal stepper is too narrow for its labels. A function of the two numbers rather than a string, because the product says it in its own language and grammar. |
+| `onStepSelect` | `(id: string) => void` |  | Makes reachable steps buttons. Without it the stepper is a picture of progress and nothing in it is a control. |
+| `reach` | `visited \| any` | `'visited'` | Which steps can be clicked. `visited` - the default - is done, failed and current ones; `any` also opens the ones ahead, which skips whatever check stands between here and there. Only a product that has made the steps independent should choose it. |
+| `orientation` | `horizontal \| vertical` | `'horizontal'` | A row across the top, or a column down the side. Only the row folds its labels away when narrow; a column has the height to keep them. |
 
-`StepperStep.status` is `done` or `error`. Without it, a step's state comes
-from its position: before the current step is done, after it is upcoming.
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, `onSelect`, passed on.

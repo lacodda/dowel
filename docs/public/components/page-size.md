@@ -44,8 +44,9 @@ the layout drops it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `pageSize` | `number` | | |
-| `options` | `number[]` | `[10, 25, 50, 100]` | |
-| `onPageSizeChange` | `(size: number) => void` | | Receives a number |
-| `label` | `string` | | Required. Names the control |
-| `children` | `ReactNode` | | The visible label, when there is room |
+| `pageSize` (required) | `number` |  | The current number of rows per page. Should be one of `options`. |
+| `options` | `number[]` | `[10, 25, 50, 100]` | The sizes offered, in the order they are listed. |
+| `onPageSizeChange` (required) | `(pageSize: number) => void` |  | Called with the chosen size as a number, not the select's string value. |
+| `label` (required) | `string` |  | Names the control for a screen reader, e.g. "Rows per page". |
+| `children` | `ReactNode` |  | The visible label, when there is room for one. |
+| `className` | `string` |  |  |

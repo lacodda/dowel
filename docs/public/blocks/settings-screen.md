@@ -55,31 +55,30 @@ a segment and a select read as one control of two halves, and a field the
 width of the pane asks the eye to cross a monitor between a label and what
 it names.
 
-```tsx
-<SettingsGroup title="Appearance">
-  <FieldGroup label="Theme">
-    <SegmentedControl aria-label="Theme" value={theme} onValueChange={setTheme}>…</SegmentedControl>
-  </FieldGroup>
-  <Switch checked={reopen} onCheckedChange={setReopen}>Open where I left off</Switch>
-</SettingsGroup>
-```
+ FENCE2
 
 ## Props
 
-| Prop | Type | | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | The screen's title |
-| `description` | `ReactNode` | | One sentence under it |
-| `sections` | `readonly SettingsSection[]` | | `{ id, label, description?, icon?, content, foot? }` |
-| `active` | `string \| null` | | The open section, or `null` |
-| `onSelect` | `(id \| null) => void` | | Told which section to open, or `null` to go back |
-| `sectionRender` | `(item) => RenderProp` | | A section as the product's link |
-| `words` | `{ sections, back }` | | The column's name, and the way back |
+### `SettingsScreen`
 
-### SettingsGroup
-
-| Prop | Type | | |
+| Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | The group's heading |
-| `description` | `ReactNode` | | A line under it |
-| `children` | `ReactNode` | | Its fields, one under another |
+| `title` (required) | `ReactNode` |  | The screen's title. |
+| `description` | `ReactNode` |  | One sentence under the title. |
+| `sections` (required) | `readonly SettingsSection[]` |  | The sections, in the order the column lists them. |
+| `active` (required) | `string \| null` |  | The open section's id. Null opens the column on a narrow screen and the first section where there is room for both. |
+| `onSelect` (required) | `(id: string \| null) => void` |  | Told which section to open - or null, to go back to the column. |
+| `sectionRender` | `(item: SectionNavItem) => RenderProp<Record<string, unknown>>` |  | A section drawn as the product's link, so it has an address: `(section) => <Link to={`/settings/${section.id}`} />`. A press is then the link's; `onSelect` is still told on the way back. |
+| `words` (required) | `SettingsScreenWords` |  | The column's name and the way back, in the product's language. |
+| `className` | `string` |  |  |
+
+### `SettingsGroup`
+
+A group of settings inside a section.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `title` (required) | `ReactNode` |  | The group's caption: "Appearance", "Notifications". |
+| `description` | `ReactNode` |  | A line under it, when the caption does not say enough. |
+| `children` (required) | `ReactNode` |  | Its fields, one under another. |
+| `className` | `string` |  |  |

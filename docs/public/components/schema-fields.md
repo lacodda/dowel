@@ -117,49 +117,18 @@ say the same things a second time, in the browser's language.
 issue's code and limit - in the product's language, through its own
 translations:
 
-```tsx
-const words: SchemaFieldsWords = {
-  issue: (issue) => {
-    switch (issue.code) {
-      case 'required': return t('form.required')
-      case 'minimum': return t('form.atLeast', { n: issue.limit })
-      // ...
-    }
-  },
-  none: t('form.none'),
-  choose: t('form.choose'),
-  pickDate: t('form.pickDate'),
-  previousMonth: t('calendar.previous'),
-  nextMonth: t('calendar.next'),
-  clearDate: t('calendar.clear'),
-  showSecret: t('form.show'),
-  hideSecret: t('form.hide'),
-  removeTag: (tag) => t('form.removeTag', { tag }),
-}
-```
+ FENCE5
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `schema` | `JsonSchema` | | Required. An object schema; its properties are the fields, in the order written |
-| `value` | `Record<string, unknown>` | | Required. The record |
-| `onValueChange` | `(value) => void` | | Required. Told the next record - a copy, never the same object changed |
-| `words` | `SchemaFieldsWords` | | Required. Every word the fields show |
-| `errors` | `Record<string, ReactNode>` | | Problems from elsewhere, by key (`server.port`) |
-| `reveal` | `boolean` | `false` | Say every problem now, after a refused save |
-| `custom` | `Record<string, (props) => ReactNode>` | | Fields the product draws itself, by key |
-| `disabled` | `boolean` | `false` | Every field at once, while it saves |
-| `className` | `string` | | On the column the fields stand in |
-
-### Words
-
-| Word | |
-| --- | --- |
-| `issue(issue, field)` | What is wrong with one field: `issue.code` is the rule, `limit` and `format` what it asked for |
-| `none` | The answer that takes an optional choice back |
-| `choose` | What a required choice says before anything is chosen |
-| `pickDate`, `previousMonth`, `nextMonth` | The date picker's face and its two month buttons |
-| `clearDate` | The button that takes back a date in an optional field |
-| `showSecret`, `hideSecret` | The reveal button of a secret |
-| `removeTag(tag)` | The cross on one tag |
+| `schema` (required) | `JsonSchema` |  | An object schema: its properties are the fields, in the order written. |
+| `value` (required) | `Readonly<Record<string, unknown>>` |  | The record the fields edit, by property key. |
+| `onValueChange` (required) | `(value: Record<string, unknown>) => void` |  | Told the next record - a copy, never the same object changed. |
+| `words` (required) | `SchemaFieldsWords` |  | Every word the fields show, so the product can translate them. |
+| `errors` | `Readonly<Record<string, ReactNode>>` |  | Problems from elsewhere - the server, a rule the schema cannot state - by key (`server.port`). Said at once, and over the schema's own. |
+| `reveal` | `boolean` | `false` | Say every problem now, left or not - after a submit that was refused. |
+| `custom` | `Readonly<Record<string, (props: SchemaCustomProps) => ReactNode>>` |  | Fields the product draws itself, by key. Read for their label and help; never refused, never checked here. |
+| `disabled` | `boolean` | `false` | Disables every field at once, for example while the record saves. |
+| `className` | `string` |  |  |

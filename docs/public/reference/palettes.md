@@ -10,10 +10,12 @@ and a Tauri window has to be given a background colour before its WebView has
 painted anything.
 
 So the package ships the answer as well as the question: one file per product,
-every colour of the theme in both themes, as the browser computed it.
+every colour of the theme in both themes, as the browser computed it - as JSON,
+and the same values as a Rust module.
 
 ```text
 dowel-ui/palettes/<product>.json
+dowel-ui/rust/<product>.rs
 ```
 
 ## What is in a file
@@ -58,25 +60,54 @@ Design Tokens Format Module 2025.10, one colour group with a `dark` and a
 
 ## How it is made
 
-`tools/build-palettes.mjs` loads `theme.css` into Chromium once per product and
-theme, reads the computed colour of every custom property, and writes it down.
-The formulas stay in `theme.css`; there is no second implementation of
-`color-mix` anywhere to drift from the first. The tests paint each colour into
-a canvas by a separate route and compare the pixel, so a mistake in turning the
-browser's `oklab()` into hex cannot hide.
+`theme.css` is the only place a token is defined. `tools/build-tokens.mjs`
+reads it once and writes every other form from that one reading: `tokens.json`
+(the scales), `accents/<product>.css`, `palettes/<product>.json` and
+`rust/<product>.rs`. For the palettes it loads the theme into Chromium once per
+product, theme and contrast mode, and writes down the computed colour of every
+custom property. The formulas stay in `theme.css`; there is no second
+implementation of `color-mix` anywhere to drift from the first. The tests paint
+each colour into a canvas by a separate route and compare the pixel, so a
+mistake in turning the browser's `oklab()` into hex cannot hide - and they
+compile every Rust module with `rustc` and compare what it holds with the JSON.
 
-## Using it from a native product
+## Using it from a Rust product
 
-Vendor the file for your product, keep the version it names, and compare
-against that version when you update:
+`rust/<product>.rs` is the palette and the scales as Rust: a `Palette` struct
+with a field per colour, the four modes as constants (`DARK`, `LIGHT`,
+`DARK_CONTRAST_MORE`, `LIGHT_CONTRAST_MORE`), and modules for `radius`, `text`,
+`font_weight`, `icon`, `duration`, `easing` and `layer`. It names no colour
+type, because the products of the line need not share a toolkit; include it
+where you say what a colour is:
 
-1. Copy `palettes/<product>.json` (and `tokens.json`, for radius, type and
-   motion) from the `dowel-ui` release you are adopting.
-2. Generate constants from it at build time — in Rust, a `build.rs` that reads
-   the JSON and writes a module. The file, not your code, is where a colour
-   lives.
-3. Keep a check that the vendored copy is byte-for-byte the one published at
-   the version it names, so an edit by hand is caught rather than shipped.
+```rust
+mod dowel {
+    pub type Color = egui::Color32;
+    const fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
+        egui::Color32::from_rgba_unmultiplied_const(r, g, b, a)
+    }
+    include!("../assets/dowel/nitid.rs");
+}
 
-There is no Rust crate yet. One is planned once a second native product of the
-line needs these values; until then the JSON is the interface.
+let ground = dowel::DARK.bg;
+let corner = dowel::radius::MD;
+```
+
+`Color` has to be `Copy`, `Debug` and `PartialEq`; `[u8; 4]` will do. The
+colours are unmultiplied RGBA, as the JSON writes them.
+
+1. Copy `rust/<product>.rs` from the `dowel-ui` release you are adopting. Its
+   `VERSION` constant names the release.
+2. Keep a check that the vendored copy is byte-for-byte the one published at
+   that version, so an edit by hand is caught rather than shipped.
+
+## Using the JSON from anything else
+
+The same values, for a toolkit that is not Rust: copy `palettes/<product>.json`
+(and `tokens.json`, for radius, type and motion) from the release you are
+adopting, and generate constants from it at build time. The file, not your
+code, is where a colour lives.
+
+There is no crate. The Rust module is what one would hold; it becomes a crate
+once a second native product of the line needs it, and the module's shape is
+the crate's.

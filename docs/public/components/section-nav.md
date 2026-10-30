@@ -70,20 +70,24 @@ set in the same type.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required — the caption and the landmark's name |
-| `items` | `{ id, label, icon?, description? }[]` | | Required |
-| `activeId` | `string` | | The current page |
-| `render` | `(item) => ReactElement` | | The element each row is drawn as |
-| `onSelect` | `(id) => void` | | Pressed, whatever the row is drawn as |
-| `labelHidden` | `boolean` | `false` | Keep the caption as the name, off the screen |
-| `level` | `1`-`6` | `2` | Where the caption stands in the page's outline |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `label` (required) | `string` |  | What the list is called: the caption above it, and the name a screen reader gives the landmark. |
+| `items` (required) | `readonly SectionNavItem[]` |  | The sections, in order. Each row is a button, or the element `render` returns for it. |
+| `activeId` | `string` |  | Which item is the current page. |
+| `render` | `(item: SectionNavItem) => RenderProp<Record<string, unknown>>` |  | The element a row is drawn as - `render={(item) => <NavLink to={…} />}`. The row's props are merged onto it, the way Button takes a `render`. |
+| `onSelect` | `(id: string) => void` |  | Pressed, whatever the row is drawn as. |
+| `labelHidden` | `boolean` | `false` | Keep the caption as the landmark's name and take it off the screen. For a screen whose own title already says it - a settings screen headed "Settings" with a list captioned "Settings" names itself twice, which is what kilna's did. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | Where the caption stands in the outline: `2` by default, beside the screen's title. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, `onSelect`, passed on.
 
 ### `SectionHeading`
 
+The title of the open section and the line under it.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, a heading at `level` |
-| `description` | `ReactNode` | | The line under it |
-| `level` | `1`-`6` | `2` | |
-| `className` | `string` | | |
+| `title` (required) | `ReactNode` |  | The open section's title, drawn as a heading. |
+| `description` | `ReactNode` |  | A line under the title that says what the section is for. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | Where the open section's title stands in the outline: `2` by default. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `title`, passed on.

@@ -80,23 +80,33 @@ floor while the chip stays the size it is.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `outline \| dashed \| soft \| accent \| good \| warn \| bad \| info` | `outline` | |
-| `count` | `number` | | Shown after the label |
-| `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
-| `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |
-| `pressed` | `boolean` | | Makes the chip a switch; controlled |
-| `defaultPressed` | `boolean` | | A switch nobody else needs to know about |
-| `onPressedChange` | `(pressed) => void` | | |
-| `value` | `string` | | Which member of a ChipGroup this is |
-| `disabled` | `boolean` | | A switch only |
+| `variant` | `outline \| dashed \| soft \| accent \| good \| warn \| bad \| info` | `'outline'` |  |
+| `count` | `number` |  | Shown after the label, for a count. |
+| `className` | `string` |  |  |
+| `children` | `ReactNode` |  |  |
+| `onRemove` (with `removeLabel`) | `() => void` |  | Called when the cross is pressed. Giving it is what makes the chip removable; the press does not reach a clickable parent. |
+| `removeLabel` (with `onRemove`) | `string` |  | The accessible name of the cross, for example "Remove tag". Required with `onRemove`, and there is no default word, so the product can translate it. |
+| `pressed` | `boolean` |  | Whether it is on. Controlled; pair it with `onPressedChange`. |
+| `defaultPressed` | `boolean` |  | Whether it starts on, for a chip nobody else needs to know about. |
+| `onPressedChange` | `(pressed: boolean) => void` |  | Called with the new state when the chip is switched. Giving it makes the chip a switch. |
+| `value` | `string` |  | Which member of a ChipGroup this is. Inside a group the group owns the state, and `pressed` is not read. |
+| `disabled` | `boolean` |  | Stops the chip being switched, and dims it. Only a switch can be disabled. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `onSelect`, `defaultValue`, `color`, passed on.
 
 ### `ChipGroup`
 
+A row of chips that switch together.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `aria-label` | `string` | | What the row chooses — a group without a name is a riddle |
-| `value` | `string[]` | | The chips that are on; controlled |
-| `defaultValue` | `string[]` | | |
-| `onValueChange` | `(value: string[]) => void` | | |
-| `multiple` | `boolean` | `false` | Several on at once |
-| `disabled` | `boolean` | | |
+| `aria-label` | `string` |  | What the row of chips is: "Kind", "Status". A group without a name is a row of buttons a reader meets one at a time with no idea what they choose between. |
+| `aria-labelledby` | `string` |  | Identifies the element (or elements) that labels the current element. |
+| `value` | `readonly string[]` |  | The values of the chips that are on. An array in both modes, because that is Base UI's shape and a single mode is a group that holds at most one. |
+| `defaultValue` | `readonly string[]` |  | The values that start on, when the group keeps its own state. |
+| `onValueChange` | `(value: string[]) => void` |  | Called with the values that are on after a chip is pressed. Always an array, in both modes. |
+| `multiple` | `boolean` | `false` | Several on at once - filters - rather than one at a time - a kind. |
+| `disabled` | `boolean` |  | Disables every chip in the group. |
+| `children` (required) | `ReactNode` |  |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `defaultValue`, `onChange`, passed on.

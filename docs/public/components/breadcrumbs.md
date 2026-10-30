@@ -54,9 +54,10 @@ the way home does not disappear first.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required — names the landmark |
-| `items` | `{ id, label }[]` | | Required, root first |
-| `render` | `(crumb) => ReactElement` | | The element a crumb before the last is drawn as |
-| `onSelect` | `(id) => void` | | Pressed, whatever the crumb is drawn as |
-| `max` | `number` | `4` | Crumbs drawn before the middle folds; floor of 3 |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `label` (required) | `string` |  | What the trail is called for a reader - "Breadcrumb" by convention, but a product with two of them on one screen should say which. |
+| `items` (required) | `readonly Crumb[]` |  | The trail, root first. The last item is where the reader stands. |
+| `render` | `(item: Crumb) => RenderProp<Record<string, unknown>>` |  | The element a crumb before the last is drawn as. Without it a crumb is a button and `onSelect` says which was pressed. |
+| `onSelect` | `(id: string) => void` |  | Called with the id of a crumb before the last when it is pressed, whatever element it is drawn as. |
+| `max` | `number` | `4` | How many crumbs are drawn before the middle is folded away. The first and the last are always kept, so this is a floor of three. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, `onSelect`, passed on.

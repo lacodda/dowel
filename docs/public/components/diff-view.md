@@ -77,18 +77,15 @@ compare the two strings yourself.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `before` | `string` | | |
-| `after` | `string` | | |
-| `beforeLabel` | `string` | | What the left side is called |
-| `afterLabel` | `string` | | |
-| `summary` | `({ added, removed }) => ReactNode` | | Left out, nothing is drawn |
-| `numbered` | `boolean` | `true` | |
-| `copyLabel` | `(side: string) => string` | | Brings a copy button to each header |
-| `copiedLabel` | `string` | | Announced after a successful copy |
-| `onCopy` | `(ok) => void` | | `false` means the clipboard refused |
-| `size` | `sm` `md` `full` | `md` | 16rem, 28rem, or no ceiling |
+| `size` | `sm \| md \| full` | `'md'` |  |
+| `before` (required) | `string` |  | The text as it was, drawn on the left. |
+| `after` (required) | `string` |  | The text as it is now, drawn on the right. |
+| `beforeLabel` (required) | `string` |  | What each side is called - a version name, a date, "on disk". |
+| `afterLabel` (required) | `string` |  | What the right side is called; see `beforeLabel`. |
+| `summary` | `(counts: { added: number; removed: number; }) => ReactNode` |  | The line above the comparison: how much moved. The component counts, the product says it in words - a count is a plural, and a plural belongs to a language the component does not know. Given the two numbers, and left out entirely when there is nothing to say. |
+| `numbered` | `boolean` | `true` | Numbers down each side. On by default: a comparison is usually read in order to go and change something, and the number is how the reader finds the place. |
+| `copyLabel` | `(side: string) => string` |  | Brings a copy button to each side's header, and names it. |
+| `copiedLabel` | `string` | `''` | Announced after a successful copy. Required alongside `copyLabel`. |
+| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
 
-`copyLabel` is a function of the side's label rather than a string: two buttons
-on one screen both called "Copy" tell a reader which is which only by where
-they are. Sticking the two together here would invent a phrase in a grammar the
-component does not know.
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onCopy`, passed on.

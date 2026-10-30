@@ -105,33 +105,31 @@ owner found it by looking.
 is a hover affordance, and a screen reader is given the bar as one image. Say
 what the whole bar says.
 
+**Segment tones.** `accent` is the subject: work done, the band you are standing in. `past` is behind you - dimmed, so the current band carries the eye. `idle` is ahead, or not the subject: a break, a band not yet reached. `good`, `warn` and `bad` mark a stretch that is itself a state rather than a quantity.
+
+**The arithmetic is importable without React.** `place(segments, { from, to, minWidth })` from `track-segments` returns `{ left, width, widened }` per segment, and `markerAt(value, from, to)` returns a percentage or `null`.
+
 ## Props
 
-### Track
+### `Track`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `segments` | `TrackSegment[]` | | `key`, `start`, `end`, and optionally `tone` and `label` |
-| `label` | `string` | | Required — what the whole bar says |
-| `from` | `number` | earliest segment | What the left edge stands for |
-| `to` | `number` | latest segment | What the right edge stands for |
-| `marker` | `number` | | Where the position stands, on the same scale |
-| `divided` | `boolean` | `false` | A hairline between touching segments |
-| `minWidth` | `number` | `0.6` | The floor under a segment; `0` draws everything to scale |
-| `size` | `sm` `md` | `md` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md` | `'md'` |  |
+| `segments` (required) | `TrackSegment[]` |  | The stretches to draw: each has a `key`, a `start` and an `end`, and optionally a `tone` and a `label`. |
+| `from` | `number` |  | The value the left edge stands for. Defaults to the earliest segment. |
+| `to` | `number` |  | The value the right edge stands for. Defaults to the latest segment. |
+| `marker` | `number` |  | Where the position marker stands, on the same scale as the segments. Omitted when there is no such thing - a day of work has no "you are here". |
+| `label` (required) | `string` |  | What the whole bar says, for a reader who cannot see it. Required: the segments are decoration to a screen reader, and their titles are not announced in order. |
+| `minWidth` | `number` |  | Override the floor under a segment's width - `0` draws everything exactly to scale. |
+| `divided` | `boolean` | `false` | Separate adjacent segments with a hairline of the ground. |
 
-### Segment tones
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
-| Tone | |
-| --- | --- |
-| `accent` | The subject: work done, the band you are standing in |
-| `past` | Behind you — dimmed, so the current band carries the eye |
-| `idle` | Ahead, or not the subject: a break, a band not yet reached |
-| `good` `warn` `bad` | A stretch that is itself a state rather than a quantity |
+### `TrackScale`
 
-### `track-segments`
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `children` (required) | `ReactNode` |  |  |
 
-The arithmetic, importable without React: `place(segments, { from, to, minWidth })`
-returns `{ left, width, widened }` per segment, and `markerAt(value, from, to)`
-returns a percentage or `null`.
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

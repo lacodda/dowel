@@ -74,19 +74,25 @@ frame.
 
 ### `AppShell`
 
+The frame.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `top` | `ReactNode` | | The strip across the top, full width |
-| `side` | `ReactNode` | | The rail down the left |
-| `sideWidth` | `number \| string` | `var(--spacing-rail)` | Pixels, or any CSS track size |
-| `topHeight` | `number \| string` | `var(--spacing-titlebar)` | Pixels, or any CSS track size |
-| `children` | `ReactNode` | | Required — usually one `Screen` |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `top` | `ReactNode` |  | The strip across the top, full width - a title bar, a header, a banner row. Leave it out and the rail runs to the top of the window. |
+| `side` | `ReactNode` |  | The rail down the left. Leave it out for a product that navigates from the top bar alone, which is the usual shape on the web. |
+| `sideWidth` | `string \| number` | `'var(--spacing-rail)'` | How wide the rail is. A number is pixels; a string is any CSS track size, for a rail that collapses or is dragged. Defaults to the theme's `--spacing-rail`, so four products stop each choosing their own. |
+| `topHeight` | `string \| number` | `'var(--spacing-titlebar)'` | How tall the top bar is, same rules, defaulting to `--spacing-titlebar`. It is a fixed track rather than `auto` on purpose: a bar that grows by a pixel when its content changes moves every screen under it. |
+| `children` (required) | `ReactNode` |  |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
 
 ### `Screen`
 
+One screen inside the frame, handed the height the window has left.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `scroll` | `flow \| held` | `flow` | Where the scrolling happens |
-| `pad` | `default \| tight \| none` | `default` | The page's own margins |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `scroll` | `flow \| held` | `'flow'` |  |
+| `pad` | `default \| tight \| none` | `'default'` |  |
+
+And every prop of `HTMLAttributes<HTMLElement>`, passed on.

@@ -83,13 +83,6 @@ context.
 
 ## API
 
-### `LayerProvider`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `above` | `popup \| menu \| floating \| overlay \| modal \| palette` | | The rung the overlay stands on |
-| `mount` | `RefObject<HTMLElement \| null>` | | The overlay's own portal node. Without it, the layer it was opened in, or the body |
-
 ### `usePopupContainer()`
 
 Where a popup opened here should portal to: the host of the layer it is in, or
@@ -107,3 +100,13 @@ positioner publishes, on both axes, and scroll it inside itself past that:
 `max-h-[var(--available-height)] max-w-[var(--available-width)]
 overflow-y-auto overscroll-contain`. Menu, Popover, PreviewCard and Tooltip
 wear it; a product's own anchored popup should too.
+
+## Props
+
+Opens a raised host beside an overlay and offers it to every popup opened inside. Put it inside the overlay's popup, around its content.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `above` (required) | `menu \| popup \| floating \| overlay \| modal \| palette` |  | The rung the overlay itself stands on: `modal` for a dialog or a drawer, `palette` for the command palette, `floating` for a popover, `overlay` for a product's own full-screen stage. |
+| `mount` | `RefObject<HTMLElement \| null>` |  | Where the layer goes: the overlay's own portal node. Every overlay of the set passes it, and it matters for the modal ones. A modal dialog hides everything outside its portal from assistive technology - Base UI marks the rest of the body `aria-hidden` - and a layer beside the portal rather than in it was hidden with the page: the menu opened in a drawer worked for a pointer and did not exist for a screen reader. Inside the portal the layer counts as the overlay's own. Without it the layer goes into the layer it was opened in, or onto the body. |
+| `children` (required) | `ReactNode` |  |  |

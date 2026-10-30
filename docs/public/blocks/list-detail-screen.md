@@ -72,23 +72,21 @@ languages passes its translations and nothing English is left behind.
 
 ## Props
 
-| Prop | Type | | |
+| Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | The screen's title |
-| `description` | `ReactNode` | | One sentence under it |
-| `actions` | `ReactNode` | | What acts on the screen: New, Import |
-| `items` | `readonly T[]` | | What the list holds |
-| `itemKey` | `(item) => string` | | A stable key per item |
-| `row` | `(item) => ListDetailRow` | | `{ start, title, description, end }`, RowButton's slots |
-| `selected` | `string \| null` | | The key of what is open |
-| `onSelect` | `(key \| null) => void` | | Told what to open, or `null` to go back |
-| `matches` | `(item, query) => boolean` | | Leave it out and there is no search |
-| `detailTitle` | `(item) => string` | | The open item's heading, and its region's name |
-| `detailActions` | `(item) => ReactNode` | | What acts on the open item |
-| `detail` | `(item) => ReactNode` | | The open item itself |
-| `emptyAction` | `ReactNode` | | The way out of an empty screen |
-| `rowRender` | `(item) => RenderProp` | | A row as the product's link |
-| `words` | `ListDetailScreenWords` | | Every word on the screen |
-
-`words` is `{ list, search, clear, back, nothingYet, nothingFound, nothingOpen }`,
-the last three each `{ title, body? }`.
+| `title` (required) | `ReactNode` |  | The screen's title. |
+| `description` | `ReactNode` |  | One sentence under it. |
+| `actions` | `ReactNode` |  | What acts on the screen as a whole: New, Import. |
+| `items` (required) | `readonly T[]` |  | What the list holds, in the order it shows. |
+| `itemKey` (required) | `(item: T) => string` |  | A stable key per item: its id. |
+| `row` (required) | `(item: T) => ListDetailRow` |  | How an item reads as a row. |
+| `selected` (required) | `string \| null` |  | The key of what is open, or null. |
+| `onSelect` (required) | `(key: string \| null) => void` |  | Told what to open - or null, to go back to the list. |
+| `matches` | `(item: T, query: string) => boolean` |  | Whether an item answers to what was typed. Leave it out and there is no search: a list of seven does not need one. |
+| `detailTitle` (required) | `(item: T) => string` |  | The open item's title: the heading of its pane and the name of the region that scrolls. Words, because a region is named in words. |
+| `detailActions` | `(item: T) => ReactNode` |  | What acts on the open item, beside its title. |
+| `detail` (required) | `(item: T) => ReactNode` |  | The open item itself. |
+| `emptyAction` | `ReactNode` |  | The one thing worth doing on an empty screen: "New work". |
+| `rowRender` | `(item: T) => RenderProp<Record<string, unknown>> \| undefined` |  | A row drawn as something other than a button - the product's link, so a row can be opened in a new tab: `(work) => <Link to={…} />`. A click is then the link's: the router opens it and `selected` follows the address. `onSelect` is still told by the keyboard and the way back. |
+| `words` (required) | `ListDetailScreenWords` |  | Every word the screen shows: the list's name, the search box, the way back, and what each empty state says. Words are passed in so the product can translate them. |
+| `className` | `string` |  |  |

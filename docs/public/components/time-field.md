@@ -48,15 +48,22 @@ of the product's own fields would have one that is visibly not.
 
 **Empty is `null`.** No time is not midnight.
 
+`parseTime` and `formatTime` are exported beside the component, for a product that has to read or write the same spellings elsewhere.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string \| null` | | `HH:MM`; `null` is empty |
-| `onValueChange` | `(value) => void` | | Fires on blur and Enter, not per key |
-| `locale` | `string` | the application's (`useLocale`) | How the time is shown |
-| `placeholder` | `string` | | |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
-
-`parseTime` and `formatTime` are exported beside the component, for a product
-that has to read or write the same spellings elsewhere.
+| `value` (required) | `string \| null` |  | `HH:MM` in twenty-four hours, or `null` for empty. |
+| `onValueChange` (required) | `(value: string \| null) => void` |  | Told the next time as `HH:MM`, or `null` when the box is cleared. Fires on blur and on Enter, not on every key, and not when the text parses to the time already held. |
+| `locale` | `string` |  | How the time is shown while the field is not being typed into. The application's language unless stated - see `useLocale`. |
+| `placeholder` | `string` |  | What the empty box says. Pass the product's own words. |
+| `disabled` | `boolean` |  | Stops the box taking focus or input. Passed to the `<input>`. |
+| `readOnly` | `boolean` |  | The box can be focused and read but not typed into. Passed to the `<input>`. |
+| `required` | `boolean` |  | Marks the `<input>` as required for a form. |
+| `name` | `string` |  | The `<input>`'s name, for a form. |
+| `id` | `string` |  | The `<input>`'s id, so a label can point at it. |
+| `ref` | `Ref<HTMLInputElement>` |  | Reaches the `<input>`, for focusing it or reading its selection. |
+| `aria-label` | `string` |  | Names the box for a screen reader when no visible label does. |
+| `aria-describedby` | `string` |  | The id of the element that describes the box, such as a hint. |
+| `className` | `string` |  |  |

@@ -71,29 +71,29 @@ useCommand({ id: 'close', label: t('keys.close'), group: t('keys.everywhere'), k
 rows, for a page that shows the keys in place. A command with no keys has
 nothing to show in either and is left out.
 
+**`SHORTCUTS_COMMAND` is the id of the command the dialog declares** - for `setKeymap({ [SHORTCUTS_COMMAND]: 'F1' })`, or `runCommand(SHORTCUTS_COMMAND)` from a help menu. `ShortcutList` takes a `<div>`'s props and lays the groups out in two columns from `sm` up; a group never breaks across them.
+
 ## Props
+
+### `ShortcutList`
+
+The list on its own, for a settings page that shows the keys in place. A command with no keys has nothing to show and is left out.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` | Where the group headings stand in the outline: `3` by default - under the sheet's title, or a settings page's section. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
 
 ### `ShortcutsDialog`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `string` | **required** | The heading, and the name of the command that opens it |
-| `closeLabel` | `string` | **required** | What the close button is called, for a screen reader |
-| `description` | `ReactNode` | | The line under the heading |
-| `keys` | `string` | `?` | The keys that open it |
-| `group` | `string` | | The heading its own line is listed under |
-| `open` / `onOpenChange` | | | Controlled, for a product that opens it from elsewhere as well; `?` drives the same state |
-| `children` | `ReactNode` | | After the list |
-
-`SHORTCUTS_COMMAND` is the id of the command it declares — for
-`setKeymap({ [SHORTCUTS_COMMAND]: 'F1' })`, or `runCommand(SHORTCUTS_COMMAND)`
-from a help menu.
-
-### `ShortcutList`
-
-Takes a `<div>`'s props. Two columns from `sm` up; a group never breaks across
-them.
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `level` | `1`-`6` | `3` | Where the group headings stand: under the sheet's title, or a settings page's section; `2` on a page that goes from its title straight to the list |
+| `title` (required) | `string` |  | The heading, and the name of the command that opens it: in the palette and in the list itself. |
+| `closeLabel` (required) | `string` |  | What the close button is called, for a screen reader. No default: a word the component invents is a word the product cannot translate. |
+| `description` | `ReactNode` |  | The line under the heading. |
+| `keys` | `string` | `'?'` | The keys that open it. |
+| `group` | `string` |  | The heading its own line is listed under. |
+| `open` | `boolean` |  | Controlled, for a product that opens it from somewhere else as well. |
+| `onOpenChange` | `(open: boolean) => void` |  | Called with the new state whenever it opens or closes, whether by the keys, `runCommand` or the close button. |
+| `children` | `ReactNode` |  | After the list: what keys cannot say - a gesture with the pointer, a note that letters wait while someone is typing. |

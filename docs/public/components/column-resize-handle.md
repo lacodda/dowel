@@ -79,24 +79,16 @@ tab stop for something a keyboard cannot usefully drive. The click after a
 drag is stopped so a sortable heading does not flip its sort every time a
 width is set.
 
-## Props
+**The pieces around the handle are not components, so they are listed here.** `useColumnWidths({ initial, onChange?, fallback?, minWidth? })` returns `{ sized, hand, isHandSized(id), widthOf(id), resize(id, width, done?), reset(id), measure(cells) }`. `measureColumns(row, attribute = 'data-column')` returns the `[id, width]` pairs of a header row's cells that carry the attribute.
 
-### `ColumnResizeHandle`
+## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required — names the column for a screen reader |
-| `hint` | `string` | | The tooltip: how to drag, how to reset |
-| `onResize` | `(width, done) => void` | | Required; `done` on release |
-| `onReset` | `() => void` | | Required; on double-click |
-| `onStart` | `() => void` | | On the press, before the first width |
-| `minWidth` | `number` | `56` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `useColumnWidths({ initial, onChange?, fallback?, minWidth? })`
-
-Returns `{ sized, hand, isHandSized(id), widthOf(id), resize(id, width, done?), reset(id), measure(cells) }`.
-
-### `measureColumns(row, attribute = 'data-column')`
-
-The `[id, width]` pairs of a header row's cells that carry the attribute.
+| `label` (required) | `string` |  | Names the column for assistive technology: "Resize the Tier column". |
+| `hint` | `string` |  | Shown on hover: how to drag and how to reset. |
+| `onResize` (required) | `(width: number, done: boolean) => void` |  | The width while dragging, and once more with `done` when the pointer is let go - the moment to persist. |
+| `onReset` (required) | `() => void` |  | Double-click: the column goes back to its natural width. |
+| `onStart` | `() => void` |  | Called on pointerdown, before the first `onResize` - the moment for the caller to measure what every column is before the layout goes fixed. |
+| `minWidth` | `number` | `56` | Narrower than this and the column is a stripe with nothing in it. |
+| `className` | `string` |  |  |

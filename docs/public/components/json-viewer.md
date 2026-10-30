@@ -81,9 +81,10 @@ are visible, and that is shared:
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `JsonValue` | | Anything `JSON.parse` returns |
-| `label` | `string` | | Required — what a screen reader calls it |
-| `open` | `ReadonlySet<string>` | `branchPaths(value)` | Paths. Uncontrolled if omitted |
-| `onOpenChange` | `(open) => void` | | |
-| `onActivate` | `(row: JsonRow) => void` | | The row, with its path and value |
-| `root` | `string` | `'$'` | For a viewer showing one field of a record |
+| `value` (required) | `JsonValue` |  | The document to show: anything `JSON.parse` returns. |
+| `open` | `ReadonlySet<string>` |  | Which branches are open, by path. Uncontrolled if omitted, starting with the top two levels open (a branch of twenty entries or more stays shut) - the shape of an answer rather than the whole document. |
+| `onOpenChange` | `(open: Set<string>) => void` |  | Called with the new set of open paths whenever a branch is opened or closed. Pair it with `open` to control the viewer. |
+| `onActivate` | `(row: JsonRow) => void` |  | Told which row was activated, with its path and its value. What a product hangs "copy this" or "go to this setting" on. |
+| `label` (required) | `string` |  | What a screen reader calls it. Required, and without a default: a string this component invents is a string the product cannot translate. |
+| `root` | `string` | `'$'` | The path the document starts at, for a viewer showing one field of a larger record. Paths are then written so they still mean something in that record. |
+| `className` | `string` |  |  |

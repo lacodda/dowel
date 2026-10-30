@@ -55,11 +55,12 @@ then and no action to offer; it is the product's cue to draw the real one.
 
 ## Props
 
-| Prop | Type | | |
+| Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | "Welcome, Ines" |
-| `description` | `ReactNode` | | A line under it |
-| `actions` | `ReactNode` | | What acts on the screen |
-| `steps` | `readonly FirstStep[]` | | `{ id, title, description?, done, action? }` |
-| `figures` | `readonly FutureFigure[]` | | `{ label }` - the figures the full dashboard will have |
-| `words` | `EmptyDashboardScreenWords` | | `{ steps, progress, done, notYet, figures }` |
+| `title` (required) | `ReactNode` |  | "Welcome to kilna". |
+| `description` | `ReactNode` |  | A line under the title that says what the dashboard is for. |
+| `actions` | `ReactNode` |  | Buttons at the end of the header - the product's own, such as "Import data". |
+| `steps` (required) | `readonly FirstStep[]` |  | The first steps, in order. Each is marked done or not, and only the first one not yet done carries its `action`. |
+| `figures` | `readonly FutureFigure[]` |  | The figures the full dashboard will have. Leave it out to show only the steps. |
+| `words` (required) | `EmptyDashboardScreenWords` |  | Every word the screen shows, in the product's language. The block has no default text. |
+| `className` | `string` |  |  |

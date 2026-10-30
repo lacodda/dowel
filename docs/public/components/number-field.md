@@ -59,14 +59,22 @@ least 13 leaves the box as 13. A form that says what is wrong passes
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `number \| null` | | `null` is an empty box |
-| `defaultValue` | `number` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | Receives `null` when emptied |
-| `min`, `max` | `number` | | |
-| `allowOutOfRange` | `boolean` | `false` | Keep a typed number outside `min`/`max` as typed, for a form that says what is wrong; the arrows still stop at the bounds |
-| `step` | `number` | `1` | What the arrows change it by |
-| `largeStep` | `number` | | What PageUp and PageDown change it by |
-| `format` | `Intl.NumberFormatOptions` | | Currency, percent, precision |
-| `locale` | `string` | the application's (`useLocale`) | |
-| `unit` | `ReactNode` | | A caption beside the field |
-| `hideStepper` | `boolean` | `false` | |
+| `value` | `number \| null` |  | The controlled number. `null` is an empty box. |
+| `defaultValue` | `number` |  | The starting number of an uncontrolled field. |
+| `onValueChange` | `(value: number \| null) => void` |  | Called with the new number as it changes, or `null` when the box is emptied. |
+| `min` | `number` |  | The lowest the number may be. The arrows stop here, and a typed number below it moves to it on blur unless `allowOutOfRange` is set. |
+| `max` | `number` |  | The highest the number may be. See `min`. |
+| `allowOutOfRange` | `boolean` |  | Keep a typed number outside `min`/`max` as typed, rather than moving it to the bound on blur - for a form that says what is wrong instead. A 9 typed for an age of at least 13 became 13 without a word; the arrows still stop at the bounds. |
+| `step` | `number` |  | What the arrows change it by. |
+| `largeStep` | `number` |  | What PageUp and PageDown change it by, when a single step is too slow. |
+| `format` | `NumberFormatOptions` |  | How the number reads: `Intl.NumberFormat` options, so a currency or a percentage is a prop rather than a wrapper. |
+| `locale` | `string` |  | Which conventions `format` follows. Left alone it is the application's language (see `useLocale`); a product states one only when the figure belongs to a place rather than to a person - a price in a fixed market. |
+| `unit` | `ReactNode` |  | What the number is in - `px`, `kg`, `%`. A caption beside the field, not part of the value. |
+| `hideStepper` | `boolean` | `false` | Hide the stepper. For a field with a wide range, where the buttons are an invitation to click sixty times. |
+| `disabled` | `boolean` |  | Turns the field off: it cannot be focused or changed. |
+| `readOnly` | `boolean` |  | The number can be read and selected but not changed. |
+| `required` | `boolean` |  | Marks the field as required, for a form to check. |
+| `name` | `string` |  | The name the number is submitted under in a form. |
+| `placeholder` | `string` |  | Shown in the box while it is empty. |
+| `aria-label` | `string` |  | Names the field for a screen reader, when there is no visible label. |
+| `className` | `string` |  |  |

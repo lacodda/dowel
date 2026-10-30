@@ -66,11 +66,11 @@ says it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required — the caption above, and the input's name |
-| `value` | `T \| null` | | The stored value |
-| `onCommit` | `(value: T \| null) => boolean \| void` | | Called once per kept change; `false` refuses it |
-| `codec` | `Codec<T>` | `textCodec` | Required for anything but text |
-| `placeholder` | `string` | | What an empty value shows — a dash reads as "nothing yet" |
-| `labelHidden` | `boolean` | `false` | For a cell under a column header |
-| `disabled` | `boolean` | | |
-| `className` | `string` | | On the wrapper |
+| `label` (required) | `ReactNode` |  | What the value is called: the caption above it. |
+| `labelHidden` | `boolean` |  | Keep the caption for a screen reader and take it off the screen - for a cell whose column header already names it. |
+| `placeholder` | `string` |  | What an empty value shows. A dash reads as "nothing yet"; a blank box reads as a rendering fault. |
+| `disabled` | `boolean` |  | Shows the value and refuses to edit it. |
+| `className` | `string` |  |  |
+| `value` (required) | `string \| null` |  | The stored value; `null` for none. |
+| `onCommit` (required) | `(value: string \| null) => boolean \| void` |  | Called once, with the parsed value, when a change is kept. Return `false` to refuse it - a server that said no - and the field goes back to the stored value. |
+| `codec` | `Codec<string>` |  | How the value is read from the text and spelled back. Left out, the value is plain text. |

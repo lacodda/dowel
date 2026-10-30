@@ -27,7 +27,8 @@ the reset it grows and never shrinks back.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `autoResize` | `boolean` | `false` | Grow to fit instead of scrolling |
-| `maxRows` | `number` | | Stop growing here and scroll |
+| `ref` | `Ref<HTMLTextAreaElement>` |  | A ref to the underlying `<textarea>` element, as a function or an object. |
+| `autoResize` | `boolean` | `false` | Grow to fit the content instead of scrolling. |
+| `maxRows` | `number` |  | Stop growing here, in lines, and scroll instead. |
 
-Everything else goes to the `<textarea>`.
+And every prop of `TextareaHTMLAttributes<HTMLTextAreaElement>`, passed on.

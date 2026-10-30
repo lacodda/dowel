@@ -49,3 +49,20 @@ nothing rather than adding a tag nobody can see.
 **`removeLabel` is yours, and required** — the same rule as [Chip](/dowel/components/chip/),
 for the same reason: a primitive with a string of its own ships in English to
 every reader who does not read English.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `value` (required) | `string[]` |  | The tags. Controlled: the product owns the list. |
+| `onValueChange` (required) | `(value: string[]) => void` |  | Called with the next list. |
+| `placeholder` | `string` |  | Placeholder for the text box, shown when there is room for it. |
+| `aria-label` | `string` |  | Names the field. Required - a box of chips with no label names nothing. |
+| `aria-labelledby` | `string` |  | Or points at a label element, when there is a visible one. |
+| `removeLabel` (required) | `(tag: string) => string` |  | How a tag's remove button is named, for a screen reader. Takes the tag, so the product can say "Remove documentation" in its own language. |
+| `max` | `number` |  | Cap on how many tags may be added. |
+| `disabled` | `boolean` |  | Dims the field and stops it taking input or removing tags. |
+| `children` | `ReactNode` |  | Drawn after the input, inside the box - a counter, a hint. |
+| `className` | `string` |  |  |
+| `id` | `string` |  | Put on the text box, so a `Field` label can point at it. |

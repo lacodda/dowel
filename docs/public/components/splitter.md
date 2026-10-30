@@ -76,25 +76,29 @@ a product can test or reuse without rendering anything.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `orientation` | `horizontal \| vertical` | `horizontal` | `horizontal` is side by side |
-| `defaultSizes` | `number[]` | equal shares | One percentage per pane, summing to 100 |
-| `onSizesChange` | `(sizes: number[]) => void` | | Once per settled change: persist here |
-| `step` | `number` | `2` | Percent per arrow press; Shift moves five |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `orientation` | `horizontal \| vertical` | `'horizontal'` | How the panes are laid out: `horizontal` is side by side, with upright handles between them; `vertical` stacks them. |
+| `defaultSizes` | `number[]` |  | One percentage per pane, summing to 100 - what was saved from `onSizesChange`, or the product's opening layout. Equal shares without. |
+| `onSizesChange` | `(sizes: number[]) => void` |  | Told the sizes when a change settles: persist them here. |
+| `step` | `number` | `2` | Percent moved by an arrow key; Shift moves five of these. |
+| `children` (required) | `ReactNode` |  |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
 ### `SplitterPane`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `min` | `number` | `0` | Smallest share, in percent |
-| `max` | `number` | `100` | Largest share, in percent |
-| `collapsible` | `boolean` | `false` | May shrink past `min` to `collapsedSize` |
-| `collapsedSize` | `number` | `0` | Its share when collapsed |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `min` | `number` |  | Smallest size, 0 by default. |
+| `max` | `number` |  | Largest size, 100 by default. |
+| `collapsible` | `boolean` |  | Whether the pane can shrink past `min` to `collapsedSize`. |
+| `collapsedSize` | `number` | `0` | Its size when collapsed: 0 by default, a rail's width for a pane that keeps its icons. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `id`, passed on.
 
 ### `SplitterHandle`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required. What it resizes: "Resize the sidebar" |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `label` (required) | `string` |  | Names what the handle resizes: "Resize the sidebar". No default - it is the product's word. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.

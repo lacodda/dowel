@@ -48,11 +48,43 @@ reader already has.
 zero, and an empty box where a placeholder belongs is the jump the component
 exists to prevent.
 
-## Parts
+## Props
 
-| | |
-| --- | --- |
-| `Skeleton` | One block. Size it with `className` |
-| `SkeletonText` | `lines` (default 3). Ragged widths, short last line |
-| `SkeletonList` | `rows` (default 5), `secondary` (default true) |
-| `SkeletonGrid` | `cells`, `columns`, `cellClassName` |
+### `Skeleton`
+
+One block. Size it with `className` - a skeleton is a shape, and the shape belongs to whatever it stands in for.
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `SkeletonText`
+
+A paragraph's worth of lines.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `lines` | `number` | `3` | How many lines of text stand here. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `SkeletonList`
+
+Rows of a list, which is the shape most screens are waiting for.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `rows` | `number` | `5` | How many rows of the list stand here. |
+| `secondary` | `boolean` | `true` | Draw a second, shorter line under each row - for a list whose rows carry a title and something beneath it. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `SkeletonGrid`
+
+A grid of cells: a gallery, a board, a month.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `cells` | `number` | `12` | How many cells. |
+| `columns` | `number` | `4` | How many per row. |
+| `cellClassName` | `string` | `'aspect-square'` | The aspect of one cell, as a Tailwind class - a gallery of covers is not shaped like a grid of tiles. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

@@ -48,6 +48,10 @@ head, in one row with its filters and actions. The grid asks for a new month
 only when the keyboard walks off its edge, through `onMonthChange`; without it
 the cursor stops at the edge.
 
+**The grid is named by its month.** Without an `aria-label` it is called by the
+month it shows, "September 2026", in the calendar's `locale`; an `aria-label`
+replaces that.
+
 **Only the weeks the month touches** are drawn - four to six. The days of the
 neighbouring months in them are real days on a quieter ground: `renderDay` is
 asked for them too, and something can be dropped on the 31st of August from the
@@ -102,26 +106,6 @@ A click on a day's ground calls `onDaySelect`; a click on a line, the plus or th
 count inside it does not - no line has to stop the event so that opening a
 release does not also book the day under it.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `month` | `IsoDate` | | Any day of the month to show |
-| `onMonthChange` | `(month) => void` | | Asked for when the keyboard walks off the grid |
-| `renderDay` | `(date) => ReactNode[]` | | One node per line, each with a `key` |
-| `moreLabel` | `(count) => string` | | The count a full day folds into: "3 more" |
-| `fewerLabel` | `string` | | Folds an open day again |
-| `onDaySelect` | `(date) => void` | | A click on the day's ground, Enter on the cursor |
-| `onAddDay` | `(date) => void` | | The plus in the corner of a day |
-| `addDayLabel` | `string` | | Names the plus; required with `onAddDay` |
-| `dropTarget` | `IsoDate \| null` | | The day something would land on |
-| `dropHint` | `ReactNode` | | What landing on `dropTarget` would mean |
-| `locale` | `string` | the application's (`useLocale`) | Names, and the first day of the week |
-| `aria-label` | `string` | the month, "September 2026" | Names the grid |
-
-Everything else goes on the grid element - `onDragOver`, `onDrop`,
-`onPointerOver`, a `className` with its height.
-
 ## Helpers
 
 | | |
@@ -130,3 +114,21 @@ Everything else goes on the grid element - `onDragOver`, `onDrop`,
 | `linesThatFit(height)` | how many lines fit in a day's room |
 | `foldDay(count, lines)` | `{ shown, more }` - the count takes a line of its own |
 | `LINE_HEIGHT` | 24: the height of a line and the pitch of the day, the floor of a pointer target |
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `onAddDay` (with `addDayLabel`) | `(date: string) => void` |  | Add something on this day: a plus in the corner of the day under the pointer, and the first stop of Tab from the day the cursor is on. |
+| `addDayLabel` (with `onAddDay`) | `string` |  | Names the plus. Required with it: an icon with no name announces nothing. |
+| `month` (required) | `string` |  | Any day of the month to show. |
+| `onMonthChange` | `(month: string) => void` |  | Asked for when the keyboard walks off the grid; any day of the new month. Without it the cursor stops at the edge. |
+| `renderDay` (required) | `(date: string) => readonly ReactNode[]` |  | What a day holds, one node per line, each with a `key`. |
+| `moreLabel` (required) | `(count: number) => string` |  | The words of the count a full day folds into, given how many are folded: "3 more". |
+| `fewerLabel` (required) | `string` |  | The words that fold an open day again. |
+| `onDaySelect` | `(date: string) => void` |  | Pressing a day - a click on its ground, or Enter on the cursor. |
+| `dropTarget` | `string \| null` | `null` | The day something being carried would land on. |
+| `dropHint` | `ReactNode` |  | What landing on `dropTarget` would mean, said at the foot of it. |
+| `locale` | `string` |  | Names the months and the weekdays, and picks the first day of the week: `en-GB` starts on Monday, `en-US` on Sunday, `en-u-fw-mon` on Monday whatever the region. The application's language by default. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onSelect`, passed on.

@@ -30,6 +30,8 @@ be noise.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `string` | | Must be a string, so it can go in the `title` |
-| `lines` | `number` | `1` | Cut after this many |
-| `title` | `string` | the text | Pass `""` to silence the tooltip |
+| `children` (required) | `string` |  | The text. A string, because the component has to be able to put it in a `title` - arbitrary children could not be. |
+| `lines` | `number` | `1` | Cut after this many lines. One by default. |
+| `title` | `string` |  | Say what the full text is on hover. On by default; turn it off where the text is already visible elsewhere, or the tooltip is noise. |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>`, passed on.

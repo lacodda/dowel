@@ -85,13 +85,14 @@ that owns them differently. A crash while rendering is
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `pending` | `boolean` | `false` | Nothing has arrived yet |
-| `error` | `{ message } \| string \| null` | `null` | Anything with a message |
-| `empty` | `boolean` | `false` | Something arrived, and it was nothing |
-| `skeleton` | `ReactNode` | `<SkeletonList />` | What stands in while pending |
-| `emptyState` | `ReactNode` | | Shown when nothing came back |
-| `errorState` | `(message, retry?) => ReactNode` | | Draw the failure yourself |
-| `errorLabels` | `{ title, body? }` | | Words for the default failure screen |
-| `onRetry` | `() => void` | | A way out of a failure — requires `retryLabel` |
-| `retryLabel` | `string` | **required with `onRetry`** | What the retry button is called |
-| `plain` | `boolean` | `false` | The default error screen without its frame |
+| `onRetry` (with `retryLabel`) | `() => void` |  | A way out of a failure: puts a retry button on the default error screen and is handed to a custom `errorState`. Requires `retryLabel`. |
+| `retryLabel` (with `onRetry`) | `string` |  | What the retry button is called. Required with `onRetry`, because a string invented here could not be translated. |
+| `pending` | `boolean` | `false` | Nothing has arrived yet. |
+| `error` | `string \| { message: string; } \| null` | `null` | It failed. Anything with a `message`, which is what every error library agrees on - or a string, for a product that carries its own. |
+| `empty` | `boolean` | `false` | Something arrived, and it was nothing. Computed by the caller, because only the caller knows whether empty means `[]`, `null` or a count of zero. |
+| `skeleton` | `ReactNode` |  | What stands in while pending. A shape, ideally - the default is a list, because most screens are waiting for one, but a screen waiting for a card should say so. |
+| `emptyState` | `ReactNode` |  | What is shown when nothing came back. |
+| `errorState` | `(message: string, retry?: (() => void) \| undefined) => ReactNode` |  | What is shown when it failed. Given the message, so a product can put it where it likes - or ignore it - and the retry, when there is one. |
+| `errorLabels` | `{ title: string; body?: string \| undefined; }` |  | The words on the default error screen. Required only in the sense that the default screen needs them; pass `errorState` instead and they are never read. |
+| `plain` | `boolean` | `false` | Draw the default error screen without its frame, for a list inside a panel or a widget that already has one. The empty screen is the caller's, and says for itself whether it is plain. |
+| `children` (required) | `ReactNode` |  |  |

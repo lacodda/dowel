@@ -67,20 +67,30 @@ a list and a table together.
 
 ### `ListRow`
 
+A row that states a fact. Rows in a run are divided by a hairline that the last one does not draw, so a list inside a panel ends at the panel's edge rather than on a line of its own.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | | The row's words |
-| `start` | `ReactNode` | | What identifies it at a glance |
-| `description` | `ReactNode` | | A quieter second line |
-| `end` | `ReactNode` | | What is measured about it |
-| `render` | `ReactElement` | `<div>` | `<li />` in a list |
+| `start` | `ReactNode` |  | What identifies the row at a glance: an icon, a status dot, a cover. |
+| `description` | `ReactNode` |  | A second line under the words, quieter and truncated the same way. |
+| `end` | `ReactNode` |  | What is measured about the row: a date, a count, a chip. |
+| `children` (required) | `ReactNode` |  | The row's words. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | Something other than a `div` - an `<li>` in a `<ul>`, most often: `render={<li />}`. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, passed on.
 
 ### `RowButton`
 
+A row that is a choice.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | | The row's words, in semibold |
-| `start`, `description`, `end` | `ReactNode` | | As for ListRow |
-| `selected` | `boolean` | `false` | The open one — tinted, and `aria-current` |
-| `render` | `ReactElement` | `<button>` | Your router's link |
-| `disabled` | `boolean` | | |
+| `start` | `ReactNode` |  | What identifies the row at a glance: an icon, a status dot, a cover. |
+| `description` | `ReactNode` |  | A second line under the words, quieter and truncated the same way. |
+| `end` | `ReactNode` |  | What is measured about the row: a date, a count, a chip. |
+| `children` (required) | `ReactNode` |  | The row's words. |
+| `selected` | `boolean` | `false` | The open one - tinted, and named as current. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw the row as - a router's link, most often: `render={<NavLink to={…} />}`. Without it the row is a `<button>`. |
+| `disabled` | `boolean` |  | Disables the row. Applied only when the row is the default `<button>`: a rendered element such as a link has no `disabled` of its own. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, passed on.

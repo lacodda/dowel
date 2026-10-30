@@ -46,14 +46,22 @@ rather than left saying something untrue.
 until you leave the field or press Enter; a field that reformats on every
 keystroke fights the person using it.
 
+`parseDuration` and `formatDuration` are exported beside the component, for a
+product that has to read or write the same spellings elsewhere.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `number \| null` | | Minutes; `null` is empty |
-| `onValueChange` | `(value) => void` | | Fires on blur and Enter, not per key |
-| `placeholder` | `string` | | A duration in the canonical spelling reads best |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
-
-`parseDuration` and `formatDuration` are exported beside the component, for a
-product that has to read or write the same spellings elsewhere.
+| `value` (required) | `number \| null` |  | Minutes, or `null` for empty. |
+| `onValueChange` (required) | `(value: number \| null) => void` |  | Told the new minutes (or `null` when emptied) on blur and on Enter, not on every key, and only when the parsed value differs from `value`. |
+| `placeholder` | `string` |  | What a reader sees before they type. A duration in the canonical spelling is the best hint there is, so this is the product's to give. |
+| `disabled` | `boolean` |  | Stops the field taking input. |
+| `readOnly` | `boolean` |  | Shows the value but does not let it be edited. |
+| `required` | `boolean` |  | Marks the field as required for form validation. |
+| `name` | `string` |  | The field name submitted with a form. |
+| `id` | `string` |  | Put on the input, so a label can point at it. |
+| `ref` | `Ref<HTMLInputElement>` |  | A ref to the underlying `<input>`. |
+| `aria-label` | `string` |  | The accessible name, when there is no visible label. |
+| `aria-describedby` | `string` |  | Points at the hint or error text for the field. |
+| `className` | `string` |  |  |

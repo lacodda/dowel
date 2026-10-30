@@ -49,3 +49,17 @@ stops between it and the next field.
 **`swatchLabel` is yours.** Without it the swatches are named by their token,
 which is right for a developer and wrong for a reader: `lime` is not a word
 your product necessarily uses.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `value` (required) | `string` |  | The chosen colour: a token name, or a hex string. |
+| `onValueChange` (required) | `(value: string) => void` |  | Told the next colour: a token name from the palette, or a hex string once the free box holds a complete one. |
+| `allowCustom` | `boolean` |  | Whether the reader may type a colour of their own. |
+| `aria-label` | `string` |  | Names the palette for a screen reader. |
+| `aria-labelledby` | `string` |  | The id of the element that names the palette, when a visible label does it. |
+| `swatchLabel` | `(name: string) => string` |  | How a swatch is named. Takes the colour's name, so the product can say "Lime" in its own language rather than shipping ours. |
+| `customLabel` | `ReactNode` |  | The label on the free-entry box, when `allowCustom` is on. |
+| `disabled` | `boolean` |  | Dims the field and stops it taking input: every swatch and the free box. |
+| `className` | `string` |  |  |

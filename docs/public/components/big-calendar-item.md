@@ -69,13 +69,19 @@ land on the line.
 
 ## Props
 
+### `BigCalendarDayContext`
+
+Whether a line stands in the day the month's keyboard is on: `true` there, `false` in every other day, `null` outside a month.
+
+### `BigCalendarItem`
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `color` | `string` | | Any CSS colour; neutral without one |
-| `tentative` | `boolean` | `false` | A plan: an outline, no fill |
-| `done` | `boolean` | `false` | Has happened: quieter, still pressable |
-| `start` | `ReactNode` | | Before the words - a cover, a dot |
-| `end` | `ReactNode` | | After the words - the glyphs that mark it |
-| `render` | `RenderProp` | | The element to draw: a link, a trigger |
-| `onClick` | `() => void` | | Makes it a `<button>` |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `color` | `string` |  | The item's own colour - any CSS colour, `var(--series-3)` for a category. Neutral without one. |
+| `tentative` | `boolean` | `false` | A plan rather than a booking: a dashed outline. |
+| `done` | `boolean` | `false` | It has happened: drawn quieter, still pressable. |
+| `start` | `ReactNode` |  | Before the words - a cover, a dot. |
+| `end` | `ReactNode` |  | After the words - the glyphs that mark it: a kind, a lock, a status. They do not shrink; the words truncate. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw: the product's link, a hover card's trigger. Without it the item is a `<button>` when it has `onClick`, and a `<div>` when it has nothing to do. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `color`, passed on.

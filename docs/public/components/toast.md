@@ -134,34 +134,52 @@ announcement, not one announcement plus a dismiss button per toast.
 
 ## Props
 
+### `ToastProvider`
+
+Wraps the part of the application that can raise a toast. One per screen; nesting them gives a product two queues that do not know about each other.
+
+Base UI's `Toast.Provider`, unchanged under dowel's name.
+
+### `ToastTitle`
+
+The heading. Base UI points the toast's `aria-labelledby` at it.
+
+Every prop of Base UI's `Toast.Title`, passed on.
+
+### `ToastDescription`
+
+The sentence under it, and the toast's `aria-describedby`. The part that scrolls when the sentence is longer than the window.
+
+Every prop of Base UI's `Toast.Description`, passed on.
+
+### `ToastAction`
+
+The one thing the reader can do about it: undo, or go and look.
+
+Every prop of Base UI's `Toast.Action`, passed on.
+
+### `ToastClose`
+
+The dismiss button. Needs a word - a bare cross is announced as nothing.
+
+Every prop of Base UI's `Toast.Close`, passed on.
+
 ### `Toast`
+
+One toast. The tone comes from the caller or from `toast.type`, so a product that raises them through the manager gets the stripe for free.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `toast` | `ToastObject` | | The object from `useToastManager().toasts` |
-| `tone` | `neutral \| good \| warn \| bad \| info` | from `toast.type` | Explicit wins over the map |
-| `swipeDirection` | `up \| down \| left \| right` or an array | `['down', 'right']` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `tone` | `neutral \| good \| warn \| bad \| info` | `'neutral'` |  |
+
+And every prop of Base UI's `Toast.Root`, passed on.
 
 ### `ToastViewport`
 
+Where they stack. Bottom right by default, which is the corner that does not cover a form being filled in or a menu being read.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `container` | `Element \| null \| Ref` | the document body | Where to portal to |
-| `className` | `string` | | Bottom right by default — the corner that covers neither a form nor a menu |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the document body, which is what keeps toasts above everything regardless of where they were raised from. |
 
-### The parts
-
-| Part | |
-| --- | --- |
-| `ToastTitle` | The heading; the toast's `aria-labelledby` |
-| `ToastDescription` | The sentence under it; the toast's `aria-describedby` |
-| `ToastAction` | The one thing the reader can do about it — undo, or go and look |
-| `ToastClose` | The dismiss button. Give it a label |
-
-### The manager
-
-| | |
-| --- | --- |
-| `useToastManager()` | `toasts`, `add`, `update`, `close`, `promise` |
-| `createToastManager()` | A manager for raising toasts outside React |
+And every prop of Base UI's `Toast.Viewport`, passed on.

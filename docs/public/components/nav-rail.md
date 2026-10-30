@@ -85,18 +85,28 @@ text is. A `column` entry is already taller than that.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required — names the landmark, not drawn |
-| `items` | `{ id, label, icon?, end?, soon? }[]` | | Required |
-| `layout` | `column \| row \| bar` | `column` | |
-| `activeId` | `string` | | The open screen |
-| `render` | `(item) => ReactElement` | | The element each entry is drawn as |
-| `onSelect` | `(id) => void` | | Pressed, whatever the entry is drawn as |
-| `collapsed` | `boolean` | `false` | Icons only, names in tooltips; `column` only |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `layout` | `column \| row \| bar` | `'column'` |  |
+| `label` (required) | `string` |  | What this set of destinations is called. Not drawn - it names the landmark, so a reader meeting two navs on one page can tell which is which. A product with a rail AND a bottom bar has exactly that. |
+| `items` (required) | `readonly NavRailItem[]` |  | The destinations, in the order they are drawn. |
+| `activeId` | `string` |  | Which destination is the open screen. |
+| `render` | `(item: NavRailItem) => RenderProp<Record<string, unknown>>` |  | The element an entry is drawn as - `render={(item) => <NavLink to={…} />}`. |
+| `onSelect` | `(id: string) => void` |  | Pressed, whatever the entry is drawn as. |
+| `collapsed` | `boolean` | `false` | Icons only, with each name in a tooltip. The column shape only - a row of tabs and a bottom bar have no narrow form, because their names are what they are made of. |
 
-### `NavGroup`, `NavSpacer`
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, `onSelect`, passed on.
 
-| | |
-| --- | --- |
-| `NavGroup` | The caption over a run of entries: Library, Team, Admin. `collapsed` draws a hairline instead |
-| `NavSpacer` | Pushes what follows to the far end — settings, theme, profile |
+### `NavGroup`
+
+The caption over a run of entries: Library, Team, Admin.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `collapsed` | `boolean` | `false` | Draw a hairline instead of the caption, to match a collapsed rail; the words stay for a screen reader. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `NavSpacer`
+
+Pushes everything after it to the far end of the rail.
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

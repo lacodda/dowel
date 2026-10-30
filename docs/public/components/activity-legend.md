@@ -42,10 +42,12 @@ one explanation, not two — which is also why it is not drawn inside the grid.
 
 ## Props
 
-| Prop | Type | |
-| --- | --- | --- |
-| `less` `more` | `ReactNode` | The words at each end of the ramp |
-| `busiest` | `ReactNode` | What the darkest square stands for — the relative scale, named |
-| `none` | `ReactNode` | The empty square: no entry for that date |
-| `partial` | `ReactNode` | The outlined square: under way, no total yet |
-| `className` | `string` | Merged so the caller wins a conflict |
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `less` (required) | `ReactNode` |  | The word at the faint end - "less", usually. |
+| `more` (required) | `ReactNode` |  | The word at the dark end. |
+| `busiest` | `ReactNode` |  | What the darkest square stands for, in words: the scale is relative, and without this the shades read as an absolute measure. Omitted when there is no value in the grid to be busiest. |
+| `none` | `ReactNode` |  | The empty square: no entry for that date. Omitted by a caller whose data cannot produce that kind. |
+| `partial` | `ReactNode` |  | The outlined square: under way, no total yet. Omitted by a caller whose data cannot produce that kind. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

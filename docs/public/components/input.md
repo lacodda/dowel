@@ -36,7 +36,12 @@ it - Input, Textarea, PasswordField, NumberField, SearchField, TagInput,
 Combobox, the palette - so a product has nothing to override on its own
 sign-in screen.
 
+**`ref` reaches the `<input>`**, for focusing it or reading its selection.
+
 ## Props
 
-Everything an `<input>` takes, plus `className`. `ref` reaches the element,
-for focusing it or reading its selection.
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `ref` | `Ref<HTMLInputElement>` |  | React 19 passes `ref` as a plain prop; it is declared so callers can reach the element to focus it or read its selection. |
+
+And every prop of `InputHTMLAttributes<HTMLInputElement>`, passed on.

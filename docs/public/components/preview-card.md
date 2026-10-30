@@ -62,36 +62,6 @@ real button instead.
 Note that `delay` sits on the **trigger** here, not on the root — unlike
 Tooltip, where it is a root prop.
 
-## Props
-
-### `PreviewCard` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-
-### `PreviewCardTrigger`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
-| `render` | `ReactElement` | | Render the anchor itself, so it stays a real link |
-
-### `PreviewCardPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | |
-| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | `center` | |
-| `sideOffset` | `number` | `8` | Distance from the link, in pixels |
-| `arrow` | `boolean` | `true` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`PreviewCardArrow` is exported too, for a popup assembled by hand.
-
 ## Notes
 
 **It opens on focus as well as on hover**, so someone tabbing through a
@@ -105,3 +75,38 @@ link sits in.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+## Props
+
+### `PreviewCard`
+
+The root. Controlled with `open` and `onOpenChange`, or left to manage itself around a `PreviewCardTrigger`.
+
+Base UI's `PreviewCard.Root`, unchanged under dowel's name.
+
+### `PreviewCardTrigger`
+
+The link the card previews. Usually rendered as the anchor itself, so it stays a real link: it navigates, it opens in a new tab, and a screen reader announces it as one - which is what the card cannot do. Takes `delay`.
+
+Base UI's `PreviewCard.Trigger`, unchanged under dowel's name.
+
+### `PreviewCardPopup`
+
+The card. Portalled and positioned, so it is not clipped by the paragraph the link sits in.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `side` | `bottom \| top \| left \| right \| inline-end \| inline-start` |  | Preferred side of the link. Base UI flips it when it does not fit, and defaults it to the bottom. |
+| `align` | `center \| start \| end` |  | Alignment along that side. Base UI centres it by default. |
+| `sideOffset` | `number \| OffsetFunction` | `8` | Distance from the link, in pixels. |
+| `arrow` | `boolean` | `true` | Whether to draw the arrow pointing back at the link. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
+
+And every prop of Base UI's `PreviewCard.Popup`, passed on.
+
+### `PreviewCardArrow`
+
+The notch pointing back at the link. Base UI rotates it to whatever side the card landed on, which is why the placement is keyed off `data-side` rather than off the `side` that was asked for.
+
+Every prop of Base UI's `PreviewCard.Arrow`, passed on.

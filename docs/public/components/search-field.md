@@ -82,17 +82,18 @@ the reader is picking one of a set, and the query is only how they find it.
 **[CommandPalette](/dowel/components/command-palette/)** when it is the same
 box for the whole application, opened by a shortcut from anywhere.
 
+Every other `<input>` attribute goes to the input - `placeholder`, `aria-label`,
+`disabled`, `name` and the rest. `type` is not among them: it is always
+`search`.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | Required and controlled — a search box that owns its own text cannot be cleared by the thing that owns the results |
-| `onValueChange` | `(value: string) => void` | | Told the new query on every keystroke |
-| `clearLabel` | `string` | | What the clear button is called. No default; without it no button is drawn |
-| `shortcut` | `{ id, label, keys, group?, whileTyping? }` | | The command that focuses the field. Shown at the right of it, bound, and listed with every other key |
-| `ref` | `Ref<HTMLInputElement>` | | Reaches the input, not the wrapper |
-| `className` | `string` | | Merged onto the wrapper so the caller wins a conflict |
+| `value` (required) | `string` |  | The query. Controlled, because a search box that owns its own text cannot be cleared by the thing that owns the results. |
+| `onValueChange` (required) | `(value: string) => void` |  | Told the new query on every keystroke. |
+| `clearLabel` | `string` |  | What the clear button is called, for a screen reader. No default: a word the component invents is a word the product cannot translate. |
+| `shortcut` | `SearchShortcut` |  | The command that focuses the field: `{ id: 'search', label: 'Search', keys: 'Mod+K' }`. Declared like any other command, so it is listed in the sheet of shortcuts and the palette, and a rebinding moves the key and the hint together. The hint at the right of the field shows the keys it answers to now, not the ones it was written with. |
+| `ref` | `Ref<HTMLInputElement>` |  | A ref to the `<input>` itself, not the wrapper around it. |
 
-Everything else is passed to the `<input>`, so `placeholder`, `aria-label`,
-`disabled`, `name` and the rest work as usual. `type` is not among them: it is
-always `search`.
+And every prop of `InputHTMLAttributes<HTMLInputElement>` except `type`, `value`, `onChange`, passed on.

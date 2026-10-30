@@ -75,39 +75,88 @@ import {
 </Select>
 ```
 
+The `cva` variants (`selectTriggerVariants`, `selectPopupVariants`, `selectItemVariants`) are exported for a product that needs the same clothes somewhere else.
+
 ## Props
 
-### `Select` (root)
+### `Select`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `multiple` | `boolean` | `false` | Turns `value` into an array |
-| `items` | `Record \| Array` | | What the trigger looks labels up in |
-| `value` / `onValueChange` | | | Controlled; `defaultValue` for uncontrolled |
-| `disabled` | `boolean` | `false` | |
+The root. `multiple` turns `value` into an array; otherwise controlled with `value` and `onValueChange`, or left to manage itself.
+
+Base UI's `Select.Root`, unchanged under dowel's name.
+
+### `SelectValue`
+
+What the trigger shows: the selected item's label, and the `placeholder` the product gives it until there is one.
+
+Every prop of Base UI's `Select.Value`, passed on.
+
+### `SelectIcon`
+
+The chevron, or whatever the product puts there. Marked decorative by Base UI, since the button is already named by its value.
+
+Base UI's `Select.Icon`, unchanged under dowel's name.
+
+### `SelectGroup`
+
+A labelled group of options.
+
+Base UI's `Select.Group`, unchanged under dowel's name.
+
+### `SelectItemText`
+
+The text of an option, which is what the trigger echoes when it is chosen.
+
+Base UI's `Select.ItemText`, unchanged under dowel's name.
+
+### `SelectItemIndicator`
+
+The tick, drawn only on the chosen option.
+
+Base UI's `Select.ItemIndicator`, unchanged under dowel's name.
 
 ### `SelectTrigger`
 
+The control. A `<button role="combobox">` - never a `<select>`.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | Matches Input's heights |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+
+And every prop of Base UI's `Select.Trigger`, passed on.
 
 ### `SelectPopup`
 
+The list. Portalled and positioned against the trigger.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A floor; it matches the trigger's width |
-| `side` | `top \| right \| bottom \| left` | `bottom` | A preference - Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | | Alignment along that side |
-| `sideOffset` | `number` | `4` | Distance from the trigger |
-| `container` | `Element \| Ref` | document body | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `side` | `bottom \| top \| left \| right \| inline-end \| inline-start` |  | Preferred side of the trigger. Base UI flips it when it does not fit. |
+| `align` | `center \| start \| end` |  | Alignment along that side. |
+| `sideOffset` | `number \| OffsetFunction` | `4` | Distance from the trigger, in pixels. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
 
-### The rest
+And every prop of Base UI's `Select.Popup`, passed on.
 
-`SelectValue`, `SelectIcon`, `SelectItem`, `SelectItemText`,
-`SelectItemIndicator`, `SelectGroup`, `SelectGroupLabel` and `SelectSeparator`
-pass their props to Base UI unchanged. The `cva` variants
-(`selectTriggerVariants`, `selectPopupVariants`, `selectItemVariants`) are
-exported for a product that needs the same clothes somewhere else.
+### `SelectItem`
+
+An option, with the tick that says it is the chosen one.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `indicator` | `boolean` | `true` | Draw the tick on the chosen item. Pass `false` for a list where the choice is obvious some other way. |
+
+And every prop of Base UI's `Select.Item`, passed on.
+
+### `SelectGroupLabel`
+
+The caption above a group.
+
+Every prop of Base UI's `Select.GroupLabel`, passed on.
+
+### `SelectSeparator`
+
+A line between groups of options.
+
+Every prop of Base UI's `Select.Separator`, passed on.

@@ -69,37 +69,53 @@ with the search, the keyboard and the empty states a list needs.
 
 ## Props
 
-### Frame
+### `Frame`
+
+A screen's column. Hands its height to the body and scrolls nowhere.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `head` | `ReactNode` | | Stands above the body: a title, filters, actions |
-| `foot` | `ReactNode` | | Stands under it: a composer, a status line |
-| `children` | `ReactNode` | | The body, which takes the rest of the height |
+| `head` | `ReactNode` |  | What stands above the body: a title, the filters, the screen's actions. |
+| `foot` | `ReactNode` |  | What stands under it: a composer, a status line. |
+| `children` (required) | `ReactNode` |  |  |
 
-### Pane
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `string` | | Names the scrolling body |
-| `head` | `ReactNode` | | The bar across the top |
-| `foot` | `ReactNode` | | The bar across the foot |
-| `bodyClassName` | `string` | | The body's padding |
-| `viewportRef` | `Ref<HTMLDivElement>` | | The scrolling element |
+### `Pane`
 
-### ListDetail
+A panel whose bars stand and whose body scrolls between them.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `list` | `ReactNode` | | The list, usually a `Pane` of `RowButton`s |
-| `detail` | `ReactNode` | | What is open, or what says nothing is |
-| `open` | `boolean` | | Whether something is open; decides which one shows where only one fits |
-| `width` | `list \| rail` | `list` | The list's width |
-| `side` | `start \| end` | `start` | Which side the list stands on |
+| `label` (required) | `string` |  | What the body holds: the scroll region's name, which it needs because it becomes a tab stop when it overflows - "Works", "Version 3". |
+| `head` | `ReactNode` |  | The bar across the top: a title and what acts on the open thing. |
+| `foot` | `ReactNode` |  | The bar across the foot: a status, tags, a button that adds a row. |
+| `children` (required) | `ReactNode` |  |  |
+| `bodyClassName` | `string` |  | The body's padding. A list's rows pad themselves; prose needs room. |
+| `viewportRef` | `Ref<HTMLDivElement>` |  | The scrolling element, for a caller that reads or sets the position. |
 
-### ListDetailBack
+And every prop of `HTMLAttributes<HTMLElement>` except `children`, passed on.
+
+### `ListDetail`
+
+A list beside what is open in it, each scrolling on its own - and one at a time where there is no room for both.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `ReactNode` | | The product's word: "All works" |
-| `onClick` | `MouseEventHandler` | | Go back to the list |
+| `list` (required) | `ReactNode` |  | The list, usually a `Pane` of `RowButton`s. |
+| `detail` (required) | `ReactNode` |  | What is open in it, or what says nothing is. |
+| `open` (required) | `boolean` |  | Whether something in the list is open. Where there is room for both it changes nothing; where there is not, it decides which of the two is shown. Required, because a screen that forgot it would show a phone the list forever and the detail never. |
+| `width` | `list \| rail` | `'list'` | `list` for rows that carry a title and a line under it - versions, works, notes, a queue. `rail` for a column of destinations, the width of the app's own rail - the sections of the settings. |
+| `side` | `start \| end` | `'start'` | Which side the list stands on. A queue read against a month stands after it. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
+
+### `ListDetailBack`
+
+The way back to the list, for the width at which the list is not on screen. Drawn only there: beside the list it would be a button that returns to where the reader already is.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` (required) | `ReactNode` |  | What it says: "All works", "Settings". The product's word, shown beside the arrow. |
+| `onClick` (required) | `MouseEventHandler<HTMLButtonElement>` |  | Called when the button is pressed. The screen uses it to close the open thing and show the list again. |
+| `className` | `string` |  |  |

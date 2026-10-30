@@ -48,8 +48,10 @@ does not read it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `string` | | The visible text |
-| `value` | `string` | the text | What lands on the clipboard, if different |
-| `label` | `string` | **required** | What the button is called |
-| `copiedLabel` | `string` | **required** | What is announced after a copy |
-| `onCopy` | `(ok: boolean) => void` | | Told what happened |
+| `value` | `string` |  | What lands on the clipboard. Defaults to the visible text. |
+| `children` (required) | `string` |  | The visible text. |
+| `label` (required) | `string` |  | What the button is called, for a screen reader. Required, and deliberately without a default: a string the component invents is a string the product cannot translate, and it would ship in English to every reader who does not read English. |
+| `copiedLabel` (required) | `string` |  | What is announced after a successful copy. Required for the same reason. |
+| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+
+And every prop of `HTMLAttributes<HTMLButtonElement>` except `onCopy`, passed on.

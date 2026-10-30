@@ -83,23 +83,7 @@ which scrolls forever and reads no better for it.
 when you name it. Nothing here has a default English string: a string this
 component invents is one your product cannot translate.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `code` | `string` | | Required — and what lands on the clipboard, always |
-| `tokens` | `CodeToken[][]` | | Lines of `{ text, kind }`. Without it, one colour |
-| `caption` | `string` | | A file name, a path, a language |
-| `numbered` | `boolean` | `false` | For code meant to be referred to |
-| `firstLine` | `number` | `1` | Where the numbering starts |
-| `highlight` | `number[]` | | Lines to mark, in the reader's numbering |
-| `copyLabel` | `string` | | Brings the copy button, and names it |
-| `copiedLabel` | `string` | `copyLabel` | Announced after a successful copy |
-| `onCopy` | `(ok) => void` | | `false` means the clipboard refused |
-| `wrap` | `boolean` | `false` | For a long value that is not really code |
-| `size` | `sm` `md` | `md` | 10px and 12px |
-
-### `CodeToken`
+**`CodeToken` is the shape of one piece of a line:**
 
 ```ts
 interface CodeToken {
@@ -109,5 +93,22 @@ interface CodeToken {
 }
 ```
 
-`kind` is left out for text the highlighter had no opinion about, which then
-takes the ordinary foreground.
+`kind` is left out for text the highlighter had no opinion about, which then takes the ordinary foreground.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md` | `'md'` |  |
+| `code` (required) | `string` |  | The code, as it should land on the clipboard. Always required, even when `tokens` is given: what is copied is the text, not a reassembly of the highlighting. |
+| `tokens` | `CodeToken[][]` |  | The same code, coloured. Lines of tokens - one array per line, and the newlines are the array boundaries rather than characters in the text. Left out, the block draws `code` in one colour. |
+| `caption` | `string` |  | Shown above the code: a file name, a path, a language. It is what brings the header; without one the copy button floats over the code instead, because a strip holding nothing but a button that hides until hover is empty furniture. |
+| `numbered` | `boolean` | `false` | Numbers down the left. Off by default: they are for code a reader is meant to refer to, and on a two-line command they are furniture. |
+| `firstLine` | `number` | `1` | Where the numbering starts, for an excerpt lifted out of a file. |
+| `highlight` | `readonly number[]` |  | Lines to mark, in the same numbering the reader sees. |
+| `copyLabel` | `string` |  | Brings the copy button, and names it for a screen reader. Required to have one, and deliberately without a default: a string this component invents is a string the product cannot translate. |
+| `copiedLabel` | `string` |  | Announced after a successful copy. Required alongside `copyLabel`. |
+| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `wrap` | `boolean` | `false` | Let long lines wrap instead of scrolling. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onCopy`, passed on.

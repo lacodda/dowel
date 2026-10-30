@@ -66,20 +66,26 @@ formatted early.
 
 ### `Timeline`
 
+The list itself.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `side` | `start \| end` | `start` | Which side the rail runs down |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `side` | `start \| end` |  | Draw the rail and the markers on the right of the text, for a right-to-left reading or a history beside a wider body of content. |
+
+And every prop of `HTMLAttributes<HTMLOListElement>`, passed on.
 
 ### `TimelineItem`
 
+One entry: a marker, a rail down to the next, and what happened.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required — what happened |
-| `time` | `ReactNode` | | When, drawn quieter |
-| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `neutral` | |
-| `statusLabel` | `string` | | Names the state; without it the marker is decoration |
-| `icon` | `ReactNode` | | A shape inside the marker |
-| `pending` | `boolean` | `false` | An empty ring: not taken yet |
-| `last` | `boolean` | `false` | Draws no rail below |
-| `children` | `ReactNode` | | The detail under the title |
+| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `'neutral'` |  |
+| `pending` | `boolean` | `false` | A step not taken yet: the ring of a dot with nothing in it, which is how every other tool draws "not done" and is worth borrowing. Its glyph is `dim`, whatever the status: the fill it was paired with is not there to read it against. |
+| `title` (required) | `ReactNode` |  | The headline of the entry - what happened. |
+| `time` | `ReactNode` |  | When it happened. Drawn quieter, and given as a node so the product can pass its own `RelativeTime` rather than a string it formatted early. |
+| `icon` | `ReactNode` |  | A shape inside the marker - a tick, a cross, a number. The second channel, for a reader who does not separate the hues. |
+| `last` | `boolean` | `false` | The last entry does not draw a rail below it. Set by the product, because only it knows whether the history ends here or merely stops being shown. |
+| `statusLabel` | `string` |  | Names the state in the product's words, for a reader who does not see the colour. Required whenever `status` carries meaning the title does not already say. |
+
+And every prop of `HTMLAttributes<HTMLLIElement>` except `title`, passed on.

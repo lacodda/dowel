@@ -121,19 +121,6 @@ a link does none of that.
 </Button>
 ```
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `variant` | `primary \| ghost \| soft \| danger \| icon \| link` | `ghost` | What the button is for |
-| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `md` | See [Sizes](#sizes); ignored by `link` |
-| `disabledReason` | `string` | | Why it cannot be pressed — read while `disabled`; keeps it focusable, see [States](#states) |
-| `render` | `ReactElement \| (props) => ReactElement` | | Render something else with the button's clothes on |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-Everything else goes to the `<button>`: `onClick`, `disabled`, `type`,
-`aria-*`, and the rest.
-
 ## Notes
 
 **It is a real button.** Enter and Space activate it, Tab reaches it, and a
@@ -151,3 +138,15 @@ fighting over source order.
 **No colour of its own.** Every variant is written in tokens, so the same class
 list is correct in both themes and in every product's accent — there are no
 `dark:` utilities anywhere in it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `primary \| ghost \| soft \| danger \| icon \| link` | `'ghost'` |  |
+| `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `'md'` |  |
+| `disabledReason` | `string` |  | Why the button cannot be pressed, in the product's words - read only while `disabled`. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | Render something else with the button's clothes on - a link, most often. |
+| `disabled` | `boolean` | `false` |  |
+
+And every prop of `ButtonHTMLAttributes<HTMLButtonElement>`, passed on.

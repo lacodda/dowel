@@ -46,12 +46,19 @@ does; `onValueChange` is told the empty range, `{}`.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `{ start?, end? }` | | Either end may be absent |
-| `onValueChange` | `(value) => void` | | Fires on both clicks, and with `{}` when cleared |
-| `clearLabel` | `string` | | The button that takes the range back |
-| `min`, `max` | `IsoDate` | | Bounds, inclusive |
-| `placeholder` | `string` | | Required |
-| `previousMonthLabel` | `string` | | Required |
-| `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | the application's (`useLocale`) | |
-| `disabled` | `boolean` | `false` | |
+| `value` | `DateRange` |  | The chosen range. Either end may be absent: a start with no end is the range while it is half made. |
+| `onValueChange` | `(value: DateRange) => void` |  | Called on both clicks, so a product sees the half-made range as well as the whole one. |
+| `clearLabel` | `string` |  | The words of the button that takes the range back: "Clear". Leave it out and a chosen range can only be replaced, not emptied. |
+| `min` | `string` |  | The earliest day that can be chosen, as `YYYY-MM-DD`. |
+| `max` | `string` |  | The latest day that can be chosen, as `YYYY-MM-DD`. |
+| `placeholder` (required) | `string` |  | What the trigger says when nothing is chosen. |
+| `previousMonthLabel` (required) | `string` |  | Names the two month-paging buttons inside the calendar. |
+| `nextMonthLabel` (required) | `string` |  | Names the button that pages to the next month, for the same reason as `previousMonthLabel`. |
+| `locale` | `string` |  | The language the dates and the calendar are written in. Defaults to the locale from `useLocale`. |
+| `disabled` | `boolean` | `false` | Stops the trigger opening the calendar. |
+| `id` | `string` |  | Put on the trigger, so a `Field` label can point at it. |
+| `aria-label` | `string` |  | Names the trigger when there is no visible label. The trigger's name is this and then the date it shows. |
+| `aria-labelledby` | `string` |  | Points the trigger at its visible label. The date it shows is added to the name. |
+| `aria-describedby` | `string` |  | Points the trigger at a hint or an error message. |
+| `aria-invalid` | `true \| false \| boolean` |  | Marks the trigger as holding a value that is not accepted. |
+| `className` | `string` |  |  |

@@ -64,27 +64,92 @@ is announced as an unlabelled control.
 One per menu at most: a list where several entries are red says nothing about
 which of them is the dangerous one.
 
+**A disabled item stays reachable.** It is reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists. `size` sets the minimum width of the panel; the room it is given is the window's.
+
 ## Props
 
-`MenuPopup`:
+### `Menu`
+
+The root. Uncontrolled by default; `open` and `onOpenChange` make it controlled.
+
+Base UI's `Menu.Root`, unchanged under dowel's name.
+
+### `MenuTrigger`
+
+What opens it. Give it `render` to use your own button.
+
+Base UI's `Menu.Trigger`, unchanged under dowel's name.
+
+### `MenuGroup`
+
+A labelled group of items, for a menu long enough to need headings.
+
+Base UI's `Menu.Group`, unchanged under dowel's name.
+
+### `MenuSub`
+
+A submenu, opened from a `MenuSubTrigger` inside the parent.
+
+Base UI's `Menu.SubmenuRoot`, unchanged under dowel's name.
+
+### `MenuPopup`
+
+The panel. Portalled and positioned against the trigger.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm` \| `md` \| `lg` | `md` | The minimum width of the panel; the room it is given is the window's |
-| `side` | `top` \| `right` \| `bottom` \| `left` | | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start` \| `center` \| `end` | | Alignment along that side |
-| `sideOffset` | `number` | `4` | Distance from the trigger, in pixels |
-| `container` | `Element` | `document.body` | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `side` | `bottom \| top \| left \| right \| inline-end \| inline-start` |  | Preferred side of the trigger. Base UI flips it when it does not fit. |
+| `align` | `center \| start \| end` |  | Alignment along that side. |
+| `sideOffset` | `number \| OffsetFunction` | `4` | Distance from the trigger, in pixels. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
 
-`MenuItem`, `MenuSubTrigger` and `MenuCheckboxItem`:
+And every prop of Base UI's `Menu.Popup`, passed on.
+
+### `MenuItem`
+
+An action. Closing the menu afterwards is Base UI's default, which is almost always right - `closeOnClick={false}` is for the one that is not.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `tone` | `default` \| `danger` | `default` | |
-| `disabled` | `boolean` | `false` | Reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `tone` | `default \| danger` | `'default'` |  |
 
-`Menu`, `MenuTrigger`, `MenuGroup`, `MenuGroupLabel`, `MenuSeparator`,
-`MenuSub` and `MenuCheckboxIndicator` take the props their Base UI parts take;
-`render` composes each with your own element.
+And every prop of Base UI's `Menu.Item`, passed on.
+
+### `MenuSubTrigger`
+
+An item that opens a submenu. Drawn like any other, because it is one.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default \| danger` | `'default'` |  |
+
+And every prop of Base UI's `Menu.Item`, passed on.
+
+### `MenuCheckboxItem`
+
+An item that carries a tick. The state is the caller's - a menu does not remember anything.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `tone` | `default \| danger` | `'default'` |  |
+
+And every prop of Base UI's `Menu.CheckboxItem`, passed on.
+
+### `MenuCheckboxIndicator`
+
+The tick itself, drawn only when the item is checked.
+
+Base UI's `Menu.CheckboxItemIndicator`, unchanged under dowel's name.
+
+### `MenuSeparator`
+
+A line between groups of items. Decorative, and marked as such: a screen reader announcing "separator" between every pair of actions is noise.
+
+Every prop of Base UI's `Menu.Separator`, passed on.
+
+### `MenuGroupLabel`
+
+The caption above a group.
+
+Every prop of Base UI's `Menu.GroupLabel`, passed on.

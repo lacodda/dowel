@@ -48,16 +48,16 @@ it also keeps tests off the clock.
 reader can act on and which looks like a value; an empty `<time>` with no
 `dateTime` says the same to a machine.
 
+**The helpers are exported.** `formatRelative(value, locale, now?, options?)` gives the phrase alone (the locale is required: a plain function has no provider to ask), and `relativeParts(value, now?)` the count and unit behind it.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `Date \| number \| string` | | Whatever the data already holds |
-| `now` | `Date \| number` | read once at mount | What counts as now. Given, every row measures from the same moment |
-| `locale` | `string` | the application's (`useLocale`) | |
-| `numeric` | `'auto' \| 'always'` | `'auto'` | `auto` gives "yesterday" where the language has the word |
-| `titleOptions` | `Intl.DateTimeFormatOptions` | medium date, short time | How the exact moment is written |
+| `value` (required) | `string \| number \| Date` |  | The moment being described. A `Date`, epoch milliseconds, or an ISO string - whichever the data already holds. |
+| `now` | `number \| Date` |  | What counts as now. Given rather than read from the clock so a list can re-render on its own schedule, and so a test is not written against the time it runs at. |
+| `locale` | `string` |  | The application's language by default - see `useLocale`. |
+| `numeric` | `always \| auto` | `'auto'` | `'auto'` by default, which is what produces "yesterday" rather than "1 day ago" where the language has a word for it. Pass `'always'` for a column where every row should read the same way. |
+| `titleOptions` | `DateTimeFormatOptions` | `{ dateStyle: 'medium', timeStyle: 'short' }` | How the exact moment is written in the `title`. The application's own format by default. |
 
-`formatRelative(value, locale, now?, options?)` gives the phrase alone (the
-locale is required: a plain function has no provider to ask), and
-`relativeParts(value, now?)` the count and unit behind it.
+And every prop of `TimeHTMLAttributes<HTMLTimeElement>` except `title`, passed on.

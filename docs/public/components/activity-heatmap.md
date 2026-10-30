@@ -70,29 +70,16 @@ blues.
 
 ## Props
 
-### ActivityHeatmap
-
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `entries` | `{ date, value }[]` | | `value: null` means under way |
-| `from` `to` | `string` | | The range, `YYYY-MM-DD` |
-| `label` | `string` | | Required — what the grid as a whole is |
-| `describe` | `(cell) => string` | | Required — what one square says |
-| `busiest` | `number` | largest value present | The ceiling the shades measure against |
-| `weekStartsOn` | `0`–`6` | `1` | Sunday-first numbering |
-| `weekdayLabel` | `(weekday) => ReactNode` | | Omit and the row labels are not drawn |
-| `size` | `sm` `md` | `md` | `sm` when a year has to fit |
+| `size` | `sm \| md` | `'md'` |  |
+| `entries` (required) | `ActivityEntry[]` |  | What is known about each date. Dates with no entry are drawn as nothing recorded, which is a different fact from a value of zero. |
+| `from` (required) | `string` |  | First date of the range, `YYYY-MM-DD`. |
+| `to` (required) | `string` |  | Last date. |
+| `weekStartsOn` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6` | `1` | The day a week starts on, Sunday-first like `Date#getUTCDay`. Monday by default. It decides which row a date lands on, so it is stated rather than guessed from a locale this cannot see. |
+| `busiest` | `number` |  | The ceiling the shades are measured against. Defaults to the largest value present; state it to compare two grids by eye. |
+| `label` (required) | `string` |  | What the grid as a whole is, for a reader who cannot see it. |
+| `describe` (required) | `(cell: Cell) => string` |  | What one square says. Given the cell, returns the sentence that becomes its hover title and its accessible name - the caller owns it because only the caller knows whether a value is hours, words or commits. |
+| `weekdayLabel` | `(weekday: Weekday) => ReactNode` |  | Row labels, one per weekday in drawing order. Omitted entirely rather than defaulted: a weekday name is a word in a language this cannot pick. |
 
-### ActivityLegend
-
-| Prop | Type | |
-| --- | --- | --- |
-| `less` `more` | `ReactNode` | The words at each end of the ramp |
-| `busiest` | `ReactNode` | What the darkest square stands for |
-| `none` `partial` | `ReactNode` | Named only when the data can produce them |
-
-### `activity-weeks`
-
-The arithmetic, importable without React: `weeks(entries, options)` returns
-columns of seven `Cell`s, `stepFor(value, busiest)` the step a figure lands on,
-`datesBetween`, `isWeekend` and `weekdayRows` the calendar helpers.
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.

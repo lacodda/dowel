@@ -60,17 +60,17 @@ so the panel opens, positions and closes the way every other panel does.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `count` | `number` | | Required; nothing drawn at zero, `9+` past nine |
-| `label` | `string` | | Required — the bell's name for a screen reader |
-| `title` | `string` | | Required — the panel's heading |
-| `level` | `1`-`6` | `3` | Where that heading stands in the page's outline |
-| `emptyLabel` | `string` | | Required — what the list says with no rows |
-| `children` | `ReactNode` | | The rows |
-| `markAllLabel` | `string` | | With `onMarkAll`; shown only while `count > 0` |
-| `onMarkAll` | `() => void` | | |
-| `busy` | `boolean` | `false` | Holds the mark-all button |
-| `seeAllLabel` | `string` | | With `onSeeAll`; the footer is drawn only when given |
-| `onSeeAll` | `() => void` | | Called after the panel closes |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `onOpenChange` | `(open) => void` | | |
-| `className` | `string` | | On the trigger |
+| `count` (required) | `number` |  | How many things ask to be looked at. Nothing is drawn at zero. |
+| `label` (required) | `string` |  | What the bell is called, for a screen reader and the tooltip. |
+| `title` (required) | `string` |  | The heading of the panel. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` | Where the panel's heading stands in the outline: `3` by default. |
+| `open` | `boolean` |  | Open, controlled. Left out, the bell manages itself. |
+| `onOpenChange` | `(open: boolean) => void` |  | Told when the panel opens or closes, whether the bell is controlled or manages itself. |
+| `markAllLabel` | `string` |  | The button that clears the count, shown only while there is one. |
+| `onMarkAll` | `() => void` |  | Called when the mark-all button is pressed. The button is drawn only with `markAllLabel` and while `count` is above zero. |
+| `seeAllLabel` | `string` |  | The footer button, which closes the panel and hands over. |
+| `onSeeAll` | `() => void` |  | Called after the panel closes, when the footer button is pressed. The footer is drawn only with `seeAllLabel`. |
+| `emptyLabel` (required) | `string` |  | What the list says when there are no rows. |
+| `children` | `ReactNode` |  | The rows. |
+| `busy` | `boolean` | `false` | While the product is clearing the count: the button waits. |
+| `className` | `string` |  |  |

@@ -60,26 +60,21 @@ menu it would toggle the item that was only meant to be moved.
 [ColumnResizeHandle](/dowel/components/column-resize-handle/); the grip takes
 pointer capture so the rows underneath never see the drag.
 
+**`useReorder({ order, onMove, disabled? })` returns** `listProps` for the element holding the rows, `rowProps(id)` for each row (the id and the keyboard path), `gripProps(id)` for the grip, and `dragging`, `slot` and `slotOffset` for drawing the drag: the row being dragged, the insertion point in the order as it is, and its distance from the top of the list in pixels. `ReorderGrip` takes any `<span>` attribute, `title` for the hover hint.
+
 ## Props
-
-### `useReorder({ order, onMove, disabled? })`
-
-| Returns | | |
-| --- | --- | --- |
-| `listProps` | | Spread on the element holding the rows |
-| `dragging` | `K \| null` | The row being dragged |
-| `slot` | `number \| null` | The insertion point, in the order as it is |
-| `slotOffset` | `number \| null` | Its distance from the top of the list, in pixels |
-| `gripProps(id)` | | Spread on the grip |
-| `rowProps(id)` | | Spread on the row: the id and the keyboard path |
 
 ### `ReorderGrip`
 
-Any `<span>` attribute; `title` for the hover hint.
+The handle a row is picked up by. Decorative to a screen reader - the keyboard path is on the row itself - so it carries no role and no label.
+
+Every prop of `HTMLAttributes<HTMLElement>`, passed on.
 
 ### `ReorderIndicator`
 
+The line where a dragged row would land. Positioned by the caller from `slotOffset`, inside the element `listProps` is on - which has to be positioned itself.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `offset` | `number \| null` | | From `slotOffset`; nothing drawn at null |
-| `className` | `string` | | |
+| `offset` (required) | `number \| null` |  | The line's distance from the top of the list, in pixels - `slotOffset` from `useReorder`. Nothing is drawn at `null`. |
+| `className` | `string` |  |  |

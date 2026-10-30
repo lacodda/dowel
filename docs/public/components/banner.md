@@ -104,11 +104,10 @@ because the connection dropped.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `tone` | `neutral \| accent \| good \| warn \| bad \| info` | `neutral` | |
-| `sticky` | `boolean` | `false` | Pinned to the top of the viewport |
-| `icon` | `ReactNode` | | Drawn first; the product's own |
-| `action` | `ReactNode` | | Drawn at the end: a fix, a link, a dismiss the product decides is allowed |
-| `role` | `string` | `status` | `alert` when it appeared just now |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `tone` | `neutral \| accent \| good \| warn \| bad \| info` | `'neutral'` |  |
+| `sticky` | `boolean` | `false` | Pinned to the top of the viewport, above the application's own chrome. For the ones that must not scroll away - offline, expired. |
+| `icon` | `ReactNode` |  | Drawn first. The product's own icon, for the same reason as Alert's. |
+| `action` | `ReactNode` |  | Anything at the end: a button that fixes it, a link, a dismiss the product decides is allowed. |
+| `role` | `AriaRole` | `'status'` |  |
 
-`children` is the message. Anything else goes to the `<div>`.
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

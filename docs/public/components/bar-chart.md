@@ -90,34 +90,32 @@ them.
 
 ## Props
 
-### BarChart
+### `BarChart`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `bars` | `BarDatum[]` | | `key`, `value`, `label`, `title`, optional `tone` |
-| `label` | `string` | | Required — what the chart as a whole is |
-| `max` | `number` | tallest bar | The top of the scale |
-| `size` | `sm` `md` | `md` | 72px and 112px of plot |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md` | `'md'` |  |
+| `bars` (required) | `BarDatum[]` |  | One column per entry, in order. A `null` value keeps its place and is drawn as a gap. |
+| `max` | `number` |  | The top of the scale. Defaults to the tallest bar present; state it to compare two charts, or to hold a scale still while the data moves. |
+| `label` (required) | `string` |  | What the whole chart is, in words. |
 
-### BarDatum
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
-| Field | Type | |
-| --- | --- | --- |
-| `value` | `number \| null` | `null` is nothing recorded — not zero |
-| `title` | `string` | Required — what this column says, in words |
-| `tone` | `accent` `series` `good` `warn` `bad` `muted` | `muted` is for the field when one bar is the story |
-
-### Baseline
-
-| Prop | Type | |
-| --- | --- | --- |
-| `value` | `number` | Where it sits, on the chart's scale |
-| `max` | `number` | The same ceiling the chart was given |
-| `children` | `ReactNode` | What the line is, beside it |
-
-### ChartFrame
+### `Baseline`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `gutter` | `boolean` | `true` | Room on the right for the baseline's label |
+| `value` (required) | `number` |  | Where it sits, on the same scale as the bars. |
+| `max` (required) | `number` |  | The same ceiling the chart is drawn against. |
+| `children` | `ReactNode` |  | What the line is, beside it. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `ChartFrame`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `gutter` | `boolean` | `true` | Room on the right for the baseline's label. Omit it where there is no baseline, or where the label is short enough to live in the panel's own padding. |
+| `children` (required) | `ReactNode` |  |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

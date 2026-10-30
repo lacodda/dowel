@@ -26,6 +26,16 @@ now, so the argument cannot recur.
 
 ## Props
 
+### `Panel`
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `raised \| floating \| inset` | `raised` | How far from the page |
+| `variant` | `raised \| floating \| inset` | `'raised'` |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `SectionLabel`
+
+The small uppercase caption above a block of content.
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

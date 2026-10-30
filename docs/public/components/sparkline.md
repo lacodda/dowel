@@ -56,9 +56,10 @@ who needs the figures gets them from the table beside it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `values` | `number[]` | | Oldest first; fewer than two draws nothing |
-| `label` | `string` | | Required — what the line says, in words |
-| `max` | `number` | highest value present | The ceiling of the scale |
-| `size` | `sm` `md` | `md` | `sm` beside a row, `md` beside a total |
-| `tone` | `muted` `accent` `good` `bad` | `muted` | Only the caller knows what a direction means |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `tone` | `muted \| accent \| good \| bad` | `'muted'` |  |
+| `values` (required) | `number[]` |  | Oldest first. Fewer than two points is not a line, and draws nothing. |
+| `max` | `number` |  | The top of the scale, so two lines can be compared by eye. Defaults to the highest value present, which makes the line self-scaled - fine for one line alone, wrong for a column of them. |
+| `label` (required) | `string` |  | What the line says, for a reader who cannot see it. Required: an unlabelled `img` is an unlabelled image, and this one carries information. |
+| `size` | `sm \| md` |  | `sm` sits beside a figure in a row, `md` beside a total. Defaults to `md`. |
+
+And every prop of `SVGAttributes<SVGSVGElement>` except `values`, passed on.

@@ -63,13 +63,10 @@ tree inside a [VirtualList](/dowel/components/virtual-list/).
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `nodes` | `readonly TreeNode[]` | | `{ id, label, children?, empty? }` |
-| `open` | `ReadonlySet<string>` | | Uncontrolled if omitted |
-| `onOpenChange` | `(open: Set<string>) => void` | | |
-| `selected` | `string` | | The chosen row, not the cursor |
-| `onSelect` | `(id: string) => void` | | Fired on a leaf |
-| `label` | `string` | | Required. What a reader calls the tree |
-
-`TreeNode` and `visibleRows` come from
-[tree-rows](/dowel/components/tree-rows/), which the registry installs
-alongside.
+| `nodes` (required) | `readonly TreeNode[]` |  | The tree, as nested nodes. Only the folders in `open` show their children. |
+| `open` | `ReadonlySet<string>` |  | Which folders are open. Uncontrolled if omitted. |
+| `onOpenChange` | `(open: Set<string>) => void` |  | Told the new set of open folders whenever one opens or shuts, whether the tree is controlled or not. |
+| `selected` | `string` |  | Which row is chosen - the file being edited, not the one the cursor is on. The two move apart: a reader walks the tree with arrows without opening anything until Enter. |
+| `onSelect` | `(id: string) => void` |  | Called with the id of a leaf when it is chosen by click, Enter or Space. A folder toggles instead. |
+| `label` (required) | `string` |  | What a screen reader calls the tree. Required: a bare tree announces "tree" and nothing else, and the word belongs to the product. |
+| `className` | `string` |  |  |

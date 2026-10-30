@@ -55,24 +55,31 @@ the action, it is a switch.
 
 ## Props
 
-### Checkbox
+### `Checkbox`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words. Without them, give `aria-label` |
-| `checked` | `boolean` | | Controlled |
-| `defaultChecked` | `boolean` | | Uncontrolled |
-| `onCheckedChange` | `(checked) => void` | | |
-| `indeterminate` | `boolean` | `false` | Draws the dash, announces `mixed` |
-| `parent` | `boolean` | `false` | Stands for the whole group |
-| `disabled` | `boolean` | `false` | |
-| `name`, `value` | `string` | | For a form and for the group |
+| `children` | `ReactNode` |  | The words next to the box. Omit only for a checkbox in a table cell, and then give `aria-label` instead. |
+| `checked` | `boolean` |  | Controlled state. Pair it with `onCheckedChange`. |
+| `defaultChecked` | `boolean` |  | Initial state when the checkbox is uncontrolled. |
+| `onCheckedChange` | `(checked: boolean) => void` |  | Called with the new state when the box is toggled. |
+| `indeterminate` | `boolean` | `false` | Some but not all of what this stands for is checked. Draws a dash; clicking still checks everything. |
+| `parent` | `boolean` |  | This is the box that stands for the whole group. Inside a `CheckboxGroup` with `allValues`, its state follows the children - checked, unchecked, or the dash in between - and clicking it sets all of them. Working that out by hand is where the indeterminate state usually goes wrong, so the group does it. |
+| `disabled` | `boolean` |  | Stops the box taking input; the label dims with it. |
+| `required` | `boolean` |  | Marks the box as required for form validation. |
+| `name` | `string` |  | The field name submitted with a form. |
+| `value` | `string` |  | What this box contributes to the group's `value` array when checked, and what a form submits for it. |
+| `aria-label` | `string` |  | The accessible name, for a checkbox with no `children`. |
+| `className` | `string` |  |  |
 
-### CheckboxGroup
+### `CheckboxGroup`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string[]` | | Controlled |
-| `defaultValue` | `string[]` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | |
-| `allValues` | `string[]` | | What makes a parent box work |
+| `children` (required) | `ReactNode` |  |  |
+| `value` | `string[]` |  | The values of the checked boxes. Controlled; pair it with `onValueChange`. |
+| `defaultValue` | `string[]` |  | The values checked at first, when the group is uncontrolled. |
+| `onValueChange` | `(value: string[]) => void` |  | Called with the new list of checked values. |
+| `allValues` | `string[]` |  | Every value in the group, which is what makes a parent checkbox work. |
+| `disabled` | `boolean` |  | Disables every box in the group. |
+| `className` | `string` |  |  |

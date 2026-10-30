@@ -61,11 +61,11 @@ Built on [Popover](/dowel/components/popover/) and
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `string` | | Required — the column's name, as the panel's heading |
-| `label` | `string` | | Required — the funnel's name for a screen reader |
-| `active` | `boolean` | | Required — fills the funnel, sets `data-active` |
-| `clearLabel` | `string` | | Required |
-| `onClear` | `() => void` | | Required |
-| `children` | `ReactNode` | | The controls |
-| `className` | `string` | | On the trigger |
-| `align` | `start \| center \| end` | `start` | |
+| `title` (required) | `string` |  | The heading inside the panel: the column's name. |
+| `label` (required) | `string` |  | What the funnel says to assistive technology and on hover. |
+| `active` (required) | `boolean` |  | Whether the column's filter holds anything; fills the funnel. |
+| `clearLabel` (required) | `string` |  | The words of the button inside the panel that empties the filter. |
+| `onClear` (required) | `() => void` |  | Called when that button is pressed; the button is disabled while `active` is false. |
+| `children` (required) | `ReactNode` |  | The controls: a text box, checkboxes, whatever narrows this column. |
+| `className` | `string` |  | On the trigger, for showing it on hover or always. |
+| `align` | `center \| start \| end` |  | Which edge of the funnel the panel lines up with. Defaults to `start`. |

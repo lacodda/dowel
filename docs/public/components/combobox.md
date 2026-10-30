@@ -106,42 +106,141 @@ With chips, for the `multiple` case:
 </Combobox>
 ```
 
+**A product that filters the list itself** passes `filteredItems` alongside
+`items`, and Base UI shows exactly that list. `comboboxPopupVariants` and
+`comboboxItemVariants` are Select's, re-exported: the two dropdowns are the same
+object seen twice, and two `cva` calls that started identical do not stay that
+way.
+
 ## Props
 
-### `Combobox` (root)
+### `Combobox`
+
+The root. `items` is what gets filtered; `multiple` turns the value into an array and makes the chips meaningful.
+
+Base UI's `Combobox.Root`, unchanged under dowel's name.
+
+### `ComboboxInputGroup`
+
+The wrapper for an input with something beside it - a clear button, an icon, the chips.
+
+Base UI's `Combobox.InputGroup`, unchanged under dowel's name.
+
+### `ComboboxTrigger`
+
+The button that opens the list without typing, for a reader who wants to see everything there is.
+
+Base UI's `Combobox.Trigger`, unchanged under dowel's name.
+
+### `ComboboxIcon`
+
+The chevron. Decorative.
+
+Base UI's `Combobox.Icon`, unchanged under dowel's name.
+
+### `ComboboxGroup`
+
+A labelled group of rows.
+
+Base UI's `Combobox.Group`, unchanged under dowel's name.
+
+### `ComboboxCollection`
+
+The rows of one group, as a render function over that group's items.
+
+Base UI's `Combobox.Collection`, unchanged under dowel's name.
+
+### `ComboboxItemIndicator`
+
+The tick, drawn only on a chosen row.
+
+Base UI's `Combobox.ItemIndicator`, unchanged under dowel's name.
+
+### `ComboboxStatus`
+
+A polite live region for the state of an asynchronous list. Stays mounted, like `Empty`, so the announcement actually fires.
+
+Base UI's `Combobox.Status`, unchanged under dowel's name.
+
+### `ComboboxChips`
+
+The container the chips sit in. Its children are plain nodes, not a render function - the chosen values are mapped by `ComboboxValue` inside it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `items` | `Array` | | What gets filtered |
-| `multiple` | `boolean` | `false` | Turns `value` into an array, and makes chips meaningful |
-| `filter` | `function \| null` | `Intl.Collator` | `null` to filter elsewhere |
-| `value` / `onValueChange` | | | Controlled; `defaultValue` for uncontrolled |
-| `filteredItems` | `Array` | | When the product filters it itself |
+| `ref` | `Ref<HTMLDivElement>` |  | Allows getting a ref to the component instance. Once the component unmounts, React will set `ref.current` to `null` (or call the ref with `null` if you passed a callback ref). |
+
+And every prop of Base UI's `Combobox.Chips`, passed on.
+
+### `ComboboxValue`
+
+The current value, as a render function of it. This is what turns a `multiple` value into one chip per entry.
+
+Base UI's `Combobox.Value`, unchanged under dowel's name.
 
 ### `ComboboxInput`
 
+Where the query is typed. A real `<input role="combobox">`.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | Matches Input's heights |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `bare` | `boolean` | `false` |  |
+
+And every prop of Base UI's `Combobox.Input` except `size`, passed on.
+
+### `ComboboxClear`
+
+Empties the value. Base UI hides it while there is nothing to clear.
+
+Every prop of Base UI's `Combobox.Clear`, passed on.
 
 ### `ComboboxPopup`
 
+The list. Portalled and positioned against the input, or the given anchor.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A floor; it matches the input's width |
-| `side` | `top \| right \| bottom \| left` | `bottom` | A preference - Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | | Alignment along that side |
-| `sideOffset` | `number` | `4` | Distance from the input |
-| `container` | `Element \| Ref` | document body | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `side` | `bottom \| top \| left \| right \| inline-end \| inline-start` |  | Preferred side of the input. Base UI flips it when it does not fit. |
+| `align` | `center \| start \| end` |  | Alignment along that side. |
+| `sideOffset` | `number \| OffsetFunction` | `4` | Distance from the input, in pixels. |
+| `anchor` | `Element \| VirtualElement \| RefObject<Element \| null> \| (() => Element \| VirtualElement \| null) \| null` |  | What to line the list up with. Defaults to the input that owns it. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
 
-### The rest
+And every prop of Base UI's `Combobox.Popup`, passed on.
 
-`ComboboxList`, `ComboboxItem`, `ComboboxItemIndicator`, `ComboboxEmpty`,
-`ComboboxStatus`, `ComboboxTrigger`, `ComboboxIcon`, `ComboboxClear`,
-`ComboboxInputGroup`, `ComboboxChips`, `ComboboxChip`, `ComboboxChipRemove`,
-`ComboboxValue`, `ComboboxGroup` and `ComboboxGroupLabel` pass their props to
-Base UI unchanged. `comboboxPopupVariants` and `comboboxItemVariants` are
-Select's, re-exported: the two dropdowns are the same object seen twice, and
-two `cva` calls that started identical do not stay that way.
+### `ComboboxList`
+
+The rows, as a list. Undressed: it is a wrapper, and the popup around it already carries the border and the padding.
+
+Base UI's `Combobox.List`, unchanged under dowel's name.
+
+### `ComboboxItem`
+
+A row.
+
+Every prop of Base UI's `Combobox.Item`, passed on.
+
+### `ComboboxEmpty`
+
+What is shown when nothing matched. The words are the product's.
+
+Every prop of Base UI's `Combobox.Empty`, passed on.
+
+### `ComboboxChip`
+
+One chosen value, in a multiple combobox. Focusable, so it can be reached and removed without a pointer.
+
+Every prop of Base UI's `Combobox.Chip`, passed on.
+
+### `ComboboxChipRemove`
+
+The X on a chip. A real button, which is what makes Backspace and Enter both work on it.
+
+Every prop of Base UI's `Combobox.ChipRemove`, passed on.
+
+### `ComboboxGroupLabel`
+
+The caption above a group.
+
+Every prop of Base UI's `Combobox.GroupLabel`, passed on.

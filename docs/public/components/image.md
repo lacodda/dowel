@@ -63,17 +63,23 @@ second one.
 
 ### `AspectRatio`
 
+A box that keeps its shape before, during and after whatever fills it loads. `size-full` on the child is the contract: this component reserves the rectangle, the child covers it.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `ratio` | `'square' \| 'video' \| number` | | A named step, or width / height as a raw number |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `ratio` | `AspectRatioVariant` |  | The box's shape: `square`, `video`, or a raw number as width / height - `4 / 3`, `21 / 9` - for anything the named steps do not cover. |
+| `children` | `ReactNode` |  |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
 ### `Image`
 
+A picture that reserves its box, shows `Skeleton`'s placeholder while it loads, fades in once it has, and shows `fallback` instead of a broken-image glyph if it can't be loaded at all.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `alt` | `string` | | Required - `""` for a decorative picture |
-| `src` | `string` | | |
-| `fit` | `'cover' \| 'contain'` | `cover` | |
-| `fallback` | `ReactNode` | | Shown instead of the broken-image glyph on error |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `fit` | `cover \| contain` | `'cover'` | How the picture fills a box that is not its own shape. `cover` for a photo standing in for the whole box; `contain` for a logo or a diagram where cropping would cut off the point of it. |
+| `alt` (required) | `string` |  | Required, with no default: a decorative picture says so explicitly with `alt=""` rather than by omission, which is indistinguishable from a picture nobody described yet. |
+| `fallback` | `ReactNode` |  | What stands in the box when the picture fails to load - the product's text or icon, not a default this component would have to write in some one language. |
+
+And every prop of `ImgHTMLAttributes<HTMLImageElement>` except `onLoad`, `onError`, `placeholder`, passed on.

@@ -208,55 +208,90 @@ something already on screen, in place, and there is nothing to choose.
 **[Combobox](/dowel/components/combobox/)** when the typing ends in a value
 going into a form field.
 
+### Parts and variants
+
+`CommandPaletteEmpty` stays mounted so its announcement fires, so it must not
+be hidden or rendered conditionally.
+
+`commandPalettePopupVariants` is exported for the same clothes elsewhere, and
+`commandPaletteItemVariants` is Combobox's row - a palette is a list of
+choices, and two lists of choices in one product should not differ.
+
 ## Props
 
-### `CommandPalette` (root)
+### `CommandPalette`
 
-Base UI's Combobox root, unchanged.
+The root. Controlled by `open`/`onOpenChange`, because what opens a palette is a shortcut somewhere else in the application.
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `items` | `unknown[]` | | What gets filtered. Anything, not only strings |
-| `open` / `onOpenChange` | | | Controlled — the shortcut lives elsewhere |
-| `onValueChange` | `(value, details) => void` | | Run what was chosen. Reports `null` on a clear |
-| `filter` | `function \| null` | | Replaces the comparison; `null` for a list filtered on a server |
+Base UI's `Combobox.Root`, unchanged under dowel's name.
+
+### `CommandPaletteItem`
+
+A row. The same clothes as a Combobox row, on purpose: a palette is a list of choices, and two lists of choices in one product should not differ.
+
+Every prop of Base UI's `Combobox.Item`, passed on.
+
+### `CommandPaletteList`
+
+The list. Takes a render function over the filtered items.
+
+Every prop of Base UI's `Combobox.List`, passed on.
+
+### `CommandPaletteEmpty`
+
+Shown when nothing matches. The words are the product's.
+
+Every prop of Base UI's `Combobox.Empty`, passed on.
+
+### `CommandPaletteGroup`
+
+A labelled group, for a palette that lists more than one kind of thing.
+
+Base UI's `Combobox.Group`, unchanged under dowel's name.
+
+### `CommandPaletteGroupLabel`
+
+The caption above a group.
+
+Base UI's `Combobox.GroupLabel`, unchanged under dowel's name.
+
+### `CommandPaletteCollection`
+
+The rows of one group, as a render function over that group's items.
+
+Base UI's `Combobox.Collection`, unchanged under dowel's name.
 
 ### `CommandPalettePopup`
 
+The palette itself: a dim over the page, and the box in the upper third of it - where the eye already is, rather than dead centre.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `md \| lg` | `md` | How tall the list may grow before it scrolls |
-| `container` | `Element \| Ref` | document body | Where to portal to |
-| `aria-label` | `string` | **required** | What the palette is called — see above |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `md \| lg` | `'md'` |  |
+| `aria-label` (required) | `string` |  | What the palette is called, for a screen reader. Required, and required for a reason particular to this component: the popup is a dialog, and a dialog is named by its own visible title - which a palette does not have, because the field is the first thing in it. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the document body. |
+
+And every prop of Base UI's `Combobox.Popup` except `aria-label`, passed on.
 
 ### `CommandPaletteInput`
 
+The field. Sits inside the popup, which is what makes the popup a dialog and the field its combobox.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `hint` | `string` | | Keys drawn at the right of the field, as `Escape`. Decorative and `aria-hidden` |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `hint` | `string` |  | Shown at the right of the field, as `Escape`. Decorative. |
 
-Everything else reaches the `<input>`, so `placeholder` and `aria-label` work
-as usual.
+And every prop of Base UI's `Combobox.Input`, passed on.
 
 ### `CommandPaletteRow`
 
-The row's own layout, for use inside a `CommandPaletteItem`.
+The row's own layout: an icon, what it is, and where it lives.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `icon` | `ReactNode` | | Drawn first, at its natural size |
-| `hint` | `ReactNode` | | Drawn last and quiet — where the command lives, or its shortcut |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `icon` | `ReactNode` |  | Drawn before the label. Size and colour are the product's. |
+| `hint` | `ReactNode` |  | Drawn after the label, small and faint - where the item lives, such as a section name or a shortcut. |
+| `className` | `string` |  |  |
+| `children` (required) | `ReactNode` |  |  |
 
-### The rest
-
-`CommandPaletteItem`, `CommandPaletteList`, `CommandPaletteEmpty` and
-`CommandPaletteGroup` pass their props to Base UI unchanged. `Empty` stays
-mounted so its announcement fires, so it must not be hidden or rendered
-conditionally.
-
-`commandPalettePopupVariants` is exported for the same clothes elsewhere, and
-`commandPaletteItemVariants` is Combobox's row — a palette is a list of
-choices, and two lists of choices in one product should not differ.
+And every prop of `React.HTMLAttributes<HTMLDivElement>` except `children`, passed on.

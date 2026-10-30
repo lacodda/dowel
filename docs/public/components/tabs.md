@@ -79,24 +79,31 @@ of its own to fall back on.
 
 ## Props
 
+### `Tabs`
+
+Every prop of Base UI's `Tabs.Root`, passed on.
+
 ### `TabsList`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `line` \| `bar` | `line` | `bar` is for a window's title bar |
-| `aria-label` | `string` | | Name the list when nothing on screen does |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `variant` | `line \| bar` | `'line'` |  |
+| `aria-label` | `string` |  | A name for the list, when nothing on the screen already says what the tabs choose between. Documents in a window bar need one. |
+
+And every prop of Base UI's `Tabs.List`, passed on.
 
 ### `TabsTab`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `any` | | Which panel it shows |
-| `modified` | `boolean` | | Draws the unsaved dot; needs `modifiedLabel` |
-| `modifiedLabel` | `string` | | What a reader hears for the dot |
-| `onClose` | `() => void` | | Makes the tab closable; needs `closeLabel` |
-| `closeLabel` | `string` | | The cross's tooltip |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `modified` (with `closeLabel`, `modifiedLabel`, `onClose`) | `false \| true` |  | The document has changes that are not saved. |
+| `modifiedLabel` (with `closeLabel`, `modified`, `onClose`) | `string` |  | What a reader hears for the dot, e.g. "unsaved changes". |
+| `onClose` (with `closeLabel`, `modified`, `modifiedLabel`) | `() => void` |  | Closes the tab: from the cross, a middle click, or Delete. |
+| `closeLabel` (with `modified`, `modifiedLabel`, `onClose`) | `string` |  | The cross's tooltip, e.g. "Close notes.md". |
+| `children` (required) | `ReactNode` |  |  |
 
-`Tabs` takes Base UI's root props (`value`, `defaultValue`, `onValueChange`,
-`orientation`); `TabsPanel` takes `value`.
+And every prop of Base UI's `Tabs.Tab` except `children`, passed on.
+
+### `TabsPanel`
+
+Every prop of Base UI's `Tabs.Panel`, passed on.

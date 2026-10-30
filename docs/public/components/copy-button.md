@@ -67,7 +67,9 @@ when the content is already there and the button is furniture.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | What lands on the clipboard |
-| `label` | `string` | | Required — no default, so it can be translated |
-| `copiedLabel` | `string` | | Required, and announced |
-| `onCopy` | `(ok) => void` | | `false` means the clipboard refused |
+| `value` (required) | `string` |  | What lands on the clipboard. |
+| `label` (required) | `string` |  | What the button is called, for a screen reader. Required, and deliberately without a default: a string this component invents is a string the product cannot translate, and it would ship in English to every reader who does not read English. |
+| `copiedLabel` (required) | `string` |  | What is announced after a successful copy. Required for the same reason. |
+| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. `false` means the clipboard refused. |
+
+And every prop of `ButtonHTMLAttributes<HTMLButtonElement>` except `onCopy`, passed on.

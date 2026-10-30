@@ -49,29 +49,48 @@ same rule for a text that ends in a newline.
 the mark's own `className` is its colour — in whichever tone the mark means,
 which is the product's to say.
 
+A mark is `{ start, end, className?, style? }`, offsets into the whole text; a
+line mark is `{ line, className? }`, with the line counted from zero.
+
 `MarkedText` is the same layer to read rather than type into, and
 `MarkedLines` is the layer itself, for a product composing its own box.
 
 ## Props
 
-### `MarkedTextarea`
+### `MarkedLines`
+
+The marked-up text, line by line. The layer both the readable and the typeable form are made of.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `string` | | Required |
-| `onChange` | `(value: string) => void` | | The new value, not the event |
-| `marks` | `Mark[]` | `[]` | `{ start, end, className?, style? }` |
-| `lineMarks` | `LineMark[]` | `[]` | `{ line, className? }`, zero-based |
-| `className` | `string` | | The metrics both layers share |
-| `ref` | `Ref<HTMLTextAreaElement>` | | |
-
-Every other `<textarea>` attribute passes through.
+| `text` (required) | `string` |  | The whole text. Lines are split on `\n`, and every mark's offsets count into this string. |
+| `marks` | `readonly Mark[]` | `[]` | Spans of characters to mark, as offsets into `text`. Give them in order of `start` and do not overlap them. |
+| `lineMarks` | `readonly LineMark[]` | `[]` | Whole lines to mark, by zero-based index. A line mark paints the full width of the line. |
+| `ghost` | `boolean` | `false` | Transparent text: the textarea above shows the letters. |
 
 ### `MarkedText`
 
-`text`, `marks`, `lineMarks` and `className`.
+Marked text to read.
 
-### `MarkedLines`
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `text` (required) | `string` |  | The whole text. Lines are split on `\n`, and every mark's offsets count into this string. |
+| `marks` | `readonly Mark[]` |  | Spans of characters to mark, as offsets into `text`. Give them in order of `start` and do not overlap them. |
+| `lineMarks` | `readonly LineMark[]` |  | Whole lines to mark, by zero-based index. A line mark paints the full width of the line. |
+| `ghost` | `boolean` |  | Transparent text: the textarea above shows the letters. |
+| `className` | `string` |  |  |
 
-`text`, `marks`, `lineMarks` and `ghost` — transparent text, for a layer under
-something else.
+### `MarkedTextarea`
+
+Marked text to type into.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `ref` | `Ref<HTMLTextAreaElement>` |  | The ref of the textarea itself, for focus and selection. |
+| `value` (required) | `string` |  | The text, controlled. The field has no state of its own. |
+| `onChange` (required) | `(value: string) => void` |  | The new value, not the event: the event is the textarea's business. |
+| `marks` | `readonly Mark[]` |  | Spans of characters to mark, as offsets into `value`. Give them in order of `start` and do not overlap them. |
+| `lineMarks` | `readonly LineMark[]` |  | Whole lines to mark, by zero-based index. |
+| `className` | `string` |  | The metrics both layers share: font, size, line height, padding. |
+
+And every prop of `TextareaHTMLAttributes<HTMLTextAreaElement>` except `value`, `onChange`, `className`, passed on.

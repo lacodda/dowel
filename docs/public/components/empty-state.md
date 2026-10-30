@@ -64,16 +64,43 @@ started.
 [QueryState](/dowel/components/query-state/) draws it for a failure, and
 [ErrorBoundary](/dowel/components/error-boundary/) for a crash.
 
+**The marks are exported.** `EmptyMark`, `FilteredMark` and `ErrorMark` are there for a product composing its own panel.
+
 ## Props
+
+### `EmptyMark`
+
+The line's hexagon, at whatever size the caller asks for.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `variant` | `empty \| filtered \| error` | `empty` | Which kind of nothing |
-| `plain` | `boolean` | `false` | No frame and no mark, for a place that has a frame already |
-| `title` | `ReactNode` | | What is not here |
-| `body` | `ReactNode` | | Why, or what to do |
-| `action` | `ReactNode` | | The one thing worth doing |
-| `mark` | `ReactNode` | | A product's own illustration; not drawn when `plain` |
+| `className` | `string` |  |  |
 
-`EmptyMark`, `FilteredMark` and `ErrorMark` are exported for a product
-composing its own panel.
+### `FilteredMark`
+
+The same hexagon, cut by a slash. For a filter that matched nothing: the shape is there, the contents are not.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `className` | `string` |  |  |
+
+### `ErrorMark`
+
+A hexagon with a corner broken out of it. For something that failed.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `className` | `string` |  |  |
+
+### `EmptyState`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `variant` | `empty \| filtered \| error` | `'empty'` |  |
+| `plain` | `boolean` | `false` |  |
+| `title` (required) | `ReactNode` |  | What is not here, in the product's words. |
+| `body` | `ReactNode` |  | Why, or what to do about it. |
+| `action` | `ReactNode` |  | The one thing worth doing here. An empty screen with no way out is a dead end. |
+| `mark` | `ReactNode` |  | Something other than the default mark - a product's own illustration. A plain empty state draws no mark, its own or the default. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `title`, passed on.

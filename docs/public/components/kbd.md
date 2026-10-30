@@ -44,4 +44,6 @@ the wrong key is worse than none.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `keys` | `string` | | A shortcut in the line's notation: `Mod+K`, `G D`, `?`. Without it, the children are the key |
+| `keys` | `string` |  | A shortcut in the line's notation - `Mod+K`, `G D`, `?`. Given this, the component draws each key under this platform's own name. Without it, the children are the key. |
+
+And every prop of `HTMLAttributes<HTMLElement>`, passed on.

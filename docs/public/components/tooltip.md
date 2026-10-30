@@ -63,43 +63,6 @@ control — this is the wrong component. Put them inline, or use a Popover with
 opened, the next opens instantly instead of waiting out its delay again. A
 toolbar of icon buttons without it feels broken in a way nobody can name.
 
-## Props
-
-### `Tooltip` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `disabled` | `boolean` | `false` | Turns it off without unmounting it |
-| `open` / `defaultOpen` / `onOpenChange` | | | Controlled, if it has to be |
-
-`delay` is **not** a root prop — it belongs to the trigger, the same as on
-PreviewCard. Passing it here is silently ignored at runtime.
-
-### `TooltipTrigger`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
-| `render` | `ReactElement` | | Give it an `aria-label` — the tooltip does not name it |
-
-### `TooltipPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| wide` | `sm` | `sm` caps at 16rem, `wide` at 24rem |
-| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `top` | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | `center` | |
-| `sideOffset` | `number` | `6` | Distance from the trigger, in pixels |
-| `arrow` | `boolean` | `true` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `TooltipProvider` | | A shared delay for a group. `delay`, `closeDelay`, `timeout` |
-| `TooltipArrow` | | Exported for a popup assembled by hand |
-
 ## Notes
 
 **It opens on focus, not only on hover.** This is the half that gets forgotten,
@@ -108,6 +71,9 @@ icon buttons never hovers anything.
 
 **`Escape` closes it** while the trigger still has focus — the way out for
 someone who can see it covering what they were reading.
+
+**`delay` is not a root prop.** It belongs to the trigger, the same as on
+PreviewCard. Passing it to `Tooltip` is silently ignored at runtime.
 
 **Small text, on purpose.** `text-xs`. It sits over the thing it explains and
 has to be readable without taking the page over.
@@ -119,3 +85,44 @@ sit above them.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+## Props
+
+### `TooltipProvider`
+
+A shared delay for a group of tooltips. Wrap a toolbar in it and the second icon button explains itself instantly rather than making the reader wait again. Optional - a lone tooltip works without one.
+
+Base UI's `Tooltip.Provider`, unchanged under dowel's name.
+
+### `Tooltip`
+
+The root. Takes `disabled`, and the controlled `open`/`onOpenChange`.
+
+Base UI's `Tooltip.Root`, unchanged under dowel's name.
+
+### `TooltipTrigger`
+
+What it labels. Give it `render` to use your own button - and give that button an `aria-label` saying what the tooltip says, because the tooltip itself reaches nobody using a screen reader.
+
+Base UI's `Tooltip.Trigger`, unchanged under dowel's name.
+
+### `TooltipPopup`
+
+The label itself. Portalled and positioned, so it is not clipped by an ancestor with `overflow: hidden`.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| wide` | `'sm'` |  |
+| `side` | `bottom \| top \| left \| right \| inline-end \| inline-start` |  | Preferred side of the trigger. Base UI flips it when it does not fit, and defaults it to the top. |
+| `align` | `center \| start \| end` |  | Alignment along that side. Base UI centres it by default. |
+| `sideOffset` | `number \| OffsetFunction` | `6` | Distance from the trigger, in pixels. |
+| `arrow` | `boolean` | `true` | Whether to draw the arrow pointing back at the trigger. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
+
+And every prop of Base UI's `Tooltip.Popup`, passed on.
+
+### `TooltipArrow`
+
+The notch pointing back at the trigger. Base UI rotates it to whatever side the tooltip landed on, which is why the placement is keyed off `data-side` rather than off the `side` that was asked for.
+
+Every prop of Base UI's `Tooltip.Arrow`, passed on.

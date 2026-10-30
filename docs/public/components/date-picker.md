@@ -70,14 +70,20 @@ The value, the arithmetic and the keyboard are the
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `IsoDate` | | `YYYY-MM-DD` |
-| `onValueChange` | `(value) => void` | | Told `undefined` only when `clearLabel` is given |
-| `clearLabel` | `string` | | The button that takes the date back; without it, a chosen date stays |
-| `min`, `max` | `IsoDate` | | Bounds, inclusive |
-| `placeholder` | `string` | | Required — what the trigger says when empty |
-| `previousMonthLabel` | `string` | | Required |
-| `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | the application's (`useLocale`) | |
-| `name` | `string` | | Puts the value in the form |
-| `id`, `aria-labelledby`, `aria-describedby`, `aria-invalid` | | | Put on the trigger - what a `Field` hands it |
-| `disabled` | `boolean` | `false` | |
+| `clearLabel` | `string` |  | The words of the button that takes the date back: "Clear". Leave it out and a chosen date stays chosen - the shape of a required field. |
+| `onValueChange` | `(value: string \| undefined) => void \| (value: string) => void` |  | Told the chosen day, or `undefined` when it is taken back. |
+| `value` | `string` |  | The chosen day, or `undefined` for none. |
+| `min` | `string` |  | The earliest day that can be chosen, inclusive. |
+| `max` | `string` |  | The latest day that can be chosen, inclusive. |
+| `placeholder` (required) | `string` |  | What the trigger says when nothing is chosen. The product's word, since a default here would be English inside a primitive. |
+| `previousMonthLabel` (required) | `string` |  | Names the two month-paging buttons inside the calendar. |
+| `nextMonthLabel` (required) | `string` |  | Names the next-month paging button inside the calendar. |
+| `locale` | `string` |  | How the date is written and which day starts the week. The application's language unless stated - see `useLocale`. |
+| `disabled` | `boolean` | `false` | Stops the trigger opening the calendar. |
+| `name` | `string` |  | Puts the value in a form: a hidden input of this name carries the date, because the trigger is a button and a form would otherwise lose it. |
+| `id` | `string` |  | Put on the trigger, so a `Field` label can point at it. |
+| `aria-label` | `string` |  | The accessible name of the field, in place of a visible label. |
+| `aria-labelledby` | `string` |  | Points at the element that names the field; a `Field` label hands this over. The date shown on the trigger is added to the name. |
+| `aria-describedby` | `string` |  | Points at the hint or error text, put on the trigger. |
+| `aria-invalid` | `true \| false \| boolean` |  | Marks the trigger as holding an invalid value. |
+| `className` | `string` |  |  |

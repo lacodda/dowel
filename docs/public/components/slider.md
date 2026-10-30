@@ -50,13 +50,19 @@ the hit area is the commonest way a slider ends up hard to grab.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `number \| number[]` | | An array makes it a range |
-| `defaultValue` | `number \| number[]` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | Fires as it moves |
-| `onValueCommitted` | `(value) => void` | | Fires once, at the end |
-| `min`, `max`, `step` | `number` | `0`, `100`, `1` | |
-| `minStepsBetweenValues` | `number` | | How close a range's thumbs may come |
-| `getThumbLabel` | `(index) => string` | group's label | Name each thumb |
-| `showValue` | `boolean` | `false` | Print the value beside the track |
-| `orientation` | `horizontal \| vertical` | `horizontal` | |
-| `format` | `Intl.NumberFormatOptions` | | How the shown value reads |
+| `value` | `number \| readonly number[]` |  | A number for one thumb, an array for a range. |
+| `defaultValue` | `number \| readonly number[]` |  | The starting value for an uncontrolled slider: a number, or an array for a range. |
+| `onValueChange` | `(value: number \| readonly number[]) => void` |  | Called on every change while the thumb moves, with a number or an array to match `value`. |
+| `onValueCommitted` | `(value: number \| readonly number[]) => void` |  | Fires once when the drag ends, for the expensive thing a product does not want to run on every pixel of movement. |
+| `min` | `number` |  | The lowest value; Base UI's default is `0`. |
+| `max` | `number` |  | The highest value; Base UI's default is `100`. |
+| `step` | `number` |  | The increment a thumb moves by; Base UI's default is `1`. |
+| `minStepsBetweenValues` | `number` |  | How close the thumbs of a range may come, in steps. |
+| `format` | `NumberFormatOptions` |  | How the value reads when it is shown: `Intl.NumberFormat` options. |
+| `orientation` | `horizontal \| vertical` |  | The direction the track runs. A vertical slider is a fixed `h-40` tall. |
+| `showValue` | `boolean` | `false` | Show the current value beside the track. Off by default: on a row of settings the numbers are noise, and where the figure matters a NumberField is the better control. |
+| `getThumbLabel` | `(index: number) => string` |  | What each thumb is called, by index. |
+| `disabled` | `boolean` |  | Stops the slider taking input. |
+| `name` | `string` |  | The field name, for a form that posts the value. |
+| `aria-label` | `string` |  | Names the slider as a group, and is the fallback label of every thumb. |
+| `className` | `string` |  |  |

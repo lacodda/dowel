@@ -56,8 +56,8 @@ primitive is text no product can translate.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | | What is being guarded |
-| `labels` | `{ title, body, details, retry }` | | Required |
-| `resetKey` | `unknown` | | Change it to clear the error |
-| `fallback` | `(error, reset) => ReactNode` | | Draw your own screen |
-| `onError` | `(error, info) => void` | | Somewhere to send it |
+| `children` (required) | `ReactNode` |  |  |
+| `fallback` | `(error: Error, reset: () => void) => ReactNode` |  | Draw something else instead of the default screen. |
+| `resetKey` | `unknown` |  | Change this to clear the error - a route, usually. |
+| `onError` | `(error: Error, info: ErrorInfo) => void` |  | Somewhere to send it. The product owns whether that is a log, a file or a service - the boundary only knows it happened. |
+| `labels` (required) | `ErrorBoundaryLabels` |  | The words on the default screen. Required, and not defaulted: they are the only text here, and English inside a primitive is text no product can translate. |

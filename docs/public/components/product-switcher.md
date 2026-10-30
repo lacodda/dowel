@@ -41,8 +41,8 @@ again offers a choice that changes nothing.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `current` | `MarkName` | | The product this is |
-| `currentName` | `string` | | Its name, on the trigger |
-| `products` | `SwitcherProduct[]` | | `{ product, name, description?, href?, onSelect? }` |
-| `label` | `string` | | What the trigger does, for a reader |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `current` (required) | `atlas \| austeris \| dowel \| efema \| furca \| hilvan \| kasl \| kasl-server \| kilna \| lacodda \| lyrid \| lyrn \| midda \| nitid \| nooma \| rhapsod \| rigger \| scheda \| sefy \| turnout` |  | The product this is. |
+| `currentName` (required) | `string` |  | Its name, shown on the trigger. |
+| `products` (required) | `SwitcherProduct[]` |  | The others, in the order to offer them. |
+| `label` (required) | `string` |  | What the trigger does, for a reader: "Switch product". |
+| `className` | `string` |  |  |

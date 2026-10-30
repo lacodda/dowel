@@ -43,29 +43,25 @@ primitive does not change it: a collapsible whose content vanishes on close
 cannot be found by the browser's own page search. A product that genuinely
 wants it gone can leave `CollapsiblePanel` out of the tree itself.
 
+`collapsibleTriggerClasses` is exported too - the trigger's own class list,
+reused by [Accordion](/dowel/components/accordion/) rather than copied.
+
 ## Props
 
-### `Collapsible` (root)
+### `Collapsible`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` / `onOpenChange` | | | Controlled |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `disabled` | `boolean` | `false` | Reaches the trigger and the panel both |
+Groups the trigger and the panel. Controlled with `open` and `onOpenChange`, or left to manage itself with `defaultOpen`.
+
+Base UI's `Collapsible.Root`, unchanged under dowel's name.
 
 ### `CollapsibleTrigger`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words on the button |
-| `className` | `string` | | Merged so the caller wins a conflict |
+The button that opens and shuts the panel. The chevron rotates with `data-panel-open`, the same attribute a reader's `aria-expanded` follows, so the two can never say different things.
+
+Every prop of Base UI's `Collapsible.Trigger`, passed on.
 
 ### `CollapsiblePanel`
 
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The content that opens and shuts |
-| `className` | `string` | | Merged so the caller wins a conflict |
+The region that opens and shuts. Animates by its own measured height through `--collapsible-panel-height`, so content of any length - one line or a page of it - opens by its real size rather than a guessed maximum.
 
-`collapsibleTriggerClasses` is exported too - the trigger's own class list,
-reused by [Accordion](/dowel/components/accordion/) rather than copied.
+Every prop of Base UI's `Collapsible.Panel`, passed on.

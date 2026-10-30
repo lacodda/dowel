@@ -76,42 +76,50 @@ the product's own scale and not a judgement in the
 [status vocabulary](/dowel/components/status-dot/). A product that means "this
 one is bad" says so.
 
+**The helpers are exported**: `orderedTiers(tiers, min?, max?)` sorts the bands and drops the ones that cannot be placed, and `tierAt(tiers, value)` returns the band a value stands in, or `undefined` below the first.
+
 ## Props
 
 ### `TierBadge`
 
+The band, as a verdict.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required — the band's name |
-| `value` | `ReactNode` | | The score behind the verdict, drawn quieter |
-| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `accent` | |
+| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `'accent'` |  |
+| `label` (required) | `ReactNode` |  | The band's name. |
+| `value` | `ReactNode` |  | The number behind the verdict, if the product shows it. Drawn quieter than the name: the band is the answer and the score is the evidence. |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>` except `children`, passed on.
 
 ### `TierRuler`
 
+The bands as a road, with the value standing somewhere along it.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `tiers` | `Tier[]` | | Required — `{ key, label, min, status? }` |
-| `value` | `number` | | Required |
-| `label` | `string` | | Required — names the meter |
-| `min` / `max` | `number` | `0` / `100` | The ends of the road |
-| `valueText` | `string` | | Spoken instead of the bare number |
-| `showLabels` | `boolean` | `true` | |
+| `tiers` (required) | `Tier[]` |  | The bands, in any order. Bands outside `min` to `max` are dropped. |
+| `value` (required) | `number` |  | Where the thing stands now. |
+| `min` | `number` | `0` | The ends of the road. |
+| `max` | `number` | `100` | The top end of the road; see `min`. |
+| `label` (required) | `string` |  | What the ruler as a whole is called, for a screen reader, and what to say the value is. The product's words - the ruler has none. |
+| `valueText` | `string` |  | The value spoken instead of the bare number: "7.8 out of 10, publishable" is what a reader needs, and only the product can phrase it. |
+| `showLabels` | `boolean` | `true` | Print the band names under the road. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.
 
 ### `AxisBar`
 
+One axis of a score, as a row of segments.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required |
-| `scale` | `number` | | Required — one segment per whole point |
-| `value` | `number \| undefined` | | `undefined` is unjudged, not zero |
-| `onChange` | `(value) => void` | | Given, the row becomes a slider |
-| `threshold` | `{ mark, label }` | | The mark that crosses into the next band; also the row's accessible description |
-| `valueText` | `string` | | |
-| `onPreview` | `(mark \| undefined) => void` | | The mark under the pointer, and `undefined` when it leaves |
+| `label` (required) | `string` |  | What this axis is called. |
+| `scale` (required) | `number` |  | The highest mark; one segment is drawn per whole point. |
+| `value` | `number` |  | The mark, or `undefined` while the axis is unjudged. Not the same as zero: zero is a verdict, and a blank axis is the absence of one. |
+| `onChange` | `(value: number \| undefined) => void` |  | Given, the row becomes a control. Omitted, it is a read-only reading of a score someone else set. |
+| `threshold` | `{ mark: number; label: string; }` |  | The mark from which the total crosses into the next band, and what to call it. Absent when no mark on this axis gets there - and then nothing is drawn, because a line promising a band the axis cannot deliver is worse than no line. |
+| `valueText` | `string` |  | What to say instead of the bare number - "unjudged", in the product's word, when there is no mark. |
+| `onPreview` | `(mark: number \| undefined) => void` |  | The mark under the pointer, and `undefined` when the pointer leaves - so a product can say what a mark means while it is being weighed, before anyone commits to it. The question while scoring is about the mark being considered, not the one already given. |
 
-### Helpers
-
-| | |
-| --- | --- |
-| `orderedTiers(tiers, min?, max?)` | Sorted, with unplaceable bands dropped |
-| `tierAt(tiers, value)` | The band a value stands in, or `undefined` |
+And every prop of `HTMLAttributes<HTMLDivElement>` except `onChange`, passed on.

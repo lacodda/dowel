@@ -104,20 +104,82 @@ reader; without one the popup is announced as an unlabelled region. If the
 design has no visible heading, the title is still the right element to render
 visually hidden.
 
+**Sizes.** `sm`, `md`, `lg` and `xl` are 24, 28, 40 and 48rem wide, and `full` is the window less a margin. The height is capped at the viewport in every one; `full` sets it, so the body fills the window while its content loads.
+
+**Turn the scrim off only on purpose.** The popup draws its own backdrop; `backdrop={false}` is for a dialog shown alongside other things deliberately - a gallery, a screenshot. `DialogBackdrop` is exported for the rare case of drawing the scrim yourself, and is not needed otherwise.
+
 ## Props
 
-`DialogPopup`:
+### `Dialog`
+
+The root. Controlled with `open` and `onOpenChange`, or left to manage itself around a `Dialog.Trigger`.
+
+Base UI's `Dialog.Root`, unchanged under dowel's name.
+
+### `DialogTrigger`
+
+What opens it. Give it `render` to use your own button.
+
+Base UI's `Dialog.Trigger`, unchanged under dowel's name.
+
+### `DialogClose`
+
+What closes it - the same, for a cancel button or an X.
+
+Base UI's `Dialog.Close`, unchanged under dowel's name.
+
+### `DialogBackdrop`
+
+The scrim. Dark because a modal is a modal: what is behind it is out of reach, and saying so with contrast is the only thing that reads at a glance.
+
+Every prop of Base UI's `Dialog.Backdrop`, passed on.
+
+### `DialogPopup`
+
+The dialog itself. Portalled, so it is not clipped by whatever it was opened from. Put a `DialogHeader`, a `DialogBody` and `DialogActions` inside it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm` \| `md` \| `lg` \| `xl` \| `full` | `md` | Width: 24, 28, 40 and 48rem, and the window less a margin. The height is capped at the viewport in every one; `full` sets it, so the body fills the window while its content loads |
-| `backdrop` | `boolean` | `true` | The popup draws the scrim itself. Turn it off only where the dialog is shown alongside other things on purpose - a gallery, a screenshot |
-| `container` | `Element` | `document.body` | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `size` | `sm \| md \| lg \| xl \| full` | `'md'` |  |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the document body, which is what keeps the popup from being clipped by whatever it was opened from. Pass an element to put it somewhere else - inside a dialog that is already open, or into a container being screenshotted. |
+| `backdrop` | `boolean` | `true` | Whether to draw the scrim. On by default, and it should stay on for anything a person actually uses: the dim is what says the page behind is out of reach. Turn it off where the popup is shown alongside other things on purpose - a component gallery, a screenshot - because a scrim is `position: fixed` and covers everything, not only its own container. |
 
-`DialogHeader` takes `action`, and `DialogActions` takes `start` - both a
-`ReactNode`; with `DialogBody` they are plain elements and take a `div`'s props.
-`Dialog`, `DialogTrigger`, `DialogClose`, `DialogTitle` and `DialogDescription`
-take the props their Base UI parts take; `render` composes each with your own
-element. `DialogBackdrop` is exported for the rare case of
-drawing the scrim yourself, and is not needed otherwise.
+And every prop of Base UI's `Dialog.Popup`, passed on.
+
+### `DialogHeader`
+
+The top of the popup: the title, the line under it, and an action beside them. It stays put while the body scrolls.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `action` | `ReactNode` |  | Beside the title, at the end of the line: a close button, a menu. The title and description wrap under themselves rather than under it. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `DialogBody`
+
+The part that scrolls. It takes the height the header and the actions leave, and only it moves when there is more than fits. It takes a ref, for a dialog that opens with the focus on what it says rather than on a button.
+
+Every prop of `ComponentProps<'div'>`, passed on.
+
+### `DialogActions`
+
+Where the actions go, pinned to the bottom. Right-aligned, because the primary action of a dialog belongs where the eye leaves the sentence.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `start` | `ReactNode` |  | At the other end of the row from the answer: the action that is not the answer to the dialog's question - "Delete" on an editor whose question is "Save?". Kept apart so it is not pressed on the way to "Save". |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `DialogTitle`
+
+The heading. Base UI points the popup's `aria-labelledby` at it, so a dialog with one is named for a screen reader without anyone arranging it.
+
+Every prop of Base UI's `Dialog.Title`, passed on.
+
+### `DialogDescription`
+
+The line under the heading, and the popup's `aria-describedby`.
+
+Every prop of Base UI's `Dialog.Description`, passed on.

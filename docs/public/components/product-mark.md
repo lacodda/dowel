@@ -51,11 +51,21 @@ mark that stands alone.
 
 ## Props
 
+### `ProductMark`
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `product` | `MarkName` | | A product of the line, or `lacodda` |
-| `size` | `number` | `24` | Width and height in CSS pixels; chooses the level |
-| `label` | `string` | | Makes it an image with this name |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `product` (required) | `atlas \| austeris \| dowel \| efema \| furca \| hilvan \| kasl \| kasl-server \| kilna \| lacodda \| lyrid \| lyrn \| midda \| nitid \| nooma \| rhapsod \| rigger \| scheda \| sefy \| turnout` |  | Which mark: a product of the line, or `lacodda` for the line itself. |
+| `size` | `number` | `24` | Its width and height in CSS pixels, which also choose its level. |
+| `label` | `string` |  | Its name, when nothing next to it says which product it is. |
+| `className` | `string` |  |  |
 
-`LineMark` takes the same props without `product`.
+### `LineMark`
+
+The line's own mark - λ on a graphite tile - for the places that say a product belongs to the lacodda line.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `number` |  | Its width and height in CSS pixels, which also choose its level. |
+| `label` | `string` |  | Its name, when nothing next to it says which product it is. |
+| `className` | `string` |  |  |

@@ -42,12 +42,12 @@ gives it. The plate has no English of its own.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `product` | `MarkName` | | Whose mark |
-| `name` | `string` | | The product's name, as a heading |
-| `version` | `string` | | As the product shows it |
-| `tagline` | `string` | | The one-line promise |
-| `children` | `ReactNode` | | Licence, links, a build hash |
-| `lineLabel` | `string` | | The words beside λ |
-| `lineHref` | `string` | | Makes those words a link |
-| `level` | `1`-`6` | `2` | Where the product's name stands in the page's outline |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `product` (required) | `atlas \| austeris \| dowel \| efema \| furca \| hilvan \| kasl \| kasl-server \| kilna \| lacodda \| lyrid \| lyrn \| midda \| nitid \| nooma \| rhapsod \| rigger \| scheda \| sefy \| turnout` |  | Which product's mark to draw. |
+| `name` (required) | `string` |  | The product's name, as it is written. |
+| `version` (required) | `string` |  | The version, as the product shows it: "v0.31.0". |
+| `tagline` | `string` |  | The one-line promise, as on the product's README. |
+| `children` | `ReactNode` |  | What the product adds: licence, links, where its data lives. |
+| `lineLabel` (required) | `string` |  | The words beside λ, e.g. "Part of the lacodda line". |
+| `lineHref` | `string` |  | Where those words lead, if anywhere. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2` | Where the product's name stands in the page's outline: `2` by default, under the title of the screen or dialog the plate sits in. |
+| `className` | `string` |  |  |

@@ -63,24 +63,25 @@ child: a table's rows are inside a `<tbody>`, a list's inside a `<ul>` that may
 itself be inside a scroller. Without `rowSelector` the placeholder is one box
 the height of the whole block, which is the right answer for a card.
 
+**`measureShape(node, rowSelector?)` is exported** for a product that keeps the
+measurement itself. It returns `{ height, rows }`: the block, and each row
+inside it.
+
 **It is `aria-hidden`, like every skeleton.** The loading fact belongs to the
 region and is said once, by whatever owns it —
 [QueryState](/dowel/components/query-state/) does it with `aria-busy`.
 
 ## Props
 
+Shows the children, remembers their shape, and draws that shape back while the next load is in flight.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `pending` | `boolean` | | Required — shows the remembered shape |
-| `children` | `ReactNode` | | Required — the real thing, measured |
-| `rowSelector` | `string` | | `'tr'`, `'li'`, `'[data-row]'` |
-| `fallback` | `ReactNode` | | Until there is something to remember |
-| `shape` | `MeasuredShape` | | A measurement from an earlier session |
-| `gapClassName` | `string` | `gap-1` | The gap between drawn rows |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `pending` (required) | `boolean` |  | Whether the content is on its way. While false the children are shown and measured; while true the remembered shape is drawn in their place. |
+| `children` (required) | `ReactNode` |  | The real thing. Rendered and measured when not pending. |
+| `rowSelector` | `string` |  | What counts as a row - `'tr'`, `'li'`, `'[data-row]'`. Given, the placeholder draws one box per row at the height that row had; omitted, it draws a single box the height of the whole block. |
+| `fallback` | `ReactNode` |  | What to draw before anything has been measured - the first load of a screen, where there is genuinely nothing to remember. A `SkeletonList` of roughly the right size is the usual answer. |
+| `shape` | `MeasuredShape` |  | A shape measured earlier - from `measureShape`, stored by the product between sessions. Used until this instance measures something itself, so even a first load can be honest. |
+| `gapClassName` | `string` |  | The gap between drawn rows, as a Tailwind class. Matches whatever the real list uses; the rows' own heights come from the measurement. |
 
-### `measureShape`
-
-| | |
-| --- | --- |
-| `measureShape(node, rowSelector?)` | `{ height, rows }` — the block, and each row inside it |
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.

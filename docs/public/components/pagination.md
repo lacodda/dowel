@@ -59,23 +59,16 @@ separate: a list that scrolls for ever wants "how many to load at a time" and
 no page buttons, and a table with a fixed page size wants the buttons and no
 choice.
 
-## Props
+**The arithmetic is exported** for a product that draws its own: `pageCount(total, pageSize)` is at least 1, because "page 1 of 0" reads as broken; `pageRange(page, pageSize, total)` gives `[from, to]` with `to` clamped, so the last page says what it holds; `pageWindow(page, pages, around?)` gives the numbers and `'gap'` entries the control draws.
 
-### `Pagination`
+## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `page` | `number` | | Clamped into range rather than drawing a hole |
-| `pageSize` | `number` | | |
-| `total` | `number` | | Rows, not pages |
-| `onPageChange` | `(page) => void` | | |
-| `around` | `number` | `1` | Pages either side of the current one |
-| `labels` | `PaginationLabels` | | Required. `region`, `previous`, `next`, `page(n)` |
-
-### The arithmetic
-
-| | Type | |
-| --- | --- | --- |
-| `pageCount` | `(total, pageSize) => number` | At least 1 — "page 1 of 0" reads as broken |
-| `pageRange` | `(page, pageSize, total) => [from, to]` | `to` clamped, so the last page says what it holds |
-| `pageWindow` | `(page, pages, around?) => PageStep[]` | `number \| 'gap'` |
+| `page` (required) | `number` |  | The current page, counting from one. Clamped into range rather than drawing a hole. |
+| `pageSize` (required) | `number` |  | How many rows a page holds. |
+| `total` (required) | `number` |  | How many rows there are altogether - rows, not pages. |
+| `onPageChange` (required) | `(page: number) => void` |  | Called with the page to go to, from the arrows and the numbered buttons. |
+| `around` | `number` | `1` | How many pages either side of the current one. |
+| `labels` (required) | `PaginationLabels` |  | What a screen reader hears for the region and its buttons. Required rather than defaulted: a default here would be English shipped inside a primitive, and these are the only words the control has. |
+| `className` | `string` |  |  |

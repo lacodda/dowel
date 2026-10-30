@@ -58,16 +58,20 @@ container that also padded would double it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, the screen's `h1` unless `level` says otherwise |
-| `level` | `1`-`6` | `1` | `2` over the open item of a list beside its detail |
-| `description` | `ReactNode` | | One sentence under it |
-| `actions` | `ReactNode` | | Buttons acting on the whole screen |
-| `children` | `ReactNode` | | A trail, a status, a tab strip |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `title` (required) | `ReactNode` |  | The screen's title, drawn as the page's heading. It is the one heading the screen is entitled to. |
+| `description` | `ReactNode` |  | The line under the title. One sentence: this is the screen's subtitle, not its documentation. |
+| `actions` | `ReactNode` |  | Buttons that act on the screen as a whole - New, Export, a filter. They sit at the far end of the title's row and wrap under it when there is no width left, rather than squeezing the title into two words. |
+| `children` | `ReactNode` |  | A trail, a status, a tab strip: whatever belongs between the heading and the content. Drawn under the whole row. |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `1` | Where the title stands in the outline: `1` by default, the top of the screen's content. A header over the open item of a list beside its detail is one level down. |
+
+And every prop of `HTMLAttributes<HTMLElement>` except `title`, passed on.
 
 ### `Container`
 
+The measure the screen's content is read at.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `width` | `prose \| default \| wide \| full` | `default` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `width` | `prose \| default \| wide \| full` | `'default'` |  |
+
+And every prop of `HTMLAttributes<HTMLDivElement>`, passed on.

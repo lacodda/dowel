@@ -53,38 +53,6 @@ told is a popover half off the screen.
 The arrow follows: it is rotated to whichever side the popup actually landed
 on, not the side that was asked for.
 
-## Props
-
-### `Popover` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-| `modal` | `boolean \| 'trap-focus'` | `false` | Leave it off unless the panel really is a decision |
-
-### `PopoverPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | |
-| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | `center` | Alignment along that side |
-| `sideOffset` | `number` | `8` | Distance from the trigger, in pixels |
-| `arrow` | `boolean` | `true` | Draw the notch pointing back at the trigger |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `PopoverTrigger` | | What opens it, and what the panel is measured against |
-| `PopoverTitle` | | The popup's `aria-labelledby` points at it |
-| `PopoverDescription` | | The popup's `aria-describedby` |
-| `PopoverClose` | | Closes it. `render` to use your own button |
-| `PopoverArrow` | | Exported for a popup assembled by hand |
-
 ## Notes
 
 **It is not modal.** What is under the panel stays in the accessibility tree
@@ -104,3 +72,56 @@ without one a screen reader announces "dialog" and nothing else.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+## Props
+
+### `Popover`
+
+The root. Controlled with `open` and `onOpenChange`, or left to manage itself around a `PopoverTrigger`.
+
+Base UI's `Popover.Root`, unchanged under dowel's name.
+
+### `PopoverTrigger`
+
+What opens it, and what the popup is measured against.
+
+Base UI's `Popover.Trigger`, unchanged under dowel's name.
+
+### `PopoverClose`
+
+What closes it, for a button inside the panel.
+
+Base UI's `Popover.Close`, unchanged under dowel's name.
+
+### `PopoverPopup`
+
+The panel. Portalled and positioned, so it is not clipped by an ancestor with `overflow: hidden` - which is where most anchored popups go to die.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `side` | `bottom \| top \| left \| right \| inline-end \| inline-start` |  | Preferred side of the trigger. Base UI flips it when it does not fit, and defaults it to the bottom. |
+| `align` | `center \| start \| end` |  | Alignment along that side. Base UI centres it by default. |
+| `sideOffset` | `number \| OffsetFunction` | `8` | Distance from the trigger, in pixels. |
+| `arrow` | `boolean` | `true` | Whether to draw the arrow pointing back at the trigger. |
+| `container` | `HTMLElement \| ShadowRoot \| RefObject<HTMLElement \| ShadowRoot \| null> \| null` |  | Where to portal to. Defaults to the raised host of the overlay this is opened inside (`layer.tsx`), and to the document body when there is none - either way not the element it was opened from, whose `overflow` would clip it. Pass an element to put it somewhere else, such as a container being screenshotted. |
+
+And every prop of Base UI's `Popover.Popup`, passed on.
+
+### `PopoverArrow`
+
+The notch pointing back at the trigger. Base UI rotates it to whatever side the popup landed on, which is why the rotation is keyed off `data-side` rather than off the `side` that was asked for.
+
+Every prop of Base UI's `Popover.Arrow`, passed on.
+
+### `PopoverTitle`
+
+The heading. Base UI points the popup's `aria-labelledby` at it, so a popover with one is named for a screen reader without anyone arranging it.
+
+Every prop of Base UI's `Popover.Title`, passed on.
+
+### `PopoverDescription`
+
+The line under the heading, and the popup's `aria-describedby`.
+
+Every prop of Base UI's `Popover.Description`, passed on.

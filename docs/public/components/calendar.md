@@ -69,12 +69,16 @@ the string:
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `value` | `IsoDate` | | The chosen day |
-| `onValueChange` | `(value) => void` | | Fires on Enter and on a click |
-| `month` | `IsoDate` | | Which month is shown; uncontrolled unless given |
-| `onMonthChange` | `(month) => void` | | |
-| `min`, `max` | `IsoDate` | | Bounds, inclusive |
-| `rangeEnd` | `IsoDate` | | Shades the days between, for a range |
-| `locale` | `string` | the application's (`useLocale`) | Names and first day of the week |
-| `previousMonthLabel` | `string` | | Required — the buttons are icons |
-| `nextMonthLabel` | `string` | | Required |
+| `value` | `string` |  | The selected day, or `undefined` for none. |
+| `onValueChange` | `(value: string) => void` |  | Called with the day the reader chose. It fires on Enter and on a click, not on the arrows - those only move the cursor. |
+| `month` | `string` |  | Which month is shown. Uncontrolled unless given. |
+| `onMonthChange` | `(month: string) => void` |  | Called with the new month when the shown month changes: the paging buttons, or the cursor arrowing off the end of a month. |
+| `min` | `string` |  | Bounds, inclusive. A day outside them cannot be chosen. |
+| `max` | `string` |  | The latest day that can be chosen, inclusive. See `min`. |
+| `rangeEnd` | `string` |  | For a range: the other end, so the days between can be shaded. |
+| `locale` | `string` |  | Formats the names. The application's language by default - see `useLocale`. |
+| `aria-label` | `string` |  | What the grid is called, for a screen reader. |
+| `autoFocus` | `boolean` | `false` | Put the focus on the day under the cursor when it mounts - for a calendar that opens in a popup, where choosing a day is what the reader came for. Left to the popup, the focus went to the first thing in it: the month-paging button, two Tabs away from the days. |
+| `previousMonthLabel` (required) | `string` |  | Names the buttons that page the months. Required: they are icons, and an icon with no name is a button that announces nothing. |
+| `nextMonthLabel` (required) | `string` |  | Names the button that pages to the next month. Required, for the same reason as `previousMonthLabel`. |
+| `className` | `string` |  |  |

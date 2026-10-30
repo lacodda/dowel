@@ -45,3 +45,38 @@ reader nothing about which one they are in.
 **Stacking comes from the theme.** A stuck bar uses `--z-sticky` rather than a
 number invented here, so it agrees with every overlay in the set instead of
 fighting one.
+
+## Props
+
+### `ActionBar`
+
+The bar.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `position` | `bottom \| top \| static` | `'static'` |  |
+| `justify` | `start \| end \| between` | `'start'` |  |
+
+And every prop of Base UI's `Toolbar.Root`, passed on.
+
+### `ActionBarButton`
+
+A button in the bar. Give it the set's own `Button` through `render`, so the toolbar's arrow keys reach it and the button keeps its variants.
+
+Base UI's `Toolbar.Button`, unchanged under dowel's name.
+
+### `ActionBarSeparator`
+
+A rule between groups of actions. Decorative, and announced as a separator rather than as a control.
+
+Every prop of Base UI's `Toolbar.Separator`, passed on.
+
+### `ActionBarGroup`
+
+A group of related actions inside the bar - the three alignment buttons, a pair of toggles. Groups the arrows walk as one.
+
+Every prop of Base UI's `Toolbar.Group`, passed on.
+
+### `ActionBarSpacer`
+
+Pushes what follows to the far end. A plain spacer, so a bar can put Cancel beside Save and everything else to the left without a wrapper.

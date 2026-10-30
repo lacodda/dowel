@@ -27,6 +27,8 @@ meaning anyway.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | |
-| `tone` | `current \| dim \| accent` | `current` | Follows the surrounding text by default |
-| `label` | `string` | | What is being waited for, for a screen reader |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `tone` | `current \| dim \| accent` | `'current'` |  |
+| `label` | `string` |  | What is being waited for, for a screen reader. The product's word. |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>`, passed on.

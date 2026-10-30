@@ -52,9 +52,10 @@ being controls.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `scale` | `number` | | How many marks |
-| `value` | `number \| undefined` | | `undefined` is not judged yet |
-| `onValueChange` | `(value) => void` | | Receives `undefined` when cleared |
-| `label` | `string` | | Required. What is being judged |
-| `emptyLabel` | `string` | | Required. Heard in place of a number |
-| `disabled` | `boolean` | `false` | |
+| `scale` (required) | `number` |  | How many marks. |
+| `value` (required) | `number` |  | The score, or `undefined` for not judged yet. |
+| `onValueChange` (required) | `(value: number \| undefined) => void` |  | Called with the new score by a click or a key, and with `undefined` when the score is taken back to not judged. |
+| `label` (required) | `string` |  | What is being judged. Required: a bare row of marks names nothing, and this is the only thing a screen reader has to go on. |
+| `emptyLabel` (required) | `string` |  | What a screen reader hears in place of a number when nothing is chosen. Required rather than defaulted, because a default here would be English shipped inside a primitive. |
+| `disabled` | `boolean` | `false` | Stops the scale taking a click or a key. |
+| `className` | `string` |  |  |

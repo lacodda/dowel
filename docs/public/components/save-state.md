@@ -50,3 +50,14 @@ learn to turn a screen reader's verbosity down.
 
 **The words are yours.** A primitive with a string of its own cannot be
 translated.
+
+## Props
+
+The indicator itself.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `status` (required) | `idle \| saving \| saved` |  | What to show. Usually from `useSaveStatus`. |
+| `savingLabel` | `ReactNode` |  | What to say while saving. The product's word, in the product's language. |
+| `savedLabel` | `ReactNode` |  | What to say once it is saved. |
+| `className` | `string` |  |  |

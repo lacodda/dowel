@@ -37,17 +37,19 @@ field of decoration.
 A switch with no words is a light with no caption. Leave them out only where
 the meaning is genuinely in the context, and then name it:
 
-```tsx
-<Switch aria-label="Notify me" />
-```
+ FENCE2
 
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words. Without them, give `aria-label` |
-| `checked` | `boolean` | | Controlled |
-| `defaultChecked` | `boolean` | | Uncontrolled |
-| `onCheckedChange` | `(checked) => void` | | |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
-| `name` | `string` | | For a form |
+| `children` | `ReactNode` |  | The words next to the switch. A switch with no label is a light with no caption - give `aria-label` if the meaning is genuinely in the context. |
+| `checked` | `boolean` |  | Whether the switch is on, when the caller owns the state. Pair it with `onCheckedChange`. |
+| `defaultChecked` | `boolean` |  | Whether the switch starts on, when it manages its own state. |
+| `onCheckedChange` | `(checked: boolean) => void` |  | Told the new state when the switch is flipped. |
+| `disabled` | `boolean` |  | The switch cannot be flipped; it and its label dim. |
+| `required` | `boolean` |  | Marks the switch as required for a form. |
+| `readOnly` | `boolean` |  | The state shows but cannot be changed by the reader. |
+| `name` | `string` |  | The field name submitted with a form. |
+| `aria-label` | `string` |  | Names the switch for a screen reader when it has no `children`. |
+| `className` | `string` |  |  |

@@ -65,21 +65,20 @@ for a list, and only the caller knows what its readings are called.
 **Nothing measured draws a bare plot**, not a chart of zeroes and not an empty
 box: the axis stays, and the words beside it say why there is no line.
 
+**The arithmetic is importable without React**, from `line-scale`: `boundsOf(points, stated)`, `runs(points, bounds)` for the drawable stretches, `pathOf(run)`, `ticksFor(bounds, wanted)` and `yOf(value, bounds)`.
+
 ## Props
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `points` | `{ at, value }[]` | | `value: null` is a measurement not taken |
-| `label` | `string` | | Required — what the chart says, in words |
-| `bounds` | `Partial<Bounds>` | read from the points | `{ min: 0 }` for a count |
-| `ticks` | `number` | `4` | A wish: they land on round numbers. `0` draws none |
-| `formatTick` | `(value) => string` | | Right for money or a duration |
-| `footer` | `ReactNode` | | Two or three labels under the plot |
-| `tone` | `accent` `series` `good` `bad` `muted` | `accent` | |
-| `size` | `sm` `md` | `md` | 96px and 160px of plot |
+| `size` | `sm \| md` | `'md'` |  |
+| `gutter` | `boolean` | `true` |  |
+| `tone` | `accent \| series \| good \| bad \| muted` | `'accent'` |  |
+| `points` (required) | `Point[]` |  | The readings, in order. `value: null` is a measurement not taken. |
+| `bounds` | `Partial<Bounds>` |  | Override any edge of the plot. `min: 0` for a count, where zero is the truth rather than a flattening. |
+| `label` (required) | `string` |  | What the chart as a whole says, for a reader who cannot see it. |
+| `ticks` | `number` | `4` | How many value ticks to aim for. They land on round numbers, so the count is a wish rather than a promise. `0` draws none. |
+| `formatTick` | `(value: number) => string` |  | Turns a tick into its label. Without it the number is drawn as it is - which is right for a count and wrong for money or a duration. |
+| `footer` | `ReactNode` |  | The labels under the axis - usually the first and last reading. Two or three, not one per point: the axis is not a place for a list. |
 
-### `line-scale`
-
-The arithmetic, importable without React: `boundsOf(points, stated)`,
-`runs(points, bounds)` for the drawable stretches, `pathOf(run)`,
-`ticksFor(bounds, wanted)` and `yOf(value, bounds)`.
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, passed on.

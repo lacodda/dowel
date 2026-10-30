@@ -53,20 +53,26 @@ and [Timeline](/dowel/components/timeline/), which takes the same vocabulary.
 
 ### `StatusDot`
 
+A dot, and the word it stands for.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `label` | `string` | | Required — what a reader gets in place of the colour |
-| `status` | `good \| warn \| bad \| info \| neutral` | `neutral` | |
-| `size` | `sm \| md \| lg` | `md` | |
-| `showLabel` | `boolean` | `false` | Print the word beside the dot |
-| `icon` | `ReactNode` | | A shape in the dot's place |
-| `className` | `string` | | Merged so the caller wins a conflict |
+| `status` | `good \| warn \| bad \| info \| neutral` | `'neutral'` |  |
+| `size` | `sm \| md \| lg` | `'md'` |  |
+| `label` (required) | `string` |  | What this condition is called, in the product's words. Required, and not for decoration: it is what the dot means to anyone who does not see the colour. |
+| `showLabel` | `boolean` | `false` | Whether to print the label beside the dot. |
+| `icon` | `ReactNode` |  | A shape drawn inside the dot's place instead of the circle - a tick, a cross, an exclamation. The second channel for a reader who sees the dot but not its hue, and the reason `pulse` is not the only way to differ. |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>` except `children`, passed on.
 
 ### `StatusBadge`
 
+The state, written out, on a tinted ground.
+
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `status` | `good \| warn \| bad \| info \| neutral` | `neutral` | |
-| `icon` | `ReactNode` | | A shape before the word; drops the dot |
-| `dot` | `boolean` | `true` | |
-| `children` | `ReactNode` | | The word, in the product's language |
+| `status` | `good \| warn \| bad \| info \| neutral` | `'neutral'` |  |
+| `icon` | `ReactNode` |  | A shape before the word - the second channel, where there is one. |
+| `dot` | `boolean` | `true` | Draw the dot before the word. Off when an `icon` is given: two marks for one state is noise. |
+
+And every prop of `HTMLAttributes<HTMLSpanElement>`, passed on.
