@@ -50,32 +50,3 @@ ones by default, which would put the last face over the first; the eye reads
 left to right and expects the leftmost tile whole, so the stack is reversed
 explicitly. The `+3` tile has nobody behind it, so it is text rather than a
 labelled image.
-
-## Props
-
-### `Avatar`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `name` | `string` | | Required — the label, and the source of the initials |
-| `src` | `string` | | Absent or failing, falls back to the initials |
-| `fallback` | `ReactNode` | | Drawn instead of the initials |
-| `size` | `xs \| sm \| md \| lg \| xl` | `md` | |
-| `shape` | `circle \| square` | `circle` | |
-| `imgProps` | `ImgHTMLAttributes` | | For `loading`, `referrerPolicy` |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `AvatarGroup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `people` | `{ name, src? }[]` | | Required |
-| `max` | `number` | `4` | Tiles before the rest become a count |
-| `size` | `Avatar['size']` | `sm` | |
-| `label` | `string` | | Names the row for a screen reader |
-
-### `initialsOf`
-
-| | |
-| --- | --- |
-| `initialsOf(name, count = 2)` | The letters a tile shows, by the rule above |

@@ -98,29 +98,3 @@ description, and a caption has nothing a click could be forwarded to.
 
 `disabled` disables every native control inside it, which is what a fieldset
 does on its own.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required. Always rendered |
-| `children` | `ReactElement` | | The control. One element |
-| `help` | `ReactNode` | | A hint, hidden while an error shows |
-| `error` | `ReactNode` | | Its presence marks the control invalid |
-| `labelHidden` | `boolean` | `false` | Keep the label for readers, not the screen |
-| `required` | `boolean` | `false` | Adds the mark a reader looks for |
-| `name` | `string` | | So a `Form` can attach a server error by name |
-| `disabled` | `boolean` | `false` | |
-| `beside` | `boolean` | `false` | The control beside its name, inside the label - for a Switch or a Checkbox |
-
-### FieldGroup
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required. The legend |
-| `children` | `ReactNode` | | The controls — anything |
-| `help` | `ReactNode` | | The group's description, hidden while an error shows |
-| `error` | `ReactNode` | | What is wrong with the group as a whole |
-| `labelHidden` | `boolean` | `false` | Keep the legend for readers, not the screen |
-| `required` | `boolean` | `false` | |
-| `disabled` | `boolean` | `false` | Disables every native control inside |

@@ -213,7 +213,9 @@ export function CommandPaletteRow({
   children,
   ...props
 }: {
+  /** Drawn before the label. Size and colour are the product's. */
   icon?: ReactNode
+  /** Drawn after the label, small and faint - where the item lives, such as a section name or a shortcut. */
   hint?: ReactNode
   className?: string
   children: ReactNode

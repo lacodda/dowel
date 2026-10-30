@@ -64,16 +64,3 @@ field goes back to the stored value.
 **A cell under a column header** takes `labelHidden`: the caption stays the
 input's name for a reader and leaves the screen, because the header already
 says it.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `ReactNode` | | Required — the caption above, and the input's name |
-| `value` | `T \| null` | | The stored value |
-| `onCommit` | `(value: T \| null) => boolean \| void` | | Called once per kept change; `false` refuses it |
-| `codec` | `Codec<T>` | `textCodec` | Required for anything but text |
-| `placeholder` | `string` | | What an empty value shows — a dash reads as "nothing yet" |
-| `labelHidden` | `boolean` | `false` | For a cell under a column header |
-| `disabled` | `boolean` | | |
-| `className` | `string` | | On the wrapper |

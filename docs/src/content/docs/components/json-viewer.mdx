@@ -79,14 +79,3 @@ offer the path. What the two genuinely share is the arithmetic of which rows
 are visible, and that is shared:
 [json-rows](/components/json-rows/) is the sibling of
 [tree-rows](/components/tree-rows/).
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `JsonValue` | | Anything `JSON.parse` returns |
-| `label` | `string` | | Required — what a screen reader calls it |
-| `open` | `ReadonlySet<string>` | `branchPaths(value)` | Paths. Uncontrolled if omitted |
-| `onOpenChange` | `(open) => void` | | |
-| `onActivate` | `(row: JsonRow) => void` | | The row, with its path and value |
-| `root` | `string` | `'$'` | For a viewer showing one field of a record |

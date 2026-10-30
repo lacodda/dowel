@@ -64,29 +64,3 @@ import {
   </ContextMenuPopup>
 </ContextMenu>
 ```
-
-## Props
-
-### `ContextMenuPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | How wide the popup starts |
-| `container` | `Element \| Ref` | document body | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `ContextMenuItem`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `tone` | `default \| danger` | `default` | `danger` draws the destructive one apart |
-| `disabled` | `boolean` | `false` | Reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists and why it is not there |
-| `closeOnClick` | `boolean` | `true` | For the item that should leave the menu open |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-`ContextMenu` (root), `ContextMenuTrigger` (the area), `ContextMenuGroup`,
-`ContextMenuGroupLabel`, `ContextMenuSeparator`, `ContextMenuSub`,
-`ContextMenuSubTrigger`, `ContextMenuCheckboxItem` and
-`ContextMenuCheckboxIndicator` pass their props to Base UI unchanged.

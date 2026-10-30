@@ -107,20 +107,6 @@ reader; without one the popup is announced as an unlabelled region. If the
 design has no visible heading, the title is still the right element to render
 visually hidden.
 
-## Props
+**Sizes.** `sm`, `md`, `lg` and `xl` are 24, 28, 40 and 48rem wide, and `full` is the window less a margin. The height is capped at the viewport in every one; `full` sets it, so the body fills the window while its content loads.
 
-`DialogPopup`:
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm` \| `md` \| `lg` \| `xl` \| `full` | `md` | Width: 24, 28, 40 and 48rem, and the window less a margin. The height is capped at the viewport in every one; `full` sets it, so the body fills the window while its content loads |
-| `backdrop` | `boolean` | `true` | The popup draws the scrim itself. Turn it off only where the dialog is shown alongside other things on purpose - a gallery, a screenshot |
-| `container` | `Element` | `document.body` | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`DialogHeader` takes `action`, and `DialogActions` takes `start` - both a
-`ReactNode`; with `DialogBody` they are plain elements and take a `div`'s props.
-`Dialog`, `DialogTrigger`, `DialogClose`, `DialogTitle` and `DialogDescription`
-take the props their Base UI parts take; `render` composes each with your own
-element. `DialogBackdrop` is exported for the rare case of
-drawing the scrim yourself, and is not needed otherwise.
+**Turn the scrim off only on purpose.** The popup draws its own backdrop; `backdrop={false}` is for a dialog shown alongside other things deliberately - a gallery, a screenshot. `DialogBackdrop` is exported for the rare case of drawing the scrim yourself, and is not needed otherwise.

@@ -81,25 +81,3 @@ shapes have no narrow form: they are made of their names.
 **The narrow shapes clear the pointer target floor.** A `row` tab and a `bar`
 cell carry `target-min`, so they are at least 24 CSS pixels however small the
 text is. A `column` entry is already taller than that.
-
-## Props
-
-### `NavRail`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `string` | | Required — names the landmark, not drawn |
-| `items` | `{ id, label, icon?, end?, soon? }[]` | | Required |
-| `layout` | `column \| row \| bar` | `column` | |
-| `activeId` | `string` | | The open screen |
-| `render` | `(item) => ReactElement` | | The element each entry is drawn as |
-| `onSelect` | `(id) => void` | | Pressed, whatever the entry is drawn as |
-| `collapsed` | `boolean` | `false` | Icons only, names in tooltips; `column` only |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `NavGroup`, `NavSpacer`
-
-| | |
-| --- | --- |
-| `NavGroup` | The caption over a run of entries: Library, Team, Admin. `collapsed` draws a hairline instead |
-| `NavSpacer` | Pushes what follows to the far end — settings, theme, profile |

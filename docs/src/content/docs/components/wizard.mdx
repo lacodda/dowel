@@ -74,33 +74,5 @@ are required props. There are no English defaults.
 controlled product decides whether to move. It never decides whether to
 check: `onStepChange` is called only after the checks pass.
 
-## Props
-
-### `Wizard`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `steps` | `WizardStep[]` | | Required. A `StepperStep` plus `content`, `canAdvance?`, `onNext?`, `error?` |
-| `step` | `string` | | The step shown, controlled |
-| `defaultStep` | `string` | first step | The step shown first, uncontrolled |
-| `onStepChange` | `(id) => void` | | Called after the checks pass |
-| `onFinish` | `() => void \| Promise<void>` | | Required. Called when Finish is pressed and the last step passes |
-| `onError` | `(error, stepId) => void` | | Receives a thrown `onNext`. Without it the error is rethrown |
-| `stepperLabel` | `string` | | Required |
-| `stateLabels` | `{ done, error, upcoming? }` | | Required |
-| `summary` | `(position, total) => ReactNode` | | Passed to the stepper |
-| `backLabel` | `ReactNode` | | Required |
-| `nextLabel` | `ReactNode` | | Required |
-| `finishLabel` | `ReactNode` | | Required |
-| `orientation` | `horizontal \| vertical` | `horizontal` | Stepper above the content, or beside it |
-| `level` | `1`-`6` | `2` | Where a step's title stands in the page's outline |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `WizardStep`
-
-| Field | Type | |
-| --- | --- | --- |
-| `content` | `ReactNode` | The step itself. Stays mounted once visited |
-| `canAdvance` | `() => boolean` | A synchronous check, run first |
-| `onNext` | `() => boolean \| void \| Promise<…>` | Run after `canAdvance`. `false` or a throw blocks |
-| `error` | `boolean` | Marks the step failed from outside |
+**A server can fail a step from outside.** A step's `error` marks it failed
+when something the wizard cannot see rejected what it holds.

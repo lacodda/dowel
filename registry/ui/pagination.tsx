@@ -114,9 +114,14 @@ export function pageRange(page: number, pageSize: number, total: number): [numbe
 }
 
 export interface PaginationProps {
+  /** The current page, counting from one. Clamped into range rather than
+   * drawing a hole. */
   page: number
+  /** How many rows a page holds. */
   pageSize: number
+  /** How many rows there are altogether - rows, not pages. */
   total: number
+  /** Called with the page to go to, from the arrows and the numbered buttons. */
   onPageChange: (page: number) => void
   /** How many pages either side of the current one. */
   around?: number

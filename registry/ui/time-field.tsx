@@ -83,18 +83,31 @@ export function formatTime(time: string, locale: string): string {
 export interface TimeFieldProps {
   /** `HH:MM` in twenty-four hours, or `null` for empty. */
   value: string | null
+  /** Told the next time as `HH:MM`, or `null` when the box is cleared. Fires
+   * on blur and on Enter, not on every key, and not when the text parses to
+   * the time already held. */
   onValueChange: (value: string | null) => void
   /** How the time is shown while the field is not being typed into. The
    * application's language unless stated - see `useLocale`. */
   locale?: string
+  /** What the empty box says. Pass the product's own words. */
   placeholder?: string
+  /** Stops the box taking focus or input. Passed to the `<input>`. */
   disabled?: boolean
+  /** The box can be focused and read but not typed into. Passed to the
+   * `<input>`. */
   readOnly?: boolean
+  /** Marks the `<input>` as required for a form. */
   required?: boolean
+  /** The `<input>`'s name, for a form. */
   name?: string
+  /** The `<input>`'s id, so a label can point at it. */
   id?: string
+  /** Reaches the `<input>`, for focusing it or reading its selection. */
   ref?: Ref<HTMLInputElement>
+  /** Names the box for a screen reader when no visible label does. */
   'aria-label'?: string
+  /** The id of the element that describes the box, such as a hint. */
   'aria-describedby'?: string
   className?: string
 }

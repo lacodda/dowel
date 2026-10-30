@@ -72,26 +72,3 @@ bar leaves the focus where the reader put it.
 
 **No words of its own.** Every word is in `words`, so a product in two
 languages passes its translations and nothing English is left behind.
-
-## Props
-
-| Prop | Type | | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | The screen's title |
-| `description` | `ReactNode` | | One sentence under it |
-| `actions` | `ReactNode` | | What acts on the screen: New, Import |
-| `items` | `readonly T[]` | | What the list holds |
-| `itemKey` | `(item) => string` | | A stable key per item |
-| `row` | `(item) => ListDetailRow` | | `{ start, title, description, end }`, RowButton's slots |
-| `selected` | `string \| null` | | The key of what is open |
-| `onSelect` | `(key \| null) => void` | | Told what to open, or `null` to go back |
-| `matches` | `(item, query) => boolean` | | Leave it out and there is no search |
-| `detailTitle` | `(item) => string` | | The open item's heading, and its region's name |
-| `detailActions` | `(item) => ReactNode` | | What acts on the open item |
-| `detail` | `(item) => ReactNode` | | The open item itself |
-| `emptyAction` | `ReactNode` | | The way out of an empty screen |
-| `rowRender` | `(item) => RenderProp` | | A row as the product's link |
-| `words` | `ListDetailScreenWords` | | Every word on the screen |
-
-`words` is `{ list, search, clear, back, nothingYet, nothingFound, nothingOpen }`,
-the last three each `{ title, body? }`.

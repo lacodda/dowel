@@ -66,43 +66,6 @@ control — this is the wrong component. Put them inline, or use a Popover with
 opened, the next opens instantly instead of waiting out its delay again. A
 toolbar of icon buttons without it feels broken in a way nobody can name.
 
-## Props
-
-### `Tooltip` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `disabled` | `boolean` | `false` | Turns it off without unmounting it |
-| `open` / `defaultOpen` / `onOpenChange` | | | Controlled, if it has to be |
-
-`delay` is **not** a root prop — it belongs to the trigger, the same as on
-PreviewCard. Passing it here is silently ignored at runtime.
-
-### `TooltipTrigger`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `delay` | `number` | `600` | How long to wait on hover, in milliseconds |
-| `render` | `ReactElement` | | Give it an `aria-label` — the tooltip does not name it |
-
-### `TooltipPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| wide` | `sm` | `sm` caps at 16rem, `wide` at 24rem |
-| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `top` | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | `center` | |
-| `sideOffset` | `number` | `6` | Distance from the trigger, in pixels |
-| `arrow` | `boolean` | `true` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `TooltipProvider` | | A shared delay for a group. `delay`, `closeDelay`, `timeout` |
-| `TooltipArrow` | | Exported for a popup assembled by hand |
-
 ## Notes
 
 **It opens on focus, not only on hover.** This is the half that gets forgotten,
@@ -111,6 +74,9 @@ icon buttons never hovers anything.
 
 **`Escape` closes it** while the trigger still has focus — the way out for
 someone who can see it covering what they were reading.
+
+**`delay` is not a root prop.** It belongs to the trigger, the same as on
+PreviewCard. Passing it to `Tooltip` is silently ignored at runtime.
 
 **Small text, on purpose.** `text-xs`. It sits over the thing it explains and
 has to be readable without taking the page over.

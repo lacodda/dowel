@@ -134,37 +134,3 @@ the timers, the pause on hover and focus, and the swipe.
 cross is announced as nothing. It is deliberately `aria-hidden` while the
 stack is collapsed and neither hovered nor focused: a collapsed stack is one
 announcement, not one announcement plus a dismiss button per toast.
-
-## Props
-
-### `Toast`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `toast` | `ToastObject` | | The object from `useToastManager().toasts` |
-| `tone` | `neutral \| good \| warn \| bad \| info` | from `toast.type` | Explicit wins over the map |
-| `swipeDirection` | `up \| down \| left \| right` or an array | `['down', 'right']` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `ToastViewport`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `container` | `Element \| null \| Ref` | the document body | Where to portal to |
-| `className` | `string` | | Bottom right by default — the corner that covers neither a form nor a menu |
-
-### The parts
-
-| Part | |
-| --- | --- |
-| `ToastTitle` | The heading; the toast's `aria-labelledby` |
-| `ToastDescription` | The sentence under it; the toast's `aria-describedby` |
-| `ToastAction` | The one thing the reader can do about it — undo, or go and look |
-| `ToastClose` | The dismiss button. Give it a label |
-
-### The manager
-
-| | |
-| --- | --- |
-| `useToastManager()` | `toasts`, `add`, `update`, `close`, `promise` |
-| `createToastManager()` | A manager for raising toasts outside React |

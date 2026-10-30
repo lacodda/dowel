@@ -86,23 +86,7 @@ which scrolls forever and reads no better for it.
 when you name it. Nothing here has a default English string: a string this
 component invents is one your product cannot translate.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `code` | `string` | | Required — and what lands on the clipboard, always |
-| `tokens` | `CodeToken[][]` | | Lines of `{ text, kind }`. Without it, one colour |
-| `caption` | `string` | | A file name, a path, a language |
-| `numbered` | `boolean` | `false` | For code meant to be referred to |
-| `firstLine` | `number` | `1` | Where the numbering starts |
-| `highlight` | `number[]` | | Lines to mark, in the reader's numbering |
-| `copyLabel` | `string` | | Brings the copy button, and names it |
-| `copiedLabel` | `string` | `copyLabel` | Announced after a successful copy |
-| `onCopy` | `(ok) => void` | | `false` means the clipboard refused |
-| `wrap` | `boolean` | `false` | For a long value that is not really code |
-| `size` | `sm` `md` | `md` | 10px and 12px |
-
-### `CodeToken`
+**`CodeToken` is the shape of one piece of a line:**
 
 ```ts
 interface CodeToken {
@@ -112,5 +96,4 @@ interface CodeToken {
 }
 ```
 
-`kind` is left out for text the highlighter had no opinion about, which then
-takes the ordinary foreground.
+`kind` is left out for text the highlighter had no opinion about, which then takes the ordinary foreground.

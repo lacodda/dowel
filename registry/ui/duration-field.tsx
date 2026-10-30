@@ -83,17 +83,27 @@ export function formatDuration(minutes: number): string {
 export interface DurationFieldProps {
   /** Minutes, or `null` for empty. */
   value: number | null
+  /** Told the new minutes (or `null` when emptied) on blur and on Enter, not on
+   * every key, and only when the parsed value differs from `value`. */
   onValueChange: (value: number | null) => void
   /** What a reader sees before they type. A duration in the canonical
    * spelling is the best hint there is, so this is the product's to give. */
   placeholder?: string
+  /** Stops the field taking input. */
   disabled?: boolean
+  /** Shows the value but does not let it be edited. */
   readOnly?: boolean
+  /** Marks the field as required for form validation. */
   required?: boolean
+  /** The field name submitted with a form. */
   name?: string
+  /** Put on the input, so a label can point at it. */
   id?: string
+  /** A ref to the underlying `<input>`. */
   ref?: Ref<HTMLInputElement>
+  /** The accessible name, when there is no visible label. */
   'aria-label'?: string
+  /** Points at the hint or error text for the field. */
   'aria-describedby'?: string
   className?: string
 }

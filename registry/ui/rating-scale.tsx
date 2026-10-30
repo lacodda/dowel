@@ -34,6 +34,7 @@ export interface RatingScaleProps {
   scale: number
   /** The score, or `undefined` for not judged yet. */
   value: number | undefined
+  /** Called with the new score by a click or a key, and with `undefined` when the score is taken back to not judged. */
   onValueChange: (value: number | undefined) => void
   /** What is being judged. Required: a bare row of marks names nothing, and
    * this is the only thing a screen reader has to go on. */
@@ -42,6 +43,7 @@ export interface RatingScaleProps {
    * Required rather than defaulted, because a default here would be English
    * shipped inside a primitive. */
   emptyLabel: string
+  /** Stops the scale taking a click or a key. */
   disabled?: boolean
   className?: string
 }

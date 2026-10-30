@@ -72,16 +72,4 @@ opens, a window the reader resizes, a font that loads late — all change the
 height after mount, and a list that measured once draws the wrong number of
 rows until something scrolls it.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `rows` | `readonly Row[]` | | |
-| `rowHeight` | `number` | | Fixed. Every row is this tall |
-| `children` | `(row, index) => ReactNode` | | |
-| `rowKey` | `(row, index) => string \| number` | | Required. Stable identity |
-| `overscan` | `number` | `3` | Extra rows drawn beyond each edge |
-| `label` | `string` | | Required. What a reader calls the list |
-
-`windowFor({ count, rowHeight, viewportHeight, scrollTop, overscan? })` returns
-`{ start, end, totalHeight, offsetTop }` — for a product windowing its own rows.
+**`windowFor` is exported on its own.** `windowFor({ count, rowHeight, viewportHeight, scrollTop, overscan? })` returns `{ start, end, totalHeight, offsetTop }` - for a product windowing its own rows.

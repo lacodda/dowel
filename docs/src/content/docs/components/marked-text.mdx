@@ -52,29 +52,8 @@ same rule for a text that ends in a newline.
 the mark's own `className` is its colour — in whichever tone the mark means,
 which is the product's to say.
 
+A mark is `{ start, end, className?, style? }`, offsets into the whole text; a
+line mark is `{ line, className? }`, with the line counted from zero.
+
 `MarkedText` is the same layer to read rather than type into, and
 `MarkedLines` is the layer itself, for a product composing its own box.
-
-## Props
-
-### `MarkedTextarea`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string` | | Required |
-| `onChange` | `(value: string) => void` | | The new value, not the event |
-| `marks` | `Mark[]` | `[]` | `{ start, end, className?, style? }` |
-| `lineMarks` | `LineMark[]` | `[]` | `{ line, className? }`, zero-based |
-| `className` | `string` | | The metrics both layers share |
-| `ref` | `Ref<HTMLTextAreaElement>` | | |
-
-Every other `<textarea>` attribute passes through.
-
-### `MarkedText`
-
-`text`, `marks`, `lineMarks` and `className`.
-
-### `MarkedLines`
-
-`text`, `marks`, `lineMarks` and `ghost` — transparent text, for a layer under
-something else.

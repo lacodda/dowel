@@ -54,8 +54,11 @@ export interface SettingsScreenWords {
 }
 
 export interface SettingsScreenProps {
+  /** The screen's title. */
   title: ReactNode
+  /** One sentence under the title. */
   description?: ReactNode
+  /** The sections, in the order the column lists them. */
   sections: readonly SettingsSection[]
   /** The open section's id. Null opens the column on a narrow screen and the
    * first section where there is room for both. */
@@ -66,6 +69,7 @@ export interface SettingsScreenProps {
    * `(section) => <Link to={`/settings/${section.id}`} />`. A press is then
    * the link's; `onSelect` is still told on the way back. */
   sectionRender?: SectionNavProps['render']
+  /** The column's name and the way back, in the product's language. */
   words: SettingsScreenWords
   className?: string
 }

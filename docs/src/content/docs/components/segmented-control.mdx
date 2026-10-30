@@ -47,25 +47,3 @@ them.
 
 **An icon alone needs a name.** A segment's words are its accessible name; a
 segment that is only an icon takes `aria-label`.
-
-## Props
-
-### `SegmentedControl`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `aria-label` | `string` | | What is being chosen |
-| `value` | `string` | | Controlled |
-| `defaultValue` | `string` | | |
-| `onValueChange` | `(value: string) => void` | | |
-| `disabled` | `boolean` | | |
-| `name` | `string` | | For a form that posts it |
-
-### `Segment`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string` | | Required |
-| `children` | `ReactNode` | | The option's words |
-| `aria-label` | `string` | | For an icon alone |
-| `disabled` | `boolean` | | |

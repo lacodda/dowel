@@ -58,25 +58,3 @@ section is one level inside it, so a reader moving by heading walks the
 screen's actual structure. It is the between-size heading the products kept
 writing by hand: above `SectionLabel`'s uppercase caption and below the page's
 title.
-
-## Props
-
-### `Divider`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `orientation` | `horizontal \| vertical` | `horizontal` | |
-| `spacing` | `none \| sm \| md \| lg` | `none` | Follows the axis |
-| `label` | `ReactNode` | | A caption in the line; horizontal only |
-| `decorative` | `boolean` | `false` | Drawing rather than structure |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `SectionHeader`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, a heading at `level` |
-| `description` | `ReactNode` | | The line under it |
-| `actions` | `ReactNode` | | Buttons belonging to this section |
-| `level` | `1`-`6` | `2` | `3` for a section inside a section |
-| `className` | `string` | | Merged so the caller wins a conflict |

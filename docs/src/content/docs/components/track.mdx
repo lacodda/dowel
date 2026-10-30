@@ -108,33 +108,6 @@ owner found it by looking.
 is a hover affordance, and a screen reader is given the bar as one image. Say
 what the whole bar says.
 
-## Props
+**Segment tones.** `accent` is the subject: work done, the band you are standing in. `past` is behind you - dimmed, so the current band carries the eye. `idle` is ahead, or not the subject: a break, a band not yet reached. `good`, `warn` and `bad` mark a stretch that is itself a state rather than a quantity.
 
-### Track
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `segments` | `TrackSegment[]` | | `key`, `start`, `end`, and optionally `tone` and `label` |
-| `label` | `string` | | Required — what the whole bar says |
-| `from` | `number` | earliest segment | What the left edge stands for |
-| `to` | `number` | latest segment | What the right edge stands for |
-| `marker` | `number` | | Where the position stands, on the same scale |
-| `divided` | `boolean` | `false` | A hairline between touching segments |
-| `minWidth` | `number` | `0.6` | The floor under a segment; `0` draws everything to scale |
-| `size` | `sm` `md` | `md` | |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### Segment tones
-
-| Tone | |
-| --- | --- |
-| `accent` | The subject: work done, the band you are standing in |
-| `past` | Behind you — dimmed, so the current band carries the eye |
-| `idle` | Ahead, or not the subject: a break, a band not yet reached |
-| `good` `warn` `bad` | A stretch that is itself a state rather than a quantity |
-
-### `track-segments`
-
-The arithmetic, importable without React: `place(segments, { from, to, minWidth })`
-returns `{ left, width, widened }` per segment, and `markerAt(value, from, to)`
-returns a percentage or `null`.
+**The arithmetic is importable without React.** `place(segments, { from, to, minWidth })` from `track-segments` returns `{ left, width, widened }` per segment, and `markerAt(value, from, to)` returns a percentage or `null`.

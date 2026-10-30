@@ -67,23 +67,3 @@ it names.
   <Switch checked={reopen} onCheckedChange={setReopen}>Open where I left off</Switch>
 </SettingsGroup>
 ```
-
-## Props
-
-| Prop | Type | | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | The screen's title |
-| `description` | `ReactNode` | | One sentence under it |
-| `sections` | `readonly SettingsSection[]` | | `{ id, label, description?, icon?, content, foot? }` |
-| `active` | `string \| null` | | The open section, or `null` |
-| `onSelect` | `(id \| null) => void` | | Told which section to open, or `null` to go back |
-| `sectionRender` | `(item) => RenderProp` | | A section as the product's link |
-| `words` | `{ sections, back }` | | The column's name, and the way back |
-
-### SettingsGroup
-
-| Prop | Type | | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | The group's heading |
-| `description` | `ReactNode` | | A line under it |
-| `children` | `ReactNode` | | Its fields, one under another |

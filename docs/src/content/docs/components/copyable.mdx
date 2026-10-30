@@ -46,13 +46,3 @@ announces, and a default would be an English word this component invented —
 one the product's translations never reach. Requiring them means a product
 that forgets fails to compile rather than shipping English to a reader who
 does not read it.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `string` | | The visible text |
-| `value` | `string` | the text | What lands on the clipboard, if different |
-| `label` | `string` | **required** | What the button is called |
-| `copiedLabel` | `string` | **required** | What is announced after a copy |
-| `onCopy` | `(ok: boolean) => void` | | Told what happened |

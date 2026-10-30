@@ -75,23 +75,3 @@ know. Leave `summary` out and nothing is drawn above the comparison.
 prose is revised by the line — a word-level diff of a rewritten paragraph is
 confetti. Where the subject really is word-level, a title or one sentence,
 compare the two strings yourself.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `before` | `string` | | |
-| `after` | `string` | | |
-| `beforeLabel` | `string` | | What the left side is called |
-| `afterLabel` | `string` | | |
-| `summary` | `({ added, removed }) => ReactNode` | | Left out, nothing is drawn |
-| `numbered` | `boolean` | `true` | |
-| `copyLabel` | `(side: string) => string` | | Brings a copy button to each header |
-| `copiedLabel` | `string` | | Announced after a successful copy |
-| `onCopy` | `(ok) => void` | | `false` means the clipboard refused |
-| `size` | `sm` `md` `full` | `md` | 16rem, 28rem, or no ceiling |
-
-`copyLabel` is a function of the side's label rather than a string: two buttons
-on one screen both called "Copy" tell a reader which is which only by where
-they are. Sticking the two together here would invent a phrase in a grammar the
-component does not know.

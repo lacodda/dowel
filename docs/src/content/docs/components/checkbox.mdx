@@ -55,27 +55,3 @@ sets all of them — the part that goes wrong when it is written by hand.
 **Checkbox or [Switch](/dowel/components/switch/)?** If there is a Save button,
 it is a checkbox: an answer collected now and submitted later. If the change is
 the action, it is a switch.
-
-## Props
-
-### Checkbox
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words. Without them, give `aria-label` |
-| `checked` | `boolean` | | Controlled |
-| `defaultChecked` | `boolean` | | Uncontrolled |
-| `onCheckedChange` | `(checked) => void` | | |
-| `indeterminate` | `boolean` | `false` | Draws the dash, announces `mixed` |
-| `parent` | `boolean` | `false` | Stands for the whole group |
-| `disabled` | `boolean` | `false` | |
-| `name`, `value` | `string` | | For a form and for the group |
-
-### CheckboxGroup
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string[]` | | Controlled |
-| `defaultValue` | `string[]` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | |
-| `allValues` | `string[]` | | What makes a parent box work |

@@ -45,11 +45,14 @@ import {
  */
 
 export interface JsonViewerProps {
+  /** The document to show: anything `JSON.parse` returns. */
   value: JsonValue
   /** Which branches are open, by path. Uncontrolled if omitted, starting with
-   * the top two levels open - the shape of an answer rather than the whole
-   * document. */
+   * the top two levels open (a branch of twenty entries or more stays shut) -
+   * the shape of an answer rather than the whole document. */
   open?: ReadonlySet<string>
+  /** Called with the new set of open paths whenever a branch is opened or
+   * closed. Pair it with `open` to control the viewer. */
   onOpenChange?: (open: Set<string>) => void
   /** Told which row was activated, with its path and its value. What a product
    * hangs "copy this" or "go to this setting" on. */

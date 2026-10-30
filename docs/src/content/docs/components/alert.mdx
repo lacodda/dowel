@@ -81,16 +81,3 @@ Only the product knows which it has.
 {/* Appeared just now, because saving failed. Announce it. */}
 <Alert tone="bad" role="alert">{t('couldNotSave')}</Alert>
 ```
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `tone` | `neutral \| good \| warn \| bad \| info` | `neutral` | |
-| `icon` | `ReactNode` | | Drawn before the text; the product's own |
-| `title` | `ReactNode` | | The heading. Optional — a one-line alert needs none |
-| `action` | `ReactNode` | | Drawn at the end: a link, a fix, a dismiss the product owns |
-| `role` | `string` | | No default. `alert` when it appeared just now |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`children` is the body. Anything else goes to the `<div>`.

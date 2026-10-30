@@ -61,22 +61,3 @@ loaded/failed state by hand for the same reason: a picture is common enough,
 and the state small enough, that a dependency would cost more than the
 `useState` it replaces. `Image` follows that precedent instead of adding a
 second one.
-
-## Props
-
-### `AspectRatio`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `ratio` | `'square' \| 'video' \| number` | | A named step, or width / height as a raw number |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `Image`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `alt` | `string` | | Required - `""` for a decorative picture |
-| `src` | `string` | | |
-| `fit` | `'cover' \| 'contain'` | `cover` | |
-| `fallback` | `ReactNode` | | Shown instead of the broken-image glyph on error |
-| `className` | `string` | | Merged so the caller wins a conflict |

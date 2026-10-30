@@ -76,30 +76,3 @@ that stands for something not there yet — "+ Tag", "Any kind".
 **A switch grows its hit area, not itself.** A chip is 21 pixels tall by design;
 as a switch it carries `target-min`, so the pointer target reaches the 24px
 floor while the chip stays the size it is.
-
-## Props
-
-### `Chip`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `variant` | `outline \| dashed \| soft \| accent \| good \| warn \| bad \| info` | `outline` | |
-| `count` | `number` | | Shown after the label |
-| `onRemove` | `() => void` | | Makes the chip removable — requires `removeLabel` |
-| `removeLabel` | `string` | **required with `onRemove`** | What the remove button is called |
-| `pressed` | `boolean` | | Makes the chip a switch; controlled |
-| `defaultPressed` | `boolean` | | A switch nobody else needs to know about |
-| `onPressedChange` | `(pressed) => void` | | |
-| `value` | `string` | | Which member of a ChipGroup this is |
-| `disabled` | `boolean` | | A switch only |
-
-### `ChipGroup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `aria-label` | `string` | | What the row chooses — a group without a name is a riddle |
-| `value` | `string[]` | | The chips that are on; controlled |
-| `defaultValue` | `string[]` | | |
-| `onValueChange` | `(value: string[]) => void` | | |
-| `multiple` | `boolean` | `false` | Several on at once |
-| `disabled` | `boolean` | | |

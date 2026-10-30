@@ -48,6 +48,7 @@ export interface NumberFormatProps
    * empty cell - and that is a decision about the data, not about formatting.
    * Accepting `null` here would put a default answer to it inside a primitive,
    * and the default would be wrong wherever absence means something. */
+  /** The number to format. */
   value: number
   /** The application's language by default - see `useLocale`. */
   locale?: string

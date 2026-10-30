@@ -68,21 +68,4 @@ for a list, and only the caller knows what its readings are called.
 **Nothing measured draws a bare plot**, not a chart of zeroes and not an empty
 box: the axis stays, and the words beside it say why there is no line.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `points` | `{ at, value }[]` | | `value: null` is a measurement not taken |
-| `label` | `string` | | Required — what the chart says, in words |
-| `bounds` | `Partial<Bounds>` | read from the points | `{ min: 0 }` for a count |
-| `ticks` | `number` | `4` | A wish: they land on round numbers. `0` draws none |
-| `formatTick` | `(value) => string` | | Right for money or a duration |
-| `footer` | `ReactNode` | | Two or three labels under the plot |
-| `tone` | `accent` `series` `good` `bad` `muted` | `accent` | |
-| `size` | `sm` `md` | `md` | 96px and 160px of plot |
-
-### `line-scale`
-
-The arithmetic, importable without React: `boundsOf(points, stated)`,
-`runs(points, bounds)` for the drawable stretches, `pathOf(run)`,
-`ticksFor(bounds, wanted)` and `yOf(value, bounds)`.
+**The arithmetic is importable without React**, from `line-scale`: `boundsOf(points, stated)`, `runs(points, bounds)` for the drawable stretches, `pathOf(run)`, `ticksFor(bounds, wanted)` and `yOf(value, bounds)`.

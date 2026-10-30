@@ -56,38 +56,6 @@ told is a popover half off the screen.
 The arrow follows: it is rotated to whichever side the popup actually landed
 on, not the side that was asked for.
 
-## Props
-
-### `Popover` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-| `modal` | `boolean \| 'trap-focus'` | `false` | Leave it off unless the panel really is a decision |
-
-### `PopoverPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | |
-| `side` | `top \| right \| bottom \| left \| inline-start \| inline-end` | `bottom` | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | `center` | Alignment along that side |
-| `sideOffset` | `number` | `8` | Distance from the trigger, in pixels |
-| `arrow` | `boolean` | `true` | Draw the notch pointing back at the trigger |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `PopoverTrigger` | | What opens it, and what the panel is measured against |
-| `PopoverTitle` | | The popup's `aria-labelledby` points at it |
-| `PopoverDescription` | | The popup's `aria-describedby` |
-| `PopoverClose` | | Closes it. `render` to use your own button |
-| `PopoverArrow` | | Exported for a popup assembled by hand |
-
 ## Notes
 
 **It is not modal.** What is under the panel stays in the accessibility tree

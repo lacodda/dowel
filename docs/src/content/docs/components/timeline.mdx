@@ -64,25 +64,3 @@ Takes the same vocabulary as [StatusDot](/dowel/components/status-dot/), and
 `time` takes a node so a product can pass its own
 [RelativeTime](/dowel/components/relative-time/) rather than a string it
 formatted early.
-
-## Props
-
-### `Timeline`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `side` | `start \| end` | `start` | Which side the rail runs down |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `TimelineItem`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required — what happened |
-| `time` | `ReactNode` | | When, drawn quieter |
-| `status` | `accent \| good \| warn \| bad \| info \| neutral` | `neutral` | |
-| `statusLabel` | `string` | | Names the state; without it the marker is decoration |
-| `icon` | `ReactNode` | | A shape inside the marker |
-| `pending` | `boolean` | `false` | An empty ring: not taken yet |
-| `last` | `boolean` | `false` | Draws no rail below |
-| `children` | `ReactNode` | | The detail under the title |

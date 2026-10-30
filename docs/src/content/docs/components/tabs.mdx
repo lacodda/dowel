@@ -79,27 +79,3 @@ accent; `modifiedLabel` is what a reader hears, as part of the tab's name
 ("plan.md unsaved changes"). The types will not accept one without the other,
 and the same goes for `onClose` and `closeLabel`: the component has no English
 of its own to fall back on.
-
-## Props
-
-### `TabsList`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `variant` | `line` \| `bar` | `line` | `bar` is for a window's title bar |
-| `aria-label` | `string` | | Name the list when nothing on screen does |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `TabsTab`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `any` | | Which panel it shows |
-| `modified` | `boolean` | | Draws the unsaved dot; needs `modifiedLabel` |
-| `modifiedLabel` | `string` | | What a reader hears for the dot |
-| `onClose` | `() => void` | | Makes the tab closable; needs `closeLabel` |
-| `closeLabel` | `string` | | The cross's tooltip |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`Tabs` takes Base UI's root props (`value`, `defaultValue`, `onValueChange`,
-`orientation`); `TabsPanel` takes `value`.

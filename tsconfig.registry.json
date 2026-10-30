@@ -28,6 +28,7 @@
     // The types of the functions the gates import from generators.
     "tools/build-llms.d.ts",
     "tools/build-history.d.ts",
+    "tools/build-props.d.ts",
     "tools/release-notes.d.ts",
     "tools/breaking-changes.d.ts",
     "tools/mutation-floor.d.ts",

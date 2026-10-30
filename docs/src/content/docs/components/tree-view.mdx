@@ -61,18 +61,3 @@ node, a request per open, an error state inside a row.
 split [table-sort](/dowel/components/table-sort/) is. `visibleRows` is also the
 answer to "how many rows is this tree", which is what a product needs to put a
 tree inside a [VirtualList](/dowel/components/virtual-list/).
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `nodes` | `readonly TreeNode[]` | | `{ id, label, children?, empty? }` |
-| `open` | `ReadonlySet<string>` | | Uncontrolled if omitted |
-| `onOpenChange` | `(open: Set<string>) => void` | | |
-| `selected` | `string` | | The chosen row, not the cursor |
-| `onSelect` | `(id: string) => void` | | Fired on a leaf |
-| `label` | `string` | | Required. What a reader calls the tree |
-
-`TreeNode` and `visibleRows` come from
-[tree-rows](/dowel/components/tree-rows/), which the registry installs
-alongside.

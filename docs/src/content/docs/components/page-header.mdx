@@ -54,23 +54,3 @@ map, a timeline that earns every pixel.
 [`Screen`](/dowel/components/app-shell/), which knows whether it is scrolling
 and therefore whether a scrollbar is about to take ten pixels off the right. A
 container that also padded would double it.
-
-## Props
-
-### `PageHeader`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, the screen's `h1` unless `level` says otherwise |
-| `level` | `1`-`6` | `1` | `2` over the open item of a list beside its detail |
-| `description` | `ReactNode` | | One sentence under it |
-| `actions` | `ReactNode` | | Buttons acting on the whole screen |
-| `children` | `ReactNode` | | A trail, a status, a tab strip |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `Container`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `width` | `prose \| default \| wide \| full` | `default` | |
-| `className` | `string` | | Merged so the caller wins a conflict |

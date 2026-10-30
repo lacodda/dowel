@@ -51,25 +51,3 @@ in one of the four would be a claim the product did not make.
 **No words of its own.** "Online" is the product's vocabulary in the product's
 language. See [Badge](/dowel/components/badge/) for a label of any other kind,
 and [Timeline](/dowel/components/timeline/), which takes the same vocabulary.
-
-## Props
-
-### `StatusDot`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `string` | | Required — what a reader gets in place of the colour |
-| `status` | `good \| warn \| bad \| info \| neutral` | `neutral` | |
-| `size` | `sm \| md \| lg` | `md` | |
-| `showLabel` | `boolean` | `false` | Print the word beside the dot |
-| `icon` | `ReactNode` | | A shape in the dot's place |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `StatusBadge`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `status` | `good \| warn \| bad \| info \| neutral` | `neutral` | |
-| `icon` | `ReactNode` | | A shape before the word; drops the dot |
-| `dot` | `boolean` | `true` | |
-| `children` | `ReactNode` | | The word, in the product's language |

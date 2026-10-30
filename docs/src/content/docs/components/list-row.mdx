@@ -65,25 +65,3 @@ not a value you are submitting. A product that puts rows in a `listbox` passes
 **A ListRow's height follows density.** It stands on `py-row`, the same rhythm a
 [Table](/dowel/components/table/) row does, so `data-density="compact"` tightens
 a list and a table together.
-
-## Props
-
-### `ListRow`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The row's words |
-| `start` | `ReactNode` | | What identifies it at a glance |
-| `description` | `ReactNode` | | A quieter second line |
-| `end` | `ReactNode` | | What is measured about it |
-| `render` | `ReactElement` | `<div>` | `<li />` in a list |
-
-### `RowButton`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The row's words, in semibold |
-| `start`, `description`, `end` | `ReactNode` | | As for ListRow |
-| `selected` | `boolean` | `false` | The open one — tinted, and `aria-current` |
-| `render` | `ReactElement` | `<button>` | Your router's link |
-| `disabled` | `boolean` | | |

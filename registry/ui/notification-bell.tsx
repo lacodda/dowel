@@ -38,12 +38,18 @@ export interface NotificationBellProps {
   level?: HeadingLevel
   /** Open, controlled. Left out, the bell manages itself. */
   open?: boolean
+  /** Told when the panel opens or closes, whether the bell is controlled or
+   * manages itself. */
   onOpenChange?: (open: boolean) => void
   /** The button that clears the count, shown only while there is one. */
   markAllLabel?: string
+  /** Called when the mark-all button is pressed. The button is drawn only
+   * with `markAllLabel` and while `count` is above zero. */
   onMarkAll?: () => void
   /** The footer button, which closes the panel and hands over. */
   seeAllLabel?: string
+  /** Called after the panel closes, when the footer button is pressed. The
+   * footer is drawn only with `seeAllLabel`. */
   onSeeAll?: () => void
   /** What the list says when there are no rows. */
   emptyLabel: string

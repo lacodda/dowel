@@ -63,10 +63,13 @@ export const diffViewVariants = cva('@container flex flex-col gap-2 text-sm', {
 export interface DiffViewProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onCopy'>,
     VariantProps<typeof diffViewVariants> {
+  /** The text as it was, drawn on the left. */
   before: string
+  /** The text as it is now, drawn on the right. */
   after: string
   /** What each side is called - a version name, a date, "on disk". */
   beforeLabel: string
+  /** What the right side is called; see `beforeLabel`. */
   afterLabel: string
   /** The line above the comparison: how much moved. The component counts, the
    * product says it in words - a count is a plural, and a plural belongs to a

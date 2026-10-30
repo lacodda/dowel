@@ -83,18 +83,3 @@ the default error screen without its frame, for a list inside a panel.
 the data, and a component that guessed at them would be wrong for the product
 that owns them differently. A crash while rendering is
 [ErrorBoundary](/dowel/components/error-boundary/), not this.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `pending` | `boolean` | `false` | Nothing has arrived yet |
-| `error` | `{ message } \| string \| null` | `null` | Anything with a message |
-| `empty` | `boolean` | `false` | Something arrived, and it was nothing |
-| `skeleton` | `ReactNode` | `<SkeletonList />` | What stands in while pending |
-| `emptyState` | `ReactNode` | | Shown when nothing came back |
-| `errorState` | `(message, retry?) => ReactNode` | | Draw the failure yourself |
-| `errorLabels` | `{ title, body? }` | | Words for the default failure screen |
-| `onRetry` | `() => void` | | A way out of a failure — requires `retryLabel` |
-| `retryLabel` | `string` | **required with `onRetry`** | What the retry button is called |
-| `plain` | `boolean` | `false` | The default error screen without its frame |

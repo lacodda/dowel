@@ -70,32 +70,3 @@ is not drawn at all rather than drawn in English.
 sentence that becomes its hover title, because a grid of five shades says
 nothing to a screen reader and little to anyone who does not separate five
 blues.
-
-## Props
-
-### ActivityHeatmap
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `entries` | `{ date, value }[]` | | `value: null` means under way |
-| `from` `to` | `string` | | The range, `YYYY-MM-DD` |
-| `label` | `string` | | Required — what the grid as a whole is |
-| `describe` | `(cell) => string` | | Required — what one square says |
-| `busiest` | `number` | largest value present | The ceiling the shades measure against |
-| `weekStartsOn` | `0`–`6` | `1` | Sunday-first numbering |
-| `weekdayLabel` | `(weekday) => ReactNode` | | Omit and the row labels are not drawn |
-| `size` | `sm` `md` | `md` | `sm` when a year has to fit |
-
-### ActivityLegend
-
-| Prop | Type | |
-| --- | --- | --- |
-| `less` `more` | `ReactNode` | The words at each end of the ramp |
-| `busiest` | `ReactNode` | What the darkest square stands for |
-| `none` `partial` | `ReactNode` | Named only when the data can produce them |
-
-### `activity-weeks`
-
-The arithmetic, importable without React: `weeks(entries, options)` returns
-columns of seven `Cell`s, `stepFor(value, busiest)` the step a figure lands on,
-`datesBetween`, `isWeekend` and `weekdayRows` the calendar helpers.

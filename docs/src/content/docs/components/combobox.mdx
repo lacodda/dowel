@@ -109,42 +109,8 @@ With chips, for the `multiple` case:
 </Combobox>
 ```
 
-## Props
-
-### `Combobox` (root)
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `items` | `Array` | | What gets filtered |
-| `multiple` | `boolean` | `false` | Turns `value` into an array, and makes chips meaningful |
-| `filter` | `function \| null` | `Intl.Collator` | `null` to filter elsewhere |
-| `value` / `onValueChange` | | | Controlled; `defaultValue` for uncontrolled |
-| `filteredItems` | `Array` | | When the product filters it itself |
-
-### `ComboboxInput`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | Matches Input's heights |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `ComboboxPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A floor; it matches the input's width |
-| `side` | `top \| right \| bottom \| left` | `bottom` | A preference - Base UI flips it when it does not fit |
-| `align` | `start \| center \| end` | | Alignment along that side |
-| `sideOffset` | `number` | `4` | Distance from the input |
-| `container` | `Element \| Ref` | document body | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-`ComboboxList`, `ComboboxItem`, `ComboboxItemIndicator`, `ComboboxEmpty`,
-`ComboboxStatus`, `ComboboxTrigger`, `ComboboxIcon`, `ComboboxClear`,
-`ComboboxInputGroup`, `ComboboxChips`, `ComboboxChip`, `ComboboxChipRemove`,
-`ComboboxValue`, `ComboboxGroup` and `ComboboxGroupLabel` pass their props to
-Base UI unchanged. `comboboxPopupVariants` and `comboboxItemVariants` are
-Select's, re-exported: the two dropdowns are the same object seen twice, and
-two `cva` calls that started identical do not stay that way.
+**A product that filters the list itself** passes `filteredItems` alongside
+`items`, and Base UI shows exactly that list. `comboboxPopupVariants` and
+`comboboxItemVariants` are Select's, re-exported: the two dropdowns are the same
+object seen twice, and two `cva` calls that started identical do not stay that
+way.

@@ -51,6 +51,10 @@ head, in one row with its filters and actions. The grid asks for a new month
 only when the keyboard walks off its edge, through `onMonthChange`; without it
 the cursor stops at the edge.
 
+**The grid is named by its month.** Without an `aria-label` it is called by the
+month it shows, "September 2026", in the calendar's `locale`; an `aria-label`
+replaces that.
+
 **Only the weeks the month touches** are drawn - four to six. The days of the
 neighbouring months in them are real days on a quieter ground: `renderDay` is
 asked for them too, and something can be dropped on the 31st of August from the
@@ -104,26 +108,6 @@ something would land on; `dropHint` says, at its foot, what landing there means.
 A click on a day's ground calls `onDaySelect`; a click on a line, the plus or the
 count inside it does not - no line has to stop the event so that opening a
 release does not also book the day under it.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `month` | `IsoDate` | | Any day of the month to show |
-| `onMonthChange` | `(month) => void` | | Asked for when the keyboard walks off the grid |
-| `renderDay` | `(date) => ReactNode[]` | | One node per line, each with a `key` |
-| `moreLabel` | `(count) => string` | | The count a full day folds into: "3 more" |
-| `fewerLabel` | `string` | | Folds an open day again |
-| `onDaySelect` | `(date) => void` | | A click on the day's ground, Enter on the cursor |
-| `onAddDay` | `(date) => void` | | The plus in the corner of a day |
-| `addDayLabel` | `string` | | Names the plus; required with `onAddDay` |
-| `dropTarget` | `IsoDate \| null` | | The day something would land on |
-| `dropHint` | `ReactNode` | | What landing on `dropTarget` would mean |
-| `locale` | `string` | the application's (`useLocale`) | Names, and the first day of the week |
-| `aria-label` | `string` | the month, "September 2026" | Names the grid |
-
-Everything else goes on the grid element - `onDragOver`, `onDrop`,
-`onPointerOver`, a `className` with its height.
 
 ## Helpers
 

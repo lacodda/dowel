@@ -94,24 +94,3 @@ at runtime â€” the donor hides two of its five until there is something to say â
 and a grid with a fixed column count leaves a hole where a hidden tile was.
 `items-baseline` is the part that is easy to miss: without it a tile carrying a
 delta stands taller than its neighbours, and the numbers stop sharing a line.
-
-## Props
-
-### StatTile
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `ReactNode` | | What the figure is |
-| `value` | `ReactNode` | | The figure, already formatted |
-| `tone` | `default` `accent` `warn` `bad` | `default` | How the value itself reads |
-| `icon` | `ReactNode` | | A mark before the figure. **Required** with `warn` or `bad` |
-| `delta` | `ReactNode` | | Which way it moved, in the caller's words |
-| `deltaTone` | `default` `good` `bad` | `default` | Whether that movement is good news |
-| `size` | `md` `lg` | `md` | `lg` for a figure that leads a page |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### StatRow
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `className` | `string` | | Merged so the caller wins a conflict |

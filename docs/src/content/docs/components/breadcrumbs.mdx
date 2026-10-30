@@ -52,14 +52,3 @@ greater than, Harbour lights".
 **The last crumb is the one that gives.** It may be a sentence-long title, so
 it truncates; the crumbs before it are screen names and keep their width, so
 the way home does not disappear first.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `string` | | Required — names the landmark |
-| `items` | `{ id, label }[]` | | Required, root first |
-| `render` | `(crumb) => ReactElement` | | The element a crumb before the last is drawn as |
-| `onSelect` | `(id) => void` | | Pressed, whatever the crumb is drawn as |
-| `max` | `number` | `4` | Crumbs drawn before the middle folds; floor of 3 |
-| `className` | `string` | | Merged so the caller wins a conflict |

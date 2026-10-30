@@ -72,24 +72,3 @@ phone's bottom bar under it. This is the geometry they share. See
 [NavRail](/dowel/components/nav-rail/) for the destinations and
 [WindowFrame](/dowel/components/window-frame/) for a window with no system
 frame.
-
-## Props
-
-### `AppShell`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `top` | `ReactNode` | | The strip across the top, full width |
-| `side` | `ReactNode` | | The rail down the left |
-| `sideWidth` | `number \| string` | `var(--spacing-rail)` | Pixels, or any CSS track size |
-| `topHeight` | `number \| string` | `var(--spacing-titlebar)` | Pixels, or any CSS track size |
-| `children` | `ReactNode` | | Required — usually one `Screen` |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `Screen`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `scroll` | `flow \| held` | `flow` | Where the scrolling happens |
-| `pad` | `default \| tight \| none` | `default` | The page's own margins |
-| `className` | `string` | | Merged so the caller wins a conflict |

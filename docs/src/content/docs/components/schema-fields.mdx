@@ -140,29 +140,3 @@ const words: SchemaFieldsWords = {
   removeTag: (tag) => t('form.removeTag', { tag }),
 }
 ```
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `schema` | `JsonSchema` | | Required. An object schema; its properties are the fields, in the order written |
-| `value` | `Record<string, unknown>` | | Required. The record |
-| `onValueChange` | `(value) => void` | | Required. Told the next record - a copy, never the same object changed |
-| `words` | `SchemaFieldsWords` | | Required. Every word the fields show |
-| `errors` | `Record<string, ReactNode>` | | Problems from elsewhere, by key (`server.port`) |
-| `reveal` | `boolean` | `false` | Say every problem now, after a refused save |
-| `custom` | `Record<string, (props) => ReactNode>` | | Fields the product draws itself, by key |
-| `disabled` | `boolean` | `false` | Every field at once, while it saves |
-| `className` | `string` | | On the column the fields stand in |
-
-### Words
-
-| Word | |
-| --- | --- |
-| `issue(issue, field)` | What is wrong with one field: `issue.code` is the rule, `limit` and `format` what it asked for |
-| `none` | The answer that takes an optional choice back |
-| `choose` | What a required choice says before anything is chosen |
-| `pickDate`, `previousMonth`, `nextMonth` | The date picker's face and its two month buttons |
-| `clearDate` | The button that takes back a date in an optional field |
-| `showSecret`, `hideSecret` | The reveal button of a secret |
-| `removeTag(tag)` | The cross on one tag |

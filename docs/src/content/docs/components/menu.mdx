@@ -67,27 +67,4 @@ is announced as an unlabelled control.
 One per menu at most: a list where several entries are red says nothing about
 which of them is the dangerous one.
 
-## Props
-
-`MenuPopup`:
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm` \| `md` \| `lg` | `md` | The minimum width of the panel; the room it is given is the window's |
-| `side` | `top` \| `right` \| `bottom` \| `left` | | Preferred side; Base UI flips it when it does not fit |
-| `align` | `start` \| `center` \| `end` | | Alignment along that side |
-| `sideOffset` | `number` | `4` | Distance from the trigger, in pixels |
-| `container` | `Element` | `document.body` | Where to portal to |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`MenuItem`, `MenuSubTrigger` and `MenuCheckboxItem`:
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `tone` | `default` \| `danger` | `default` | |
-| `disabled` | `boolean` | `false` | Reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`Menu`, `MenuTrigger`, `MenuGroup`, `MenuGroupLabel`, `MenuSeparator`,
-`MenuSub` and `MenuCheckboxIndicator` take the props their Base UI parts take;
-`render` composes each with your own element.
+**A disabled item stays reachable.** It is reached by the arrows and announced as unavailable, but does nothing - a reader learns the action exists. `size` sets the minimum width of the panel; the room it is given is the window's.

@@ -150,11 +150,13 @@ export function TierBadge({ label, value, status, className, ...props }: TierBad
 }
 
 export interface TierRulerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+  /** The bands, in any order. Bands outside `min` to `max` are dropped. */
   tiers: Tier[]
   /** Where the thing stands now. */
   value: number
   /** The ends of the road. */
   min?: number
+  /** The top end of the road; see `min`. */
   max?: number
   /** What the ruler as a whole is called, for a screen reader, and what to say
    * the value is. The product's words - the ruler has none. */

@@ -81,16 +81,4 @@ table, so the heading stays where it is and the table does not change shape
 between having rows and not; `colSpan` is required, because without it the
 message sits under the first column.
 
-## Parts
-
-| | |
-| --- | --- |
-| `TableScroll` | The scroll container. Where the scrollbar and the sticky heading live |
-| `Table` | The `<table>`. Row height follows the region's density |
-| `TableHead` | `sticky`: keep the heading in view while the body scrolls |
-| `TableBody` | |
-| `TableRow` | `selected`: the row picked out. Announced, not only coloured |
-| `TableHeader` | A plain heading. `numeric` |
-| `TableSortHeader` | `column`, `sort`, `onSortChange`, `numeric` |
-| `TableCell` | `numeric`: right-aligned, tabular figures |
-| `TableEmpty` | `colSpan` required |
+**`Table` follows the region's density**, so row height changes with it.

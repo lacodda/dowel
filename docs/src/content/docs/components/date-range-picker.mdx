@@ -44,17 +44,3 @@ clicking a third time.
 **A range can be taken back.** Give `clearLabel` and, while anything is chosen
 - half made or whole - the popup offers it under the month, the way DatePicker
 does; `onValueChange` is told the empty range, `{}`.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `{ start?, end? }` | | Either end may be absent |
-| `onValueChange` | `(value) => void` | | Fires on both clicks, and with `{}` when cleared |
-| `clearLabel` | `string` | | The button that takes the range back |
-| `min`, `max` | `IsoDate` | | Bounds, inclusive |
-| `placeholder` | `string` | | Required |
-| `previousMonthLabel` | `string` | | Required |
-| `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | the application's (`useLocale`) | |
-| `disabled` | `boolean` | `false` | |

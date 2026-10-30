@@ -71,6 +71,7 @@ export interface WizardStep extends Omit<StepperStep, 'status'> {
 }
 
 export interface WizardProps extends Omit<HTMLAttributes<HTMLFormElement>, 'children' | 'onSubmit' | 'onError'> {
+  /** The steps, in order. Each has an `id`, a label, its `content`, and optional checks that run before the wizard moves on. */
   steps: readonly WizardStep[]
   /** The step shown, for a controlled wizard. */
   step?: string
@@ -86,11 +87,15 @@ export interface WizardProps extends Omit<HTMLAttributes<HTMLFormElement>, 'chil
   onError?: (error: unknown, stepId: string) => void
   /** The stepper's name for a reader. */
   stepperLabel: string
+  /** The words for a step's state - done, failed, and optionally not yet reached - which the stepper says to a screen reader beside the mark. */
   stateLabels: StepStateLabels
+  /** The position in words, such as `(2, 5) => 'Step 2 of 5'`. The stepper shows it when it is too narrow for its labels. */
   summary?: (position: number, total: number) => ReactNode
   /** The buttons' words. Required: the component has none of its own. */
   backLabel: ReactNode
+  /** The words of the button that goes to the next step. */
   nextLabel: ReactNode
+  /** The words of the button on the last step that finishes the wizard. */
   finishLabel: ReactNode
   /** Stepper above the content, or beside it. */
   orientation?: 'horizontal' | 'vertical'

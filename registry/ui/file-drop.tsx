@@ -52,14 +52,21 @@ export interface FileDropProps {
   maxFiles?: number
   /** Whether several may be chosen in the picker. */
   multiple?: boolean
+  /** Dims the zone, ignores drops and disables the input underneath. */
   disabled?: boolean
   /** What the zone says. The product's words, in the product's language. */
   children?: ReactNode
   className?: string
+  /** The `id` of the hidden file input, which the zone's label points at. A
+   * generated one if omitted. */
   id?: string
   /** Names the field for a screen reader, when there is no visible label. */
   'aria-label'?: string
+  /** The `id` of the element that names the field, when it is not the zone's
+   * own text. */
   'aria-labelledby'?: string
+  /** The `id` of the element that describes the field - the accepted types, the
+   * size limit. */
   'aria-describedby'?: string
 }
 

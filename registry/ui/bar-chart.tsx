@@ -78,6 +78,8 @@ export interface BarDatum {
 export interface BarChartProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
     VariantProps<typeof barChartVariants> {
+  /** One column per entry, in order. A `null` value keeps its place and is
+   * drawn as a gap. */
   bars: BarDatum[]
   /** The top of the scale. Defaults to the tallest bar present; state it to
    * compare two charts, or to hold a scale still while the data moves. */

@@ -58,14 +58,5 @@ and that is a decision about the data, not about formatting. See
 [table-sort](/dowel/components/table-sort/) for the same distinction in the
 ordering.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `number` | | Required |
-| `locale` | `string` | the application's (`useLocale`) | |
-| …`Intl.NumberFormatOptions` | | | `style`, `currency`, `notation`, `maximumFractionDigits`, … |
-| `className` | `string` | | Merged; `tabular-nums` stays |
-
 `formatNumber(value, locale, options?)` gives the string alone, for a `title`,
 an `aria-label` or a CSV.

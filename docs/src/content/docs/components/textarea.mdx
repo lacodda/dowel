@@ -25,12 +25,3 @@ growing and starts scrolling after all.
 **Height is reset before measuring.** Worth knowing if you write your own: a
 box already tall enough reports its own height as `scrollHeight`, so without
 the reset it grows and never shrinks back.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `autoResize` | `boolean` | `false` | Grow to fit instead of scrolling |
-| `maxRows` | `number` | | Stop growing here and scroll |
-
-Everything else goes to the `<textarea>`.

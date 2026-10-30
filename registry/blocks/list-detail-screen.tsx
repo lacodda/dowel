@@ -73,6 +73,7 @@ export interface ListDetailScreenProps<T> {
   description?: ReactNode
   /** What acts on the screen as a whole: New, Import. */
   actions?: ReactNode
+  /** What the list holds, in the order it shows. */
   items: readonly T[]
   /** A stable key per item: its id. */
   itemKey: (item: T) => string
@@ -99,6 +100,9 @@ export interface ListDetailScreenProps<T> {
    * is then the link's: the router opens it and `selected` follows the
    * address. `onSelect` is still told by the keyboard and the way back. */
   rowRender?: (item: T) => RowButtonProps['render']
+  /** Every word the screen shows: the list's name, the search box, the way
+   * back, and what each empty state says. Words are passed in so the product
+   * can translate them. */
   words: ListDetailScreenWords
   className?: string
 }

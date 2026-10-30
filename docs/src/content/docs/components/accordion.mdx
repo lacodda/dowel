@@ -69,45 +69,4 @@ not touch trees. A reader moves between headers with Tab.
 `accordionTriggerClasses` rather than restating it, because a header row and
 a lone trigger are the same control in two places.
 
-## Props
-
-### `Accordion` (root)
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` / `onValueChange` | | | Controlled |
-| `defaultValue` | `any[]` | | Uncontrolled - the values initially open |
-| `multiple` | `boolean` | `false` | Lets more than one section stay open |
-| `disabled` | `boolean` | `false` | Reaches every item |
-
-### `AccordionItem`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `any` | generated | Identifies the section; needed to set it open by default |
-| `disabled` | `boolean` | `false` | This section only |
-
-### `AccordionHeader`
-
-The heading the trigger belongs inside, an `<h3>` unless `level` says
-otherwise - a page going from its title straight to the accordion says `2`.
-Passes its props to Base UI unchanged, plus `className` merged so the caller
-wins a conflict.
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `level` | `1`-`6` | `3` | Where the sections stand in the page's outline |
-
-### `AccordionTrigger`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words on the button |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `AccordionPanel`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The section's content |
-| `className` | `string` | | Merged so the caller wins a conflict |
+**`disabled` goes where it is put.** On `Accordion` it reaches every item; on `AccordionItem` it closes off that section only. An item with no `value` gets a generated one, so give it one when it has to be open by default.

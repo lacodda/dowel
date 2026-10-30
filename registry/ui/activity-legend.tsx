@@ -18,9 +18,11 @@ export interface ActivityLegendProps extends HTMLAttributes<HTMLDivElement> {
    * without this the shades read as an absolute measure. Omitted when there is
    * no value in the grid to be busiest. */
   busiest?: ReactNode
-  /** The other three meanings, each named. Omitted one at a time by a caller
-   * whose data cannot produce that kind. */
+  /** The empty square: no entry for that date. Omitted by a caller whose data
+   * cannot produce that kind. */
   none?: ReactNode
+  /** The outlined square: under way, no total yet. Omitted by a caller whose
+   * data cannot produce that kind. */
   partial?: ReactNode
 }
 

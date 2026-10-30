@@ -68,17 +68,3 @@ the string:
 | `isIsoDate(value)` | shape *and* existence — `2026-02-31` is not a day |
 | `weekday(date)` | 1 is Monday, 7 is Sunday, as `Intl` numbers them |
 | `monthGrid(month, locale)` | six whole weeks, starting on the locale's first day |
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `IsoDate` | | The chosen day |
-| `onValueChange` | `(value) => void` | | Fires on Enter and on a click |
-| `month` | `IsoDate` | | Which month is shown; uncontrolled unless given |
-| `onMonthChange` | `(month) => void` | | |
-| `min`, `max` | `IsoDate` | | Bounds, inclusive |
-| `rangeEnd` | `IsoDate` | | Shades the days between, for a range |
-| `locale` | `string` | the application's (`useLocale`) | Names and first day of the week |
-| `previousMonthLabel` | `string` | | Required — the buttons are icons |
-| `nextMonthLabel` | `string` | | Required |

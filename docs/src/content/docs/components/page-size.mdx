@@ -42,13 +42,3 @@ put it in `OFFSET n * pageSize` and get string concatenation.
 control for a screen reader; the second is the visible text beside it, for when
 there is room. A control that has only the visible one is unnamed the moment
 the layout drops it.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `pageSize` | `number` | | |
-| `options` | `number[]` | `[10, 25, 50, 100]` | |
-| `onPageSizeChange` | `(size: number) => void` | | Receives a number |
-| `label` | `string` | | Required. Names the control |
-| `children` | `ReactNode` | | The visible label, when there is room |

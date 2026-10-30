@@ -102,16 +102,3 @@ does not, which is what a banner that is simply *there* should do.
 
 Pass `role="alert"` for the other case — a banner that appeared just now
 because the connection dropped.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `tone` | `neutral \| accent \| good \| warn \| bad \| info` | `neutral` | |
-| `sticky` | `boolean` | `false` | Pinned to the top of the viewport |
-| `icon` | `ReactNode` | | Drawn first; the product's own |
-| `action` | `ReactNode` | | Drawn at the end: a fix, a link, a dismiss the product decides is allowed |
-| `role` | `string` | `status` | `alert` when it appeared just now |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-`children` is the message. Anything else goes to the `<div>`.

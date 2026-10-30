@@ -62,41 +62,6 @@ pinned to the bottom. The popup is capped at the window, which it did not
 promise before — a long list of what a deletion takes pushed both answers off
 the bottom edge.
 
-## Props
-
-### `ConfirmDialog` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-
-`modal` and `disablePointerDismissal` are not accepted here. Base UI forces
-both on for an alert dialog, which is the whole difference from Dialog.
-
-### `ConfirmDialogPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `size` | `sm \| md \| lg` | `md` | A confirm dialog is a question, so the sizes run one step narrower than Dialog's - and it has none of Dialog's large ones: a question that needs an editor's width is an editor, and belongs in a Dialog |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-It renders its own portal and its own backdrop, so there is nothing to arrange
-around it.
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `ConfirmDialogTrigger` | | What opens it. `render` to use your own button |
-| `ConfirmDialogHeader` | `action` | The question and what it costs |
-| `ConfirmDialogTitle` | | The question. The popup's `aria-labelledby` points at it |
-| `ConfirmDialogDescription` | | What the answer costs. The popup's `aria-describedby` |
-| `ConfirmDialogBody` | | What the answer takes with it, scrolling if it runs long |
-| `ConfirmDialogActions` | `start` | Pinned to the bottom, right-aligned row for the two answers |
-| `ConfirmDialogClose` | | Closes it. `render` to use your own button |
-
 ## Notes
 
 **It announces itself as `alertdialog`.** That is the semantic half of the
@@ -120,3 +85,7 @@ anyone on a touch screen.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+**Its sizes run one step narrower than Dialog's**, and it has none of Dialog's large ones: a question that needs an editor's width is an editor, and belongs in a Dialog. It renders its own portal and its own backdrop, so there is nothing to arrange around it.
+
+**`modal` is not accepted.** Base UI forces it on for an alert dialog, which is the whole difference from Dialog.

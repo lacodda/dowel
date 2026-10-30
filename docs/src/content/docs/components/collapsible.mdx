@@ -46,29 +46,5 @@ primitive does not change it: a collapsible whose content vanishes on close
 cannot be found by the browser's own page search. A product that genuinely
 wants it gone can leave `CollapsiblePanel` out of the tree itself.
 
-## Props
-
-### `Collapsible` (root)
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` / `onOpenChange` | | | Controlled |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `disabled` | `boolean` | `false` | Reaches the trigger and the panel both |
-
-### `CollapsibleTrigger`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The words on the button |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `CollapsiblePanel`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | | The content that opens and shuts |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
 `collapsibleTriggerClasses` is exported too - the trigger's own class list,
 reused by [Accordion](/dowel/components/accordion/) rather than copied.

@@ -25,16 +25,24 @@ import { cn } from 'dowel-ui'
 
 export interface RadioGroupProps {
   children: ReactNode
+  /** The `value` of the selected radio. Controlled; pair it with `onValueChange`. */
   value?: string
+  /** The `value` selected at first, when the group is uncontrolled. */
   defaultValue?: string
+  /** Called with the `value` of the radio the reader chose. */
   onValueChange?: (value: string) => void
+  /** Disables every radio in the group. */
   disabled?: boolean
+  /** Shows the selection but does not let it change. */
   readOnly?: boolean
+  /** Marks the group as requiring a choice for form validation. */
   required?: boolean
+  /** The field name submitted with a form. */
   name?: string
   /** Lay the options out in a row. For two or three short ones; a column is
    * the default because it stays readable as labels grow. */
   orientation?: VariantProps<typeof radioGroupVariants>['orientation']
+  /** The accessible name of the group, when no visible label names it. */
   'aria-label'?: string
   className?: string
 }
@@ -63,9 +71,11 @@ export function RadioGroup({ children, orientation, className, ...props }: Radio
 }
 
 export interface RadioProps {
+  /** What the group's `value` becomes when this radio is chosen. */
   value: string
   /** The words next to the dot. */
   children?: ReactNode
+  /** Disables this radio alone; the label dims with it. */
   disabled?: boolean
   className?: string
 }

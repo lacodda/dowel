@@ -73,6 +73,10 @@ export interface LoginScreenProps {
   extra?: ReactNode
   /** Under the panel: "No account? Ask whoever runs this server." */
   footer?: ReactNode
+  /** Every string the screen shows: the two field labels, the show and hide
+   * names of the password toggle, the submit button in both states, and the
+   * message for a server that could not be reached. The block has no words of
+   * its own. */
   words: LoginScreenWords
   className?: string
 }

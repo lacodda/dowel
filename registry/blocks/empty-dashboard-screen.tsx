@@ -57,11 +57,15 @@ export interface EmptyDashboardScreenWords {
 export interface EmptyDashboardScreenProps {
   /** "Welcome to kilna". */
   title: ReactNode
+  /** A line under the title that says what the dashboard is for. */
   description?: ReactNode
+  /** Buttons at the end of the header - the product's own, such as "Import data". */
   actions?: ReactNode
+  /** The first steps, in order. Each is marked done or not, and only the first one not yet done carries its `action`. */
   steps: readonly FirstStep[]
   /** The figures the full dashboard will have. Leave it out to show only the steps. */
   figures?: readonly FutureFigure[]
+  /** Every word the screen shows, in the product's language. The block has no default text. */
   words: EmptyDashboardScreenWords
   className?: string
 }

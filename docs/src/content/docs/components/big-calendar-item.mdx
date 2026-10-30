@@ -69,16 +69,3 @@ own, not an invisible extension: a day of the month is a target too, and a
 measurement of the box is the only one anything takes. The element is the
 line; its colour, outline and ring are the chip's, so `className` and `style`
 land on the line.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `color` | `string` | | Any CSS colour; neutral without one |
-| `tentative` | `boolean` | `false` | A plan: an outline, no fill |
-| `done` | `boolean` | `false` | Has happened: quieter, still pressable |
-| `start` | `ReactNode` | | Before the words - a cover, a dot |
-| `end` | `ReactNode` | | After the words - the glyphs that mark it |
-| `render` | `RenderProp` | | The element to draw: a link, a trigger |
-| `onClick` | `() => void` | | Makes it a `<button>` |
-| `className` | `string` | | Merged so the caller wins a conflict |

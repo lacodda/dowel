@@ -68,19 +68,3 @@ alone. A press on the label opens the month.
 
 The value, the arithmetic and the keyboard are the
 [Calendar](/dowel/components/calendar/)'s; this is the field around it.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `IsoDate` | | `YYYY-MM-DD` |
-| `onValueChange` | `(value) => void` | | Told `undefined` only when `clearLabel` is given |
-| `clearLabel` | `string` | | The button that takes the date back; without it, a chosen date stays |
-| `min`, `max` | `IsoDate` | | Bounds, inclusive |
-| `placeholder` | `string` | | Required — what the trigger says when empty |
-| `previousMonthLabel` | `string` | | Required |
-| `nextMonthLabel` | `string` | | Required |
-| `locale` | `string` | the application's (`useLocale`) | |
-| `name` | `string` | | Puts the value in the form |
-| `id`, `aria-labelledby`, `aria-describedby`, `aria-invalid` | | | Put on the trigger - what a `Field` hands it |
-| `disabled` | `boolean` | `false` | |

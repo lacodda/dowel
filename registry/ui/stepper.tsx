@@ -95,6 +95,8 @@ export const stepMarkerVariants = cva(
 export interface StepperProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSelect'> {
   /** What the list is called for a reader - "Setup steps". */
   label: string
+  /** The steps in the order they are taken. Each has an `id`, a `label` and an
+   * optional `description` and `status`. */
   steps: readonly StepperStep[]
   /** The id of the step being shown. */
   current: string

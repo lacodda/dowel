@@ -17,8 +17,11 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from './s
  */
 
 export interface PageSizeProps {
+  /** The current number of rows per page. Should be one of `options`. */
   pageSize: number
+  /** The sizes offered, in the order they are listed. */
   options?: number[]
+  /** Called with the chosen size as a number, not the select's string value. */
   onPageSizeChange: (pageSize: number) => void
   /** Names the control for a screen reader, e.g. "Rows per page". */
   label: string

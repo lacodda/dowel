@@ -51,15 +51,4 @@ of the product's own fields would have one that is visibly not.
 
 **Empty is `null`.** No time is not midnight.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string \| null` | | `HH:MM`; `null` is empty |
-| `onValueChange` | `(value) => void` | | Fires on blur and Enter, not per key |
-| `locale` | `string` | the application's (`useLocale`) | How the time is shown |
-| `placeholder` | `string` | | |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
-
-`parseTime` and `formatTime` are exported beside the component, for a product
-that has to read or write the same spellings elsewhere.
+`parseTime` and `formatTime` are exported beside the component, for a product that has to read or write the same spellings elsewhere.

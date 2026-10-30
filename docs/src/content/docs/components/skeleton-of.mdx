@@ -66,24 +66,10 @@ child: a table's rows are inside a `<tbody>`, a list's inside a `<ul>` that may
 itself be inside a scroller. Without `rowSelector` the placeholder is one box
 the height of the whole block, which is the right answer for a card.
 
+**`measureShape(node, rowSelector?)` is exported** for a product that keeps the
+measurement itself. It returns `{ height, rows }`: the block, and each row
+inside it.
+
 **It is `aria-hidden`, like every skeleton.** The loading fact belongs to the
 region and is said once, by whatever owns it —
 [QueryState](/dowel/components/query-state/) does it with `aria-busy`.
-
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `pending` | `boolean` | | Required — shows the remembered shape |
-| `children` | `ReactNode` | | Required — the real thing, measured |
-| `rowSelector` | `string` | | `'tr'`, `'li'`, `'[data-row]'` |
-| `fallback` | `ReactNode` | | Until there is something to remember |
-| `shape` | `MeasuredShape` | | A measurement from an earlier session |
-| `gapClassName` | `string` | `gap-1` | The gap between drawn rows |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `measureShape`
-
-| | |
-| --- | --- |
-| `measureShape(node, rowSelector?)` | `{ height, rows }` — the block, and each row inside it |

@@ -72,32 +72,3 @@ desktop shell that takes file drops never delivers to the page.
 
 The arithmetic is exported as `moveBoundary` and `boundsOf`, plain functions
 a product can test or reuse without rendering anything.
-
-## Props
-
-### `Splitter`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `orientation` | `horizontal \| vertical` | `horizontal` | `horizontal` is side by side |
-| `defaultSizes` | `number[]` | equal shares | One percentage per pane, summing to 100 |
-| `onSizesChange` | `(sizes: number[]) => void` | | Once per settled change: persist here |
-| `step` | `number` | `2` | Percent per arrow press; Shift moves five |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `SplitterPane`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `min` | `number` | `0` | Smallest share, in percent |
-| `max` | `number` | `100` | Largest share, in percent |
-| `collapsible` | `boolean` | `false` | May shrink past `min` to `collapsedSize` |
-| `collapsedSize` | `number` | `0` | Its share when collapsed |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `SplitterHandle`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `string` | | Required. What it resizes: "Resize the sidebar" |
-| `className` | `string` | | Merged so the caller wins a conflict |

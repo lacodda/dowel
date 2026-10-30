@@ -66,27 +66,3 @@ same reason the label is cut at one.
 **The heading is the other half.** `SectionHeading` is the title and the
 one-line hint above a section's body, so the column and the page it opens are
 set in the same type.
-
-## Props
-
-### `SectionNav`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `label` | `string` | | Required — the caption and the landmark's name |
-| `items` | `{ id, label, icon?, description? }[]` | | Required |
-| `activeId` | `string` | | The current page |
-| `render` | `(item) => ReactElement` | | The element each row is drawn as |
-| `onSelect` | `(id) => void` | | Pressed, whatever the row is drawn as |
-| `labelHidden` | `boolean` | `false` | Keep the caption as the name, off the screen |
-| `level` | `1`-`6` | `2` | Where the caption stands in the page's outline |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### `SectionHeading`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `title` | `ReactNode` | | Required, a heading at `level` |
-| `description` | `ReactNode` | | The line under it |
-| `level` | `1`-`6` | `2` | |
-| `className` | `string` | | |

@@ -102,6 +102,8 @@ export interface ShortcutsDialogProps {
   group?: string
   /** Controlled, for a product that opens it from somewhere else as well. */
   open?: boolean
+  /** Called with the new state whenever it opens or closes, whether by the
+   * keys, `runCommand` or the close button. */
   onOpenChange?: (open: boolean) => void
   /** After the list: what keys cannot say - a gesture with the pointer, a
    * note that letters wait while someone is typing. */

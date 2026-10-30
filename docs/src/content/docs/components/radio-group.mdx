@@ -46,24 +46,3 @@ hears three values and no subject:
 <RadioGroup aria-label="Ripeness">        {/* or */}
 <Field label="Ripeness"><RadioGroup>...   {/* named by the field */}
 ```
-
-## Props
-
-### RadioGroup
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string` | | Controlled |
-| `defaultValue` | `string` | | Uncontrolled |
-| `onValueChange` | `(value) => void` | | |
-| `orientation` | `vertical` \| `horizontal` | `vertical` | |
-| `disabled`, `readOnly`, `required` | `boolean` | `false` | |
-| `name` | `string` | | For a form |
-
-### Radio
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string` | | Required |
-| `children` | `ReactNode` | | The words next to the dot |
-| `disabled` | `boolean` | `false` | |

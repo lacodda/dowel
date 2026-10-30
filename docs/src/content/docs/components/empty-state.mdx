@@ -67,16 +67,4 @@ started.
 [QueryState](/dowel/components/query-state/) draws it for a failure, and
 [ErrorBoundary](/dowel/components/error-boundary/) for a crash.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `variant` | `empty \| filtered \| error` | `empty` | Which kind of nothing |
-| `plain` | `boolean` | `false` | No frame and no mark, for a place that has a frame already |
-| `title` | `ReactNode` | | What is not here |
-| `body` | `ReactNode` | | Why, or what to do |
-| `action` | `ReactNode` | | The one thing worth doing |
-| `mark` | `ReactNode` | | A product's own illustration; not drawn when `plain` |
-
-`EmptyMark`, `FilteredMark` and `ErrorMark` are exported for a product
-composing its own panel.
+**The marks are exported.** `EmptyMark`, `FilteredMark` and `ErrorMark` are there for a product composing its own panel.

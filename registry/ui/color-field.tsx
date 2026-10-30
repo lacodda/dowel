@@ -39,17 +39,23 @@ export function isHexColor(value: string): boolean {
 export interface ColorFieldProps {
   /** The chosen colour: a token name, or a hex string. */
   value: string
+  /** Told the next colour: a token name from the palette, or a hex string
+   * once the free box holds a complete one. */
   onValueChange: (value: string) => void
   /** Whether the reader may type a colour of their own. */
   allowCustom?: boolean
   /** Names the palette for a screen reader. */
   'aria-label'?: string
+  /** The id of the element that names the palette, when a visible label does
+   * it. */
   'aria-labelledby'?: string
   /** How a swatch is named. Takes the colour's name, so the product can say
    * "Lime" in its own language rather than shipping ours. */
   swatchLabel?: (name: string) => string
   /** The label on the free-entry box, when `allowCustom` is on. */
   customLabel?: ReactNode
+  /** Dims the field and stops it taking input: every swatch and the free
+   * box. */
   disabled?: boolean
   className?: string
 }

@@ -76,39 +76,6 @@ other:
 Left unmatched, the drawer slides in from one edge and is flicked away towards
 another.
 
-## Props
-
-### `Drawer` — the root
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `open` | `boolean` | | Controlled, with `onOpenChange` |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled |
-| `onOpenChange` | `(open, details) => void` | | |
-| `swipeDirection` | `up \| down \| left \| right` | `down` | Which way a finger dismisses it — match it to `side` |
-| `modal` | `boolean \| 'trap-focus'` | `true` | |
-| `snapPoints` | `DrawerSnapPoint[]` | | Partial heights for a bottom sheet |
-
-### `DrawerPopup`
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `side` | `right \| left \| bottom` | `right` | The edge it comes from, and the axis it slides along |
-| `size` | `sm \| md \| lg \| xl \| full` | `md` | Across the edge it comes from: the width of a side panel (20, 24, 32, 48rem, the window less a margin), the height cap of a sheet (40, 80, 90vh, the window) - `full` sets the sheet's height |
-| `className` | `string` | | Merged so the caller wins a conflict |
-
-### The rest
-
-| Part | | |
-| --- | --- | --- |
-| `DrawerTrigger` | | What opens it. `render` to use your own button |
-| `DrawerHeader` | `action` | The title and the line under it, with an action beside them; stays put |
-| `DrawerTitle` | | The popup's `aria-labelledby` points at it |
-| `DrawerDescription` | | The popup's `aria-describedby` |
-| `DrawerBody` | | The part that scrolls |
-| `DrawerActions` | `start` | Pinned to the bottom of the panel, right-aligned; `start` at the other end |
-| `DrawerClose` | | Closes it. `render` to use your own button |
-
 ## Notes
 
 **Base UI positions none of it.** Unlike Popover there is no positioner and no
@@ -135,3 +102,5 @@ than fits.
 **No colour of its own.** Every class is written in tokens, so the same list is
 correct in both themes and in every product's accent — no `dark:` utilities
 anywhere in it.
+
+**`size` is measured across the edge the drawer comes from.** For a side panel it is the width (20, 24, 32, 48rem, or the window less a margin); for a bottom sheet it is the height cap (40, 80, 90vh, or the window), and `full` sets the sheet's height.

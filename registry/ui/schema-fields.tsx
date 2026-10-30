@@ -76,8 +76,11 @@ export interface SchemaCustomProps {
 export interface SchemaFieldsProps {
   /** An object schema: its properties are the fields, in the order written. */
   schema: JsonSchema
+  /** The record the fields edit, by property key. */
   value: Readonly<Record<string, unknown>>
+  /** Told the next record - a copy, never the same object changed. */
   onValueChange: (value: Record<string, unknown>) => void
+  /** Every word the fields show, so the product can translate them. */
   words: SchemaFieldsWords
   /** Problems from elsewhere - the server, a rule the schema cannot state - by
    * key (`server.port`). Said at once, and over the schema's own. */
@@ -87,6 +90,7 @@ export interface SchemaFieldsProps {
   /** Fields the product draws itself, by key. Read for their label and help;
    * never refused, never checked here. */
   custom?: Readonly<Record<string, (props: SchemaCustomProps) => ReactNode>>
+  /** Disables every field at once, for example while the record saves. */
   disabled?: boolean
   className?: string
 }

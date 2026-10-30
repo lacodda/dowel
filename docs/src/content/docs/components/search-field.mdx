@@ -85,17 +85,6 @@ the reader is picking one of a set, and the query is only how they find it.
 **[CommandPalette](/dowel/components/command-palette/)** when it is the same
 box for the whole application, opened by a shortcut from anywhere.
 
-## Props
-
-| Prop | Type | Default | |
-| --- | --- | --- | --- |
-| `value` | `string` | | Required and controlled — a search box that owns its own text cannot be cleared by the thing that owns the results |
-| `onValueChange` | `(value: string) => void` | | Told the new query on every keystroke |
-| `clearLabel` | `string` | | What the clear button is called. No default; without it no button is drawn |
-| `shortcut` | `{ id, label, keys, group?, whileTyping? }` | | The command that focuses the field. Shown at the right of it, bound, and listed with every other key |
-| `ref` | `Ref<HTMLInputElement>` | | Reaches the input, not the wrapper |
-| `className` | `string` | | Merged onto the wrapper so the caller wins a conflict |
-
-Everything else is passed to the `<input>`, so `placeholder`, `aria-label`,
-`disabled`, `name` and the rest work as usual. `type` is not among them: it is
-always `search`.
+Every other `<input>` attribute goes to the input - `placeholder`, `aria-label`,
+`disabled`, `name` and the rest. `type` is not among them: it is always
+`search`.

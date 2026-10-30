@@ -59,11 +59,56 @@ function pages() {
       const name = entry.name.replace(/\.mdx?$/, '')
       // `index` is the site root, and Starlight serves it at `/`.
       const slug = name === 'index' ? '' : `${prefix}${name}`
-      found.push({ slug, ...parse(source) })
+      const page = parse(source)
+      // A component or block page's props are drawn by the site's override
+      // rather than written in the page; the Markdown twin gets them the same
+      // way, from the same file.
+      const item = slug.match(/^(?:components|blocks)\/([a-z][a-z0-9-]*)$/)?.[1]
+      const props = item ? propsMarkdown(item) : ''
+      found.push({ slug, ...page, body: props ? `${page.body}\n\n${props}` : page.body })
     }
   }
   walk(contentDir, '')
   return found.sort((a, b) => a.slug.localeCompare(b.slug))
+}
+
+const props = JSON.parse(readFileSync(resolve(root, 'registry/props.json'), 'utf8'))
+
+/** What the site's props table shows, as Markdown: one table per component,
+ * then where the rest of its props come from. */
+export function propsMarkdown(item) {
+  const components = props[item]?.components ?? []
+  if (components.length === 0) return ''
+  const cell = (text) => text.replaceAll('|', '\\|').replace(/\s*\n\s*/g, ' ')
+  const named = (source) =>
+    source.kind === 'base-ui' ? `Base UI's \`${source.part}\`` : `\`${source.name ?? source.type ?? source.item}\``
+  const lines = ['## Props', '']
+  for (const component of components) {
+    if (components.length > 1) lines.push(`### \`${component.name}\``, '')
+    if (component.description) lines.push(component.description, '')
+    if (component.is) lines.push(`${named(component.is)}, unchanged under dowel's name.`, '')
+    if (component.props?.length) {
+      lines.push('| Prop | Type | Default | |', '| --- | --- | --- | --- |')
+      for (const prop of component.props) {
+        const need = prop.required
+          ? ' (required)'
+          : prop.requiredWith
+            ? ` (with ${prop.requiredWith.map((other) => `\`${other}\``).join(', ')})`
+            : ''
+        lines.push(
+          `| \`${prop.name}\`${need} | \`${cell(prop.type)}\` | ${prop.default ? `\`${cell(prop.default)}\`` : ''} | ${cell(prop.description ?? '')} |`,
+        )
+      }
+      lines.push('')
+    }
+    if (component.inherits?.length) {
+      const sources = component.inherits.map(
+        (source) => `${named(source)}${source.omits?.length ? ` except ${source.omits.map((o) => `\`${o}\``).join(', ')}` : ''}`,
+      )
+      lines.push(`${component.props?.length ? 'And every' : 'Every'} prop of ${sources.join(', ')}, passed on.`, '')
+    }
+  }
+  return lines.join('\n').trim()
 }
 
 /** Frontmatter and body, with the MDX machinery turned into prose. */
