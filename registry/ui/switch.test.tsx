@@ -48,13 +48,24 @@ describe('Switch', () => {
   })
 
   it('renders alone when it has no words', () => {
-    render(<Switch aria-label="Notify me" />)
-    expect(screen.getByRole('switch', { name: 'Notify me' })).toBeDefined()
+    // No label around it: a bare switch sits in a row someone else lays out,
+    // and a wrapping label would take the row's click for itself.
+    const { container } = render(<Switch aria-label="Notify me" />)
+    expect(container.firstElementChild).toBe(screen.getByRole('switch', { name: 'Notify me' }))
   })
 
   it('lets the caller win a conflict on the bare control', () => {
     const { container } = render(<Switch aria-label="Notify me" className="w-16" />)
     expect(container.firstElementChild?.className).toContain('w-16')
+  })
+
+  it('puts the caller’s class on the label once it has words, not on the control', () => {
+    // With words the label is the outer box, so that is what a layout class
+    // means; on the track it would stretch the switch instead.
+    const { container } = render(<Switch className="w-64">Notify me</Switch>)
+    expect(container.firstElementChild?.tagName).toBe('LABEL')
+    expect(container.firstElementChild?.className).toContain('w-64')
+    expect(screen.getByRole('switch').className).not.toContain('w-64')
   })
 
   it('does not fire when disabled', async () => {
