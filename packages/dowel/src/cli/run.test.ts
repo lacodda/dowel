@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -221,5 +221,46 @@ describe('json output', () => {
     run(['check', '--json', '--cwd', directory])
     const parsed = JSON.parse(printed()) as { findings: { kind: string }[] }
     expect(parsed.findings.map((finding) => finding.kind)).toEqual(['stock'])
+  })
+})
+
+describe('snippets', () => {
+  const source = "import { cn } from 'dowel-ui'\nexport const Badge = () => null\n"
+  const props = {
+    badge: {
+      dir: 'ui',
+      components: [{ name: 'Badge', props: [{ name: 'variant', type: 'outline | soft', default: "'outline'", variant: true }], inherits: [{ kind: 'react', type: 'HTMLAttributes<HTMLSpanElement>' }] }],
+    },
+    dialog: { dir: 'ui', components: [{ name: 'Dialog', is: { kind: 'base-ui', part: 'Dialog.Root' } }] },
+  }
+
+  function project(): void {
+    installPackage([{ name: 'badge', type: 'registry:ui', files: [{ path: 'ui/badge.tsx', content: source }] }])
+    file('node_modules/dowel-ui/dist/props.json', JSON.stringify(props))
+    file('src/ui/badge.tsx', source)
+  }
+
+  it('says what it would write, and writes nothing without --write', () => {
+    project()
+    expect(run(['snippets', '--cwd', directory])).toBe(0)
+    expect(printed()).toContain('dw-badge')
+    expect(existsSync(resolve(directory, '.vscode/dowel.code-snippets'))).toBe(false)
+  })
+
+  it('writes snippets for the components the project has, and only those', () => {
+    project()
+    expect(run(['snippets', '--write', '--cwd', directory])).toBe(0)
+    const written = readFileSync(resolve(directory, '.vscode/dowel.code-snippets'), 'utf8')
+    // VS Code reads the file as JSON with comments; the comments are the
+    // header, and what follows them is plain JSON.
+    const snippets = JSON.parse(written.replace(/^\/\/.*$/gm, '')) as Record<string, { body: string[] }>
+    expect(Object.keys(snippets)).toEqual(['Badge'])
+    expect(snippets.Badge!.body[0]).toBe('<Badge variant="${1|outline,soft|}">')
+  })
+
+  it('fails with 2 on a package too old to carry the props', () => {
+    installPackage()
+    expect(run(['snippets', '--cwd', directory])).toBe(2)
+    expect(printed()).toContain('0.41 or later')
   })
 })

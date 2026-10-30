@@ -1,15 +1,16 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 import { collectFiles, scanProject, type Finding } from './scan.js'
 import { rewriteSource } from './codemod.js'
 import { diagnose, readCatalogue, type Catalogue, type Diagnosis, type ProjectFacts } from './doctor.js'
 import { differs, diffLines, hunks } from './diff.js'
+import { snippetsFile, snippetsFor, type PropsCatalogue } from './snippets.js'
 
 /*
  * `dowel` - the command a product runs on itself.
  *
- * Four commands, and they divide along one line: `check`, `doctor` and `diff`
- * only read, `codemod` writes and only when asked twice. That division is the
+ * Five commands, and they divide along one line: `check`, `doctor` and `diff`
+ * only read; `codemod` and `snippets` write, and only when asked twice. That division is the
  * design. A migration tool earns its place by being run early and often on a
  * codebase nobody is ready to change yet, and a tool that might edit is a tool
  * that gets run once, at the end, under supervision.
@@ -445,17 +446,59 @@ function commandDiff(options: Options): Outcome {
   return 0
 }
 
+/** VS Code snippets for the components this project has copied, read from
+ * the props the installed package recorded - so what a snippet asks for is
+ * what that version of the component requires. Prints what it would write;
+ * `--write` writes it. */
+function commandSnippets(options: Options): Outcome {
+  const root = options.root
+  const propsPath = resolve(root, 'node_modules/dowel-ui/dist/props.json')
+  if (!existsSync(propsPath)) {
+    process.stderr.write(
+      `${red('No props')}: dowel-ui 0.41 or later is not installed here, and the snippets are read from it.\n`,
+    )
+    return 2
+  }
+  const catalogue = JSON.parse(readFileSync(propsPath, 'utf8')) as PropsCatalogue
+  const facts = readProject(root)
+  const items = facts.installedComponents.map((component) => component.name)
+  if (items.length === 0) {
+    process.stdout.write(`${dim('No dowel components in this project, so there is nothing to write snippets for.')}\n`)
+    return 0
+  }
+
+  const snippets = snippetsFor(catalogue, items)
+  const target = '.vscode/dowel.code-snippets'
+  if (options.json) {
+    process.stdout.write(`${JSON.stringify({ target, snippets }, null, 2)}\n`)
+    return 0
+  }
+
+  const names = Object.values(snippets).map((snippet) => snippet.prefix)
+  const count = `${names.length} snippet${names.length === 1 ? '' : 's'} for ${items.length} component${items.length === 1 ? '' : 's'}`
+  if (!options.write) {
+    process.stdout.write(`${bold(target)} would hold ${count}:\n  ${names.join('  ')}\n`)
+    process.stdout.write(`${dim('Run again with --write to write it.')}\n`)
+    return 0
+  }
+  mkdirSync(resolve(root, '.vscode'), { recursive: true })
+  writeFileSync(resolve(root, target), snippetsFile(snippets, facts.installedVersion))
+  process.stdout.write(`${green('Wrote')} ${bold(target)}: ${count}. Type ${bold('dw-')} in a .tsx file.\n`)
+  return 0
+}
+
 const USAGE = `dowel - migration tools for the lacodda design system
 
-  dowel check              What in this project is not on the dowel vocabulary
-  dowel codemod [--write]  Rewrite stock shadcn token names into dowel's
-  dowel doctor             Whether this project's dowel installation is coherent
-  dowel diff [component]   How a copied component differs from the registry's
+  dowel check               What in this project is not on the dowel vocabulary
+  dowel codemod [--write]   Rewrite stock shadcn token names into dowel's
+  dowel doctor              Whether this project's dowel installation is coherent
+  dowel diff [component]    How a copied component differs from the registry's
+  dowel snippets [--write]  Editor snippets for the components this project has
 
 Options
   --cwd <dir>   Look at this directory instead of the current one
   --json        Machine-readable output
-  --write       codemod only: actually write the files
+  --write       codemod and snippets: actually write the files
 
 Everything reads the catalogue inside the installed package; nothing needs the
 network. https://lacodda.github.io/dowel/guides/migration/
@@ -474,6 +517,8 @@ export function run(argv: readonly string[]): Outcome {
       return commandDoctor(options)
     case 'diff':
       return commandDiff(options)
+    case 'snippets':
+      return commandSnippets(options)
     case 'help':
     case undefined:
       process.stdout.write(USAGE)
