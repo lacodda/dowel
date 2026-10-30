@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process'
 import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { beforeAll, describe, expect, inject, it } from 'vitest'
@@ -142,8 +141,7 @@ describe('it asked the right question', () => {
   })
 
   it('agrees with tokens.json on the colours that are fixed', () => {
-    execFileSync('node', ['tools/build-tokens-json.mjs'], { cwd: root })
-    const tokens = JSON.parse(readFileSync(resolve(root, 'packages/dowel/dist/tokens.json'), 'utf8'))
+    const tokens = JSON.parse(readFileSync(resolve(inject('tokensDir'), 'tokens.json'), 'utf8'))
     const palette = palettes.get('kilna')!.color
     for (const group of ['series', 'scale', 'heat', 'syntax']) {
       for (const theme of ['dark', 'light'] as const) {

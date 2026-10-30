@@ -175,24 +175,26 @@ describe('what the package ships', () => {
       'the built theme is not the source theme',
     ).toBe(text(read('packages/dowel/src/theme.css')))
 
-    const shipped = readFileSync(resolve(dist, 'tokens.json'), 'utf8')
-    execFileSync('node', ['tools/build-tokens-json.mjs'], { cwd: root })
+    // Every form the token generator writes, against what it writes for this
+    // run - aside, by the global setup, rather than over `dist`, which another
+    // worker may be reading. The palettes and the Rust carry the package
+    // version, so a build from before the bump is caught as well as a build
+    // from before a theme change.
+    const fresh = inject('tokensDir')
     expect(text(readFileSync(resolve(dist, 'tokens.json'), 'utf8')), 'the built tokens are stale').toBe(
-      text(shipped),
+      text(readFileSync(resolve(fresh, 'tokens.json'), 'utf8')),
     )
-
-    // The palettes carry the package version, so a build from before the bump
-    // is caught here as well as a build from before a theme change. Rebuilt
-    // aside rather than over `dist`, which another worker may be reading - by
-    // the global setup, which runs the browser before any worker starts.
-    const palettes = resolve(dist, 'palettes')
-    if (!existsSync(palettes)) return
-    const fresh = inject('palettesDir')
-    expect(readdirSync(palettes).sort(), 'the built palettes name other products').toEqual(readdirSync(fresh).sort())
-    for (const file of readdirSync(fresh)) {
-      expect(text(readFileSync(resolve(palettes, file), 'utf8')), `the built palette ${file} is stale`).toBe(
-        text(readFileSync(resolve(fresh, file), 'utf8')),
+    for (const form of ['accents', 'palettes', 'rust']) {
+      const built = resolve(dist, form)
+      expect(existsSync(built), `the build wrote no ${form}/`).toBe(true)
+      expect(readdirSync(built).sort(), `the built ${form} name other products`).toEqual(
+        readdirSync(resolve(fresh, form)).sort(),
       )
+      for (const file of readdirSync(resolve(fresh, form))) {
+        expect(text(readFileSync(resolve(built, file), 'utf8')), `the built ${form}/${file} is stale`).toBe(
+          text(readFileSync(resolve(fresh, form, file), 'utf8')),
+        )
+      }
     }
   }, 60_000)
 })

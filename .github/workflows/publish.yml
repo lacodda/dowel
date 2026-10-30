@@ -33,7 +33,7 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
-      # The palettes are resolved by a real browser (tools/build-palettes.mjs),
+      # The palettes are resolved by a real browser (tools/build-tokens.mjs),
       # so every job that builds the package needs one.
       - name: Install the browser the palettes are resolved in
         run: pnpm exec playwright install --with-deps chromium

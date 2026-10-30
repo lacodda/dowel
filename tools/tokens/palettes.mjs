@@ -1,5 +1,6 @@
 /*
- * The colours of each product, resolved - one file per product of the line.
+ * The colours of each product, resolved - `palettes/<product>.json`, one per
+ * product of the line.
  *
  * `tokens.json` leaves most colours out on purpose: `--bg`, `--text`,
  * `--accent-2` and the rest are `color-mix()` and `oklch(from …)` expressions
@@ -15,26 +16,12 @@
  * of `color-mix` would be exactly that second implementation, and the browser
  * is the thing every web product of the line is actually drawn by.
  *
- * Output: `dist/palettes/<product>.json`, Design Tokens Format Module 2025.10,
- * every colour the theme declares, in both themes and in both of them under
- * more contrast, as `#rrggbb` or `#rrggbbaa`. Eight bits per channel is what the browser itself keeps for
- * alpha (`0.045` comes back as `0.043`), so nothing finer is lost.
+ * The form: Design Tokens Format Module 2025.10, every colour the theme
+ * declares, in both themes and in both of them under more contrast, as
+ * `#rrggbb` or `#rrggbbaa`. Eight bits per channel is what the browser itself
+ * keeps for alpha (`0.045` comes back as `0.043`), so nothing finer is lost.
  */
-import { readFileSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
-import { lineProducts } from '../packages/dowel/src/line.ts'
-
-const here = dirname(fileURLToPath(import.meta.url))
-const themePath = resolve(here, '../packages/dowel/src/theme.css')
-const packagePath = resolve(here, '../packages/dowel/package.json')
-// The package's `dist` by default. The tests pass a directory of their own, so
-// that no two workers ever write the files a third one is reading.
-const outDir = process.argv[2] ? resolve(process.argv[2]) : resolve(here, '../packages/dowel/dist/palettes')
-
-const css = readFileSync(themePath, 'utf8')
-const version = JSON.parse(readFileSync(packagePath, 'utf8')).version
 
 /*
  * The inputs a product replaces, rather than colours it paints with. A
@@ -44,7 +31,7 @@ const version = JSON.parse(readFileSync(packagePath, 'utf8')).version
 const PARAMETERS = new Set(['accent-base', 'neutral-base', 'ground', 'ink'])
 
 /** Every custom property the theme declares, in the order it declares them. */
-const declaredNames = [
+const declaredNamesOf = (css) => [
   ...new Set([...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/(?<![\w-])--([a-z0-9-]+)\s*:/g)].map((m) => m[1])),
 ].filter((name) => !PARAMETERS.has(name))
 
@@ -126,61 +113,62 @@ const MODES = [
   ['light-contrast-more', 'light', 'more'],
 ]
 
-const browser = await chromium.launch()
-try {
-  const page = await browser.newPage()
+/** Every product's palette, resolved by a browser: product name -> the DTCG
+ * object `palettes/<product>.json` holds. */
+export async function palettes(css, products, version) {
+  const declaredNames = declaredNamesOf(css)
+  const browser = await chromium.launch()
+  try {
+    const page = await browser.newPage()
 
-  /** Every colour of the theme for one accent, in one theme and one contrast
-   * mode. Pinned by class and by the media queries alike, so neither can leave
-   * the other's values in place. */
-  async function resolveTheme(accent, theme, contrast) {
-    await page.emulateMedia({ colorScheme: theme, contrast: contrast === 'more' ? 'more' : 'no-preference' })
-    const pins = contrast === 'more' ? `${theme} contrast-more` : theme
-    await page.setContent(
-      `<!doctype html><html class="${pins}"><head><style>${css}</style>` +
-        `<style>:root { --accent-base: ${accent}; }</style></head><body><i id="probe"></i></body></html>`,
-    )
-    // The callback runs in the page, not in Node, so it sees the browser's globals.
-    /* global document, getComputedStyle, CSS */
-    return page.evaluate((names) => {
-      const root = getComputedStyle(document.documentElement)
-      const probe = document.getElementById('probe')
-      const found = []
-      for (const name of names) {
-        const raw = root.getPropertyValue(`--${name}`).trim()
-        // Shadows, lengths, fonts and the Tailwind-only `@theme` names drop out
-        // here: the first are not colours, the last do not exist in a browser.
-        if (raw === '' || !CSS.supports('color', raw)) continue
-        probe.style.color = ''
-        probe.style.color = raw
-        found.push([name, getComputedStyle(probe).color])
-      }
-      return found
-    }, declaredNames)
-  }
-
-  rmSync(outDir, { recursive: true, force: true })
-  mkdirSync(outDir, { recursive: true })
-
-  for (const { name, code, accent, colorName } of lineProducts) {
-    const color = { $type: 'color' }
-    for (const [group, theme, contrast] of MODES) {
-      color[group] = Object.fromEntries(
-        (await resolveTheme(accent, theme, contrast)).map(([token, value]) => [token, { $value: hex(parseColor(value)) }]),
+    /** Every colour of the theme for one accent, in one theme and one contrast
+     * mode. Pinned by class and by the media queries alike, so neither can
+     * leave the other's values in place. */
+    async function resolveTheme(accent, theme, contrast) {
+      await page.emulateMedia({ colorScheme: theme, contrast: contrast === 'more' ? 'more' : 'no-preference' })
+      const pins = contrast === 'more' ? `${theme} contrast-more` : theme
+      await page.setContent(
+        `<!doctype html><html class="${pins}"><head><style>${css}</style>` +
+          `<style>:root { --accent-base: ${accent}; }</style></head><body><i id="probe"></i></body></html>`,
       )
+      // The callback runs in the page, not in Node, so it sees the browser's globals.
+      /* global document, getComputedStyle, CSS */
+      return page.evaluate((names) => {
+        const root = getComputedStyle(document.documentElement)
+        const probe = document.getElementById('probe')
+        const found = []
+        for (const name of names) {
+          const raw = root.getPropertyValue(`--${name}`).trim()
+          // Shadows, lengths, fonts and the Tailwind-only `@theme` names drop
+          // out here: the first are not colours, the last do not exist in a
+          // browser.
+          if (raw === '' || !CSS.supports('color', raw)) continue
+          probe.style.color = ''
+          probe.style.color = raw
+          found.push([name, getComputedStyle(probe).color])
+        }
+        return found
+      }, declaredNames)
     }
 
-    const palette = {
-      $description: `${name} - every colour of the dowel theme on the ${colorName} accent ${accent}, resolved by a browser, in both themes, and in both under more contrast. For a consumer that cannot evaluate CSS; the formulas live in theme.css.`,
-      $extensions: {
-        'com.lacodda.dowel': { package: 'dowel-ui', version, product: name, code, accent },
-      },
-      color,
+    const resolved = {}
+    for (const { name, code, accent, colorName } of products) {
+      const color = { $type: 'color' }
+      for (const [group, theme, contrast] of MODES) {
+        color[group] = Object.fromEntries(
+          (await resolveTheme(accent, theme, contrast)).map(([token, value]) => [token, { $value: hex(parseColor(value)) }]),
+        )
+      }
+      resolved[name] = {
+        $description: `${name} - every colour of the dowel theme on the ${colorName} accent ${accent}, resolved by a browser, in both themes, and in both under more contrast. For a consumer that cannot evaluate CSS; the formulas live in theme.css.`,
+        $extensions: {
+          'com.lacodda.dowel': { package: 'dowel-ui', version, product: name, code, accent },
+        },
+        color,
+      }
     }
-    writeFileSync(resolve(outDir, `${name}.json`), `${JSON.stringify(palette, null, 2)}\n`)
+    return resolved
+  } finally {
+    await browser.close()
   }
-} finally {
-  await browser.close()
 }
-
-console.log(`palettes: ${lineProducts.length} files`)

@@ -1,5 +1,5 @@
 /*
- * An accent file per product of the line.
+ * An accent file per product of the line: `accents/<product>.css`.
  *
  * Each is one declaration. That is the whole point: a product's theme is its
  * mark's colour, so the only thing it should have to state is which product it
@@ -12,18 +12,9 @@
  * Generated rather than written, so the fourteen files cannot disagree with
  * the registry or with each other.
  */
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { lineProducts } from '../packages/dowel/src/line.ts'
-
-const here = dirname(fileURLToPath(import.meta.url))
-const outDir = resolve(here, '../packages/dowel/dist/accents')
-
-mkdirSync(outDir, { recursive: true })
-
-for (const { name, code, accent, colorName } of lineProducts) {
-  const css = `/*
+/** The accent file of one product: `accents/<product>.css`. */
+export function accentCss({ name, code, accent, colorName }) {
+  return `/*
  * ${name} - ${colorName} ${accent}, the colour of its mark (${code}).
  *
  * Import after the theme. Everything else - the hover shade, the soft fill,
@@ -34,7 +25,4 @@ for (const { name, code, accent, colorName } of lineProducts) {
   --accent-base: ${accent};
 }
 `
-  writeFileSync(resolve(outDir, `${name}.css`), css)
 }
-
-console.log(`accents: ${lineProducts.length} files`)

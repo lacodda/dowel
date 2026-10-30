@@ -30,10 +30,11 @@ export default async function setup(project: TestProject) {
   // Into a directory of its own: the release gate reads `dist` in a parallel
   // worker, and on Windows a file cannot be replaced while another process has
   // it open.
-  const dir = mkdtempSync(resolve(tmpdir(), 'dowel-palettes-'))
-  execFileSync('node', ['tools/build-palettes.mjs', dir], { cwd: root })
-  project.provide('palettesDir', dir)
-  project.provide('painted', await paint(dir))
+  const dir = mkdtempSync(resolve(tmpdir(), 'dowel-tokens-'))
+  execFileSync('node', ['tools/build-tokens.mjs', dir], { cwd: root })
+  project.provide('tokensDir', dir)
+  project.provide('palettesDir', resolve(dir, 'palettes'))
+  project.provide('painted', await paint(resolve(dir, 'palettes')))
   project.provide('motion', await measureMotion())
   project.provide('ceilings', await measureCeilings())
   return () => rmSync(dir, { recursive: true, force: true })
@@ -220,6 +221,8 @@ async function measureCeilings(): Promise<CeilingMeasure[] | { error: string }> 
 
 declare module 'vitest' {
   export interface ProvidedContext {
+    /** Every form `tools/build-tokens.mjs` writes, built for this run. */
+    tokensDir: string
     palettesDir: string
     painted: Painted
     motion: MotionMeasure[]

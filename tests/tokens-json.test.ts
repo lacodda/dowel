@@ -1,7 +1,6 @@
-import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, inject, it } from 'vitest'
 
 /*
  * The JSON form, checked against the stylesheet it came from.
@@ -24,12 +23,12 @@ interface DimensionValue {
 let tokens: any
 
 beforeAll(() => {
-  // Run the generator rather than trusting whatever `dist` happens to hold, so
-  // these checks describe what the next build produces. Whether the *shipped*
-  // file matches the theme is a different question, and the release gate is
-  // where it is asked.
-  execFileSync('node', ['tools/build-tokens-json.mjs'], { cwd: root })
-  tokens = JSON.parse(readFileSync(resolve(root, 'packages/dowel/dist/tokens.json'), 'utf8'))
+  // What the generator writes for this run - the global setup ran it once,
+  // aside - rather than whatever `dist` happens to hold, so these checks
+  // describe what the next build produces. Whether the *shipped* file matches
+  // the theme is a different question, and the release gate is where it is
+  // asked.
+  tokens = JSON.parse(readFileSync(resolve(inject('tokensDir'), 'tokens.json'), 'utf8'))
 })
 
 /** The value the theme declares for a custom property. */
