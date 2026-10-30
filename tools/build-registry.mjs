@@ -275,9 +275,11 @@ function titleOf(name) {
 const componentItems = componentSources.map(({ file, name, content }) => {
   const title = titleOf(name)
 
-  // The first paragraph of the file's own block comment, so the description
-  // and the code cannot disagree about what the component is for.
-  const doc = content.match(/\/\*\n \* [A-Z][^\n]*\n \*\n \* ([\s\S]*?)\.\n/)
+  // The paragraph under the title of the file's own block comment, so the
+  // description and the code cannot disagree about what the component is
+  // for. The title may run over more than one line: six components whose
+  // title wrapped were described as "The <name> primitive." until v0.41.
+  const doc = content.match(/\/\*\n(?: \* [^\n]+\n)+ \*\n \* ([\s\S]*?)\.\n/)
   const description = doc ? `${doc[1].replace(/\n \* /g, ' ').trim()}.` : `The ${name} primitive.`
 
   return {
