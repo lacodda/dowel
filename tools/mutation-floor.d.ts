@@ -9,4 +9,7 @@ declare module '*/mutation-floor.mjs' {
     measured: Record<string, number>,
     floors: Record<string, number>,
   ): { under: string[]; raised: Record<string, number> }
+  export function merged(
+    reports: readonly { files: Record<string, { mutants: readonly { status: string }[] }> }[],
+  ): Record<string, number>
 }

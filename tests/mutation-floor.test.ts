@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { compare, scoreOf, scores } from '../tools/mutation-floor.mjs'
+import { compare, merged, scoreOf, scores } from '../tools/mutation-floor.mjs'
 import { mutable, shard } from '../tools/mutation-shard.mjs'
 
 /*
@@ -54,6 +54,12 @@ describe('the floor', () => {
   it('only ever rises', () => {
     const { raised } = compare({ 'a.tsx': 80, 'b.tsx': 95, 'c.tsx': 70 }, { 'a.tsx': 85, 'b.tsx': 90 })
     expect(raised).toEqual({ 'a.tsx': 85, 'b.tsx': 95, 'c.tsx': 70 })
+  })
+
+  it('reads the shards of one run as one measure, and refuses two runs mixed', () => {
+    const shard = (file: string, status: string) => ({ files: { [file]: { mutants: [{ status }] } } })
+    expect(merged([shard('b.tsx', 'Killed'), shard('a.tsx', 'Survived')])).toEqual({ 'a.tsx': 0, 'b.tsx': 100 })
+    expect(() => merged([shard('a.tsx', 'Killed'), shard('a.tsx', 'Survived')])).toThrow(/two reports/)
   })
 
   it('is set for every file that is mutated', () => {

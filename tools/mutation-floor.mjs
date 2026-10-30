@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { basename, join, resolve } from 'node:path'
 
 /*
  * The floor under each file's mutation score.
@@ -19,6 +19,16 @@ import { resolve } from 'node:path'
  *
  *   node tools/mutation-floor.mjs            # check the last report
  *   node tools/mutation-floor.mjs --raise    # and lift the floors to it
+ *   node tools/mutation-floor.mjs --from <dir> [--raise]
+ *
+ * A floor is only true on the machine that holds it. The first floors were
+ * written from a laptop running twelve Stryker runners, where a keyboard test
+ * failed now and then under the load - and every mutant whose tests included
+ * it was counted caught. The weekly CI run, with three runners, measured the
+ * honest score and found fourteen files under floors they had never had.
+ * `--from` reads the reports the CI shards keep (`gh run download <run>`
+ * into a directory: one `mutation.json` per shard, merged), so the floors are
+ * read and raised from the run that checks them.
  */
 
 const root = resolve(import.meta.dirname, '..')
@@ -68,12 +78,40 @@ export function compare(measured, floors) {
   return { under, raised: Object.fromEntries(Object.entries(raised).sort(([a], [b]) => a.localeCompare(b))) }
 }
 
+/** Every `mutation.json` under a directory, in a stable order. */
+function reportsUnder(dir) {
+  return readdirSync(dir, { recursive: true })
+    .map(String)
+    .filter((entry) => basename(entry) === 'mutation.json')
+    .sort()
+    .map((entry) => join(dir, entry))
+}
+
+/** The scores of several reports - the shards of one run - as one. A file is
+ * mutated by exactly one shard, so a file in two reports is two runs mixed. */
+export function merged(reports) {
+  const all = {}
+  for (const report of reports) {
+    for (const [file, score] of Object.entries(scores(report))) {
+      if (file in all) throw new Error(`${file} is in two reports - are they from one run?`)
+      all[file] = score
+    }
+  }
+  return Object.fromEntries(Object.entries(all).sort(([a], [b]) => a.localeCompare(b)))
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
-  if (!existsSync(reportPath)) {
-    console.error(`mutation-floor: no report at ${reportPath} - run \`pnpm mutate\` first`)
+  const from = process.argv.indexOf('--from')
+  const paths = from === -1 ? [reportPath] : reportsUnder(resolve(process.argv[from + 1] ?? '.'))
+  if (paths.length === 0 || !paths.every((path) => existsSync(path))) {
+    console.error(
+      from === -1
+        ? `mutation-floor: no report at ${reportPath} - run \`pnpm mutate\` first`
+        : `mutation-floor: no mutation.json under ${process.argv[from + 1]}`,
+    )
     process.exit(1)
   }
-  const measured = scores(JSON.parse(readFileSync(reportPath, 'utf8')))
+  const measured = merged(paths.map((path) => JSON.parse(readFileSync(path, 'utf8'))))
   const floors = existsSync(floorPath) ? JSON.parse(readFileSync(floorPath, 'utf8')) : {}
   const { under, raised } = compare(measured, floors)
   if (process.argv.includes('--raise')) {
