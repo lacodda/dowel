@@ -35,6 +35,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+          # The runner caches an older 22.x; Astro raises its Node floor by patch releases.
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # The palettes are resolved by a real browser (tools/build-palettes.mjs),
@@ -75,6 +77,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+          # The runner caches an older 22.x; Astro raises its Node floor by patch releases.
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Build the stand
@@ -121,6 +125,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+          # The runner caches an older 22.x; Astro raises its Node floor by patch releases.
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Build the stand

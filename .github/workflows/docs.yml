@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+          # The runner caches an older 22.x; Astro raises its Node floor by patch releases.
+          check-latest: true
           cache: pnpm
           cache-dependency-path: docs/pnpm-lock.yaml
       # The workspace, for the stand: it renders the registry components, which

@@ -33,6 +33,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+          # The runner caches an older 22.x; Astro raises its Node floor by patch releases.
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # This shard's last results, so only what changed since is mutated again.

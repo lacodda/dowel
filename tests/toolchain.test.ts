@@ -45,3 +45,25 @@ describe('the browser the pictures are taken in', () => {
     ).toBe(declared)
   })
 })
+
+/*
+ * A version held back below the latest is a decision, and a decision without
+ * its reason is a version nobody dares to move. Every override names why, and
+ * what would let it go.
+ */
+const heldBack: Record<string, string> = {
+  // vite 8.3.5's module runner keeps some modules' code as a Buffer, and
+  // `extractInlineSourceMap` calls `charCodeAt` on it: the first stack trace
+  // vitest 5.0.5 maps - in the global setup, before any test - throws, and the
+  // run ends with "No test files found". Let go when a vite past 8.3.5 runs
+  // `pnpm test` without the override.
+  vite: '8.3.4',
+}
+
+describe('versions held back', () => {
+  const overrides = (manifest as { pnpm?: { overrides?: Record<string, string> } }).pnpm?.overrides ?? {}
+
+  it('are each held for a stated reason', () => {
+    expect(overrides, 'an override in package.json needs its reason in tests/toolchain.test.ts').toEqual(heldBack)
+  })
+})

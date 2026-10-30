@@ -6,7 +6,7 @@ component is made of. Using dowel in a product is the
 
 ## Setting up
 
-- **Node 22**, at least 22.22 - the documentation site's Astro asks for it.
+- **Node 22**, at least 22.23.4 - the documentation site's Astro asks for it, and raises the floor by patch releases.
 - **pnpm 10**, through corepack: `corepack enable`. The version is pinned in
   `package.json`; pnpm 11 does not install on Windows.
 
