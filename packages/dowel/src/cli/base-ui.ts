@@ -80,45 +80,36 @@ export interface BaseUiEdit {
   readonly to: string
 }
 
-function lineAt(source: string, index: number): number {
-  let line = 1
-  for (let i = 0; i < index; i += 1) if (source.charCodeAt(i) === 10) line += 1
-  return line
-}
+const lineAt = (source: string, index: number) => source.slice(0, index).split('\n').length
 
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')
 
-/** `import { A as B, C } from 'module'` - each named import, by the name it
- * has in the file. */
+/** `import { A as B, type C } from 'module'` - each named import, by the name
+ * it has in the file. An empty specifier, after a trailing comma, imports
+ * nothing and matches no rule. */
 function namedImports(source: string, module: string): { imported: string; local: string }[] {
-  const found: { imported: string; local: string }[] = []
   const statement = new RegExp(`import\\s*(?:type\\s+)?\\{([^}]*)\\}\\s*from\\s*['"]${escape(module)}['"]`, 'g')
-  for (const match of source.matchAll(statement)) {
-    for (const specifier of match[1]!.split(',')) {
-      const parts = specifier.trim().replace(/^type\s+/, '').split(/\s+as\s+/)
-      if (!parts[0]) continue
-      found.push({ imported: parts[0], local: parts[1] ?? parts[0] })
-    }
-  }
-  return found
+  return [...source.matchAll(statement)].flatMap((match) =>
+    match[1]!.split(',').map((specifier) => {
+      const [imported, local] = specifier.trim().replace(/^type\s+/, '').split(/\s+as\s+/)
+      return { imported: imported!, local: local ?? imported! }
+    }),
+  )
 }
 
 /** Where a JSX opening tag that starts at `start` ends: the `>` outside any
- * expression or string. */
+ * expression or string - `title="a > b"` and `onClick={() => f('}')}` are
+ * both inside the tag. */
 function tagEnd(source: string, start: number): number {
   let depth = 0
   let quote: string | null = null
-  for (let i = start; i < source.length; i += 1) {
-    const char = source[i]!
+  for (const [offset, char] of [...source.slice(start)].entries()) {
     if (quote) {
       if (char === quote) quote = null
-      continue
-    }
-    if (depth > 0 && (char === '"' || char === "'" || char === '`')) quote = char
-    else if (depth === 0 && (char === '"' || char === "'")) quote = char
+    } else if (char === '"' || char === "'" || char === '`') quote = char
     else if (char === '{') depth += 1
     else if (char === '}') depth -= 1
-    else if (char === '>' && depth === 0) return i
+    else if (char === '>' && depth === 0) return start + offset
   }
   return source.length
 }
@@ -137,9 +128,13 @@ function apply(source: string, rule: BaseUiRule, edits: BaseUiEdit[]): string {
 
   if (rule.kind === 'export') {
     const imports = namedImports(source, rule.module).filter((entry) => entry.imported === rule.from)
-    if (imports.length === 0) return source
     let next = source.replace(
-      new RegExp(`(import\\s*(?:type\\s+)?\\{[^}]*?)\\b${escape(rule.from)}\\b([^}]*\\}\\s*from\\s*['"]${escape(rule.module)}['"])`, 'g'),
+      // The name imported, not an alias after `as`: `Drawer as DrawerPreview`
+      // already holds the new name under the old spelling.
+      new RegExp(
+        `(import\\s*(?:type\\s+)?\\{[^}]*?)(?<!\\bas\\s+)\\b${escape(rule.from)}\\b([^}]*\\}\\s*from\\s*['"]${escape(rule.module)}['"])`,
+        'g',
+      ),
       (_match, before: string, after: string, offset: number) => {
         edits.push({ line: lineAt(source, offset + before.length), from: rule.from, to: rule.to })
         return `${before}${rule.to}${after}`
@@ -161,12 +156,13 @@ function apply(source: string, rule: BaseUiRule, edits: BaseUiEdit[]): string {
   const locals = namedImports(source, rule.module)
     .filter((entry) => entry.imported === rule.namespace)
     .map((entry) => entry.local)
-  if (locals.length === 0) return source
   const opening = new RegExp(`<(?:${locals.map(escape).join('|')})\\.[A-Z]\\w*`, 'g')
   let out = ''
   let from = 0
   for (const match of source.matchAll(opening)) {
     const start = match.index
+    // A tag inside another's attribute - `render={<OTP.Input />}` - was
+    // rewritten with the tag around it.
     if (start < from) continue
     const end = tagEnd(source, start + match[0].length)
     const tag = source.slice(start, end)

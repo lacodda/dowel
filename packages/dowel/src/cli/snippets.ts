@@ -45,30 +45,42 @@ export interface Snippet {
 /** `DatePicker` -> `date-picker`, the way the registry names its files. */
 const kebab = (name: string) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
-/** The names of types, which look like words in a union and are not choices. */
-const PRIMITIVES = new Set(['string', 'number', 'boolean', 'bigint', 'symbol', 'object', 'unknown', 'any', 'null', 'never'])
+/** The words that name a type or a value of one, not a string to choose. */
+const NOT_CHOICES = new Set([
+  'string',
+  'number',
+  'boolean',
+  'bigint',
+  'symbol',
+  'object',
+  'unknown',
+  'any',
+  'null',
+  'undefined',
+  'never',
+  'void',
+  'true',
+  'false',
+])
 
 /** A union of string literals - `props.json` writes them bare, `sm | md` - as
- * the words to choose from. A type is not a choice: a capital names one
- * (`Date`), and so do the primitives. A choice list's items cannot hold `,`,
- * `|` or `$` unescaped, which plain words never do. */
+ * the words to choose from; one literal is a choice of one. A type is not a
+ * choice: a capital names one (`Date`), and so do the words above. A choice
+ * list's items cannot hold `,`, `|` or `$` unescaped, which plain words never
+ * do. */
 function choices(type: string): string[] | null {
-  const parts = type.split(' | ').map((part) => part.trim())
-  return parts.length > 1 && parts.every((part) => /^[a-z][\w-]*$/.test(part) && !PRIMITIVES.has(part))
-    ? parts
-    : null
+  const parts = type.split(' | ')
+  return parts.every((part) => /^[a-z][\w-]*$/.test(part) && !NOT_CHOICES.has(part)) ? parts : null
 }
-
-/** A default as the source writes it - `'md'` - as the word it is. */
-const unquoted = (text: string | undefined) => text?.replace(/^['"]|['"]$/g, '')
 
 /** The attribute for one prop, with the tab stop it is given. */
 function attribute(prop: PropEntry, stop: number): string {
   const options = choices(prop.type)
   if (options) {
-    // The default first, so taking the first choice changes nothing.
-    const first = unquoted(prop.default)
-    const ordered = first && options.includes(first) ? [first, ...options.filter((o) => o !== first)] : options
+    // The default first, so taking the first choice changes nothing. The
+    // source writes it quoted: `'md'`.
+    const first = options.find((option) => prop.default === `'${option}'` || prop.default === `"${option}"`)
+    const ordered = first ? [first, ...options.filter((option) => option !== first)] : options
     return `${prop.name}="\${${stop}|${ordered.join(',')}|}"`
   }
   if (prop.type === 'string') return `${prop.name}="\${${stop}}"`
@@ -86,11 +98,9 @@ function takesChildren(component: ComponentEntry): boolean {
 
 /** The snippet for one component. */
 export function snippetFor(component: ComponentEntry): Snippet {
-  const asked = (component.props ?? []).filter(
-    (prop) => prop.name !== 'children' && (prop.required === true || prop.variant === true),
-  )
+  const props = (component.props ?? []).filter((prop) => prop.name !== 'children')
   // Required first: they are what the component cannot do without.
-  asked.sort((a, b) => Number(b.required === true) - Number(a.required === true))
+  const asked = [...props.filter((prop) => prop.required), ...props.filter((prop) => !prop.required && prop.variant)]
   const attributes = asked.map((prop, index) => attribute(prop, index + 1))
   const open = [component.name, ...attributes].join(' ')
   const body = takesChildren(component) ? [`<${open}>`, '\t$0', `</${component.name}>`] : [`<${open} />$0`]

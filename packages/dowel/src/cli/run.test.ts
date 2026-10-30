@@ -264,3 +264,72 @@ describe('snippets', () => {
     expect(printed()).toContain('0.41 or later')
   })
 })
+
+describe('snippets with nothing, and as data', () => {
+  it('says there is nothing to write for when no component is copied', () => {
+    installPackage()
+    file('node_modules/dowel-ui/dist/props.json', '{}')
+    expect(run(['snippets', '--write', '--cwd', directory])).toBe(0)
+    expect(printed()).toContain('nothing to write snippets for')
+    expect(existsSync(resolve(directory, '.vscode/dowel.code-snippets'))).toBe(false)
+  })
+
+  it('prints the snippets and where they would go with --json', () => {
+    const source = "import { cn } from 'dowel-ui'\nexport const Badge = () => null\n"
+    installPackage([{ name: 'badge', type: 'registry:ui', files: [{ path: 'ui/badge.tsx', content: source }] }])
+    file('node_modules/dowel-ui/dist/props.json', JSON.stringify({ badge: { dir: 'ui', components: [{ name: 'Badge', props: [] }] } }))
+    file('src/ui/badge.tsx', source)
+    expect(run(['snippets', '--json', '--cwd', directory])).toBe(0)
+    const parsed = JSON.parse(printed()) as { target: string; snippets: Record<string, { prefix: string }> }
+    expect(parsed.target).toBe('.vscode/dowel.code-snippets')
+    expect(parsed.snippets.Badge!.prefix).toBe('dw-badge')
+  })
+})
+
+describe('codemod across what Base UI renamed', () => {
+  const old = "import { DrawerPreview } from '@base-ui-components/react/drawer'\n<DrawerPreview.Root />\n"
+
+  it('names the renames and counts them, without writing', () => {
+    file('src/drawer.tsx', old)
+    expect(run(['codemod', '--cwd', directory])).toBe(0)
+    expect(printed()).toContain('src/drawer.tsx')
+    expect(printed()).toContain('Base UI @base-ui-components/react -> @base-ui/react, DrawerPreview -> Drawer')
+    expect(printed()).toContain('Would rewrite 3 names in 1 file.')
+    expect(readFileSync(resolve(directory, 'src/drawer.tsx'), 'utf8')).toBe(old)
+  })
+
+  it('writes them with --write', () => {
+    file('src/drawer.tsx', old)
+    run(['codemod', '--write', '--cwd', directory])
+    expect(readFileSync(resolve(directory, 'src/drawer.tsx'), 'utf8')).toBe(
+      "import { Drawer } from '@base-ui/react/drawer'\n<Drawer.Root />\n",
+    )
+  })
+
+  it('carries each edit, by file and line, in --json', () => {
+    file('src/drawer.tsx', old)
+    run(['codemod', '--json', '--cwd', directory])
+    const parsed = JSON.parse(printed()) as { baseUi: { file: string; line: number; from: string }[] }
+    expect(parsed.baseUi).toContainEqual({ file: 'src/drawer.tsx', line: 2, from: 'DrawerPreview', to: 'Drawer' })
+  })
+
+  it('says a project with nothing to rewrite has nothing from Base UI either', () => {
+    file('src/a.tsx', "import { Drawer } from '@base-ui/react/drawer'\n")
+    run(['codemod', '--cwd', directory])
+    expect(printed()).toContain('nothing Base UI has renamed')
+  })
+})
+
+describe('the plan codemod prints', () => {
+  it('lists every rename on its line, in the order of the file, before anything is written', () => {
+    file('src/a.tsx', "import { Menu } from '@base-ui-components/react/menu'\n\n<div className=\"bg-muted\" />\n")
+    run(['codemod', '--cwd', directory])
+    const plan = printed()
+    const first = plan.indexOf('@base-ui-components/react -> @base-ui/react')
+    const second = plan.indexOf('bg-muted -> bg-soft')
+    expect(first).toBeGreaterThan(-1)
+    expect(second).toBeGreaterThan(first)
+    expect(plan).toMatch(/\s1 {2}@base-ui-components\/react -> @base-ui\/react/)
+    expect(plan).toMatch(/\s3 {2}bg-muted -> bg-soft/)
+  })
+})

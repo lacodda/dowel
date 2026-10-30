@@ -173,7 +173,7 @@ function commandCodemod(options: Options): Outcome {
     return 2
   }
 
-  const touched: { file: string; changes: number }[] = []
+  const touched: { file: string; changes: number; edits: { line: number; from: string; to: string }[] }[] = []
   const skipped: { file: string; line: number; name: string; note: string }[] = []
   const renamedInBaseUi: { file: string; line: number; from: string; to: string }[] = []
   let total = 0
@@ -196,7 +196,10 @@ function commandCodemod(options: Options): Outcome {
     if (changes === 0) continue
 
     total += changes
-    touched.push({ file: name, changes })
+    // Line by line, in the order they stand in the file: the plan a person
+    // reads before `--write`, and what the run did after it.
+    const edits = [...result.changes, ...baseUi.edits].sort((a, b) => a.line - b.line)
+    touched.push({ file: name, changes, edits })
     for (const edit of baseUi.edits) renamedInBaseUi.push({ file: name, ...edit })
     if (options.write) writeFileSync(path, baseUi.source)
   }
@@ -213,6 +216,9 @@ function commandCodemod(options: Options): Outcome {
   } else {
     for (const entry of touched) {
       process.stdout.write(`  ${bold(entry.file)} ${dim(`${entry.changes} renamed`)}\n`)
+      for (const edit of entry.edits) {
+        process.stdout.write(`    ${dim(String(edit.line).padStart(4))}  ${edit.from} ${dim('->')} ${edit.to}\n`)
+      }
     }
     // Base UI's renames by name: fewer, and each a reason to read the file's
     // behaviour as well as its spelling.

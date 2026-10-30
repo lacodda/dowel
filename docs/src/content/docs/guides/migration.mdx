@@ -72,7 +72,8 @@ $ npx dowel codemod --write      # does it
 
 It makes exactly the substitutions the table describes and nothing else — no
 reformatting, no reordering, no touching a line it has no replacement for. The
-diff you review should contain nothing but renames.
+diff you review should contain nothing but renames, and before you write it
+the plan lists every one, file by file, on the line it will be made.
 
 Two kinds of name are deliberately left alone, and it says which:
 
@@ -115,9 +116,16 @@ registry moves with it - your own code, and any copy you changed, does not.
 The same run rewrites those renames too:
 
 ```console
+$ npx dowel codemod
   src/ui/otp.tsx 3 renamed
+       1  @base-ui-components/react -> @base-ui/react
+       1  OTPFieldPreview -> OTPField
+       4  sanitizeValue -> normalizeValue
 
 Base UI @base-ui-components/react -> @base-ui/react, sanitizeValue -> normalizeValue, OTPFieldPreview -> OTPField
+
+Would rewrite 3 names in 1 file.
+Nothing was written. Run again with --write.
 ```
 
 | Base UI | What changed | Rewritten |

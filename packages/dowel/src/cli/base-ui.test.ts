@@ -102,6 +102,132 @@ describe('a prop that was renamed', () => {
   })
 })
 
+describe('the edges of a rewrite', () => {
+  it('reads a type-only import, and an alias written with more than one space', () => {
+    const before = [
+      "import type { DrawerPreview } from '@base-ui/react/drawer'",
+      "import { type DrawerPreview  as  D } from '@base-ui/react/drawer'",
+      'type P = DrawerPreview.Root.Props',
+    ].join('\n')
+    expect(rewrite(before)).toBe(
+      [
+        "import type { Drawer } from '@base-ui/react/drawer'",
+        "import { type Drawer  as  D } from '@base-ui/react/drawer'",
+        'type P = Drawer.Root.Props',
+      ].join('\n'),
+    )
+  })
+
+  it('reads `type` inside the braces as a marker, not as part of the name', () => {
+    const before = "import { type DrawerPreview } from '@base-ui/react/drawer'\ntype P = DrawerPreview.Root.Props"
+    expect(rewrite(before)).toBe("import { type Drawer } from '@base-ui/react/drawer'\ntype P = Drawer.Root.Props")
+  })
+
+  it('leaves code that already took the new name under the old one alone', () => {
+    // Migrated by hand, keeping the old spelling at the call sites: the
+    // import says this `DrawerPreview` is Base UI's `Drawer`, and it stays.
+    const source = "import { Drawer as DrawerPreview } from '@base-ui/react/drawer'\n<DrawerPreview.Root />"
+    expect(rewrite(source)).toBe(source)
+  })
+
+  it('does not rename a DrawerPreview of its own when Base UI is imported under an alias', () => {
+    const before = [
+      "import { DrawerPreview as Base } from '@base-ui/react/drawer'",
+      'const DrawerPreview = mine()',
+      'DrawerPreview.open()',
+    ].join('\n')
+    expect(rewrite(before).split('\n').slice(1)).toEqual(['const DrawerPreview = mine()', 'DrawerPreview.open()'])
+  })
+
+  it('renames the uses when one of two imports keeps the name', () => {
+    const before = [
+      "import { DrawerPreview as D } from '@base-ui/react/drawer'",
+      "import { DrawerPreview } from '@base-ui/react/drawer'",
+      '<DrawerPreview.Root />',
+    ].join('\n')
+    expect(rewrite(before).split('\n')[2]).toBe('<Drawer.Root />')
+  })
+
+  it('leaves a DrawerPreview of its own alone, beside an import of Base UI under another name', () => {
+    const source = [
+      "import { Drawer } from '@base-ui/react/drawer'",
+      "import { DrawerPreview } from './mine'",
+      '<DrawerPreview.Root />',
+    ].join('\n')
+    expect(rewrite(source)).toBe(source)
+  })
+
+  it('renames the prop only on the namespace it belongs to, whatever else the module gives', () => {
+    const source = [
+      "import { OTPField, OTPFieldInputDataAttributes as Other } from '@base-ui/react/otp-field'",
+      '<Other.Root sanitizeValue={clean} />',
+    ].join('\n')
+    expect(rewrite(source)).toBe(source)
+  })
+
+  it('renames it under every name the namespace is imported as', () => {
+    const before = [
+      "import { OTPField } from '@base-ui/react/otp-field'",
+      "import { OTPField  as  O } from '@base-ui/react/otp-field'",
+      '<OTPField.Root sanitizeValue={a} />',
+      '<O.Root sanitizeValue={b} />',
+    ].join('\n')
+    const after = rewrite(before).split('\n')
+    expect(after.slice(2)).toEqual(['<OTPField.Root normalizeValue={a} />', '<O.Root normalizeValue={b} />'])
+  })
+
+  it('reads a tag past a `>` in a string and a `}` in a string inside an expression, and stops at its end', () => {
+    const before = [
+      "import { OTPField } from '@base-ui/react/otp-field'",
+      "<OTPField.Root title=\"a > b\" onFocus={() => say('}', `}`)} sanitizeValue={clean}>",
+      '  <Input sanitizeValue={mine} />',
+    ].join('\n')
+    // The tag ends at its own `>`: the Input after it is not Base UI's.
+    expect(rewrite(before).split('\n').slice(1)).toEqual([
+      "<OTPField.Root title=\"a > b\" onFocus={() => say('}', `}`)} normalizeValue={clean}>",
+      '  <Input sanitizeValue={mine} />',
+    ])
+  })
+
+  it('renames a tag inside another once, and copies nothing twice', () => {
+    const before = [
+      "import { OTPField } from '@base-ui/react/otp-field'",
+      '<OTPField.Root render={<OTPField.Input sanitizeValue={a} />} sanitizeValue={b}>text</OTPField.Root>',
+    ].join('\n')
+    expect(rewrite(before).split('\n')[1]).toBe(
+      '<OTPField.Root render={<OTPField.Input normalizeValue={a} />} normalizeValue={b}>text</OTPField.Root>',
+    )
+  })
+
+  it('renames the prop written last and bare, and not a longer name that starts with it', () => {
+    const before = [
+      "import { OTPField } from '@base-ui/react/otp-field'",
+      '<OTPField.Root sanitizeValueLater={x} sanitizeValue>',
+    ].join('\n')
+    expect(rewrite(before).split('\n')[1]).toBe('<OTPField.Root sanitizeValueLater={x} normalizeValue>')
+  })
+
+  it('counts each edit on its own line, for every kind of rule', () => {
+    const { edits } = rewriteBaseUi(
+      [
+        '// a header',
+        "import { DrawerPreview } from '@base-ui/react/drawer'",
+        "import { OTPField } from '@base-ui/react/otp-field'",
+        '',
+        '<DrawerPreview.Root />',
+        '<OTPField.Root',
+        '  sanitizeValue={clean}',
+        '/>',
+      ].join('\n'),
+    )
+    expect(edits).toEqual([
+      { line: 2, from: 'DrawerPreview', to: 'Drawer' },
+      { line: 5, from: 'DrawerPreview', to: 'Drawer' },
+      { line: 7, from: 'sanitizeValue', to: 'normalizeValue' },
+    ])
+  })
+})
+
 describe('the account it gives', () => {
   it('names every edit, on the line it was made', () => {
     const { edits } = rewriteBaseUi("\nimport { Menu } from '@base-ui-components/react/menu'")
