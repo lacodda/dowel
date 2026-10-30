@@ -5,7 +5,7 @@
   "title": "EmptyDashboardScreen",
   "description": "A dashboard on its first day: the few things to do before it has anything to show, with the next one ready to press, and the figures it will show once it does - drawn empty, so the screen says what it is for.",
   "dependencies": [
-    "dowel-ui@^0.40.0"
+    "dowel-ui@^0.41.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/frame.json",

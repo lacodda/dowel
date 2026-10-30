@@ -1,4 +1,4 @@
-# dowel 0.40.0
+# dowel 0.41.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -27,9 +27,10 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.40.0.** The theme and its scales, an accent for each of the nineteen
+**v0.41.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
-for a product that does not draw with a browser, the line's
+for a product that does not draw with a browser - as JSON and as a Rust
+module, from one generator - the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
 a hundred and eighteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
@@ -55,7 +56,11 @@ above it. Everything that opens over the page
 [fits the window on both axes](/dowel/guides/gates/#the-room-a-popup-has) and is
 [driven by the keyboard](/dowel/guides/gates/#the-keyboard-for-everything-that-opens)
 in a real browser, and a weekly mutation run holds every file's tests to a
-[floor](/dowel/guides/gates/#tests-that-notice) of their own. The [lint rules](/dowel/guides/linting/) hold a product to the same
+[floor](/dowel/guides/gates/#tests-that-notice) of their own. Every props
+table is read from the component's types, the
+[catalogue](/dowel/reference/catalogue/) finds an item down to a prop it
+takes, and [recipes](/dowel/recipes/list-that-loads/) compose screens from
+files the tests render. The [lint rules](/dowel/guides/linting/) hold a product to the same
 scale and to Button rather than a raw `<button>`, and rewrite a size written the
 long way on their own. Components install from the
 registry with `npx shadcn add`, singly or as a
@@ -5546,7 +5551,9 @@ since a stage is ticked and a title is typed and the popover has no opinion.
       className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[active]:opacity-100 data-[popup-open]:opacity-100"
     >
       {owners.map((owner) => (
-        <Checkbox key={owner} label={owner} checked={chosen.includes(owner)} onCheckedChange={…} />
+        <Checkbox key={owner} checked={chosen.includes(owner)} onCheckedChange={…}>
+          {owner}
+        </Checkbox>
       ))}
     </FilterPopover>
   </span>
@@ -12566,6 +12573,437 @@ A group of settings inside a section.
 
 ---
 
+# Deleting, with a way back
+
+Source: https://lacodda.github.io/dowel/recipes/delete-with-a-way-back
+
+A list of works where two things can be taken away. One can be put back and
+one cannot, and a screen that treats them alike is wrong in one direction or
+the other: a dialog before every archive, or an Undo that cannot undo.
+Composed from [ConfirmDialog](/dowel/components/confirm-dialog/),
+[Toast](/dowel/components/toast/), [Button](/dowel/components/button/) and
+[ListRow](/dowel/components/list-row/).
+
+```tsx
+/*
+ * Recipe: deleting, with a way back.
+ *
+ * Two destructive actions on a list of works, and they must not feel the same.
+ * Archiving can be undone, so it does not ask: it acts at once and a toast
+ * offers Undo for a few seconds. Deleting for good cannot be undone, so it is
+ * the one that asks - a confirm dialog that names the work, says plainly that
+ * there is no way back, and starts with focus on the safe answer.
+ *
+ * The rule behind it: ask before what cannot be reversed, offer a way back
+ * after what can. A dialog in front of every archive teaches people to click
+ * through dialogs; an Undo after a permanent delete is a promise that cannot
+ * be kept.
+ *
+ * Wire `archived` and `deleted` to the product's own calls. Archiving here is
+ * a set of ids, so a work comes back in the place it left - the list is
+ * always drawn from the same ordered array. `ToastProvider` belongs once per
+ * screen, high up; it is inside this recipe only so the recipe stands alone.
+ * Every word a reader sees is here, for the product's language to replace.
+ */
+import { useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  ConfirmDialog,
+  ConfirmDialogActions,
+  ConfirmDialogClose,
+  ConfirmDialogDescription,
+  ConfirmDialogHeader,
+  ConfirmDialogPopup,
+  ConfirmDialogTitle,
+} from '@/components/ui/confirm-dialog'
+import { ListRow } from '@/components/ui/list-row'
+import { Toast, ToastAction, ToastClose, ToastProvider, ToastTitle, ToastViewport, useToastManager } from '@/components/ui/toast'
+
+export interface Row {
+  id: string
+  title: string
+  summary: string
+}
+
+export interface DeleteWithAWayBackProps {
+  /** The works, in the order they are shown. */
+  works: readonly Row[]
+  /** A work went to the archive. Called again with `false` on Undo. */
+  onArchive?: (id: string, archived: boolean) => void
+  /** A work was deleted for good. */
+  onDelete?: (id: string) => void
+}
+
+export function DeleteWithAWayBack(props: DeleteWithAWayBackProps) {
+  return (
+    <ToastProvider>
+      <Works {...props} />
+      <ToastViewport aria-label="Notifications">
+        <ArchiveToasts />
+      </ToastViewport>
+    </ToastProvider>
+  )
+}
+
+function Works({ works: initial, onArchive, onDelete }: DeleteWithAWayBackProps) {
+  const toasts = useToastManager()
+  const [works, setWorks] = useState(initial)
+  // Ids, not a second list: the archived work is still in `works`, only not
+  // drawn, so Undo needs to remember nothing about where it was.
+  const [archived, setArchived] = useState<ReadonlySet<string>>(new Set())
+  const [deleting, setDeleting] = useState<Row | null>(null)
+  const cancel = useRef<HTMLButtonElement>(null)
+
+  const archive = (work: Row) => {
+    setArchived((ids) => new Set(ids).add(work.id))
+    onArchive?.(work.id, true)
+    const toastId = toasts.add({
+      title: `Archived "${work.title}"`,
+      timeout: 6000,
+      actionProps: {
+        children: 'Undo',
+        onClick: () => {
+          setArchived((ids) => {
+            const next = new Set(ids)
+            next.delete(work.id)
+            return next
+          })
+          onArchive?.(work.id, false)
+          toasts.close(toastId)
+        },
+      },
+    })
+  }
+
+  const remove = (work: Row) => {
+    setWorks((rows) => rows.filter((row) => row.id !== work.id))
+    onDelete?.(work.id)
+  }
+
+  const shown = works.filter((work) => !archived.has(work.id))
+
+  return (
+    <section aria-labelledby="works-heading" className="flex flex-col gap-3">
+      <h2 id="works-heading" className="text-lg font-semibold text-text">
+        Works
+      </h2>
+      {shown.length === 0 ? (
+        <p className="text-sm text-dim">Every work is archived. Undo on the last notice brings it back.</p>
+      ) : (
+        <ul className="flex flex-col">
+          {shown.map((work) => (
+            <ListRow
+              key={work.id}
+              render={<li />}
+              description={work.summary}
+              end={
+                <span className="flex gap-1">
+                  {/* The row's name is in the label: a screen reader lists
+                      these buttons out of context, and "Archive" five times
+                      says nothing. */}
+                  <Button size="sm" aria-label={`Archive ${work.title}`} onClick={() => archive(work)}>
+                    Archive
+                  </Button>
+                  <Button size="sm" variant="danger" aria-label={`Delete ${work.title} for good`} onClick={() => setDeleting(work)}>
+                    Delete
+                  </Button>
+                </span>
+              }
+            >
+              {work.title}
+            </ListRow>
+          ))}
+        </ul>
+      )}
+
+      {/* Controlled, and kept outside the rows: one dialog for the screen,
+          asked about whichever work was chosen. */}
+      <ConfirmDialog open={deleting !== null} onOpenChange={(open) => !open && setDeleting(null)}>
+        <ConfirmDialogPopup size="sm" initialFocus={cancel}>
+          <ConfirmDialogHeader>
+            <ConfirmDialogTitle>{`Delete "${deleting?.title ?? ''}" for good?`}</ConfirmDialogTitle>
+            <ConfirmDialogDescription>
+              This removes the work and all its versions. It cannot be undone.
+            </ConfirmDialogDescription>
+          </ConfirmDialogHeader>
+          <ConfirmDialogActions>
+            {/* Focus starts on the safe answer: Enter pressed in a hurry
+                cancels. */}
+            <Button render={<ConfirmDialogClose ref={cancel} />}>
+              Keep it
+            </Button>
+            <Button variant="danger" render={<ConfirmDialogClose />} onClick={() => deleting && remove(deleting)}>
+              Delete for good
+            </Button>
+          </ConfirmDialogActions>
+        </ConfirmDialogPopup>
+      </ConfirmDialog>
+    </section>
+  )
+}
+
+/** Maps what the manager holds onto toasts. The action words and handler came
+ * with the toast (actionProps), so this is written once for every toast. */
+function ArchiveToasts() {
+  const { toasts } = useToastManager()
+  return (
+    <>
+      {toasts.map((toast) => (
+        <Toast key={toast.id} toast={toast}>
+          <ToastTitle />
+          <ToastAction />
+          <ToastClose aria-label="Dismiss" />
+        </Toast>
+      ))}
+    </>
+  )
+}
+```
+
+## What it gets right
+
+**What can be undone does not ask.** Archive acts at once; the work leaves the
+list and a toast says so, with an Undo that stays for a few seconds.
+
+**Undo puts the work back in its place.** The list is always drawn from the
+same ordered array and archiving only hides an id, so a work from the middle
+returns to the middle.
+
+**What cannot be undone asks, and names the thing.** The dialog title says
+which work, and the description says it cannot be undone. Asking changes
+nothing: the work is still in the list behind it.
+
+**Focus starts on the safe choice.** `initialFocus` points at "Keep it", so a
+hurried Enter cancels.
+
+**Cancel changes nothing; Confirm removes it.** "Delete for good" is the
+danger button and the only path that removes the work, and no Undo is offered
+afterwards because none could be kept.
+
+**The buttons say which work.** Each row's buttons carry the work's title in
+their accessible name, so a list of buttons read out of context is not
+"Archive, Archive, Archive".
+
+---
+
+# Details in a drawer
+
+Source: https://lacodda.github.io/dowel/recipes/detail-in-a-drawer
+
+The detail view that is not a page: the list stays where it was, and a panel
+holds the chosen item's facts, history and actions until the reader is done.
+It goes wrong quietly - a panel with no name, focus lost on close, an empty
+cell where a score should be. Composed from
+[RowButton](/dowel/components/list-row/),
+[Drawer](/dowel/components/drawer/),
+[KeyValue](/dowel/components/key-value/),
+[Badge](/dowel/components/badge/),
+[RelativeTime](/dowel/components/relative-time/) and
+[Button](/dowel/components/button/).
+
+```tsx
+/*
+ * Recipe: details in a drawer.
+ *
+ * A list where choosing a row shows that row's details without leaving the
+ * list: a panel slides in from the right edge, the list stays exactly where
+ * it was under the scrim, and closing the panel puts the reader back on the
+ * row they came from. Easy to build and easy to get subtly wrong - an unnamed
+ * panel, a focus that falls to the top of the page on close, a blank cell
+ * where "no score" should be said.
+ *
+ * `Drawer` is controlled here (`open` / `onOpenChange`) because a row, not a
+ * trigger, opens it. Base UI remembers what had focus when the drawer opened
+ * and gives it back on close, so the row needs nothing extra. The drawer is
+ * named by its `DrawerTitle`. `side="right"` goes with `swipeDirection="right"`
+ * on the root, or the panel would open from one edge and be flicked away
+ * towards another.
+ *
+ * Wire `works` and `people` to the product's own data. Every word a reader
+ * sees is here, in one place, for the product's language to replace.
+ */
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Drawer,
+  DrawerActions,
+  DrawerBody,
+  DrawerClose,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerPopup,
+  DrawerTitle,
+} from '@/components/ui/drawer'
+import { KeyValue, KeyValueRow } from '@/components/ui/key-value'
+import { RowButton } from '@/components/ui/list-row'
+import { RelativeTime } from '@/components/ui/relative-time'
+
+export interface Version {
+  id: string
+  label: string
+  at: string
+  note: string
+}
+
+export interface Work {
+  id: string
+  title: string
+  kind: string
+  stage: 'idea' | 'draft' | 'ready' | 'released'
+  /** A person's `id`. */
+  owner: string
+  updated: string
+  /** Out of ten, or null while nobody has judged it. */
+  score: number | null
+  summary: string
+  versions: readonly Version[]
+}
+
+export interface Person {
+  id: string
+  name: string
+}
+
+// One place decides how a stage looks, so the list and the drawer agree.
+const STAGE_VARIANT = { idea: 'outline', draft: 'soft', ready: 'info', released: 'good' } as const
+
+export function DetailInADrawer({
+  works,
+  people,
+  now,
+  onOpenWork,
+}: {
+  works: readonly Work[]
+  people: readonly Person[]
+  /** What counts as now for every relative date. Omit it for the clock. */
+  now?: Date | number
+  /** The drawer's main action: take me to the work itself. */
+  onOpenWork: (id: string) => void
+}) {
+  // The chosen work and whether its drawer is open are two facts. Closing only
+  // flips `open`, so the content stays drawn while the panel slides away
+  // instead of emptying first.
+  const [chosen, setChosen] = useState<Work | null>(null)
+  const [open, setOpen] = useState(false)
+
+  const owner = chosen && (people.find((person) => person.id === chosen.owner)?.name ?? 'Unknown')
+
+  return (
+    <section aria-labelledby="works-heading" className="flex flex-col gap-3">
+      <h2 id="works-heading" className="text-lg font-semibold text-text">
+        Works
+      </h2>
+      <ul className="flex flex-col">
+        {works.map((work) => (
+          <li key={work.id}>
+            <RowButton
+              description={work.summary}
+              // The row that opened the drawer stays marked while it is open,
+              // so the list behind the scrim still says where the reader is.
+              selected={open && chosen?.id === work.id}
+              end={<Badge variant={STAGE_VARIANT[work.stage]}>{work.stage}</Badge>}
+              onClick={() => {
+                setChosen(work)
+                setOpen(true)
+              }}
+            >
+              {work.title}
+            </RowButton>
+          </li>
+        ))}
+      </ul>
+
+      <Drawer open={open} onOpenChange={setOpen} swipeDirection="right">
+        <DrawerPopup side="right" size="md">
+          {chosen && (
+            <>
+              <DrawerHeader>
+                <DrawerTitle>{chosen.title}</DrawerTitle>
+                <DrawerDescription>{chosen.summary}</DrawerDescription>
+              </DrawerHeader>
+              <DrawerBody className="flex flex-col gap-5">
+                <KeyValue>
+                  <KeyValueRow label="Kind">{chosen.kind}</KeyValueRow>
+                  <KeyValueRow label="Stage">
+                    <Badge variant={STAGE_VARIANT[chosen.stage]}>{chosen.stage}</Badge>
+                  </KeyValueRow>
+                  <KeyValueRow label="Owner">{owner}</KeyValueRow>
+                  <KeyValueRow label="Updated">
+                    {/* The phrase is the convenience; the exact date rides in
+                        its title for a reader who needs to say when. */}
+                    <RelativeTime value={chosen.updated} now={now} />
+                  </KeyValueRow>
+                  <KeyValueRow label="Score">
+                    {/* Said in words: an empty cell reads as a fault. */}
+                    {chosen.score === null ? <span className="text-dim">Not scored yet</span> : `${chosen.score} / 10`}
+                  </KeyValueRow>
+                </KeyValue>
+
+                <section aria-labelledby="versions-heading" className="flex flex-col gap-2">
+                  <h3 id="versions-heading" className="text-sm font-semibold text-text">
+                    Versions
+                  </h3>
+                  {chosen.versions.length === 0 ? (
+                    <p className="text-sm text-dim">No versions yet.</p>
+                  ) : (
+                    <ul className="flex flex-col gap-2 text-sm">
+                      {chosen.versions.map((version) => (
+                        <li key={version.id} className="flex flex-col">
+                          <span className="text-text">
+                            {version.label} - <RelativeTime value={version.at} now={now} className="text-dim" />
+                          </span>
+                          <span className="text-dim">{version.note}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              </DrawerBody>
+              {/* Pinned to the bottom edge however short the body is. */}
+              <DrawerActions>
+                <DrawerClose render={<Button variant="ghost" />}>Close</DrawerClose>
+                <Button variant="primary" onClick={() => onOpenWork(chosen.id)}>
+                  Open work
+                </Button>
+              </DrawerActions>
+            </>
+          )}
+        </DrawerPopup>
+      </Drawer>
+    </section>
+  )
+}
+```
+
+## What it gets right
+
+**The drawer is a dialog named by the work.** `DrawerTitle` holds the work's
+title and Base UI points the dialog at it, so a screen reader hears "Harbour
+lights, dialog" rather than an anonymous panel.
+
+**Escape closes it and the focus goes home.** The reader lands back on the
+row they chose, not at the top of the page.
+
+**The list stays where it was.** The list is never unmounted, and the chosen
+row is marked current while the drawer is open, so even behind the scrim it
+says where the reader is.
+
+**A missing score is said in words.** A work nobody has judged reads "Not
+scored yet", and one with no versions reads "No versions yet." - never an
+empty cell that looks like a fault.
+
+**A relative date keeps its exact one.** "2 hours ago" is a `<time>` with the
+machine-readable moment and the full date in its title, for the reader who
+has to say when. The recipe passes `now`, so every phrase is measured from the
+same moment.
+
+**The actions stay in reach.** Close and the main action sit in the drawer's
+footer, pinned to the bottom edge however short the body is; the main action
+is handed the id of the work that is open.
+
+---
+
 # A list that loads
 
 Source: https://lacodda.github.io/dowel/recipes/list-that-loads
@@ -12625,8 +13063,6 @@ export function ListThatLoads({
   useEffect(() => {
     // A slow answer to an old attempt must not land over a newer one.
     let current = true
-    setRows(null)
-    setError(null)
     load().then(
       (loaded) => current && setRows(loaded),
       (failed: unknown) => current && setError(failed instanceof Error ? failed : new Error(String(failed))),
@@ -12661,7 +13097,12 @@ export function ListThatLoads({
         error={error}
         empty={found.length === 0}
         errorLabels={{ title: 'The works did not load', body: 'The connection dropped. Nothing was lost.' }}
-        onRetry={() => setAttempt((count) => count + 1)}
+        // Back to pending, then load again: the retry is seen to be happening.
+        onRetry={() => {
+          setRows(null)
+          setError(null)
+          setAttempt((count) => count + 1)
+        }}
         retryLabel="Try again"
         // Two kinds of nothing: none exist, or none match. They say different
         // things and are drawn differently.
@@ -12715,6 +13156,573 @@ usually empty, which reads as "nothing found".
 
 **A late answer cannot win.** The effect ignores a response to an attempt
 that has been replaced - the fault that shows the old list after a retry.
+
+---
+
+# Settings that save as you go
+
+Source: https://lacodda.github.io/dowel/recipes/settings-saved-as-you-go
+
+A form with no Save button has to say what it did anyway, or the reader is
+left wondering whether their edit survived. Composed from
+[Field](/dowel/components/field/), [Input](/dowel/components/input/),
+[Switch](/dowel/components/switch/),
+[SegmentedControl](/dowel/components/segmented-control/) and
+[SaveState](/dowel/components/save-state/). It is the inside of one section of
+a settings screen: that block lays out the sections and the way between them,
+this is what a section holds when there is no Save bar at its foot.
+
+```tsx
+/*
+ * Recipe: settings that save as you go.
+ *
+ * A settings section with no Save button. Each field keeps itself when it is
+ * committed - a text field on blur or Enter, a switch or a choice at once -
+ * and says what happened next to it: saving, saved, or not saved. The hard
+ * part is not the saving, it is the three promises around it: nothing is sent
+ * while someone is still typing, a failure never throws away what they wrote,
+ * and the outcome is told to a reader who cannot see the corner of the screen.
+ *
+ * Each field owns its own save, so a slow or failed one does not hold up the
+ * others. `useFieldDraft` supplies the commit moments (blur, Enter; Escape
+ * takes the text back); `useSaveStatus` and `SaveState` supply the quiet line,
+ * a live region that is always mounted so a screen reader hears it change.
+ * A failure is a separate message with its own way out, because `SaveState`
+ * deliberately never says "saved" for a save that was not.
+ *
+ * This is not the settings screen block: that one lays out sections, a column
+ * and a way back, and leaves the fields to the product. This is what goes
+ * inside one of its sections when there is no Save bar to put at the foot.
+ *
+ * Wire `save` to the product's own mutation - `(key, value) => api.patch(...)`
+ * - and let it reject on failure. Every word a reader sees is here, in one
+ * place, for the product's language to replace.
+ */
+import { useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Field } from '@/components/ui/field'
+import { useFieldDraft } from '@/components/ui/field-draft'
+import { Input } from '@/components/ui/input'
+import { SaveState, useSaveStatus } from '@/components/ui/save-state'
+import { Segment, SegmentedControl } from '@/components/ui/segmented-control'
+import { Switch } from '@/components/ui/switch'
+
+export type SettingValue = string | boolean
+
+export interface Settings {
+  name: string
+  email: string
+  digest: boolean
+  density: 'comfortable' | 'compact'
+}
+
+export type SettingKey = keyof Settings
+
+/**
+ * One setting's life: the value that is stored, and the attempt to change it.
+ * The attempt is in flight, or has failed and is waiting to be tried again.
+ */
+function useSetting<T extends SettingValue>(
+  key: SettingKey,
+  initial: T,
+  save: (key: SettingKey, value: T) => Promise<void>,
+) {
+  const [stored, setStored] = useState(initial)
+  const [attempt, setAttempt] = useState<{ value: T; failed: boolean } | null>(null)
+  // Only the newest attempt may settle the state: a slow answer to an old one
+  // must not land over a newer one.
+  const latest = useRef(0)
+
+  const commit = (value: T) => {
+    if (value === stored) {
+      // Nothing to send - and a failure left over from a value that was put
+      // back by hand is no longer a failure.
+      latest.current += 1
+      setAttempt(null)
+      return
+    }
+    const mine = ++latest.current
+    setAttempt({ value, failed: false })
+    save(key, value).then(
+      () => {
+        if (mine !== latest.current) return
+        setStored(value)
+        setAttempt(null)
+      },
+      () => {
+        if (mine === latest.current) setAttempt({ value, failed: true })
+      },
+    )
+  }
+
+  const failed = attempt?.failed ?? false
+  const status = useSaveStatus(attempt !== null && !failed, failed)
+  // The attempt is shown while it is in flight or has failed: the reader's
+  // choice stays on screen until it is stored or put back.
+  return { value: attempt?.value ?? stored, stored, failed, status, commit }
+}
+
+/** The quiet line beside a field. */
+function Outcome({ status }: { status: ReturnType<typeof useSaveStatus> }) {
+  return <SaveState status={status} savingLabel="Saving" savedLabel="Saved" />
+}
+
+/** The failure, announced as an alert, with its way out. */
+function NotSaved({ what, onRetry }: { what: string; onRetry: () => void }) {
+  return (
+    <span role="alert" className="flex items-center gap-2">
+      Not saved. What you entered is still here.
+      {/* Named by the setting: several of these can be on screen at once. */}
+      <Button variant="link" size="xs" onClick={onRetry} aria-label={`Try saving ${what} again`}>
+        Try again
+      </Button>
+    </span>
+  )
+}
+
+function TextSetting({
+  label,
+  help,
+  settingKey,
+  initial,
+  save,
+  type,
+}: {
+  label: string
+  help?: string
+  settingKey: SettingKey
+  initial: string
+  save: (key: SettingKey, value: string) => Promise<void>
+  type?: 'email'
+}) {
+  const setting = useSetting(settingKey, initial, save)
+  // The draft belongs to the box; the setting only hears when it is committed.
+  // A failed save leaves the stored value alone, so the box keeps what was typed.
+  const draft = useFieldDraft(setting.stored, setting.commit)
+  return (
+    <div className="flex items-start gap-3">
+      <Field
+        label={label}
+        help={help}
+        error={setting.failed ? <NotSaved what={label} onRetry={() => setting.commit(draft.value)} /> : undefined}
+        className="flex-1"
+      >
+        <Input type={type} {...draft} />
+      </Field>
+      <Outcome status={setting.status} />
+    </div>
+  )
+}
+
+function SwitchSetting({
+  label,
+  settingKey,
+  initial,
+  save,
+}: {
+  label: string
+  settingKey: SettingKey
+  initial: boolean
+  save: (key: SettingKey, value: boolean) => Promise<void>
+}) {
+  const setting = useSetting(settingKey, initial, save)
+  return (
+    <div className="flex items-start gap-3">
+      <Field
+        beside
+        label={label}
+        error={setting.failed ? <NotSaved what={label} onRetry={() => setting.commit(setting.value)} /> : undefined}
+        className="flex-1"
+      >
+        {/* Saved at once: there is no half-typed state of a switch. */}
+        <Switch checked={setting.value} onCheckedChange={setting.commit} />
+      </Field>
+      <Outcome status={setting.status} />
+    </div>
+  )
+}
+
+function DensitySetting({
+  initial,
+  save,
+}: {
+  initial: Settings['density']
+  save: (key: SettingKey, value: string) => Promise<void>
+}) {
+  const setting = useSetting<string>('density', initial, save)
+  return (
+    <div className="flex items-start gap-3">
+      <div className="flex flex-1 flex-col gap-1.5">
+        <span id="density-label" className="caption">
+          Density
+        </span>
+        <SegmentedControl aria-labelledby="density-label" value={setting.value} onValueChange={setting.commit}>
+          <Segment value="comfortable">Comfortable</Segment>
+          <Segment value="compact">Compact</Segment>
+        </SegmentedControl>
+        {setting.failed && (
+          <p className="text-xs text-bad">
+            <NotSaved what="Density" onRetry={() => setting.commit(setting.value)} />
+          </p>
+        )}
+      </div>
+      <Outcome status={setting.status} />
+    </div>
+  )
+}
+
+export function SettingsSavedAsYouGo({
+  initial,
+  save,
+}: {
+  /** The settings as the server has them. */
+  initial: Settings
+  /** Writes one setting. Reject to say it did not stick. */
+  save: (key: SettingKey, value: SettingValue) => Promise<void>
+}) {
+  return (
+    <section aria-labelledby="profile-settings-heading" className="flex max-w-lg flex-col gap-5">
+      <div className="flex flex-col gap-1">
+        <h2 id="profile-settings-heading" className="text-lg font-semibold text-text">
+          Profile
+        </h2>
+        <p className="text-sm text-dim">Changes are kept as you make them. There is nothing to save.</p>
+      </div>
+      <TextSetting label="Display name" settingKey="name" initial={initial.name} save={save} />
+      <TextSetting
+        label="Email"
+        help="Receipts and sign-in links go here."
+        settingKey="email"
+        type="email"
+        initial={initial.email}
+        save={save}
+      />
+      <SwitchSetting label="Email me a weekly digest" settingKey="digest" initial={initial.digest} save={save} />
+      <DensitySetting initial={initial.density} save={save} />
+    </section>
+  )
+}
+```
+
+## What it gets right
+
+**Nothing is sent while someone is typing.** A text field saves when it is
+left or when Enter is pressed - never per keystroke - and leaving it
+unchanged sends nothing at all.
+
+**A switch or a choice saves at once.** There is no half-typed state of a
+switch, so waiting for a blur would only make the reader wonder.
+
+**The outcome is announced.** The line beside each field is a polite live
+region that is always on the page, so a screen reader hears "Saving" and then
+"Saved" change in place; the tick fades on its own.
+
+**A failure keeps what was typed.** The box still shows the text, a message
+says it was not saved, and it is announced as an alert - never "Saved" over a
+save that was not.
+
+**A failure has a way out.** "Try again" sends the same value again, and its
+name says which setting it is for, since several can be showing at once.
+
+**Each field saves on its own.** A slow or failed save on one does not hold up
+the others, and a late answer to an old attempt cannot land over a newer one.
+
+---
+
+# A table people sort and filter
+
+Source: https://lacodda.github.io/dowel/recipes/table-people-sort
+
+The "all of our things" page. Sorting, filtering and paging are each easy
+alone and get wrong together: a sort that only reorders the visible page, a
+filter that leaves the reader on a page that no longer exists, an empty grid
+that reads as broken. Composed from [Table](/dowel/components/table/) with its
+sort helpers, [FilterPopover](/dowel/components/filter-popover/),
+[Checkbox](/dowel/components/checkbox/), [Badge](/dowel/components/badge/),
+[PageSize](/dowel/components/page-size/) and
+[Pagination](/dowel/components/pagination/).
+
+```tsx
+/*
+ * Recipe: a table people sort and filter.
+ *
+ * The screen behind every "all of our things" page: a table the reader orders
+ * by a column, narrows to the kinds and stages they care about, and walks a
+ * page at a time. Each of those is easy alone; the screen is hard because
+ * they share state. Sort and filter are decided over every row, and only then
+ * is a page cut out - so the sort survives paging, and anything that changes
+ * what the pages are made of (a filter, the page size) puts the reader back on
+ * page one rather than on a page that may no longer exist.
+ *
+ * The table does not sort or filter anything itself; `sortRows` and
+ * `toggleSort` from `table-sort` are plain functions the product calls. Wire
+ * `works` to the product's own rows. For a server-side table keep the same
+ * four pieces of state (sort, filters, page, page size) and send them as the
+ * query instead of calling `sortRows`. Every word a reader sees is here, in
+ * one place, for the product's language to replace.
+ */
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { FilterPopover } from '@/components/ui/filter-popover'
+import { PageSize } from '@/components/ui/page-size'
+import { Pagination, pageRange } from '@/components/ui/pagination'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableEmpty,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableScroll,
+  TableSortHeader,
+} from '@/components/ui/table'
+import { sortRows, toggleSort, type Sort, type SortValue } from '@/components/ui/table-sort'
+
+export type Kind = 'song' | 'clip' | 'short' | 'cover'
+export type Stage = 'idea' | 'draft' | 'ready' | 'released'
+
+export interface Row {
+  id: string
+  title: string
+  kind: Kind
+  stage: Stage
+  /** Already a name; the table does not look people up. */
+  owner: string
+  /** An ISO timestamp. */
+  updated: string
+  /** Out of ten, or null while nobody has judged it. */
+  score: number | null
+}
+
+const KINDS: readonly Kind[] = ['song', 'clip', 'short', 'cover']
+const STAGES: readonly Stage[] = ['idea', 'draft', 'ready', 'released']
+const PAGE_SIZES = [5, 10, 25]
+
+const KIND_WORDS: Record<Kind, string> = { song: 'Song', clip: 'Clip', short: 'Short', cover: 'Cover' }
+const STAGE_WORDS: Record<Stage, string> = { idea: 'Idea', draft: 'Draft', ready: 'Ready', released: 'Released' }
+
+type Column = 'title' | 'owner' | 'updated' | 'score'
+
+function valueOf(row: Row, column: Column): SortValue {
+  return row[column]
+}
+
+const day = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' })
+
+/** Ticks and unticks one value in a list. */
+function toggled<T>(chosen: readonly T[], value: T, on: boolean): T[] {
+  return on ? [...chosen, value] : chosen.filter((item) => item !== value)
+}
+
+/** The funnel shows on hover, on focus, while it narrows and while open. */
+const FUNNEL =
+  'opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[active]:opacity-100 data-[popup-open]:opacity-100'
+
+export function TablePeopleSort({ works }: { works: readonly Row[] }) {
+  // Five pieces of state decide what is on screen, and nothing else does.
+  const [sort, setSort] = useState<Sort<Column>>({ column: 'updated', direction: 'desc' })
+  const [kinds, setKinds] = useState<Kind[]>([])
+  const [stages, setStages] = useState<Stage[]>([])
+  const [pageSize, setPageSize] = useState(PAGE_SIZES[0]!)
+  const [page, setPage] = useState(1)
+
+  // An empty filter means "all", not "none": ticking nothing must not hide
+  // everything.
+  const narrowed = works.filter(
+    (row) => (kinds.length === 0 || kinds.includes(row.kind)) && (stages.length === 0 || stages.includes(row.stage)),
+  )
+  // Order first, then cut the page. Sorting the page alone would reorder a few
+  // rows and leave the table unsorted as a whole.
+  const ordered = sortRows(narrowed, sort, valueOf, { locale: 'en', tiebreak: (row) => row.id })
+  const shown = ordered.slice((page - 1) * pageSize, page * pageSize)
+  const [from, to] = pageRange(page, pageSize, ordered.length)
+  const filtering = kinds.length + stages.length > 0
+
+  // Anything that changes what the pages are made of starts again at page
+  // one. Page 4 of a different question is usually empty.
+  function narrow(change: () => void) {
+    change()
+    setPage(1)
+  }
+
+  const sortProps = {
+    sort,
+    // Paging is deliberately not touched here: the same table, looked at from
+    // the other end, stays on the page the reader is on.
+    onSortChange: (column: string) => setSort((now) => toggleSort(now, column as Column)),
+  }
+
+  return (
+    <section aria-labelledby="works-heading" className="flex flex-col gap-3">
+      <h2 id="works-heading" className="text-lg font-semibold text-text">
+        Works
+      </h2>
+      <TableScroll>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableSortHeader column="title" {...sortProps}>
+                Title
+              </TableSortHeader>
+              <TableHeader className="group">
+                <span className="flex items-center gap-1">
+                  Kind
+                  <FilterPopover
+                    title="Kind"
+                    label="Filter by kind"
+                    active={kinds.length > 0}
+                    clearLabel="Clear"
+                    onClear={() => narrow(() => setKinds([]))}
+                    className={FUNNEL}
+                  >
+                    {KINDS.map((kind) => (
+                      <Checkbox
+                        key={kind}
+                        checked={kinds.includes(kind)}
+                        onCheckedChange={(on) => narrow(() => setKinds((now) => toggled(now, kind, on)))}
+                      >
+                        {KIND_WORDS[kind]}
+                      </Checkbox>
+                    ))}
+                  </FilterPopover>
+                </span>
+              </TableHeader>
+              <TableHeader className="group">
+                <span className="flex items-center gap-1">
+                  Stage
+                  <FilterPopover
+                    title="Stage"
+                    label="Filter by stage"
+                    active={stages.length > 0}
+                    clearLabel="Clear"
+                    onClear={() => narrow(() => setStages([]))}
+                    className={FUNNEL}
+                  >
+                    {STAGES.map((stage) => (
+                      <Checkbox
+                        key={stage}
+                        checked={stages.includes(stage)}
+                        onCheckedChange={(on) => narrow(() => setStages((now) => toggled(now, stage, on)))}
+                      >
+                        {STAGE_WORDS[stage]}
+                      </Checkbox>
+                    ))}
+                  </FilterPopover>
+                </span>
+              </TableHeader>
+              <TableSortHeader column="owner" {...sortProps}>
+                Owner
+              </TableSortHeader>
+              <TableSortHeader column="updated" {...sortProps}>
+                Updated
+              </TableSortHeader>
+              <TableSortHeader column="score" numeric {...sortProps}>
+                Score
+              </TableSortHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {shown.length === 0 ? (
+              // Said in the table, under the heading that is still there, and
+              // with the way out beside it: an empty grid reads as broken.
+              <TableEmpty colSpan={6}>
+                <p>{filtering ? 'No works match these filters.' : 'No works yet.'}</p>
+                {filtering && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() =>
+                      narrow(() => {
+                        setKinds([])
+                        setStages([])
+                      })
+                    }
+                  >
+                    Clear the filters
+                  </Button>
+                )}
+              </TableEmpty>
+            ) : (
+              shown.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell className="font-medium text-text">{row.title}</TableCell>
+                  <TableCell>{KIND_WORDS[row.kind]}</TableCell>
+                  <TableCell>
+                    {/* Words, not only colour: the stage is the message. */}
+                    <Badge variant={row.stage === 'released' ? 'good' : 'outline'}>{STAGE_WORDS[row.stage]}</Badge>
+                  </TableCell>
+                  <TableCell>{row.owner}</TableCell>
+                  <TableCell>
+                    <time dateTime={row.updated}>{day.format(new Date(row.updated))}</time>
+                  </TableCell>
+                  <TableCell numeric>{row.score ?? <span className="text-dim">Not judged</span>}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableScroll>
+      <div className="flex flex-wrap items-center gap-3">
+        <PageSize
+          pageSize={pageSize}
+          options={PAGE_SIZES}
+          label="Rows per page"
+          onPageSizeChange={(next) => {
+            setPageSize(next)
+            setPage(1)
+          }}
+        >
+          Rows per page
+        </PageSize>
+        <p className="text-sm text-dim tabular-nums">
+          {ordered.length === 0 ? '0 works' : `${from}-${to} of ${ordered.length}`}
+        </p>
+        {ordered.length > pageSize && (
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={ordered.length}
+            onPageChange={setPage}
+            className="ml-auto"
+            labels={{ region: 'Pages', previous: 'Previous page', next: 'Next page', page: (n) => `Page ${n}` }}
+          />
+        )}
+      </div>
+    </section>
+  )
+}
+```
+
+## What it gets right
+
+**The sort is announced.** The sorted column's heading carries `aria-sort`
+(ascending or descending) and no other heading does, so a screen reader hears
+which column the table is in order of, and nothing is repeated on the rest.
+
+**One order across the pages.** Rows are filtered and sorted first and the
+page is cut afterwards, so page two continues where page one stopped and
+clicking a page does not touch the sort.
+
+**Unjudged sorts last.** A work with no score is not a zero. It stays at the
+bottom whichever way the Score column points.
+
+**A filter that hides everything says so.** The table stays, with its headings,
+and one row says no works match these filters, with a button that clears them.
+No filter ticked means all rows, never none.
+
+**Changing what the pages are made of starts at page one.** A filter or a new
+page size puts the reader back on the first page, instead of leaving them on
+page three of a different table.
+
+**Numbers line up.** The Score heading and its cells use `numeric`, so the
+column is right-aligned with lining figures.
+
+**The stage is a word.** The badge says Draft or Released; colour only adds to
+it.
 
 ---
 
@@ -13297,7 +14305,8 @@ $ npx dowel codemod --write      # does it
 
 It makes exactly the substitutions the table describes and nothing else — no
 reformatting, no reordering, no touching a line it has no replacement for. The
-diff you review should contain nothing but renames.
+diff you review should contain nothing but renames, and before you write it
+the plan lists every one, file by file, on the line it will be made.
 
 Two kinds of name are deliberately left alone, and it says which:
 
@@ -13331,6 +14340,40 @@ Which token a colour was reaching for is a decision, not a substitution.
 drawing, and only the person who wrote it knows. The
 [anti-patterns page](/dowel/concepts/anti-patterns/) covers the judgement;
 `check` just finds them.
+
+### What Base UI renamed
+
+dowel's components stand on Base UI, and so does any code of yours that
+reaches for a Base UI part directly. When Base UI renames something, dowel's
+registry moves with it - your own code, and any copy you changed, does not.
+The same run rewrites those renames too:
+
+```console
+$ npx dowel codemod
+  src/ui/otp.tsx 3 renamed
+       1  @base-ui-components/react -> @base-ui/react
+       1  OTPFieldPreview -> OTPField
+       4  sanitizeValue -> normalizeValue
+
+Base UI @base-ui-components/react -> @base-ui/react, sanitizeValue -> normalizeValue, OTPFieldPreview -> OTPField
+
+Would rewrite 3 names in 1 file.
+Nothing was written. Run again with --write.
+```
+
+| Base UI | What changed | Rewritten |
+| --- | --- | --- |
+| 1.0 | the package: `@base-ui-components/react` -> `@base-ui/react` | every import of it, and of its subpaths |
+| 1.3 | `DrawerPreview` -> `Drawer` | the import, and its uses when it was imported by that name |
+| 1.5 | OTP Field's `sanitizeValue` -> `normalizeValue` | on the parts of that namespace, whatever it is imported as |
+| 1.6 | `OTPFieldPreview` -> `OTPField` | the import, and its uses when it was imported by that name |
+
+A rename is applied only where an import says the name is Base UI's: a
+`DrawerPreview` of your own, from your own file, is left alone. The table is
+checked against the changelog of the Base UI dowel is built on - every
+breaking change since 1.0 has an entry, a rule when a machine can make the
+change and a note when a person has to read it - so the release that brings a
+new Base UI brings its renames here.
 
 ## `doctor`
 
@@ -13397,7 +14440,7 @@ $ npx dowel diff --json | jq '.local'
 Every command takes `--json`, and `--cwd <dir>` to look somewhere other than
 here. `NO_COLOR` is honoured.
 
- FENCE7
+ FENCE8
 
 ---
 
@@ -13739,14 +14782,14 @@ for you - if it is right about the version you have.
 
 ```console
 $ npx dowel snippets --write
-Wrote .vscode/dowel.code-snippets: 24 snippets for 11 components. Type dw- in a .tsx file.
+Wrote .vscode/dowel.code-snippets: 204 snippets for 67 components. Type dw- in a .tsx file.
 ```
 
 Type `dw-` in a `.tsx` or `.jsx` file and the components appear, each under
 its file's name: `dw-button`, `dw-date-picker`, `dw-select-popup`.
 
 ```tsx
-<Button variant="ghost">
+<Button variant="ghost" size="md">
   |
 </Button>
 ```
@@ -13803,6 +14846,10 @@ $ npm install dowel-ui@latest
 The theme, the lint rules and the command update in place. Lint is where a
 change to the rules shows first; `npx dowel doctor` says whether the
 installation is still wired the way the theme expects.
+
+When the upgrade brings a new Base UI, `npx dowel codemod` rewrites what it
+renamed in your own code and in copies you changed - see
+[what Base UI renamed](/dowel/guides/migration/#what-base-ui-renamed).
 
 ## The components you copied
 

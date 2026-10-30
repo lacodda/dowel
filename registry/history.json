@@ -126,6 +126,19 @@
   ],
   "activity-legend": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -279,6 +292,19 @@
   ],
   "avatar": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.27.0",
       "changes": [
         {
@@ -336,6 +362,19 @@
     }
   ],
   "bar-chart": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.39.0",
       "changes": [
@@ -450,6 +489,19 @@
   ],
   "breadcrumbs": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.29.0",
       "changes": [
         {
@@ -518,6 +570,19 @@
     }
   ],
   "calendar": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -656,6 +721,19 @@
   ],
   "checkbox": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.16.0",
       "changes": [
         {
@@ -670,6 +748,19 @@
     }
   ],
   "chip": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.39.0",
       "changes": [
@@ -775,6 +866,19 @@
     }
   ],
   "color-field": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.20.0",
       "changes": [
@@ -937,6 +1041,19 @@
     }
   ],
   "command-palette": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -1265,6 +1382,19 @@
   ],
   "date-picker": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.40.0",
       "changes": [
         {
@@ -1352,6 +1482,19 @@
     }
   ],
   "date-range-picker": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -1531,6 +1674,19 @@
   ],
   "diff-view": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.25.0",
       "changes": [
         {
@@ -1553,6 +1709,19 @@
     }
   ],
   "divider": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -1644,6 +1813,19 @@
   ],
   "duration-field": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.28.0",
       "changes": [
         {
@@ -1671,6 +1853,19 @@
     }
   ],
   "empty-dashboard-screen": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -1730,6 +1925,19 @@
   ],
   "field": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.37.0",
       "changes": [
         {
@@ -1786,6 +1994,19 @@
   ],
   "file-drop": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.20.0",
       "changes": [
         {
@@ -1800,6 +2021,19 @@
     }
   ],
   "filter-popover": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -1828,6 +2062,19 @@
     }
   ],
   "frame": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.39.0",
       "changes": [
@@ -1892,6 +2139,19 @@
     }
   ],
   "inline-field": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -1990,6 +2250,19 @@
   ],
   "json-viewer": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.39.0",
       "changes": [
         {
@@ -2058,6 +2331,19 @@
     }
   ],
   "key-value": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.22.0",
       "changes": [
@@ -2179,6 +2465,19 @@
   ],
   "list-detail-screen": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.36.0",
       "changes": [
         {
@@ -2193,6 +2492,19 @@
     }
   ],
   "list-row": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -2222,6 +2534,19 @@
   ],
   "login-screen": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.36.0",
       "changes": [
         {
@@ -2236,6 +2561,19 @@
     }
   ],
   "marked-text": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -2340,6 +2678,19 @@
   ],
   "nav-rail": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.39.0",
       "changes": [
         {
@@ -2393,6 +2744,19 @@
     }
   ],
   "notification-bell": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -2455,6 +2819,19 @@
     }
   ],
   "number-field": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.37.0",
       "changes": [
@@ -2531,6 +2908,19 @@
   ],
   "number-format": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.31.0",
       "changes": [
         {
@@ -2558,6 +2948,19 @@
     }
   ],
   "page-header": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -2587,6 +2990,19 @@
   ],
   "page-size": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.21.0",
       "changes": [
         {
@@ -2601,6 +3017,19 @@
     }
   ],
   "pagination": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.21.0",
       "changes": [
@@ -2657,6 +3086,19 @@
     }
   ],
   "password-field": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -2875,6 +3317,19 @@
   ],
   "query-state": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -2903,6 +3358,19 @@
   ],
   "radio-group": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.16.0",
       "changes": [
         {
@@ -2917,6 +3385,19 @@
     }
   ],
   "rating-scale": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.28.0",
       "changes": [
@@ -2973,6 +3454,19 @@
     }
   ],
   "reorderable-list": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.32.0",
       "changes": [
@@ -3032,6 +3526,19 @@
   ],
   "schema-fields": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.38.0",
       "changes": [
         {
@@ -3075,6 +3582,19 @@
   ],
   "scroll-area": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.39.0",
       "changes": [
         {
@@ -3116,6 +3636,19 @@
   ],
   "search-field": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.35.0",
       "changes": [
         {
@@ -3156,6 +3689,19 @@
     }
   ],
   "section-nav": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -3237,6 +3783,19 @@
   ],
   "segmented-control": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -3251,6 +3810,19 @@
     }
   ],
   "select": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -3353,6 +3925,19 @@
   ],
   "settings-screen": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.36.0",
       "changes": [
         {
@@ -3409,6 +3994,19 @@
   ],
   "shortcuts-dialog": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.38.0",
       "changes": [
         {
@@ -3436,6 +4034,19 @@
     }
   ],
   "skeleton": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.37.0",
       "changes": [
@@ -3493,6 +4104,19 @@
   ],
   "slider": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.17.0",
       "changes": [
         {
@@ -3507,6 +4131,19 @@
     }
   ],
   "sparkline": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -3663,6 +4300,19 @@
   ],
   "stepper": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.31.0",
       "changes": [
         {
@@ -3677,6 +4327,19 @@
     }
   ],
   "switch": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.33.0",
       "changes": [
@@ -3705,6 +4368,19 @@
     }
   ],
   "table": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -3816,6 +4492,19 @@
   ],
   "tag-input": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.36.0",
       "changes": [
         {
@@ -3843,6 +4532,19 @@
     }
   ],
   "textarea": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.5.0",
       "changes": [
@@ -4114,6 +4816,19 @@
   ],
   "tier": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.39.0",
       "changes": [
         {
@@ -4167,6 +4882,19 @@
     }
   ],
   "time-field": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.31.0",
       "changes": [
@@ -4413,6 +5141,19 @@
   ],
   "track": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -4497,6 +5238,19 @@
   ],
   "tree-view": [
     {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
+    {
       "version": "0.22.0",
       "changes": [
         {
@@ -4526,6 +5280,19 @@
     }
   ],
   "virtual-list": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.22.0",
       "changes": [
@@ -4608,6 +5375,19 @@
     }
   ],
   "wizard": [
+    {
+      "version": "0.41.0",
+      "changes": [
+        {
+          "type": "docs",
+          "scope": null,
+          "breaking": false,
+          "summary": "read every props table from the component's types",
+          "date": "2026-10-30",
+          "commit": "ee3b159628"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [

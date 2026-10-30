@@ -1,6 +1,6 @@
 # dowel
 
-> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.40.0.
+> The lacodda line design system: theme tokens and React primitives, distributed as a shadcn-compatible registry. Version 0.41.0.
 
 Components are copied into a project with `npx shadcn add <url>` rather than imported, so they become that project's own code. The theme is an npm package, `dowel-ui`. Every colour goes through a token and no component uses a `dark:` utility, so the same component is correct in both themes and in each product's accent.
 
@@ -148,7 +148,11 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 
 ## Recipes
 
+- [Deleting, with a way back](https://lacodda.github.io/dowel/recipes/delete-with-a-way-back.md): Archiving acts at once and offers Undo; deleting for good asks first. Two destructive actions, treated as the different things they are.
+- [Details in a drawer](https://lacodda.github.io/dowel/recipes/detail-in-a-drawer.md): A list of works where choosing one opens its details from the right edge, without leaving the list.
 - [A list that loads](https://lacodda.github.io/dowel/recipes/list-that-loads.md): Rows from somewhere slow, a search over them, pages when there are many - and the three moments that are not the list.
+- [Settings that save as you go](https://lacodda.github.io/dowel/recipes/settings-saved-as-you-go.md): A settings section with no Save button - each field keeps itself when it is committed, and says whether it did.
+- [A table people sort and filter](https://lacodda.github.io/dowel/recipes/table-people-sort.md): A table of works the reader orders by a column, narrows through a filter, sizes and pages - with one set of state behind all of it.
 
 ## Guides
 

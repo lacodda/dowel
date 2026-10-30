@@ -21,9 +21,10 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.40.0.** The theme and its scales, an accent for each of the nineteen
+**v0.41.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
-for a product that does not draw with a browser, the line's
+for a product that does not draw with a browser - as JSON and as a Rust
+module, from one generator - the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
 a hundred and eighteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
@@ -49,7 +50,11 @@ above it. Everything that opens over the page
 [fits the window on both axes](/dowel/guides/gates/#the-room-a-popup-has) and is
 [driven by the keyboard](/dowel/guides/gates/#the-keyboard-for-everything-that-opens)
 in a real browser, and a weekly mutation run holds every file's tests to a
-[floor](/dowel/guides/gates/#tests-that-notice) of their own. The [lint rules](/dowel/guides/linting/) hold a product to the same
+[floor](/dowel/guides/gates/#tests-that-notice) of their own. Every props
+table is read from the component's types, the
+[catalogue](/dowel/reference/catalogue/) finds an item down to a prop it
+takes, and [recipes](/dowel/recipes/list-that-loads/) compose screens from
+files the tests render. The [lint rules](/dowel/guides/linting/) hold a product to the same
 scale and to Button rather than a raw `<button>`, and rewrite a size written the
 long way on their own. Components install from the
 registry with `npx shadcn add`, singly or as a

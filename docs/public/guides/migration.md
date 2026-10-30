@@ -71,7 +71,8 @@ $ npx dowel codemod --write      # does it
 
 It makes exactly the substitutions the table describes and nothing else — no
 reformatting, no reordering, no touching a line it has no replacement for. The
-diff you review should contain nothing but renames.
+diff you review should contain nothing but renames, and before you write it
+the plan lists every one, file by file, on the line it will be made.
 
 Two kinds of name are deliberately left alone, and it says which:
 
@@ -105,6 +106,40 @@ Which token a colour was reaching for is a decision, not a substitution.
 drawing, and only the person who wrote it knows. The
 [anti-patterns page](/dowel/concepts/anti-patterns/) covers the judgement;
 `check` just finds them.
+
+### What Base UI renamed
+
+dowel's components stand on Base UI, and so does any code of yours that
+reaches for a Base UI part directly. When Base UI renames something, dowel's
+registry moves with it - your own code, and any copy you changed, does not.
+The same run rewrites those renames too:
+
+```console
+$ npx dowel codemod
+  src/ui/otp.tsx 3 renamed
+       1  @base-ui-components/react -> @base-ui/react
+       1  OTPFieldPreview -> OTPField
+       4  sanitizeValue -> normalizeValue
+
+Base UI @base-ui-components/react -> @base-ui/react, sanitizeValue -> normalizeValue, OTPFieldPreview -> OTPField
+
+Would rewrite 3 names in 1 file.
+Nothing was written. Run again with --write.
+```
+
+| Base UI | What changed | Rewritten |
+| --- | --- | --- |
+| 1.0 | the package: `@base-ui-components/react` -> `@base-ui/react` | every import of it, and of its subpaths |
+| 1.3 | `DrawerPreview` -> `Drawer` | the import, and its uses when it was imported by that name |
+| 1.5 | OTP Field's `sanitizeValue` -> `normalizeValue` | on the parts of that namespace, whatever it is imported as |
+| 1.6 | `OTPFieldPreview` -> `OTPField` | the import, and its uses when it was imported by that name |
+
+A rename is applied only where an import says the name is Base UI's: a
+`DrawerPreview` of your own, from your own file, is left alone. The table is
+checked against the changelog of the Base UI dowel is built on - every
+breaking change since 1.0 has an entry, a rule when a machine can make the
+change and a note when a person has to read it - so the release that brings a
+new Base UI brings its renames here.
 
 ## `doctor`
 
@@ -171,4 +206,4 @@ $ npx dowel diff --json | jq '.local'
 Every command takes `--json`, and `--cwd <dir>` to look somewhere other than
 here. `NO_COLOR` is honoured.
 
- FENCE7
+ FENCE8

@@ -57,8 +57,6 @@ export function ListThatLoads({
   useEffect(() => {
     // A slow answer to an old attempt must not land over a newer one.
     let current = true
-    setRows(null)
-    setError(null)
     load().then(
       (loaded) => current && setRows(loaded),
       (failed: unknown) => current && setError(failed instanceof Error ? failed : new Error(String(failed))),
@@ -93,7 +91,12 @@ export function ListThatLoads({
         error={error}
         empty={found.length === 0}
         errorLabels={{ title: 'The works did not load', body: 'The connection dropped. Nothing was lost.' }}
-        onRetry={() => setAttempt((count) => count + 1)}
+        // Back to pending, then load again: the retry is seen to be happening.
+        onRetry={() => {
+          setRows(null)
+          setError(null)
+          setAttempt((count) => count + 1)
+        }}
         retryLabel="Try again"
         // Two kinds of nothing: none exist, or none match. They say different
         // things and are drawn differently.

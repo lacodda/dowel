@@ -18,6 +18,10 @@ The theme, the lint rules and the command update in place. Lint is where a
 change to the rules shows first; `npx dowel doctor` says whether the
 installation is still wired the way the theme expects.
 
+When the upgrade brings a new Base UI, `npx dowel codemod` rewrites what it
+renamed in your own code and in copies you changed - see
+[what Base UI renamed](/dowel/guides/migration/#what-base-ui-renamed).
+
 ## The components you copied
 
 ```console

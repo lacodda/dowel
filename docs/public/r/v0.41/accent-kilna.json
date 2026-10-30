@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-kilna",
+  "type": "registry:file",
+  "title": "kilna accent",
+  "description": "magenta #D9569E - the colour of the kilna mark (ki). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/kilna.css",
+      "target": "~/dowel/accents/kilna.css",
+      "type": "registry:file",
+      "content": "/*\n * kilna - magenta #D9569E, the colour of its mark (ki).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #D9569E;\n}\n"
+    }
+  ]
+}
