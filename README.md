@@ -191,6 +191,7 @@ Released versions and what landed in each: [CHANGELOG](https://github.com/lacodd
 - [Getting started](https://lacodda.github.io/dowel/getting-started/), [the lint rules](https://lacodda.github.io/dowel/guides/linting/) and [what a component has to pass](https://lacodda.github.io/dowel/guides/gates/)
 - [Moving from stock shadcn](https://lacodda.github.io/dowel/guides/migration/) - the four commands and what they refuse to do
 - [Components](https://lacodda.github.io/dowel/components/button/), and [blocks](https://lacodda.github.io/dowel/blocks/list-detail-screen/) with [the demo](https://lacodda.github.io/dowel/demo/) built from them
+- [Recipes](https://lacodda.github.io/dowel/recipes/list-that-loads/) - screens composed from tested files - and [the catalogue](https://lacodda.github.io/dowel/reference/catalogue/), searchable down to a prop
 - [Tokens](https://lacodda.github.io/dowel/reference/tokens/), [scales](https://lacodda.github.io/dowel/reference/scales/) and [accents](https://lacodda.github.io/dowel/reference/accents/); [contrast](https://lacodda.github.io/dowel/concepts/contrast/) pair by pair, and [printing](https://lacodda.github.io/dowel/guides/printing/)
 - [The vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary/) this system uses for its own parts, and [the mistakes](https://lacodda.github.io/dowel/concepts/anti-patterns/) that actually get made against it
 
@@ -205,6 +206,8 @@ same sources the site is built from:
 - any page as plain Markdown, by appending `.md` to its URL
 - [a JSON Schema](https://lacodda.github.io/dowel/r/schema.json) of a registry
   item, validated against every item the registry serves
+- `dowel-ui/props.json`, every component's props read from its types, which
+  `npx dowel snippets` turns into editor snippets
 - an [`AGENTS.md`](https://lacodda.github.io/dowel/r/agents.json) a consumer
   installs like any other item, so a product on dowel can tell its own agents
   what its code cannot
