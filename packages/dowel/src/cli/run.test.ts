@@ -169,6 +169,10 @@ describe('diff with nothing to compare', () => {
     file('src/ui/button.tsx', "import { cn } from 'dowel-ui'\nconst a = 2\n")
     expect(run(['diff', '--cwd', directory])).toBe(0)
     expect(printed()).toContain('differs from the registry')
+    // Which line is whose, since the two are the whole of what a merge reads.
+    const lines = printed().split('\n')
+    expect(lines).toContain('   + const a = 2')
+    expect(lines.some((line) => line.startsWith('   - const a'))).toBe(true)
   })
 
   it('fails with 2 when asked for a component the project does not have', () => {
@@ -249,12 +253,128 @@ describe('codemod writes only when asked', () => {
     file('src/a.tsx', '<div className="bg-muted" />')
     expect(run(['codemod', '--cwd', directory])).toBe(0)
     expect(printed()).toContain('Nothing was written')
+    expect(readFileSync(resolve(directory, 'src/a.tsx'), 'utf8')).toBe('<div className="bg-muted" />')
   })
 
   it('rewrites with --write, and says so', () => {
     file('src/a.tsx', '<div className="bg-muted" />')
     run(['codemod', '--write', '--cwd', directory])
     expect(printed()).toContain('Rewrote')
+    expect(readFileSync(resolve(directory, 'src/a.tsx'), 'utf8')).toBe('<div className="bg-soft" />')
+  })
+
+  it('prints the plan, file by file and line by line', () => {
+    file('src/a.tsx', '\n<div className="bg-muted text-muted-foreground" />')
+    file('src/b.tsx', '<div className="border-input" />')
+    run(['codemod', '--cwd', directory])
+    const lines = printed().split('\n')
+    expect(lines).toContain('  src/a.tsx 2 renamed')
+    expect(lines).toContain('       2  bg-muted -> bg-soft')
+    expect(lines).toContain('       2  text-muted-foreground -> text-dim')
+    expect(lines).toContain('  src/b.tsx 1 renamed')
+    expect(printed()).toContain('Would rewrite 3 names in 2 files.')
+  })
+
+  it('counts one of each without an s', () => {
+    file('src/a.tsx', '<div className="bg-muted" />')
+    run(['codemod', '--write', '--cwd', directory])
+    expect(printed()).toContain('Rewrote 1 name in 1 file.')
+    expect(printed()).not.toContain('Run again with --write')
+  })
+
+  it('says what it left alone, and why', () => {
+    file('src/a.css', '.x { color: var(--chart-1); }\n.y { color: var(--chart-1); }\n')
+    run(['codemod', '--cwd', directory])
+    expect(printed()).toContain('Left alone')
+    expect(printed()).toContain('--chart-1 (2) - dowel has no chart palette')
+  })
+
+  it('accounts for all of it to a machine', () => {
+    file('src/a.tsx', '<div className="bg-muted" />')
+    file('src/b.css', '.x { color: var(--chart-1); }')
+    run(['codemod', '--json', '--cwd', directory])
+    expect(JSON.parse(printed())).toMatchObject({
+      written: false,
+      touched: [{ file: 'src/a.tsx', changes: 1, edits: [{ line: 1, from: 'bg-muted', to: 'bg-soft' }] }],
+      skipped: [{ file: 'src/b.css', line: 1, name: '--chart-1' }],
+      baseUi: [],
+    })
+  })
+})
+
+describe('what check prints', () => {
+  const lineWith = (text: string) => printed().split('\n').find((line) => line.includes(text)) ?? ''
+
+  it('gives each kind of finding its own mark', () => {
+    file('src/a.tsx', 'export const a = "bg-muted"')
+    file('src/b.tsx', 'export const b = "bg-[#ff0000]"')
+    file('src/c.tsx', 'export const c = "bg-accent"')
+    run(['check', '--cwd', directory])
+    expect(lineWith('bg-muted')).toMatch(/1:\d+ stock {2}`bg-muted`/)
+    expect(lineWith('raw colour cannot')).toMatch(/1:\d+ color {2}A raw colour/)
+    expect(lineWith('`bg-accent`')).toMatch(/1:\d+ both {3}`bg-accent`/)
+  })
+
+  it('adds it all up in one line', () => {
+    file('src/a.tsx', 'export const a = "bg-muted text-muted-foreground"')
+    file('src/b.tsx', 'export const b = "bg-[#ff0000]"')
+    file('src/c.tsx', 'export const c = "bg-accent"')
+    run(['check', '--cwd', directory])
+    expect(printed()).toContain('4 findings in 3 files - 2 stock names, 1 raw colour, 1 in both vocabularies.')
+  })
+
+  it('leaves out of that line what is not there', () => {
+    file('src/a.tsx', 'export const a = "bg-muted"')
+    run(['check', '--cwd', directory])
+    expect(printed()).toContain('1 findings in 1 file - 1 stock name, 0 raw colours.')
+  })
+
+  it('says what can be rewritten, and what never is', () => {
+    file('src/a.tsx', 'export const a = "bg-muted"')
+    file('src/b.tsx', 'export const b = "bg-[#ff0000]"')
+    file('src/c.tsx', 'export const c = "bg-accent"')
+    run(['check', '--cwd', directory])
+    expect(printed()).toContain('1 of them can be rewritten: dowel codemod --write')
+    expect(printed()).toContain('Colours are not rewritten')
+    expect(printed()).toContain('Names in both vocabularies are never rewritten')
+  })
+
+  it('does not offer to rewrite what it cannot', () => {
+    file('src/b.tsx', 'export const b = "bg-[#ff0000]"')
+    file('src/c.tsx', 'export const c = "bg-accent"')
+    run(['check', '--cwd', directory])
+    expect(printed()).not.toContain('can be rewritten')
+  })
+
+  it('says nothing about colours or both vocabularies when there are none', () => {
+    file('src/a.tsx', 'export const a = "bg-muted"')
+    run(['check', '--cwd', directory])
+    expect(printed()).not.toContain('Colours are not rewritten')
+    expect(printed()).not.toContain('never rewritten')
+  })
+
+  it('exits the same for a person and a machine', () => {
+    file('src/a.tsx', 'export const a = "bg-accent"')
+    expect(run(['check', '--cwd', directory])).toBe(0)
+    expect(run(['check', '--cwd', directory, '--json'])).toBe(0)
+    file('src/b.tsx', 'export const b = "bg-muted"')
+    expect(run(['check', '--cwd', directory])).toBe(1)
+    expect(run(['check', '--cwd', directory, '--json'])).toBe(1)
+  })
+
+  it('counts one use of the accent without an s', () => {
+    file('src/styles.css', "@import 'dowel-ui/theme.css';\n")
+    file('src/a.tsx', 'export const a = "bg-accent"')
+    run(['check', '--cwd', directory])
+    expect(printed()).toContain("1 use of `accent` read as dowel's own")
+  })
+
+  it('still counts the accent when there is something else to say', () => {
+    file('src/styles.css', "@import 'dowel-ui/theme.css';\n")
+    file('src/a.tsx', 'export const a = "bg-accent bg-muted"')
+    expect(run(['check', '--cwd', directory])).toBe(1)
+    expect(printed()).toContain("1 use of `accent` read as dowel's own")
+    expect(printed()).toContain('`bg-muted`')
   })
 })
 
