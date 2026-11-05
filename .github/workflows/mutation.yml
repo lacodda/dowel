@@ -38,11 +38,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # This shard's last results, so only what changed since is mutated again.
+      # `by-path` since a file's shard came from its path: a record from before
+      # holds files that have since moved, and carries them into the report.
       - uses: actions/cache@v6
         with:
           path: reports/stryker-incremental.json
-          key: stryker-incremental-${{ matrix.shard }}-${{ github.sha }}
-          restore-keys: stryker-incremental-${{ matrix.shard }}-
+          key: stryker-incremental-by-path-${{ matrix.shard }}-${{ github.sha }}
+          restore-keys: stryker-incremental-by-path-${{ matrix.shard }}-
       - name: Mutate this shard's files and run their tests
         run: pnpm mutate --mutate "$(node tools/mutation-shard.mjs ${{ matrix.shard }} 8)"
       - name: Hold every file it measured to its floor

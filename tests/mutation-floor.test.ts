@@ -84,8 +84,20 @@ describe('the shards of the weekly run', () => {
   })
 
   it('are near each other in size', () => {
+    // A job has a time limit, so none can hold many times its share.
     const sizes = Array.from({ length: 8 }, (_, index) => shard(files, index, 8).length)
-    expect(Math.max(...sizes) - Math.min(...sizes)).toBeLessThanOrEqual(1)
+    expect(Math.min(...sizes)).toBeGreaterThan(0)
+    expect(Math.max(...sizes)).toBeLessThanOrEqual(Math.ceil((files.length / 8) * 1.75))
+  })
+
+  it('leave every file where it was when a new one arrives', () => {
+    // By position, one new file moved most of the others to a shard whose record
+    // had never seen them, and an ordinary week's run mutated them all again.
+    const before = Array.from({ length: 8 }, (_, index) => shard(files, index, 8))
+    const after = Array.from({ length: 8 }, (_, index) => shard(['registry/ui/a-new-one.tsx', ...files], index, 8))
+    for (const [index, held] of before.entries()) {
+      expect(after[index]!.filter((file) => file !== 'registry/ui/a-new-one.tsx')).toEqual(held)
+    }
   })
 
   it('include the primitives, the blocks and the package', () => {
