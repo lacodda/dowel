@@ -1,4 +1,5 @@
 import type { Rule } from 'eslint'
+import type { LintRule } from './shape.js'
 
 /*
  * `no-implicit-locale` - a date or a number formatted without saying in which
@@ -58,7 +59,7 @@ function implicit(argument: Node | undefined): boolean {
   return false
 }
 
-export const noImplicitLocale: Rule.RuleModule = {
+export const noImplicitLocale: LintRule = {
   meta: {
     type: 'problem',
     docs: {
@@ -89,4 +90,4 @@ export const noImplicitLocale: Rule.RuleModule = {
       },
     } as Rule.RuleListener
   },
-}
+} satisfies Rule.RuleModule

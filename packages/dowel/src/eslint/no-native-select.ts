@@ -1,4 +1,5 @@
 import type { Rule } from 'eslint'
+import type { LintRule } from './shape.js'
 
 /*
  * `no-native-select` - the oldest convention in the line, from atlas.
@@ -26,7 +27,7 @@ const MESSAGE =
   'the browser draws its popup in the operating system chrome. Use the Select or ' +
   'Combobox component instead.'
 
-export const noNativeSelect: Rule.RuleModule = {
+export const noNativeSelect: LintRule = {
   meta: {
     type: 'problem',
     docs: {
@@ -53,4 +54,4 @@ export const noNativeSelect: Rule.RuleModule = {
       },
     } as Rule.RuleListener
   },
-}
+} satisfies Rule.RuleModule

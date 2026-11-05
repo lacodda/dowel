@@ -1,4 +1,5 @@
 import type { Rule } from 'eslint'
+import type { LintRule } from './shape.js'
 
 /*
  * `no-raw-color` - the rule behind the line's oldest convention.
@@ -98,7 +99,7 @@ export function findRawColor(text: string): Finding | undefined {
   return undefined
 }
 
-export const noRawColor: Rule.RuleModule = {
+export const noRawColor: LintRule = {
   meta: {
     type: 'problem',
     docs: {
@@ -125,4 +126,4 @@ export const noRawColor: Rule.RuleModule = {
       },
     }
   },
-}
+} satisfies Rule.RuleModule

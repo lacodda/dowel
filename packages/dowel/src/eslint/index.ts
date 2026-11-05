@@ -1,4 +1,5 @@
 import type { ESLint, Linter } from 'eslint'
+import type { LintConfig, LintPlugin } from './shape.js'
 import { noArbitraryScale } from './no-arbitrary-scale.js'
 import { noImplicitLocale } from './no-implicit-locale.js'
 import { noNativeSelect } from './no-native-select.js'
@@ -27,7 +28,7 @@ import { noRawColor } from './no-raw-color.js'
  *   ]
  */
 
-const plugin = {
+const plugin: LintPlugin = {
   meta: { name: 'dowel' },
   rules: {
     'no-raw-color': noRawColor,
@@ -44,7 +45,7 @@ const plugin = {
  * `no-raw-button` is kept out of `ui/`, the directory a product keeps its
  * primitives in (shadcn's `components/ui`): a primitive is where the one
  * `<button>` a screen should not write gets written, once. */
-const recommended: Linter.Config[] = [
+const recommended: LintConfig[] = [
   {
     files: ['**/*.{ts,tsx}'],
     plugins: { dowel: plugin },
@@ -63,16 +64,17 @@ const recommended: Linter.Config[] = [
       'dowel/no-raw-button': 'error',
     },
   },
-]
+] satisfies Linter.Config[]
 
 /** The plugin, with its config bundled on - the shape flat config expects
- * from a default export. Annotated rather than inferred: the inferred type
- * reaches into ESLint's internals and cannot be written down by a consumer. */
-const dowel: ESLint.Plugin & { configs: { recommended: Linter.Config[] } } = Object.assign(plugin, {
+ * from a default export. Annotated rather than inferred, and in the package's
+ * own words: the build's declarations must not reach into ESLint's types. */
+const dowel: LintPlugin & { readonly configs: { readonly recommended: LintConfig[] } } = Object.assign(plugin, {
   configs: { recommended },
 })
 
 export default dowel
+export type { LintConfig, LintPlugin, LintRule } from './shape.js'
 export { noRawColor, findRawColor } from './no-raw-color.js'
 export { noImplicitLocale } from './no-implicit-locale.js'
 export { noNativeSelect } from './no-native-select.js'

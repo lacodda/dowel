@@ -1,4 +1,5 @@
 import type { Rule } from 'eslint'
+import type { LintRule } from './shape.js'
 
 /*
  * `no-arbitrary-scale` - sizes come from the scale, or they are argued for.
@@ -244,7 +245,7 @@ export function findArbitraryScale(text: string): ScaleFinding[] {
   return findings
 }
 
-export const noArbitraryScale: Rule.RuleModule = {
+export const noArbitraryScale: LintRule = {
   meta: {
     type: 'suggestion',
     fixable: 'code',
@@ -289,4 +290,4 @@ export const noArbitraryScale: Rule.RuleModule = {
       },
     }
   },
-}
+} satisfies Rule.RuleModule

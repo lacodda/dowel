@@ -1,4 +1,5 @@
 import type { Rule } from 'eslint'
+import type { LintRule } from './shape.js'
 
 /*
  * `no-raw-button` - a screen presses Buttons, not `<button>`s.
@@ -27,7 +28,7 @@ const MESSAGE =
   'reason, the icon size and the control height. Use Button (variants ghost, icon, link, ...), RowButton for a ' +
   'row of a list, Chip with `pressed` for a switch, or `render={<Button />}` where a primitive takes a trigger.'
 
-export const noRawButton: Rule.RuleModule = {
+export const noRawButton: LintRule = {
   meta: {
     type: 'suggestion',
     docs: {
@@ -51,4 +52,4 @@ export const noRawButton: Rule.RuleModule = {
       },
     } as Rule.RuleListener
   },
-}
+} satisfies Rule.RuleModule

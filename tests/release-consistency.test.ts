@@ -123,6 +123,32 @@ describe('what the package ships', () => {
     expect(stray, 'test files are being built into the package').toEqual([])
   })
 
+  it('asks a product for nothing a page does not run', () => {
+    // The whole list, so a new one is a decision taken here. `eslint` sat in
+    // the peers, optional: pnpm resolves that from the product's dev
+    // dependencies and `pnpm audit --prod` then walks it as production. On
+    // 01.11 an advisory in its minimatch turned the audit of the line red.
+    expect(Object.keys(pkg.dependencies ?? {}).sort()).toEqual(['clsx', 'tailwind-merge'])
+    expect(Object.keys(pkg.peerDependencies ?? {}).sort()).toEqual(['react', 'react-dom'])
+    expect(pkg.peerDependenciesMeta).toBeUndefined()
+    expect(pkg.optionalDependencies).toBeUndefined()
+  })
+
+  it('never reaches for the linter from what it ships', () => {
+    // With no dependency to resolve it through, a run-time import would fail
+    // in a product, and a type import would turn `dowel-ui/eslint` into an
+    // unresolved module wherever the package manager does not hoist it.
+    const dist = resolve(root, 'packages/dowel/dist')
+    expect(existsSync(dist), 'the package has not been built').toBe(true)
+
+    const shipped = readdirSync(dist, { recursive: true, encoding: 'utf8' }).filter((file) => /\.(?:js|d\.ts)$/.test(file))
+    expect(shipped.length).toBeGreaterThan(0)
+    const reaching = shipped.filter((file) =>
+      /(?:from\s+|import\(\s*|require\(\s*)['"]eslint(?:\/[^'"]*)?['"]/.test(readFileSync(resolve(dist, file), 'utf8')),
+    )
+    expect(reaching).toEqual([])
+  })
+
   it('ships an accent for every product of the line', () => {
     // A product in the registry with no accent file is a product whose
     // documented one-line import does not resolve.

@@ -33,7 +33,10 @@ export default [
 ```
 
 The plugin comes with the package, so a product that has the theme already has
-the rule. ESLint is an optional peer: nothing installs it on your behalf.
+the rule. The package does not depend on ESLint, not even as a peer: a peer is
+counted as production by `pnpm audit --prod`, and a linter is not what a page
+runs. A project that loads the plugin has ESLint already, in its own dev
+dependencies.
 
 ## `no-raw-color`
 
