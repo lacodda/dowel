@@ -362,3 +362,18 @@ function Multiple() {
     </Combobox>
   )
 }
+
+describe('the input among the chips', () => {
+  it('takes its own height rather than a field’s', () => {
+    // The row of chips is the field, at a field's height. The input inside it
+    // asks for less, and while `cn` did not know `h-control` both classes stayed
+    // and the row came out 8px taller than the field beside it.
+    const classes = cn(comboboxInputVariants({ bare: true })).split(' ')
+    expect(classes).toContain('h-7')
+    expect(classes).not.toContain('h-control')
+  })
+
+  it('leaves a field that stands alone at a field’s height', () => {
+    expect(cn(comboboxInputVariants({ bare: false })).split(' ')).toContain('h-control')
+  })
+})
