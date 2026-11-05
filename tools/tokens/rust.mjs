@@ -87,6 +87,13 @@ export function rustModule({ product, palette, tokens, version }) {
     return { constantName, doc, colours: Object.entries(colours).map(([token, { $value }]) => [token, rgba($value)]) }
   })
   const names = modes[0].colours.map(([token]) => token)
+  // A token on its way out stays a field, and the compiler says so to whoever
+  // reads it. The constants below still have to name it.
+  const notes = new Map(
+    Object.entries(palette.color[MODES[0][0]])
+      .filter(([, entry]) => entry.$deprecated)
+      .map(([token, entry]) => [token, entry.$deprecated]),
+  )
   for (const mode of modes) {
     const these = mode.colours.map(([token]) => token)
     if (these.join() !== names.join()) {
@@ -111,11 +118,16 @@ export function rustModule({ product, palette, tokens, version }) {
     `/// Every colour of the dowel theme on ${name}'s accent. One field per token.`,
     `#[derive(Clone, Copy, Debug, PartialEq)]`,
     `pub struct Palette {`,
-    ...names.map((token) => `    pub ${field(token)}: Color,`),
+    ...names.flatMap((token) => [
+      ...(notes.has(token) ? [`    #[deprecated(note = ${JSON.stringify(notes.get(token))})]`] : []),
+      `    pub ${field(token)}: Color,`,
+    ]),
     `}`,
   ]
   for (const { constantName, doc, colours } of modes) {
-    lines.push('', `/// ${doc}`, `pub const ${constantName}: Palette = Palette {`)
+    lines.push('', `/// ${doc}`)
+    if (notes.size > 0) lines.push(`#[allow(deprecated)]`)
+    lines.push(`pub const ${constantName}: Palette = Palette {`)
     for (const [token, [r, g, b, a]] of colours) lines.push(`    ${field(token)}: rgba(${r}, ${g}, ${b}, ${a}),`)
     lines.push(`};`)
   }

@@ -21,8 +21,8 @@ const tailwindDir = resolve(root, 'node_modules/tailwindcss')
  * A fresh compiler every call, and not for tidiness: `build` is incremental,
  * so a shared compiler answers each call with every class it was ever given -
  * and a test asking what `sm` compiles to is told about `md` as well. */
-export async function compileClasses(classes: readonly string[]): Promise<string> {
-  const compiler = compile(`@import 'tailwindcss';\n${theme}`, {
+export async function compileClasses(classes: readonly string[], source: string = theme): Promise<string> {
+  const compiler = compile(`@import 'tailwindcss';\n${source}`, {
     base: root,
     loadStylesheet: async (id, base) => {
       const file = id === 'tailwindcss' ? 'index.css' : id.replace(/^tailwindcss\//, '')

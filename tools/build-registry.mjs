@@ -20,7 +20,9 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { basename, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { deprecations } from '../packages/dowel/src/deprecated.ts'
 import { lineProducts } from '../packages/dowel/src/line.ts'
+import { aliasItem, itemRows } from './build-aliases.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = resolve(here, '..')
@@ -576,6 +578,15 @@ function write(dir, base) {
 }
 
 write(outDir, `${homepage}/r`)
+
+/* The old address of an item the registry has renamed still answers, until the
+ * next major. Beside the catalogue rather than in it: `shadcn list` should not
+ * offer a name on its way out, and every gate that walks the catalogue would
+ * otherwise ask it for a page, a test and a section on the stand. */
+for (const row of itemRows(deprecations)) {
+  const item = aliasItem(row, `${homepage}/r`)
+  writeFileSync(resolve(outDir, `${item.name}.json`), `${JSON.stringify(item, null, 2)}\n`)
+}
 
 /* The snapshot is written the first time this minor is built and never again.
  * Re-running the build after a release must not touch what that release

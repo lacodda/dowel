@@ -359,7 +359,7 @@ describe('codemod across what Base UI renamed', () => {
   it('says a project with nothing to rewrite has nothing from Base UI either', () => {
     file('src/a.tsx', "import { Drawer } from '@base-ui/react/drawer'\n")
     run(['codemod', '--cwd', directory])
-    expect(printed()).toContain('nothing Base UI has renamed')
+    expect(printed()).toContain('nothing Base UI or dowel has renamed')
   })
 })
 

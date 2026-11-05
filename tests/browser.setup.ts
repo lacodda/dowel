@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import type { TestProject } from 'vitest/node'
 import { lineProducts } from '../packages/dowel/src/line'
+import { withAliases } from '../tools/build-aliases.mjs'
+import { RENAMED } from './deprecated.fixture'
 import { compiled, motionSources, motionStrings } from './motion'
 import { CEILING_ROOM, CEILING_WINDOW, surfaces, type CeilingMeasure, type Surface } from './ceilings'
 
@@ -38,6 +40,7 @@ export default async function setup(project: TestProject) {
   project.provide('motion', await measureMotion())
   project.provide('ceilings', await measureCeilings())
   project.provide('scrollbars', await measureScrollbars())
+  project.provide('aliases', await measureAliases())
   return () => rmSync(dir, { recursive: true, force: true })
 }
 
@@ -270,8 +273,53 @@ async function measureScrollbars(): Promise<ScrollbarMeasure> {
   }
 }
 
+/** A renamed name against the name it became, per theme. */
+export interface AliasMeasure {
+  dark: { old: string[]; current: string[] }
+  light: { old: string[]; current: string[] }
+  /** One product's palette over the theme with the aliases in it. */
+  palette: { color: Record<string, Record<string, { $value: string; $deprecated?: string }>> }
+}
+
+/*
+ * The whole way from a row of the table to a browser, on the fixture's renames:
+ * the same theme with its block filled in, through the real compiler.
+ */
+async function measureAliases(): Promise<AliasMeasure> {
+  const theme = withAliases(RENAMED, readFileSync(resolve(root, 'packages/dowel/src/theme.css'), 'utf8'))
+  const css = await compiled(['bg-was-raise', 'bg-raise', 'h-was-control', 'h-control', 'w-was-rail', 'w-rail'], theme)
+  const { palettes } = await import('../tools/tokens/palettes.mjs')
+  const palette = (await palettes(theme, lineProducts.slice(0, 1), '0.0.0', RENAMED))[lineProducts[0]!.name]!
+
+  const { chromium } = await import('@playwright/test')
+  const browser = await chromium.launch()
+  try {
+    const page = await browser.newPage()
+    const read = async (mode: 'dark' | 'light') => {
+      await page.emulateMedia({ colorScheme: mode })
+      await page.setContent(
+        `<html class="${mode}"><head><style>${css}</style></head><body>` +
+          `<i id="old" class="block bg-was-raise h-was-control w-was-rail" style="color:var(--was-raise);min-width:var(--was-row)"></i>` +
+          `<i id="current" class="block bg-raise h-control w-rail" style="color:var(--raise);min-width:var(--row-control)"></i>` +
+          `</body></html>`,
+      )
+      return page.evaluate(() => {
+        const measured = (id: string) => {
+          const style = getComputedStyle(document.getElementById(id)!)
+          return [style.backgroundColor, style.height, style.width, style.color, style.minWidth]
+        }
+        return { old: measured('old'), current: measured('current') }
+      })
+    }
+    return { dark: await read('dark'), light: await read('light'), palette }
+  } finally {
+    await browser.close()
+  }
+}
+
 declare module 'vitest' {
   export interface ProvidedContext {
+    aliases: AliasMeasure
     /** Every form `tools/build-tokens.mjs` writes, built for this run. */
     tokensDir: string
     palettesDir: string

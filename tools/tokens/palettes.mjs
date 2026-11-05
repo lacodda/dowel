@@ -22,6 +22,7 @@
  * keeps for alpha (`0.045` comes back as `0.043`), so nothing finer is lost.
  */
 import { chromium } from '@playwright/test'
+import { deprecationNote, deprecations } from '../../packages/dowel/src/deprecated.ts'
 
 /*
  * The inputs a product replaces, rather than colours it paints with. A
@@ -115,8 +116,12 @@ const MODES = [
 
 /** Every product's palette, resolved by a browser: product name -> the DTCG
  * object `palettes/<product>.json` holds. */
-export async function palettes(css, products, version) {
+export async function palettes(css, products, version, rows = deprecations) {
   const declaredNames = declaredNamesOf(css)
+  // A token on its way out resolves like any other, because the theme still
+  // declares it; `$deprecated` is the format's own word for saying so.
+  const notes = new Map(rows.filter((row) => row.kind === 'token').map((row) => [row.from, deprecationNote(row)]))
+  const said = (token) => (notes.has(token) ? { $deprecated: notes.get(token) } : {})
   const browser = await chromium.launch()
   try {
     const page = await browser.newPage()
@@ -156,7 +161,7 @@ export async function palettes(css, products, version) {
       const color = { $type: 'color' }
       for (const [group, theme, contrast] of MODES) {
         color[group] = Object.fromEntries(
-          (await resolveTheme(accent, theme, contrast)).map(([token, value]) => [token, { $value: hex(parseColor(value)) }]),
+          (await resolveTheme(accent, theme, contrast)).map(([token, value]) => [token, { $value: hex(parseColor(value)), ...said(token) }]),
         )
       }
       resolved[name] = {

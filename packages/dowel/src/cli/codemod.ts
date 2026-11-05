@@ -1,3 +1,5 @@
+import { deprecations, type Deprecation } from '../deprecated.js'
+import { renamedIn } from './scan.js'
 import {
   COLOR_UTILITIES,
   NAME_END,
@@ -115,4 +117,30 @@ export function rewriteSource(source: string): Rewrite {
   })
 
   return { source: next, changes, skipped }
+}
+
+/** Rewrite the names of dowel's own that have moved. Every row the report calls
+ * renamed, except an item: the file a product imported has not gone anywhere,
+ * and moving it is `shadcn add`'s to do.
+ *
+ * All the rows' matches are collected against the original text and applied from
+ * the end, so no rename can read the output of another. */
+export function rewriteRenamed(
+  source: string,
+  rows: readonly Deprecation[] = deprecations,
+): { source: string; edits: Change[] } {
+  const matches = rows
+    .filter((row) => row.kind !== 'item')
+    .flatMap((row) => renamedIn(source, row))
+    .sort((a, b) => b.index - a.index)
+
+  let next = source
+  for (const { index, text, to } of matches) {
+    next = `${next.slice(0, index)}${to}${next.slice(index + text.length)}`
+  }
+
+  const edits = matches
+    .map(({ index, text, to }) => ({ line: lineAt(source, index), from: text, to }))
+    .sort((a, b) => a.line - b.line)
+  return { source: next, edits }
 }

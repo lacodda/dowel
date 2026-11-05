@@ -1,7 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 import { collectFiles, isDowelsAccent, onTheTheme, scanProject, type Finding } from './scan.js'
-import { rewriteSource } from './codemod.js'
+import { deprecations } from '../deprecated.js'
+import { rewriteRenamed, rewriteSource } from './codemod.js'
 import { rewriteBaseUi } from './base-ui.js'
 import { diagnose, readCatalogue, type Catalogue, type Diagnosis, type ProjectFacts } from './doctor.js'
 import { differs, diffLines, hunks } from './diff.js'
@@ -85,9 +86,23 @@ function parseOptions(argv: readonly string[]): Options {
 }
 
 function reportCheck(findings: readonly Finding[], options: Options, accents: number): Outcome {
+  const ambiguous = findings.filter((finding) => finding.replacement?.kind === 'ambiguous').length
+  const stock = findings.filter((finding) => finding.kind === 'stock').length - ambiguous
+  const colors = findings.filter((finding) => finding.kind === 'color').length
+  const renamed = findings.filter((finding) => finding.kind === 'renamed').length
+
+  /* What the exit code says, for a person and a machine alike.
+   *
+   * Ambiguous names alone are not a reason to fail. A project that has fully
+   * migrated still reports them - every use of `--accent` is one - and an exit
+   * code that treats "correct" as "findings" cannot be put in a build. A renamed
+   * name is not one either: it still works, and a minor release that turned a
+   * product's build red would be the break the old name exists to prevent. */
+  const outcome: Outcome = stock + colors > 0 ? 1 : 0
+
   if (options.json) {
     process.stdout.write(`${JSON.stringify({ findings, readAsDowels: accents }, null, 2)}\n`)
-    return findings.length > 0 ? 1 : 0
+    return outcome
   }
 
   /* One line for the `accent` this project means by it, rather than one a use:
@@ -117,22 +132,22 @@ function reportCheck(findings: readonly Finding[], options: Options, accents: nu
   for (const [file, list] of byFile) {
     process.stdout.write(`\n${bold(file)}\n`)
     for (const finding of list) {
-      /* Three marks, not two. An ambiguous name is not a violation - it is a
-       * name this tool cannot judge - and giving it the same mark as a stock
-       * token would tell a migrated project it has work to do. */
+      /* Four marks. An ambiguous name is not a violation - it is a name this
+       * tool cannot judge - and giving it the same mark as a stock token would
+       * tell a migrated project it has work to do. A renamed one is not a
+       * violation either, only a date. */
       const mark =
         finding.kind === 'color'
           ? yellow('color')
-          : finding.replacement?.kind === 'ambiguous'
-            ? dim('both ')
-            : cyan('stock')
+          : finding.kind === 'renamed'
+            ? yellow('moved')
+            : finding.replacement?.kind === 'ambiguous'
+              ? dim('both ')
+              : cyan('stock')
       process.stdout.write(`  ${dim(`${finding.line}:${finding.column}`)} ${mark}  ${finding.message}\n`)
     }
   }
 
-  const ambiguous = findings.filter((finding) => finding.replacement?.kind === 'ambiguous').length
-  const stock = findings.filter((finding) => finding.kind === 'stock').length - ambiguous
-  const colors = findings.filter((finding) => finding.kind === 'color').length
   const files = byFile.size
 
   const parts = [
@@ -140,6 +155,7 @@ function reportCheck(findings: readonly Finding[], options: Options, accents: nu
     `${colors} raw ${colors === 1 ? 'colour' : 'colours'}`,
   ]
   if (ambiguous > 0) parts.push(`${ambiguous} in both vocabularies`)
+  if (renamed > 0) parts.push(`${renamed} renamed`)
 
   process.stdout.write(
     `\n${bold(String(findings.length))} findings in ${files} file${files === 1 ? '' : 's'}` +
@@ -147,7 +163,7 @@ function reportCheck(findings: readonly Finding[], options: Options, accents: nu
   )
 
   const rewritable = findings.filter(
-    (finding) => finding.kind === 'stock' && finding.replacement?.kind === 'token',
+    (finding) => finding.kind !== 'color' && finding.replacement?.kind === 'token',
   ).length
   if (rewritable > 0) {
     process.stdout.write(`${dim(`${rewritable} of them can be rewritten: dowel codemod --write`)}\n`)
@@ -164,11 +180,7 @@ function reportCheck(findings: readonly Finding[], options: Options, accents: nu
   }
 
   accentNote()
-
-  /* Ambiguous names alone are not a reason to fail. A project that has fully
-   * migrated still reports them - every use of `--accent` is one - and an exit
-   * code that treats "correct" as "findings" cannot be put in a build. */
-  return stock + colors > 0 ? 1 : 0
+  return outcome
 }
 
 function commandCheck(options: Options): Outcome {
@@ -212,16 +224,20 @@ function commandCodemod(options: Options): Outcome {
     // Then what Base UI renamed, over the same text: two tables, one pass each,
     // and neither one's names can be the other's.
     const baseUi = rewriteBaseUi(result.source)
-    const changes = result.changes.length + baseUi.edits.length
+    // And what dowel itself renamed. Not in a file that defines the tokens: its
+    // old names are the alias keeping every other file working.
+    const definesTheme = path.endsWith('.css') && /--accent-base\s*:/.test(source)
+    const moved = definesTheme ? { source: baseUi.source, edits: [] } : rewriteRenamed(baseUi.source)
+    const changes = result.changes.length + baseUi.edits.length + moved.edits.length
     if (changes === 0) continue
 
     total += changes
     // Line by line, in the order they stand in the file: the plan a person
     // reads before `--write`, and what the run did after it.
-    const edits = [...result.changes, ...baseUi.edits].sort((a, b) => a.line - b.line)
+    const edits = [...result.changes, ...baseUi.edits, ...moved.edits].sort((a, b) => a.line - b.line)
     touched.push({ file: name, changes, edits })
     for (const edit of baseUi.edits) renamedInBaseUi.push({ file: name, ...edit })
-    if (options.write) writeFileSync(path, baseUi.source)
+    if (options.write) writeFileSync(path, moved.source)
   }
 
   if (options.json) {
@@ -232,7 +248,7 @@ function commandCodemod(options: Options): Outcome {
   }
 
   if (total === 0) {
-    process.stdout.write(`${green('Nothing to rewrite.')} No stock token names, nothing Base UI has renamed.\n`)
+    process.stdout.write(`${green('Nothing to rewrite.')} No stock token names, nothing Base UI or dowel has renamed.\n`)
   } else {
     for (const entry of touched) {
       process.stdout.write(`  ${bold(entry.file)} ${dim(`${entry.changes} renamed`)}\n`)
@@ -299,9 +315,15 @@ function findCopies(
   root: string,
   catalogue: Catalogue,
 ): { installed: { name: string; source: string }[]; local: string[] } {
-  const componentNames = new Set(
-    catalogue.items.filter((item) => item.type === 'registry:ui').map((item) => item.name),
+  /* A copy made under a name the registry has since moved is still a copy, of
+   * the item it became. */
+  const movedTo = new Map(
+    deprecations.filter((row) => row.kind === 'item').map((row) => [row.from, row.to]),
   )
+  const componentNames = new Set([
+    ...catalogue.items.filter((item) => item.type === 'registry:ui').map((item) => item.name),
+    ...movedTo.keys(),
+  ])
   const files = collectFiles(root).filter((path) => path.endsWith('.tsx'))
   const baseOf = (path: string) => path.slice(path.lastIndexOf(sep) + 1).replace(/\.tsx$/, '')
   const dirOf = (path: string) => path.slice(0, path.lastIndexOf(sep))
@@ -313,7 +335,7 @@ function findCopies(
 
   const installed = named
     .filter((copy) => copy.source.includes('dowel-ui') || copyDirs.has(dirOf(copy.path)))
-    .map(({ name, source }) => ({ name, source }))
+    .map(({ name, source }) => ({ name: movedTo.get(name) ?? name, source }))
 
   const local = files
     .filter((path) => copyDirs.has(dirOf(path)))
@@ -529,7 +551,7 @@ function commandSnippets(options: Options): Outcome {
 const USAGE = `dowel - migration tools for the lacodda design system
 
   dowel check               What in this project is not on the dowel vocabulary
-  dowel codemod [--write]   Rewrite stock shadcn token names, and what Base UI renamed
+  dowel codemod [--write]   Rewrite stock shadcn token names, and what Base UI or dowel renamed
   dowel doctor              Whether this project's dowel installation is coherent
   dowel diff [component]    How a copied component differs from the registry's
   dowel snippets [--write]  Editor snippets for the components this project has

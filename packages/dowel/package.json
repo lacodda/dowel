@@ -61,7 +61,7 @@
     "./props.json": "./dist/props.json"
   },
   "scripts": {
-    "build": "tsc && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens.mjs && node ../../tools/build-props.mjs && node ../../tools/build-registry.mjs && node ../../tools/build-schema.mjs && node ../../tools/build-llms.mjs",
+    "build": "tsc && node ../../tools/build-aliases.mjs && node ../../tools/copy-theme.mjs && node ../../tools/build-tokens.mjs && node ../../tools/build-props.mjs && node ../../tools/build-registry.mjs && node ../../tools/build-schema.mjs && node ../../tools/build-llms.mjs",
     "typecheck": "tsc --noEmit",
     "prepack": "node ../../tools/copy-readme.mjs"
   },

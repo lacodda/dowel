@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
+import { deprecationNote, deprecations, type Deprecation } from '../deprecated.js'
 import { findRawColor } from '../eslint/no-raw-color.js'
 import { THEME_IMPORT } from './doctor.js'
 import {
@@ -50,8 +51,9 @@ export interface Location {
 /** One thing found in one place. */
 export interface Finding extends Location {
   /** `stock` - a name from the shadcn vocabulary; `color` - a colour written
-   * down rather than named. */
-  readonly kind: 'stock' | 'color'
+   * down rather than named; `renamed` - a name of dowel's own that has moved,
+   * still working until the next major. */
+  readonly kind: 'stock' | 'color' | 'renamed'
   /** The text that was matched, for showing back to the reader. */
   readonly text: string
   /** What is wrong, in a sentence. */
@@ -247,8 +249,43 @@ function describe(subject: string, prefix: string, replacement: Replacement): st
   }
 }
 
+/** Every place one row of the deprecation table is written in a source.
+ *
+ * A token is its custom property, and its utilities if it has any; a utility is
+ * the word itself, wherever a variant has put it; an item is an import of its
+ * file. Each comes back with what to say and what to write instead. */
+export function renamedIn(
+  source: string,
+  row: Deprecation,
+): { index: number; text: string; to: string }[] {
+  const name = row.from.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
+  const found: { index: number; text: string; to: string }[] = []
+
+  const collect = (pattern: RegExp, to: (text: string) => string) => {
+    for (const match of source.matchAll(pattern)) {
+      const text = match.groups!.name!
+      found.push({ index: match.index + match[0]!.indexOf(text), text, to: to(text) })
+    }
+  }
+
+  if (row.kind === 'token') {
+    collect(new RegExp(`${NAME_START}(?<name>--${name})${NAME_END}`, 'g'), () => `--${row.to}`)
+    collect(
+      new RegExp(`${UTILITY_OPENER}(?<name>(?:${COLOR_UTILITIES})-${name})${NAME_END}`, 'gm'),
+      (text) => `${text.slice(0, text.length - row.from.length)}${row.to}`,
+    )
+  } else if (row.kind === 'utility') {
+    collect(new RegExp(`${UTILITY_OPENER}(?<name>${name})${NAME_END}`, 'gm'), () => row.to)
+  } else {
+    // The path of an import, which is the only place an item's name stands for
+    // the item. Reported, never rewritten: the file has not moved.
+    collect(new RegExp(`['"][^'"\\n]*/(?<name>${name})['"]`, 'g'), () => row.to)
+  }
+  return found
+}
+
 /** Read one file and say what is wrong with it. */
-export function scanSource(source: string, file: string): Finding[] {
+export function scanSource(source: string, file: string, rows: readonly Deprecation[] = deprecations): Finding[] {
   const findings: Finding[] = []
   const isStylesheet = file.endsWith('.css')
   /* Stock names are still reported in a test - a test on the old vocabulary
@@ -295,6 +332,21 @@ export function scanSource(source: string, file: string): Finding[] {
     }
   }
 
+  // A stylesheet that defines the dowel tokens is the one place raw colour
+  // belongs, and where an old name is declared on purpose. Recognised by what
+  // it declares rather than by its name: a product may call its theme anything.
+  const definesTheme = isStylesheet && /--accent-base\s*:/.test(source)
+
+  /* Names of dowel's own that have moved. A stylesheet is read for these too:
+   * unlike a stock name in `@apply`, nothing else would speak for it. */
+  if (!definesTheme) {
+    for (const row of rows) {
+      for (const { index, text, to } of renamedIn(source, row)) {
+        add('renamed', index, text, deprecationNote(row), { kind: 'token', token: to })
+      }
+    }
+  }
+
   /* Colours written down. In code this reads string literals, exactly like the
    * rule does; a stylesheet is read whole, because that is where a colour
    * appears outside any string - and where, in a theme file, it is supposed
@@ -303,10 +355,6 @@ export function scanSource(source: string, file: string): Finding[] {
     // Nothing: a test writes colours down on purpose, and the linter exempts
     // the same files.
   } else if (isStylesheet) {
-    // A stylesheet that defines the dowel tokens is the one place raw colour
-    // belongs. Recognised by what it declares rather than by its name: a
-    // product may call its theme anything.
-    const definesTheme = /--accent-base\s*:/.test(source)
     if (!definesTheme) {
       for (const [index, line] of source.split('\n').entries()) {
         const finding = findRawColor(line)
@@ -359,7 +407,7 @@ export function isDowelsAccent(text: string): boolean {
 
 /** Scan a whole project. Paths in the findings are relative to `root`, with
  * forward slashes, so a report reads the same on either platform. */
-export function scanProject(root: string): Finding[] {
+export function scanProject(root: string, rows: readonly Deprecation[] = deprecations): Finding[] {
   const findings: Finding[] = []
   for (const file of collectFiles(root)) {
     let source: string
@@ -369,7 +417,7 @@ export function scanProject(root: string): Finding[] {
       continue
     }
     const name = relative(root, file).split(sep).join('/')
-    findings.push(...scanSource(source, name))
+    findings.push(...scanSource(source, name, rows))
   }
   return findings
 }

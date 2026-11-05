@@ -128,6 +128,24 @@ const schema = {
       type: 'string',
       description: 'What the CLI prints after installing - what to import, what to do next.',
     },
+    meta: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        deprecated: {
+          type: 'object',
+          required: ['to', 'since', 'removeIn'],
+          additionalProperties: false,
+          description:
+            'This address is an old name kept working. It installs nothing of its own, only the item it was renamed to, and goes in `removeIn`.',
+          properties: {
+            to: { type: 'string', pattern: '^[a-z][a-z0-9-]*$' },
+            since: { type: 'string', pattern: '^\\d+\\.\\d+\\.\\d+$' },
+            removeIn: { type: 'string', pattern: '^\\d+\\.0\\.0$' },
+          },
+        },
+      },
+    },
   },
   additionalProperties: false,
   allOf: [

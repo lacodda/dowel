@@ -36,6 +36,9 @@
     "tools/breaking-changes.d.ts",
     "tools/mutation-floor.d.ts",
     "tools/mutation-shard.d.ts",
-    "tools/marks-module.d.ts"
+    "tools/marks-module.d.ts",
+    "tools/build-aliases.d.ts",
+    "tools/vocabulary.d.ts",
+    "tools/tokens.d.ts"
   ]
 }
