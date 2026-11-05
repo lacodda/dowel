@@ -249,7 +249,7 @@ describe('base layer', () => {
   })
 
   it('keeps a row, a figure and a heading whole across a printed page, in a layer a product can undo', () => {
-    const layered = withoutComments.slice(withoutComments.lastIndexOf('@layer base'))
+    const layered = withoutComments.slice(withoutComments.indexOf('@layer base'))
     const paper = layered.slice(layered.indexOf('@media print'))
     expect(paper).toMatch(/tr,[\s\S]*?break-inside: avoid;/)
     expect(paper).toMatch(/h1,[\s\S]*?break-after: avoid;/)
@@ -286,21 +286,23 @@ describe('base layer', () => {
 })
 
 /*
- * Scrollbars.
- *
- * These are asserted against the stylesheet rather than a rendered page on
- * purpose. A headless browser overlays its scrollbars whatever the stylesheet
- * says, so `offsetWidth - clientWidth` reads zero for a classic bar too — a
- * layout measurement would pass on a stylesheet that reserves a gutter, which
- * is worse than no check at all. What the rules say is the thing that is
- * actually under our control, so that is what is checked.
+ * Scrollbars: what the rules say. What a browser does with them is measured in
+ * `tests/scrollbars.test.ts`, with the bars shown.
  */
 describe('scrollbars', () => {
-  it('asks for the thin standard bar with a transparent track', () => {
+  it('stays in a layer, so a utility can say otherwise', () => {
+    // Chromium cannot show this one: with the standard properties guarded it
+    // reads the utility either way. Firefox is where the `*` would win.
+    const layer = blockBody('@layer base {\n  @supports not selector(::-webkit-scrollbar)')
+    expect(layer).toContain('*::-webkit-scrollbar {')
+    expect(layer).toContain('.base-ui-disable-scrollbar {')
+  })
+
+  it('keeps the standard properties from the browsers that read the -webkit rules', () => {
     // The standard property is what Firefox honours; the -webkit rules below
-    // are what Chromium and the WebViews lay out. Both are needed, and a
-    // stylesheet with only one of them looks right in exactly one browser.
-    const rule = blockBody('* {')
+    // are what Chromium and the WebViews lay out. Set on the same element, the
+    // standard one switches the others off in Chromium, so a browser gets one.
+    const rule = blockBody('@supports not selector(::-webkit-scrollbar)')
     expect(rule, 'the standard scrollbar property is missing').toContain('scrollbar-width: thin')
     expect(rule, 'the standard track is painted rather than left alone').toContain('transparent')
   })

@@ -36,9 +36,9 @@ parked off the end of its track — an empty bar. The bar is drawn full and
 still instead, and the same when `busy` is `false`: waiting on a person has
 no progress to show.
 
-**The keyframes travel with the component.** A product installs the theme on
-its first day and a splash once, so the sweep is a `<style>` the component
-renders rather than a keyframe in the theme.
+**The keyframes are the theme's.** A `<style>` the component rendered would be
+refused under a desktop window's Content-Security-Policy, and the bar would sit
+off the end of its track, so the sweep arrives with the bundle.
 
 **Only the lines you give are drawn.** An empty `<p>` still takes its height,
 and the picture below has no such line — the name would jump when React took

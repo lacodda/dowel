@@ -47,13 +47,14 @@ describe('Splash', () => {
     expect(screen.getByText('Ctrl+K finds anything.')).toBeDefined()
   })
 
-  it('sweeps while busy, and defines the sweep it uses', () => {
+  it('sweeps while busy, on the keyframes the theme carries', () => {
     const { container } = render(<Splash name="kilna" />)
     const bar = container.querySelector('[data-sweep]')!
     expect(bar.getAttribute('data-sweep')).toBe('on')
     expect(bar.className).toContain('animate-[dowel-splash-sweep_')
-    // The keyframes travel with the component: the theme does not carry them.
-    expect(container.querySelector('style')?.textContent).toContain('@keyframes dowel-splash-sweep')
+    // A `<style>` rendered here is refused under a desktop window's policy, and
+    // that the sweep then runs is measured in `tests/scrollbars.test.ts`.
+    expect(container.querySelector('style')).toBeNull()
   })
 
   it('asks Tailwind for a sweep it can actually compile', async () => {
@@ -62,10 +63,11 @@ describe('Splash', () => {
      * it: the bar had the right class name and no CSS behind it, and the
      * stand showed an empty track while this file stayed green. So the class
      * the component renders is handed to the real compiler, and the CSS it
-     * produces has to name the keyframes the component defines. */
+     * produces has to name the keyframes the theme declares. */
     const { container } = render(<Splash name="kilna" />)
     const classes = container.querySelector('[data-sweep]')!.className.split(/\s+/)
-    const keyframes = container.querySelector('style')!.textContent!.match(/@keyframes ([\w-]+)/)![1]!
+    const theme = readFileSync(resolve(import.meta.dirname, '../../packages/dowel/src/theme.css'), 'utf8')
+    const keyframes = theme.match(/@keyframes (dowel-splash[\w-]*)/)![1]!
 
     const tailwind = resolve(import.meta.dirname, '../../node_modules/tailwindcss')
     const compiler = await compile("@import 'tailwindcss';", {

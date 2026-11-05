@@ -1236,42 +1236,87 @@ body {
  * sitting in the middle of the product - full width, with step arrows. These
  * are the line's own: thin, in the palette, drawn only where something
  * actually scrolls.
+ *
+ * Two sets of rules, and a browser reads one of them. Since version 121
+ * Chromium ignores `::-webkit-scrollbar` on any element whose `scrollbar-width`
+ * or `scrollbar-color` is set, so while these stood side by side every product
+ * in a WebView drew the system's thin bar with its step arrows and the rest of
+ * this block did nothing. The standard properties are for the browsers that
+ * have no other way to say it.
+ *
+ * In a layer, so that a utility can still say otherwise: an unlayered rule beats
+ * every layered one whatever its specificity, and `[scrollbar-width:none]` on a
+ * bar of tabs lost to the `*` here.
  */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--line-2) transparent;
+@layer base {
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--line-2) transparent;
+    }
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: var(--line-2);
+    background-clip: content-box;
+    /* The thumb is drawn proportional to how much of the document fits on
+     * screen, so a long one collapses it to a few pixels: still visible, no
+     * longer catchable by a pointer. This is the floor below which it stops
+     * being a control. */
+    min-height: 2.5rem;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--dim);
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  /*
+   * What Base UI's ScrollArea and Select hide the native bar with.
+   *
+   * Base UI writes this rule itself, as a `<style>` at run time. A desktop
+   * window's Content-Security-Policy carries hashes, which switch
+   * `'unsafe-inline'` off, so the browser refuses that element without a word:
+   * it stays in the document with no sheet, and every ScrollArea draws the
+   * native bar beside its own. Here it arrives with the bundle. A test holds it
+   * to what the installed Base UI writes.
+   */
+  .base-ui-disable-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .base-ui-disable-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-*::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-thumb {
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background: var(--line-2);
-  background-clip: content-box;
-  /* The thumb is drawn proportional to how much of the document fits on
-   * screen, so a long one collapses it to a few pixels: still visible, no
-   * longer catchable by a pointer. This is the floor below which it stops
-   * being a control. */
-  min-height: 2.5rem;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: var(--dim);
-  background-clip: content-box;
-}
-
-*::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-*::-webkit-scrollbar-button {
-  display: none;
+/*
+ * Splash's sweep, for the same reason: a keyframe declared by a `<style>` the
+ * component renders is refused under that policy, and the bar sits off the end
+ * of its track. Named with a prefix so a product's own `sweep` cannot collide
+ * with it in the one document both end up in.
+ */
+@keyframes dowel-splash-sweep {
+  to {
+    left: 100%;
+  }
 }

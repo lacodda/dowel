@@ -37,6 +37,7 @@ export default async function setup(project: TestProject) {
   project.provide('painted', await paint(resolve(dir, 'palettes')))
   project.provide('motion', await measureMotion())
   project.provide('ceilings', await measureCeilings())
+  project.provide('scrollbars', await measureScrollbars())
   return () => rmSync(dir, { recursive: true, force: true })
 }
 
@@ -219,6 +220,56 @@ async function measureCeilings(): Promise<CeilingMeasure[] | { error: string }> 
   return measures
 }
 
+/** What the theme's scrollbars come to in a browser. */
+export interface ScrollbarMeasure {
+  plain: { scrollbarWidth: string; gutter: number }
+  utility: { scrollbarWidth: string; gutter: number }
+  baseUi: { scrollbarWidth: string; gutter: number }
+  sweepRunning: boolean
+}
+
+/*
+ * With the bars shown. Playwright passes `--hide-scrollbars` by default, under
+ * which every scroller measures zero whatever the stylesheet says.
+ */
+async function measureScrollbars(): Promise<ScrollbarMeasure> {
+  const css = await compiled(['[scrollbar-width:none]'])
+  const scroller = (id: string, classes = '') =>
+    `<div id="${id}" class="${classes}" style="width:200px;height:100px;overflow:auto"><div style="height:800px"></div></div>`
+
+  const { chromium } = await import('@playwright/test')
+  const browser = await chromium.launch({ ignoreDefaultArgs: ['--hide-scrollbars'] })
+  try {
+    const page = await browser.newPage()
+    await page.setContent(
+      `<html><head><style>${css}</style></head><body>` +
+        scroller('plain') +
+        scroller('utility', '[scrollbar-width:none]') +
+        scroller('baseUi', 'base-ui-disable-scrollbar') +
+        `<i id="sweep" style="position:absolute;animation:dowel-splash-sweep 1s infinite"></i>` +
+        `</body></html>`,
+    )
+    return await page.evaluate(() => {
+      const read = (id: string) => {
+        const element = document.getElementById(id)!
+        return {
+          scrollbarWidth: getComputedStyle(element).scrollbarWidth,
+          gutter: element.offsetWidth - element.clientWidth,
+        }
+      }
+      return {
+        plain: read('plain'),
+        utility: read('utility'),
+        baseUi: read('baseUi'),
+        // An animation naming keyframes nobody declared does not run at all.
+        sweepRunning: document.getElementById('sweep')!.getAnimations().length === 1,
+      }
+    })
+  } finally {
+    await browser.close()
+  }
+}
+
 declare module 'vitest' {
   export interface ProvidedContext {
     /** Every form `tools/build-tokens.mjs` writes, built for this run. */
@@ -227,5 +278,6 @@ declare module 'vitest' {
     painted: Painted
     motion: MotionMeasure[]
     ceilings: CeilingMeasure[] | { error: string }
+    scrollbars: ScrollbarMeasure
   }
 }
