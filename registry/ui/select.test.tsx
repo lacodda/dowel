@@ -98,7 +98,11 @@ describe('Select', () => {
     // after it appears; an arrow pressed before that lands on the first item
     // rather than moving past it. A person presses once they see the highlight.
     await waitFor(() => expect(screen.getByRole('option', { name: 'Apple' }).hasAttribute('data-highlighted')).toBe(true))
-    await user.keyboard('{ArrowDown}{Enter}')
+    await user.keyboard('{ArrowDown}')
+    // The same moment again: under load the highlight moves after the next
+    // key has gone, and Enter picks the item it was still on.
+    await waitFor(() => expect(screen.getByRole('option', { name: 'Pear' }).hasAttribute('data-highlighted')).toBe(true))
+    await user.keyboard('{Enter}')
 
     await waitFor(() => expect(picked).toEqual(['pear']))
     await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull())

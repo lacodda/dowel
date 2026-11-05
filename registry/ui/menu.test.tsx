@@ -137,8 +137,14 @@ describe('Menu', () => {
 
     await user.click(screen.getByRole('button', { name: 'Actions' }))
     await screen.findByRole('menu')
-    // One arrow to enter the list, a second to reach the item being chosen.
-    await user.keyboard('{ArrowDown}{ArrowDown}{Enter}')
+    // One arrow to enter the list, a second to reach the item being chosen -
+    // each waited for, because a key pressed before the focus has moved goes
+    // to the item it was on, which is what a person never does.
+    await user.keyboard('{ArrowDown}')
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Rename' })))
+    await user.keyboard('{ArrowDown}')
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Duplicate' })))
+    await user.keyboard('{Enter}')
 
     await waitFor(() => expect(chosen).toEqual(['duplicate']))
     await waitFor(() => expect(screen.queryByRole('menu')).toBeNull())
@@ -271,7 +277,9 @@ describe('Menu', () => {
     await waitFor(() => expect(document.activeElement).toBe(row))
     await user.keyboard('{ArrowRight}')
     await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Zoom in' })))
-    await user.keyboard('{ArrowDown}{Enter}')
+    await user.keyboard('{ArrowDown}')
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Zoom out' })))
+    await user.keyboard('{Enter}')
     await waitFor(() => expect(chosen).toEqual(['out']))
   })
 

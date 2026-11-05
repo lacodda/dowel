@@ -122,7 +122,12 @@ describe('ContextMenu', () => {
 
     await open(user, screen.getByTestId('area'))
     await ready()
-    await user.keyboard('{ArrowDown}{ArrowDown}{Enter}')
+    // Each arrow waited for: `ready` covers the focus arriving, not it moving.
+    await user.keyboard('{ArrowDown}')
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Rename' })))
+    await user.keyboard('{ArrowDown}')
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('menuitem', { name: 'Duplicate' })))
+    await user.keyboard('{Enter}')
 
     await waitFor(() => expect(chosen).toEqual(['duplicate']))
     await waitFor(() => expect(screen.queryByRole('menu')).toBeNull())
