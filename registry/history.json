@@ -4574,6 +4574,19 @@
   ],
   "theme": [
     {
+      "version": "0.43.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": false,
+          "summary": "let the engine's own overlay bar through",
+          "date": "2026-11-05",
+          "commit": "5ba9973978"
+        }
+      ]
+    },
+    {
       "version": "0.42.0",
       "changes": [
         {
