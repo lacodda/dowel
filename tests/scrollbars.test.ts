@@ -24,7 +24,14 @@ const root = resolve(import.meta.dirname, '..')
  * only while it is up, so each case waits for it to go to sleep first, and each
  * reads the width as well: a mode that went back to a classic bar also lets
  * every press land.
+ *
+ * Only on Windows, the one place a product asks for this bar: a Tauri window is
+ * WebView2 there and WebKit everywhere else. Chromium on Linux ignores the feature
+ * and draws its 15px bar, so these would be measuring nothing. The two cases on
+ * the theme's strip run everywhere, and that is what the function leaves there.
  */
+const onWindows = it.runIf(process.platform === 'win32')
+
 describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => {
   const FEATURE = '--enable-features=OverlayScrollbar'
   // Longer than the bar stays up with nobody on it.
@@ -95,7 +102,7 @@ describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => 
     await Promise.all(browsers.map((browser) => browser.close()))
   })
 
-  it('takes no width once it is told, and the theme’s rules stand aside', async () => {
+  onWindows('takes no width once it is told, and the theme’s rules stand aside', async () => {
     const page = await open([FEATURE])
     expect(await width(page), 'until the call the theme’s strip stands').toBe(10)
     await page.evaluate(() => void (window as unknown as { overlayScrollbars(): void }).overlayScrollbars())
@@ -103,7 +110,7 @@ describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => 
     expect(await width(page)).toBe(0)
   })
 
-  it('colours the bar from the palette', async () => {
+  onWindows('colours the bar from the palette', async () => {
     const page = await open([FEATURE], { call: true })
     const [bar, dim] = await page.evaluate(() => {
       const probe = document.body.appendChild(document.createElement('i'))
@@ -121,7 +128,7 @@ describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => 
     expect(await width(page)).toBe(10)
   })
 
-  it('stands aside by its own rule, not only because a colour is set', async () => {
+  onWindows('stands aside by its own rule, not only because a colour is set', async () => {
     // Chromium drops the -webkit rules wherever `scrollbar-color` is set, so the
     // mark's colour alone reads the same here. A browser that does not, and a
     // scroller that resets the colour, are left with the strip unless the rules
@@ -139,7 +146,7 @@ describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => 
     expect(await page.evaluate(() => window.innerWidth - document.documentElement.clientWidth)).toBe(10)
   })
 
-  it('cannot be taken from sleep on its own', async () => {
+  onWindows('cannot be taken from sleep on its own', async () => {
     // The control: what the wake is for. Should the engine start waking it for
     // a pointer by itself, this goes red and the wake can go.
     const page = await open([FEATURE], { mark: true })
@@ -148,20 +155,20 @@ describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => 
     expect(await pull(page)).toBe(0)
   })
 
-  it('can be taken from sleep by a mouse coming to it', async () => {
+  onWindows('can be taken from sleep by a mouse coming to it', async () => {
     const page = await open([FEATURE], { call: true })
     await page.waitForTimeout(ASLEEP)
     expect(await width(page)).toBe(0)
     expect(await pull(page)).toBeGreaterThan(20)
   })
 
-  it('can be taken after the pointer stopped by it long enough for it to sleep', async () => {
+  onWindows('can be taken after the pointer stopped by it long enough for it to sleep', async () => {
     const page = await open([FEATURE], { call: true })
     await page.waitForTimeout(ASLEEP)
     expect(await pull(page, { stopAtEdge: ASLEEP })).toBeGreaterThan(20)
   })
 
-  it('stays up for a hand that stops dead on it and presses later', async () => {
+  onWindows('stays up for a hand that stops dead on it and presses later', async () => {
     // What a test pressing at once cannot see: the engine keeps a bar up only for
     // a pointer that moved onto it after it showed. Woken on arrival, this one
     // goes back to sleep under a still pointer and the press selects text.
@@ -170,7 +177,7 @@ describe('an engine that draws its own overlay bar', { timeout: 90_000 }, () => 
     expect(await pull(page, { stillFor: ASLEEP })).toBeGreaterThan(20)
   })
 
-  it('moves nothing when it wakes', async () => {
+  onWindows('moves nothing when it wakes', async () => {
     const page = await open([FEATURE], { call: true })
     await page.evaluate(() => {
       const box = document.getElementById('box')!
