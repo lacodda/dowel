@@ -213,6 +213,19 @@ run that leaves any file under its floor fails, and the floor only rises — one
 number for the whole set would let one primitive's tests decay while
 another's improved.
 
+## The names stay
+
+Every name a product can have written down — a token, a utility of the theme, an
+item, an entry point, a lint rule, an export — is on a record in the repository,
+and a name on it leaves only through
+[the table](/dowel/concepts/stability/#how-a-name-leaves). A token renamed by hand
+fails here, however good the reason, and a new name fails until it is recorded,
+because a new name is a promise too.
+
+```console
+$ node tools/vocabulary.mjs --write   # record what is new; it never takes a name off
+```
+
 ## The room a popup has
 
 Every surface the set draws over the page — a Base UI `Popup` of any kind, and

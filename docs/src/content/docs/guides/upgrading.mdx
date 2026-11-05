@@ -21,9 +21,10 @@ The theme, the lint rules and the command update in place. Lint is where a
 change to the rules shows first; `npx dowel doctor` says whether the
 installation is still wired the way the theme expects.
 
-When the upgrade brings a new Base UI, `npx dowel codemod` rewrites what it
-renamed in your own code and in copies you changed - see
-[what Base UI renamed](/dowel/guides/migration/#what-base-ui-renamed).
+When the upgrade brings a new Base UI, or dowel has renamed something,
+`npx dowel codemod` rewrites it in your own code and in copies you changed - see
+[what Base UI renamed](/dowel/guides/migration/#what-base-ui-renamed) and
+[what dowel renamed](/dowel/guides/migration/#what-dowel-renamed).
 
 ## The components you copied
 
@@ -49,15 +50,30 @@ in two:
 Then `npx dowel check`, the type checker and the linter: a break below is
 almost always a type error or a lint error first.
 
+## From 0.x to 1.0
+
+The same steps, once, from wherever the product stands. Go in one move rather
+than one minor at a time: the list below is what you read, and each component is
+compared with the version you land on, not the ones between.
+
+1. **Read the list below**, from the version you are on upwards. Note what your
+   own code does that it names.
+2. **Install, and take the rewrites:** `npm install dowel-ui@latest`, then
+   `npx dowel codemod`, read the plan, and again with `--write`.
+3. **Bring the copies level:** `npx dowel diff`, then add again what you never
+   changed and merge what you did.
+4. **Let the tools speak:** `npx dowel doctor`, `npx dowel check`, the type checker
+   and the linter, and open the screens.
+
+From 1.0 there is nothing to do this way inside a major:
+[what stays put](/dowel/concepts/stability/) says what a minor can no longer do to
+you, and a name that moves keeps working until the next one.
+
 ## What breaks, and the way through
 
 dowel is before 1.0, and a minor release can break a product. Every break is
 listed here, newest first, with what to do about it. Read from the version you
 are on up to the one you are moving to - the list is the changelog's own, read
 out of it, so it is never a release behind.
-
-At 1.0 this is the migration guide from 0.x: everything above the version you
-start from. After 1.0, a break is a major release, and a token renamed is one of
-them - with the old name and the new in the same place.
 
 <BreakingChanges />

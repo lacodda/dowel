@@ -735,6 +735,92 @@ and that a utility and Base UI's class take the bar away.
 
 ---
 
+# What stays put
+
+Source: https://lacodda.github.io/dowel/concepts/stability
+
+From 1.0 a product can take a minor release of dowel without reading it. A name
+it has written down keeps working until the next major, and the version number
+says which kind of release this is.
+
+dowel is not at 1.0 yet, and a minor can still break a product: every break is
+[listed with its way through](/dowel/guides/upgrading/#what-breaks-and-the-way-through).
+The names are already recorded and held, so the list stops growing on the day
+the promise starts.
+
+## What is a promise
+
+Anything a product can have written down.
+
+| | What it covers |
+| --- | --- |
+| **Tokens** | Every custom property the theme declares, and the utilities they turn into: `--raise`, `bg-raise`, `rounded-md`. |
+| **Utilities of the theme** | The ones it writes by hand: `h-control`, `py-row`, `caption`, `target-min`. |
+| **Registry names** | Every item, at the address it is served from: `/r/button.json`. |
+| **The registry's format** | What [the schema](https://lacodda.github.io/dowel/r/schema.json) says an item is. A tool that reads items today reads them next year. |
+| **The package** | Its entry points (`dowel-ui/theme.css`, `dowel-ui/eslint`) and everything the root exports. |
+| **Lint rules** | Their names, so a `// eslint-disable` still means what it said, and which ones `recommended` turns on. A rule added to it can fail a build that passed, so it waits for a major. |
+| **The `dowel` command** | Its commands, its flags, its exit codes and the shape of its `--json`. |
+
+## What is not
+
+**A token's value.** `--raise` is a raised surface, and which colour that is
+belongs to the theme. A value moves when a contrast floor asks it to, in a minor,
+and the [contrast gate](/dowel/concepts/contrast/) is what a product leans on
+rather than a number it wrote down.
+
+**The inside of a component.** Its classes, its markup and its private helpers
+can change in any release. That reaches a product only when it adds the
+component again, because what it copied [is its own](/dowel/guides/registry/), and
+a copy that exists keeps the props it was copied with.
+
+**The look.** A release may make a picture better. The picture is checked, not
+frozen.
+
+## The three kinds of release
+
+| | What it can do |
+| --- | --- |
+| **Patch** | Fix what was wrong. |
+| **Minor** | Add anything. Rename a name, with the old one kept working. |
+| **Major** | Take away what is on its way out, and change what the table cannot carry. |
+
+And each minor is also served [frozen, at a path of its own](/dowel/guides/registry/),
+for an install that has to come out the same next year.
+
+## How a name leaves
+
+A name is renamed through one table, and that one row does all of this:
+
+1. **The old name keeps working.** The theme declares it as an alias, the compiler
+   makes the same rule from it, and a renamed item's old address installs the item
+   it became.
+2. **[`dowel check`](/dowel/guides/migration/#check) says it has moved**, with the
+   new name and the major that takes the old one away. It is a line to read and not
+   a failure: exit code zero, so no build goes red over a name that still works.
+3. **[`dowel codemod`](/dowel/guides/migration/#what-dowel-renamed) moves it**, in a
+   plan you read first.
+4. **The next major takes the old name away**, and a gate fails the release until
+   it has.
+
+A native product gets the same warning from its own tools: the palette says
+`$deprecated` and a Rust field is `#[deprecated]`.
+
+Steps of a scale and fixed colours, which `tokens.json` and the Rust modules name
+in a shape of their own, cannot be renamed this way. The table refuses them, and
+renaming one waits for a major.
+
+## How this is held
+
+Every name above that a machine can list is recorded in the repository, and a name
+on the record leaves only through the table. A token renamed by hand, an item
+dropped or an export tidied away fails the gate, so "frozen" is something a test
+says. The whole path, from a row of the table to a browser, a palette and the Rust
+compiler, runs on made-up renames in every test run, so it has run before it is
+first needed.
+
+---
+
 # Vocabulary
 
 Source: https://lacodda.github.io/dowel/concepts/vocabulary
@@ -750,8 +836,9 @@ the same system the other pages describe, named.
 
 A name for a value that the theme decides. `--bg`, `--accent`, `--radius-md`.
 
-A token is a **contract, not a variable**: renaming one is a breaking change for
-every product on the system, which is why the vocabulary is frozen at 1.0. It is
+A token is a **contract, not a variable**: every product on the system has written
+it down, which is why the vocabulary is frozen at 1.0 and a name
+[leaves only by a set route](/dowel/concepts/stability/#how-a-name-leaves). It is
 also the only way a colour reaches a component — nothing in dowel writes a
 colour down, and a [lint rule](/dowel/guides/linting/) enforces it.
 
@@ -13979,6 +14066,19 @@ run that leaves any file under its floor fails, and the floor only rises — one
 number for the whole set would let one primitive's tests decay while
 another's improved.
 
+## The names stay
+
+Every name a product can have written down — a token, a utility of the theme, an
+item, an entry point, a lint rule, an export — is on a record in the repository,
+and a name on it leaves only through
+[the table](/dowel/concepts/stability/#how-a-name-leaves). A token renamed by hand
+fails here, however good the reason, and a new name fails until it is recorded,
+because a new name is a promise too.
+
+```console
+$ node tools/vocabulary.mjs --write   # record what is new; it never takes a name off
+```
+
 ## The room a popup has
 
 Every surface the set draws over the page — a Base UI `Popup` of any kind, and
@@ -14320,18 +14420,26 @@ src/components/card.tsx
 30 findings in 2 files - 18 stock names, 6 raw colours, 6 in both vocabularies.
 ```
 
-Three marks, and they are three different situations:
+Four marks, and they are four different situations:
 
 | | What it means | Rewritten? |
 | --- | --- | --- |
 | **`stock`** | A name that exists only in shadcn's vocabulary. | Yes, by `codemod`. |
 | **`color`** | A colour written down instead of named. | No — see below. |
 | **`both`** | A name both vocabularies use, meaning different things. | No — see below. |
+| **`moved`** | A name of dowel's own that has been [renamed](#what-dowel-renamed), and still works. | Yes, by `codemod`. |
 
 `check` exits non-zero when there are `stock` or `color` findings, and **zero
-when the only findings are `both`**. A fully migrated project still reports
-those — every use of `--accent` is one — so failing on them would mean a
-correct project could never pass.
+when the only findings are `both` or `moved`**. Neither is wrong: a name in both
+vocabularies may be exactly what you meant, and a renamed one still works, so
+failing on them would turn a build red over something that is fine.
+
+Once a project imports the theme, `accent` can only mean dowel's, so `check` stops
+asking and folds every use into one line:
+
+```console
+163 uses of `accent` read as dowel's own: this project imports the theme.
+```
 
 The same rules the linter enforces are the rules this applies, because it calls
 the same code. Test files are exempt from the colour check exactly as they are
@@ -14417,6 +14525,27 @@ breaking change since 1.0 has an entry, a rule when a machine can make the
 change and a note when a person has to read it - so the release that brings a
 new Base UI brings its renames here.
 
+### What dowel renamed
+
+The same run moves a name dowel itself has renamed. The old one keeps working until
+the next major, so there is no hurry, and `check` says when it goes:
+
+```console
+$ npx dowel check
+src/card.tsx
+  12:18 moved  `--old-ink` was renamed `--dim` in 1.3.0; the old name goes in 2.0.0.
+
+$ npx dowel codemod --write
+  src/card.tsx 1 renamed
+      12  text-old-ink -> text-dim
+```
+
+A renamed component is the one thing it leaves to you. The file you copied has not
+gone anywhere, so `check` names the import, `diff` compares the copy with what it
+became, and its old address installs the new item when you add it again. Nothing is
+renamed yet: [what stays put](/dowel/concepts/stability/#how-a-name-leaves) is how
+a name will leave.
+
 ## `doctor`
 
 Where `check` reads a project's code, `doctor` reads its *setup* — the class of
@@ -14482,7 +14611,7 @@ $ npx dowel diff --json | jq '.local'
 Every command takes `--json`, and `--cwd <dir>` to look somewhere other than
 here. `NO_COLOR` is honoured.
 
- FENCE8
+ FENCE10
 
 ---
 
@@ -14889,9 +15018,10 @@ The theme, the lint rules and the command update in place. Lint is where a
 change to the rules shows first; `npx dowel doctor` says whether the
 installation is still wired the way the theme expects.
 
-When the upgrade brings a new Base UI, `npx dowel codemod` rewrites what it
-renamed in your own code and in copies you changed - see
-[what Base UI renamed](/dowel/guides/migration/#what-base-ui-renamed).
+When the upgrade brings a new Base UI, or dowel has renamed something,
+`npx dowel codemod` rewrites it in your own code and in copies you changed - see
+[what Base UI renamed](/dowel/guides/migration/#what-base-ui-renamed) and
+[what dowel renamed](/dowel/guides/migration/#what-dowel-renamed).
 
 ## The components you copied
 
@@ -14917,16 +15047,31 @@ in two:
 Then `npx dowel check`, the type checker and the linter: a break below is
 almost always a type error or a lint error first.
 
+## From 0.x to 1.0
+
+The same steps, once, from wherever the product stands. Go in one move rather
+than one minor at a time: the list below is what you read, and each component is
+compared with the version you land on, not the ones between.
+
+1. **Read the list below**, from the version you are on upwards. Note what your
+   own code does that it names.
+2. **Install, and take the rewrites:** `npm install dowel-ui@latest`, then
+   `npx dowel codemod`, read the plan, and again with `--write`.
+3. **Bring the copies level:** `npx dowel diff`, then add again what you never
+   changed and merge what you did.
+4. **Let the tools speak:** `npx dowel doctor`, `npx dowel check`, the type checker
+   and the linter, and open the screens.
+
+From 1.0 there is nothing to do this way inside a major:
+[what stays put](/dowel/concepts/stability/) says what a minor can no longer do to
+you, and a name that moves keeps working until the next one.
+
 ## What breaks, and the way through
 
 dowel is before 1.0, and a minor release can break a product. Every break is
 listed here, newest first, with what to do about it. Read from the version you
 are on up to the one you are moving to - the list is the changelog's own, read
 out of it, so it is never a release behind.
-
-At 1.0 this is the migration guide from 0.x: everything above the version you
-start from. After 1.0, a break is a major release, and a token renamed is one of
-them - with the old name and the new in the same place.
 
 ### 0.38.0 - 2026-10-19
 

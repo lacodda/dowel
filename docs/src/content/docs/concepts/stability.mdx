@@ -1,0 +1,84 @@
+---
+title: What stays put
+description: What dowel holds still from 1.0, what it stays free to change, and how a name leaves when it has to.
+---
+
+From 1.0 a product can take a minor release of dowel without reading it. A name
+it has written down keeps working until the next major, and the version number
+says which kind of release this is.
+
+dowel is not at 1.0 yet, and a minor can still break a product: every break is
+[listed with its way through](/dowel/guides/upgrading/#what-breaks-and-the-way-through).
+The names are already recorded and held, so the list stops growing on the day
+the promise starts.
+
+## What is a promise
+
+Anything a product can have written down.
+
+| | What it covers |
+| --- | --- |
+| **Tokens** | Every custom property the theme declares, and the utilities they turn into: `--raise`, `bg-raise`, `rounded-md`. |
+| **Utilities of the theme** | The ones it writes by hand: `h-control`, `py-row`, `caption`, `target-min`. |
+| **Registry names** | Every item, at the address it is served from: `/r/button.json`. |
+| **The registry's format** | What [the schema](https://lacodda.github.io/dowel/r/schema.json) says an item is. A tool that reads items today reads them next year. |
+| **The package** | Its entry points (`dowel-ui/theme.css`, `dowel-ui/eslint`) and everything the root exports. |
+| **Lint rules** | Their names, so a `// eslint-disable` still means what it said, and which ones `recommended` turns on. A rule added to it can fail a build that passed, so it waits for a major. |
+| **The `dowel` command** | Its commands, its flags, its exit codes and the shape of its `--json`. |
+
+## What is not
+
+**A token's value.** `--raise` is a raised surface, and which colour that is
+belongs to the theme. A value moves when a contrast floor asks it to, in a minor,
+and the [contrast gate](/dowel/concepts/contrast/) is what a product leans on
+rather than a number it wrote down.
+
+**The inside of a component.** Its classes, its markup and its private helpers
+can change in any release. That reaches a product only when it adds the
+component again, because what it copied [is its own](/dowel/guides/registry/), and
+a copy that exists keeps the props it was copied with.
+
+**The look.** A release may make a picture better. The picture is checked, not
+frozen.
+
+## The three kinds of release
+
+| | What it can do |
+| --- | --- |
+| **Patch** | Fix what was wrong. |
+| **Minor** | Add anything. Rename a name, with the old one kept working. |
+| **Major** | Take away what is on its way out, and change what the table cannot carry. |
+
+And each minor is also served [frozen, at a path of its own](/dowel/guides/registry/),
+for an install that has to come out the same next year.
+
+## How a name leaves
+
+A name is renamed through one table, and that one row does all of this:
+
+1. **The old name keeps working.** The theme declares it as an alias, the compiler
+   makes the same rule from it, and a renamed item's old address installs the item
+   it became.
+2. **[`dowel check`](/dowel/guides/migration/#check) says it has moved**, with the
+   new name and the major that takes the old one away. It is a line to read and not
+   a failure: exit code zero, so no build goes red over a name that still works.
+3. **[`dowel codemod`](/dowel/guides/migration/#what-dowel-renamed) moves it**, in a
+   plan you read first.
+4. **The next major takes the old name away**, and a gate fails the release until
+   it has.
+
+A native product gets the same warning from its own tools: the palette says
+`$deprecated` and a Rust field is `#[deprecated]`.
+
+Steps of a scale and fixed colours, which `tokens.json` and the Rust modules name
+in a shape of their own, cannot be renamed this way. The table refuses them, and
+renaming one waits for a major.
+
+## How this is held
+
+Every name above that a machine can list is recorded in the repository, and a name
+on the record leaves only through the table. A token renamed by hand, an item
+dropped or an export tidied away fails the gate, so "frozen" is something a test
+says. The whole path, from a row of the table to a browser, a palette and the Rust
+compiler, runs on made-up renames in every test run, so it has run before it is
+first needed.

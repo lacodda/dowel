@@ -15,6 +15,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [Contrast](https://lacodda.github.io/dowel/concepts/contrast.md): Which ink may stand on which ground, how far apart the two are held, and the mode for a reader who asked for more.
 - [Doctrine](https://lacodda.github.io/dowel/concepts/doctrine.md): The rules of the line that have a name - each one a sentence you can cite, the failure it prevents, and where it is enforced.
 - [Scrollbars](https://lacodda.github.io/dowel/concepts/scrollbars.md): Why every product of the line draws overlay scrollbars, and what the theme does about it.
+- [What stays put](https://lacodda.github.io/dowel/concepts/stability.md): What dowel holds still from 1.0, what it stays free to change, and how a name leaves when it has to.
 - [Vocabulary](https://lacodda.github.io/dowel/concepts/vocabulary.md): The words dowel uses for its own parts, each defined once, so a page can use one without explaining it again.
 
 ## Components

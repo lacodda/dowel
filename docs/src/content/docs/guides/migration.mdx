@@ -45,18 +45,26 @@ src/components/card.tsx
 30 findings in 2 files - 18 stock names, 6 raw colours, 6 in both vocabularies.
 ```
 
-Three marks, and they are three different situations:
+Four marks, and they are four different situations:
 
 | | What it means | Rewritten? |
 | --- | --- | --- |
 | **`stock`** | A name that exists only in shadcn's vocabulary. | Yes, by `codemod`. |
 | **`color`** | A colour written down instead of named. | No — see below. |
 | **`both`** | A name both vocabularies use, meaning different things. | No — see below. |
+| **`moved`** | A name of dowel's own that has been [renamed](#what-dowel-renamed), and still works. | Yes, by `codemod`. |
 
 `check` exits non-zero when there are `stock` or `color` findings, and **zero
-when the only findings are `both`**. A fully migrated project still reports
-those — every use of `--accent` is one — so failing on them would mean a
-correct project could never pass.
+when the only findings are `both` or `moved`**. Neither is wrong: a name in both
+vocabularies may be exactly what you meant, and a renamed one still works, so
+failing on them would turn a build red over something that is fine.
+
+Once a project imports the theme, `accent` can only mean dowel's, so `check` stops
+asking and folds every use into one line:
+
+```console
+163 uses of `accent` read as dowel's own: this project imports the theme.
+```
 
 The same rules the linter enforces are the rules this applies, because it calls
 the same code. Test files are exempt from the colour check exactly as they are
@@ -141,6 +149,27 @@ checked against the changelog of the Base UI dowel is built on - every
 breaking change since 1.0 has an entry, a rule when a machine can make the
 change and a note when a person has to read it - so the release that brings a
 new Base UI brings its renames here.
+
+### What dowel renamed
+
+The same run moves a name dowel itself has renamed. The old one keeps working until
+the next major, so there is no hurry, and `check` says when it goes:
+
+```console
+$ npx dowel check
+src/card.tsx
+  12:18 moved  `--old-ink` was renamed `--dim` in 1.3.0; the old name goes in 2.0.0.
+
+$ npx dowel codemod --write
+  src/card.tsx 1 renamed
+      12  text-old-ink -> text-dim
+```
+
+A renamed component is the one thing it leaves to you. The file you copied has not
+gone anywhere, so `check` names the import, `diff` compares the copy with what it
+became, and its old address installs the new item when you add it again. Nothing is
+renamed yet: [what stays put](/dowel/concepts/stability/#how-a-name-leaves) is how
+a name will leave.
 
 ## `doctor`
 

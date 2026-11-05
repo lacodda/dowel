@@ -89,6 +89,8 @@ source.
    product pays; raise either one with a reason, or split the component.
 7. **`pnpm build`** regenerates the registry, its snapshot, the history and the
    machine-readable docs. Commit them with the component.
+8. **`node tools/vocabulary.mjs --write`** records the new name. A name a product
+   can write down is a promise, and the gate asks for it to be made on purpose.
 
 A component is not done when the gate is green. It is done when a product of
 the line has installed it from the published registry and put it on a screen.
@@ -98,9 +100,27 @@ the line has installed it from the published registry and put it on a screen.
 A change that breaks a product is a `!` commit with a `BREAKING CHANGE:`
 paragraph that says the way through - the old call and the new one. That
 paragraph is what the [upgrading guide](https://lacodda.github.io/dowel/guides/upgrading/)
-shows, so write it for the person upgrading. Renaming a token is decided before
-it is done; before 1.0 it ships with that paragraph, after 1.0 it is a major
-release.
+shows, so write it for the person upgrading.
+
+## Renaming a name
+
+A token, a utility of the theme or an item is renamed through one table, and the
+gate fails any other way of doing it:
+
+1. **Make the new name real.** Rename the token in `theme.css`, or the item's file.
+2. **Add a row** to `packages/dowel/src/deprecated.ts`: what it was, what it is,
+   the release making the change, and the next major.
+3. **`pnpm build`** writes the alias into the theme and the old address into the
+   registry. `node tools/vocabulary.mjs --write` records the new name, and the old
+   one stays on the record.
+4. **At the next major**, take the row away and the old name off
+   `tests/vocabulary.json`. The gate fails that release until you do.
+
+What a product sees is on
+[What stays put](https://lacodda.github.io/dowel/concepts/stability/). A step of a
+scale or a fixed colour cannot be renamed this way: `tokens.json` and the Rust
+modules name those in their own shape, so the generator refuses the row, and that
+rename waits for a major.
 
 Nothing private goes in: the stand, the demo, fixtures and examples are drawn
 from the invented world in `fixtures/world.ts`, and `tests/redakt.test.ts`

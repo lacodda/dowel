@@ -176,12 +176,14 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 ## Status
 
 The theme, the scales, an accent per product and a hundred and eighteen
-primitives are in daily use across two products of the line, with four blocks
+primitives are in daily use across ten products of the line, with four blocks
 and a demo built from them. Every component installs from a versioned registry
 and passes its gate before it ships: axe, a dependency budget, the scale, a
 picture in both themes, every ink at its contrast floor for every product, the
 keyboard driven in a real browser, every overlay held inside the window, and
-tests that a weekly mutation run proves would notice a fault.
+tests that a weekly mutation run proves would notice a fault. The names are
+recorded and held for 1.0, and [what stays put](https://lacodda.github.io/dowel/concepts/stability/)
+says what a release can no longer do to a product.
 
 Released versions and what landed in each: [CHANGELOG](https://github.com/lacodda/dowel/blob/main/CHANGELOG.md).
 
