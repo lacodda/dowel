@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-turnout",
+  "type": "registry:file",
+  "title": "turnout accent",
+  "description": "rose #E85B72 - the colour of the turnout mark (tn). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/turnout.css",
+      "target": "~/dowel/accents/turnout.css",
+      "type": "registry:file",
+      "content": "/*\n * turnout - rose #E85B72, the colour of its mark (tn).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #E85B72;\n}\n"
+    }
+  ]
+}

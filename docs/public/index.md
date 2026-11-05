@@ -21,7 +21,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.42.0.** The theme and its scales, an accent for each of the nineteen
+**v0.43.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser - as JSON and as a Rust
 module, from one generator - the line's
