@@ -19,9 +19,11 @@ rule.
 takes room in the layout. A track that reserves its own column shifts every
 line beside it the moment content grows past the fold - the layout jumps, and
 it jumps only on the machines that show scrollbars, so it is missed on the one
-that built it. The theme draws every scrollbar as an overlay with a thumb no
-shorter than a finger, and six tests hold it there. Divergence is a defect, not
-a variant.
+that built it. A product calls `overlayScrollbars()`, and where the engine can
+draw such a bar it gets one; a desktop window also asks its engine for it. Where
+no engine will, as in a site on Windows, the theme's thin strip stays, and
+[ScrollArea or a stable gutter](/dowel/concepts/scrollbars/#where-there-is-no-flag-to-pass)
+takes the jump out where it shows. Divergence is a defect, not a variant.
 
 **The Trigger Origin Rule.** Anything that opens from an element grows out of
 that element. Popovers, menus, tooltips and preview cards take

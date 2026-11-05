@@ -1247,6 +1247,11 @@ body {
  * In a layer, so that a utility can still say otherwise: an unlayered rule beats
  * every layered one whatever its specificity, and `[scrollbar-width:none]` on a
  * bar of tabs lost to the `*` here.
+ *
+ * The strip takes 10px of the layout, and a stylesheet cannot make it take none.
+ * An engine that draws its own overlay bar can, as long as nothing styles it:
+ * `overlayScrollbars()` measures that and sets the attribute below, and only
+ * then do these rules stand aside. `:where` keeps them as weak as `*` was.
  */
 @layer base {
   @supports not selector(::-webkit-scrollbar) {
@@ -1256,38 +1261,46 @@ body {
     }
   }
 
-  *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  :where(:root:not([data-scrollbars='overlay']) *) {
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 3px solid transparent;
+      border-radius: 999px;
+      background: var(--line-2);
+      background-clip: content-box;
+      /* The thumb is drawn proportional to how much of the document fits on
+       * screen, so a long one collapses it to a few pixels: still visible, no
+       * longer catchable by a pointer. This is the floor below which it stops
+       * being a control. */
+      min-height: 2.5rem;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--dim);
+      background-clip: content-box;
+    }
+
+    &::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
   }
 
-  *::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    border: 3px solid transparent;
-    border-radius: 999px;
-    background: var(--line-2);
-    background-clip: content-box;
-    /* The thumb is drawn proportional to how much of the document fits on
-     * screen, so a long one collapses it to a few pixels: still visible, no
-     * longer catchable by a pointer. This is the floor below which it stops
-     * being a control. */
-    min-height: 2.5rem;
-  }
-
-  *::-webkit-scrollbar-thumb:hover {
-    background: var(--dim);
-    background-clip: content-box;
-  }
-
-  *::-webkit-scrollbar-corner {
-    background: transparent;
-  }
-
-  *::-webkit-scrollbar-button {
-    display: none;
+  /* Inherited, so one declaration colours every bar. `dim` and not `line-2`: this
+   * bar is thinner than the strip's thumb and floats over content, not beside it. */
+  :root[data-scrollbars='overlay'] {
+    scrollbar-color: var(--dim) transparent;
   }
 
   /*

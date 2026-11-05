@@ -16,6 +16,7 @@
  */
 
 export { cn } from './cn.js'
+export { overlayScrollbars } from './scrollbars.js'
 
 /** Where a heading stands in the page's outline. A primitive that draws a
  * heading takes this as `level`, defaulting to where it usually stands: the

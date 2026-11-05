@@ -22,6 +22,7 @@
   "packages/dowel/src/line.ts": 0,
   "packages/dowel/src/locale.ts": 63.3,
   "packages/dowel/src/marks.ts": 100,
+  "packages/dowel/src/scrollbars.ts": 100,
   "packages/dowel/src/theme.ts": 84,
   "registry/blocks/empty-dashboard-screen.tsx": 78.1,
   "registry/blocks/list-detail-screen.tsx": 81.3,

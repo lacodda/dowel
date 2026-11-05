@@ -294,7 +294,7 @@ describe('scrollbars', () => {
     // Chromium cannot show this one: with the standard properties guarded it
     // reads the utility either way. Firefox is where the `*` would win.
     const layer = blockBody('@layer base {\n  @supports not selector(::-webkit-scrollbar)')
-    expect(layer).toContain('*::-webkit-scrollbar {')
+    expect(layer).toContain('&::-webkit-scrollbar {')
     expect(layer).toContain('.base-ui-disable-scrollbar {')
   })
 
@@ -310,7 +310,7 @@ describe('scrollbars', () => {
   it('paints the thumb from a token, never a literal colour', () => {
     // The bar is chrome, and chrome in this system comes from the vocabulary:
     // a product that changes its neutral tint gets a matching bar for free.
-    const thumb = blockBody('*::-webkit-scrollbar-thumb {')
+    const thumb = blockBody('&::-webkit-scrollbar-thumb {')
     expect(thumb).toContain('var(--')
     expect(thumb, 'the thumb hardcodes a colour').not.toMatch(/#[0-9a-f]{3,8}\b/i)
   })
@@ -318,21 +318,21 @@ describe('scrollbars', () => {
   it('leaves the track and the corner unpainted', () => {
     // An overlay bar is drawn over the content. A painted track is a gutter
     // with a colour, which is the classic bar with extra steps.
-    expect(blockBody('*::-webkit-scrollbar-track {')).toContain('transparent')
-    expect(blockBody('*::-webkit-scrollbar-corner {')).toContain('transparent')
+    expect(blockBody('&::-webkit-scrollbar-track {')).toContain('transparent')
+    expect(blockBody('&::-webkit-scrollbar-corner {')).toContain('transparent')
   })
 
   it('removes the step arrows', () => {
     // The one part of a classic scrollbar nobody uses, and Chromium draws it
     // by default.
-    expect(blockBody('*::-webkit-scrollbar-button {')).toContain('display: none')
+    expect(blockBody('&::-webkit-scrollbar-button {')).toContain('display: none')
   })
 
   it('insets the thumb without shrinking what can be grabbed', () => {
     // A transparent border clipped away from the background makes the visible
     // thumb narrower than the strip while the whole strip stays a hit target.
     // Without the clip the border is painted and the inset does nothing.
-    const thumb = blockBody('*::-webkit-scrollbar-thumb {')
+    const thumb = blockBody('&::-webkit-scrollbar-thumb {')
     expect(thumb).toMatch(/border:\s*\d+px solid transparent/)
     expect(thumb, 'the transparent border is painted, so it insets nothing').toMatch(
       /background-clip:\s*(content|padding)-box/,
@@ -343,6 +343,6 @@ describe('scrollbars', () => {
     // On a very long document the thumb is proportional to the viewport and
     // collapses to a few pixels — visible, but not something a pointer can
     // catch.
-    expect(blockBody('*::-webkit-scrollbar-thumb {')).toContain('min-height')
+    expect(blockBody('&::-webkit-scrollbar-thumb {')).toContain('min-height')
   })
 })
