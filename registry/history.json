@@ -4582,7 +4582,7 @@
           "breaking": false,
           "summary": "a way to rename a name without a major",
           "date": "2026-11-05",
-          "commit": "97148913cd"
+          "commit": "cefb01f9a0"
         },
         {
           "type": "fix",
