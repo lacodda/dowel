@@ -75,6 +75,49 @@ describe('exit codes', () => {
     expect(printed()).toContain('both vocabularies')
   })
 
+  it('folds `accent` into a line on a project that imports the theme', () => {
+    // kilna's report ran to 241 lines of it, and anything else `check` had to
+    // say was somewhere among them.
+    file('src/styles.css', "@import 'dowel-ui/theme.css';\n")
+    file('src/a.tsx', 'export const a = <div className="bg-accent text-accent" />')
+    expect(run(['check', '--cwd', directory])).toBe(0)
+    expect(printed()).toContain('Nothing to migrate')
+    expect(printed()).toContain('2 uses of `accent`')
+    expect(printed()).not.toContain('both vocabularies')
+  })
+
+  it('says the same thing to a machine', () => {
+    file('src/styles.css', "@import 'dowel-ui/theme.css';\n")
+    file('src/a.tsx', 'export const a = <div className="bg-accent" />')
+    run(['check', '--cwd', directory, '--json'])
+    expect(JSON.parse(printed())).toEqual({ findings: [], readAsDowels: 1 })
+  })
+
+  it('keeps asking about a project that does not import the theme', () => {
+    file('src/styles.css', '@import "tailwindcss";\n')
+    file('src/a.tsx', 'export const a = <div className="bg-accent" />')
+    run(['check', '--cwd', directory])
+    expect(printed()).toContain('both vocabularies')
+    expect(printed()).not.toContain('read as dowel')
+  })
+
+  it('keeps reporting what only sounds like the accent', () => {
+    // dowel has no `--accent-foreground`: on the theme it resolves to nothing,
+    // which is the opposite of a name to stop asking about.
+    file('src/styles.css', "@import 'dowel-ui/theme.css';\n")
+    file('src/a.tsx', 'export const a = <div className="text-accent-foreground" />')
+    run(['check', '--cwd', directory])
+    expect(printed()).toContain('text-accent-foreground')
+  })
+
+  it('leaves `accent` out of what the codemod says it left alone, on the theme', () => {
+    file('src/styles.css', "@import 'dowel-ui/theme.css';\n")
+    file('src/a.tsx', 'export const a = <div className="bg-accent" />')
+    run(['codemod', '--cwd', directory])
+    expect(printed()).toContain('Nothing to rewrite')
+    expect(printed()).not.toContain('Left alone')
+  })
+
   it('is 2 for an unknown command', () => {
     expect(run(['bogus'])).toBe(2)
     expect(printed()).toContain('Unknown command')

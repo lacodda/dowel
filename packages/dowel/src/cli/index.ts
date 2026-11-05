@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
-import { collectFiles, scanProject, type Finding } from './scan.js'
+import { collectFiles, isDowelsAccent, onTheTheme, scanProject, type Finding } from './scan.js'
 import { rewriteSource } from './codemod.js'
 import { rewriteBaseUi } from './base-ui.js'
 import { diagnose, readCatalogue, type Catalogue, type Diagnosis, type ProjectFacts } from './doctor.js'
@@ -84,14 +84,24 @@ function parseOptions(argv: readonly string[]): Options {
   return { root, write, json, positional }
 }
 
-function reportCheck(findings: readonly Finding[], options: Options): Outcome {
+function reportCheck(findings: readonly Finding[], options: Options, accents: number): Outcome {
   if (options.json) {
-    process.stdout.write(`${JSON.stringify({ findings }, null, 2)}\n`)
+    process.stdout.write(`${JSON.stringify({ findings, readAsDowels: accents }, null, 2)}\n`)
     return findings.length > 0 ? 1 : 0
+  }
+
+  /* One line for the `accent` this project means by it, rather than one a use:
+   * kilna's report ran to 241 of them, and whatever else it had to say was
+   * somewhere among those. */
+  const accentNote = () => {
+    if (accents === 0) return
+    const uses = `${accents} ${accents === 1 ? 'use' : 'uses'} of \`accent\``
+    process.stdout.write(`${dim(`${uses} read as dowel's own: this project imports the theme.`)}\n`)
   }
 
   if (findings.length === 0) {
     process.stdout.write(`${green('Nothing to migrate.')} No stock tokens, no colours written down.\n`)
+    accentNote()
     return 0
   }
 
@@ -153,6 +163,8 @@ function reportCheck(findings: readonly Finding[], options: Options): Outcome {
     )
   }
 
+  accentNote()
+
   /* Ambiguous names alone are not a reason to fail. A project that has fully
    * migrated still reports them - every use of `--accent` is one - and an exit
    * code that treats "correct" as "findings" cannot be put in a build. */
@@ -164,7 +176,12 @@ function commandCheck(options: Options): Outcome {
     process.stderr.write(`${red('No such directory')}: ${options.root}\n`)
     return 2
   }
-  return reportCheck(scanProject(options.root), options)
+  const findings = scanProject(options.root)
+  // On the theme, `accent` has only the one meaning: the question the "both"
+  // mark asks has been answered by the project's own import.
+  if (!onTheTheme(options.root)) return reportCheck(findings, options, 0)
+  const kept = findings.filter((finding) => !isDowelsAccent(finding.text))
+  return reportCheck(kept, options, findings.length - kept.length)
 }
 
 function commandCodemod(options: Options): Outcome {
@@ -177,6 +194,7 @@ function commandCodemod(options: Options): Outcome {
   const skipped: { file: string; line: number; name: string; note: string }[] = []
   const renamedInBaseUi: { file: string; line: number; from: string; to: string }[] = []
   let total = 0
+  const onTheme = onTheTheme(options.root)
 
   for (const path of collectFiles(options.root)) {
     let source: string
@@ -188,7 +206,9 @@ function commandCodemod(options: Options): Outcome {
 
     const name = relative(options.root, path).split(sep).join('/')
     const result = rewriteSource(source)
-    for (const entry of result.skipped) skipped.push({ file: name, ...entry })
+    for (const entry of result.skipped) {
+      if (!onTheme || !isDowelsAccent(entry.name)) skipped.push({ file: name, ...entry })
+    }
     // Then what Base UI renamed, over the same text: two tables, one pass each,
     // and neither one's names can be the other's.
     const baseUi = rewriteBaseUi(result.source)
