@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.43.0] - 2026-11-05
+
+### Build
+- Carry the theme's overlay rules into the registry
+- Regenerate the registry, its v0.43 snapshot and llms
+- Bring the history up to the release's commits
+
+### Features
+- Let the engine's own overlay bar through
+
+### Testing
+- Raise the floors to a full run from clean caches
+- Measure the engine's bar on the one system that asks for it
+
 ## [0.42.0] - 2026-11-05
 
 ### Bug Fixes
