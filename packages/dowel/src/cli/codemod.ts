@@ -1,4 +1,12 @@
-import { stockNames, stockTokens } from './stock.js'
+import {
+  COLOR_UTILITIES,
+  NAME_END,
+  NAME_START,
+  UTILITY_OPENER,
+  stockColorNames,
+  stockNames,
+  stockTokens,
+} from './stock.js'
 
 /*
  * Rewriting the stock vocabulary into dowel's.
@@ -58,18 +66,14 @@ function lineAt(source: string, index: number): number {
  * Alternation order is `stockNames`, which is longest-first, so `--sidebar-border`
  * is matched whole rather than as `--sidebar` with a tail left behind.
  */
-const UTILITY_PREFIXES =
-  'bg|text|border|fill|stroke|ring|outline|divide|shadow|from|via|to|accent|caret|decoration'
-
 function pattern(): RegExp {
-  const names = stockNames.join('|')
   return new RegExp(
     // A custom property: `--muted-foreground`, in a stylesheet or in `var()`.
-    `--(?<property>${names})\\b` +
+    `${NAME_START}--(?<property>${stockNames.join('|')})${NAME_END}` +
       '|' +
       // A utility: `bg-muted`, `hover:text-muted-foreground`. The opener is
       // consumed so that `custom-bg-muted` does not match, and put back.
-      `(?<opener>^|[\\s"'\`:\\[({])(?<prefix>${UTILITY_PREFIXES})-(?<utility>${names})\\b`,
+      `(?<opener>${UTILITY_OPENER})(?<prefix>${COLOR_UTILITIES})-(?<utility>${stockColorNames.join('|')})${NAME_END}`,
     'gm',
   )
 }

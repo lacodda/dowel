@@ -124,3 +124,32 @@ export const stockTokens: Readonly<Record<string, Replacement>> = {
 export const stockNames: readonly string[] = Object.keys(stockTokens).sort(
   (a, b) => b.length - a.length || a.localeCompare(b),
 )
+
+/** The utilities a colour token turns into. One list for the report and the
+ * rewriter: what `check` calls a finding is what `codemod` can touch. */
+export const COLOR_UTILITIES =
+  'bg|text|border|fill|stroke|ring|outline|divide|shadow|from|via|to|accent|caret|decoration'
+
+/*
+ * Where a custom property or a utility starts and ends.
+ *
+ * `\b` was the end of a name here, and a hyphen is a word boundary: `--radius-lg`
+ * read as the stock `--radius` with a tail, so `codemod --write` turned dowel's
+ * own token into `--radius-md-lg`, and every `--accent-soft` in a migrated
+ * project was reported as the ambiguous `--accent`. A name ends where neither a
+ * word character nor a hyphen follows, and starts where neither comes before it
+ * - which is also what keeps the BEM class `.btn--primary` out of it.
+ */
+export const NAME_START = String.raw`(?<![\w-])`
+export const NAME_END = String.raw`(?![\w-])`
+
+/** Before a utility: where a class word can begin in a string or a template,
+ * consumed and put back so `custom-bg-primary` is not `bg-primary`. */
+export const UTILITY_OPENER = String.raw`(?:^|[\s"'${'`'}:\[({])`
+
+/** The stock names that are colours, and so have utilities.
+ *
+ * `--radius` is the one that is not: stock shadcn reaches it as `rounded-*`,
+ * and spelled through a colour prefix it is the CSS property. `border-radius: 4px`
+ * came out of the rewriter as `border-radius-md: 4px`, which no browser reads. */
+export const stockColorNames: readonly string[] = stockNames.filter((name) => name !== 'radius')

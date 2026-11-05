@@ -1,5 +1,8 @@
+import { readFileSync } from 'node:fs'
+import { relative, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { rewriteSource } from './codemod.js'
+import { collectFiles } from './scan.js'
 
 /*
  * The only tool here that writes, so the tests are about restraint.
@@ -35,6 +38,54 @@ describe('renaming', () => {
   it('does not touch a name embedded in a longer word', () => {
     const input = '<div className="custom-bg-muted" />'
     expect(rewriteSource(input).source).toBe(input)
+  })
+
+  /* A hyphen is a word boundary, so `\b` read `--radius-lg` as the stock
+   * `--radius` with a tail and rewrote it to `--radius-md-lg`: on a project
+   * already on dowel, `--write` broke every radius it had. */
+  it.each([
+    ['a longer token of dowel', '.x { border-radius: var(--radius-lg); }'],
+    ['the hover partner of a stock name', '.x { color: var(--border-strong); }'],
+    ['a longer utility', '<div className="bg-card-soft border-input-strong" />'],
+    ['a BEM modifier', '.btn--primary { color: red; }'],
+  ])('leaves %s alone', (_what, input) => {
+    expect(rewriteSource(input)).toMatchObject({ source: input, changes: [] })
+  })
+
+  it('leaves the CSS property a stock name can spell', () => {
+    // `--radius` has no colour utilities: `border-radius` is the property, and
+    // `border-radius-md: 4px` is a declaration no browser reads.
+    const input = '.x { border-radius: 4px; }'
+    expect(rewriteSource(input)).toMatchObject({ source: input, changes: [] })
+  })
+
+  it('still renames the stock radius itself', () => {
+    expect(rewriteSource('.x { border-radius: var(--radius); }').source).toBe('.x { border-radius: var(--radius-md); }')
+  })
+
+  it('renames through an opacity', () => {
+    // The slash is where a name ends as surely as a space.
+    expect(rewriteSource('<div className="bg-primary/50 ring-ring/30" />').source).toBe(
+      '<div className="bg-accent/50 ring-accent/30" />',
+    )
+  })
+
+  it('finds nothing to rewrite in the set itself', () => {
+    // The whole of what dowel draws is on dowel's vocabulary by definition, so
+    // anything the codemod would change here is the codemod being wrong - and
+    // a product on the theme runs it after every upgrade.
+    const root = resolve(import.meta.dirname, '../../../..')
+    const rewritten = [
+      ...collectFiles(resolve(root, 'registry/ui')),
+      ...collectFiles(resolve(root, 'registry/blocks')),
+      ...collectFiles(resolve(root, 'stand/src')),
+      resolve(root, 'packages/dowel/src/theme.css'),
+      resolve(root, 'packages/dowel/src/prose.css'),
+    ].flatMap((file) => {
+      const { changes } = rewriteSource(readFileSync(file, 'utf8'))
+      return changes.map((change) => `${relative(root, file)}:${change.line} ${change.from} -> ${change.to}`)
+    })
+    expect(rewritten).toEqual([])
   })
 
   it('records the line each change is on', () => {

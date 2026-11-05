@@ -62,6 +62,21 @@ describe('names that exist in both vocabularies', () => {
    * dowel's own stand it had twenty-four violations, and `codemod --write`
    * would have turned every accent on the screen grey. */
 
+  it('does not read a longer token as the stock name it starts with', () => {
+    // A hyphen is a word boundary: `--accent-soft` was counted as an ambiguous
+    // `--accent`, and `--radius-lg` as a stock `--radius` to rewrite.
+    expect(scanSource('.x { color: var(--accent-soft); border-radius: var(--radius-lg); }', 'a.css')).toEqual([])
+    expect(scanSource('<div className="bg-accent-soft text-accent-2" />', 'a.tsx')).toEqual([])
+  })
+
+  it('does not read a BEM modifier as a custom property', () => {
+    expect(scanSource('.btn--primary { margin: 0; }', 'a.css')).toEqual([])
+  })
+
+  it('does not read a CSS property as a utility', () => {
+    expect(scanSource('const style = "border-radius: 4px"', 'a.tsx')).toEqual([])
+  })
+
   it('does not call a correct use of --accent a stock name', () => {
     const findings = scanSource('.x { color: var(--accent); }', 'a.css')
     expect(findings).toHaveLength(1)

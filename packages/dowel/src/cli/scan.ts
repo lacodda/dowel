@@ -1,7 +1,17 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 import { findRawColor } from '../eslint/no-raw-color.js'
-import { stockNames, stockTokens, type Replacement } from './stock.js'
+import { THEME_IMPORT } from './doctor.js'
+import {
+  COLOR_UTILITIES,
+  NAME_END,
+  NAME_START,
+  UTILITY_OPENER,
+  stockColorNames,
+  stockNames,
+  stockTokens,
+  type Replacement,
+} from './stock.js'
 
 /*
  * Reading someone else's project.
@@ -134,7 +144,7 @@ export function collectFiles(root: string): string[] {
  *
  * Built from the table rather than written out, so a name added there is found
  * here without a second edit. */
-const STOCK_PROPERTY = new RegExp(`--(${stockNames.join('|')})\\b`, 'g')
+const STOCK_PROPERTY = new RegExp(`${NAME_START}--(${stockNames.join('|')})${NAME_END}`, 'g')
 
 /** The same names as Tailwind utilities, which is how they reach a component:
  * `bg-muted`, `text-muted-foreground`, `border-input`, `hover:bg-accent`.
@@ -142,10 +152,8 @@ const STOCK_PROPERTY = new RegExp(`--(${stockNames.join('|')})\\b`, 'g')
  * The prefix list is what Tailwind actually generates from a colour token, and
  * the opening character class is what keeps `bg-primary` from matching inside
  * `custom-bg-primary`. */
-const UTILITY_PREFIXES =
-  'bg|text|border|fill|stroke|ring|outline|divide|shadow|from|via|to|accent|caret|decoration'
 const STOCK_UTILITY = new RegExp(
-  `(?:^|[\\s"'\`:\\[({])((?:${UTILITY_PREFIXES})-(?:${stockNames.join('|')}))\\b`,
+  `${UTILITY_OPENER}((?:${COLOR_UTILITIES})-(?:${stockColorNames.join('|')}))${NAME_END}`,
   'g',
 )
 
@@ -322,6 +330,31 @@ export function scanSource(source: string, file: string): Finding[] {
   }
 
   return findings.sort((a, b) => a.line - b.line || a.column - b.column)
+}
+
+/** Whether a stylesheet of this project imports the dowel theme: from the
+ * package, or from where the registry copied it. */
+export function onTheTheme(root: string): boolean {
+  return collectFiles(root)
+    .filter((file) => file.endsWith('.css'))
+    .some((file) => {
+      try {
+        return THEME_IMPORT.test(readFileSync(file, 'utf8'))
+      } catch {
+        return false
+      }
+    })
+}
+
+/** `--accent` or a colour utility of it, and nothing longer.
+ *
+ * The one stock name dowel also has, which a project on the theme can only mean
+ * dowel's way. `--accent-foreground` is not this: dowel has no such token, so
+ * on the theme it is a name that resolves to nothing, and still worth saying. */
+const DOWELS_ACCENT = new RegExp(`^(?:--|(?:${COLOR_UTILITIES})-)accent$`)
+
+export function isDowelsAccent(text: string): boolean {
+  return DOWELS_ACCENT.test(text)
 }
 
 /** Scan a whole project. Paths in the findings are relative to `root`, with

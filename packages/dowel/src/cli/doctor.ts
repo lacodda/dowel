@@ -83,7 +83,7 @@ const ACCENT_IMPORT = /@import\s+['"](?:dowel-ui\/accents\/([a-z-]+)\.css|[^'"]*
 
 /** The theme, however it is reached: from the package, or copied in by the
  * registry and imported from wherever the project put it. */
-const THEME_IMPORT = /@import\s+['"](?:dowel-ui\/theme\.css|[^'"]*dowel\/theme\.css)['"]/
+export const THEME_IMPORT = /@import\s+['"](?:dowel-ui\/theme\.css|[^'"]*dowel\/theme\.css)['"]/
 
 /** The one declaration a product outside the line makes for itself. */
 const ACCENT_BASE = /--accent-base\s*:/
