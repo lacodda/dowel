@@ -47,7 +47,8 @@ const components = readdirSync(componentDir)
  * from `dowel/no-arbitrary-scale` - so the set and the products it ships to
  * are held to one definition. Products get it as a lint error; the set gets it
  * here, where each exception keeps its argument beside it and a stale one is
- * caught (the repository's lint config leaves `registry/ui` to this gate).
+ * caught (the recommended config leaves `ui/` to this gate, here and in a
+ * product's copies alike).
  *
  * The rule reads type, radius and tracking as well as length, which this gate
  * did not: `text-[10px]` sat in six primitives because only sizing was read.

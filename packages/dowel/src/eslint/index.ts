@@ -42,9 +42,11 @@ const plugin: LintPlugin = {
 /** The rules, applied where components live. Scoped to TypeScript sources:
  * the theme is CSS and the build tools are Node, and neither is a component.
  *
- * `no-raw-button` is kept out of `ui/`, the directory a product keeps its
- * primitives in (shadcn's `components/ui`): a primitive is where the one
- * `<button>` a screen should not write gets written, once. */
+ * `no-raw-button` and `no-arbitrary-scale` are kept out of `ui/`, the directory
+ * a product keeps its primitives in (shadcn's `components/ui`). A primitive is
+ * where the one `<button>` a screen should not write gets written, once; and
+ * the few lengths the set draws off the scale are argued in its own gate, so a
+ * product copying one must not fail its lint on a file it did not write. */
 const recommended: LintConfig[] = [
   {
     files: ['**/*.{ts,tsx}'],
@@ -53,14 +55,14 @@ const recommended: LintConfig[] = [
       'dowel/no-raw-color': 'error',
       'dowel/no-native-select': 'error',
       'dowel/no-implicit-locale': 'error',
-      'dowel/no-arbitrary-scale': 'error',
     },
   },
   {
-    files: ['**/*.tsx'],
+    files: ['**/*.{ts,tsx}'],
     ignores: ['**/ui/**'],
     plugins: { dowel: plugin },
     rules: {
+      'dowel/no-arbitrary-scale': 'error',
       'dowel/no-raw-button': 'error',
     },
   },

@@ -40,14 +40,6 @@ export default tseslint.config(
     files: ['**/*.test.{ts,tsx}'],
     rules: { 'dowel/no-raw-button': 'off', 'dowel/no-arbitrary-scale': 'off' },
   },
-  // The set is held to the scale by `tests/scale.test.ts`, which reads it with
-  // the same finder this rule uses and keeps each exception with its argument
-  // beside it. One place for the set's exceptions rather than a list there and
-  // a disable comment here.
-  {
-    files: ['registry/ui/**'],
-    rules: { 'dowel/no-arbitrary-scale': 'off' },
-  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

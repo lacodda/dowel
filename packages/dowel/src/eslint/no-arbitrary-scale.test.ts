@@ -105,8 +105,18 @@ describe('the scales it knows are the theme', () => {
 })
 
 describe('the plugin', () => {
-  it('turns the rule on for every source', () => {
-    expect(dowel.configs.recommended[0]?.rules?.['dowel/no-arbitrary-scale']).toBe('error')
+  it('turns the rule on for every source a product wrote', () => {
+    const entry = dowel.configs.recommended.find((config) => config.rules?.['dowel/no-arbitrary-scale'])
+    expect(entry?.rules?.['dowel/no-arbitrary-scale']).toBe('error')
+    expect(entry?.files).toEqual(['**/*.{ts,tsx}'])
     expect(dowel.rules?.['no-arbitrary-scale']).toBe(noArbitraryScale)
+  })
+
+  it('leaves the copies of the primitives to the set', () => {
+    // `splash` and `activity-heatmap` each carry one argued length. A product
+    // that copies them must not fail on a file it did not write: three of them
+    // had already turned the rule off for the whole directory.
+    const entry = dowel.configs.recommended.find((config) => config.rules?.['dowel/no-arbitrary-scale'])
+    expect(entry?.ignores).toEqual(['**/ui/**'])
   })
 })
