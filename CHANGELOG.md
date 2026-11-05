@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.42.0] - 2026-11-05
+
+### Bug Fixes
+- Take the linter out of a product's production audit
+- Leave the copies of the primitives to the set
+- Read a name to its end, so the codemod stops breaking tokens
+- Draw the line's own scrollbars in Chromium again
+- Let the caller win over every word of the theme
+
+### Build
+- Regenerate the registry, its v0.42 snapshot, the history and llms.txt
+- Bring the history up to the release's commits
+
+### CI
+- Keep a file in its shard when another arrives
+
+### Documentation
+- Say what stays put, and how a product gets from 0.x to 1.0
+
+### Features
+- Stop asking about `accent` on a project on the theme
+- A way to rename a name without a major
+
+### Testing
+- Wait for the highlight between keys
+- Hold what `check` and `codemod` say, and that they write
+- Record the chips Combobox at a field's height
+
 ## [0.41.0] - 2026-10-30
 
 ### Bug Fixes
