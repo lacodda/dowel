@@ -113,12 +113,13 @@ describe.each(named)('%s', (name, { source }) => {
       }
     })
 
-    it('stands on the stand, in the group of blocks, linked to its page', () => {
+    it('stands on the stand, in the group of blocks', () => {
+      // The link back to its page is checked as the stand draws it, for every
+      // section at once, in `stand/src/shell.test.tsx`.
       const stand = readFileSync(resolve(root, 'stand/src/catalogue.tsx'), 'utf8')
       const entry = stand.match(new RegExp(String.raw`\{\s*id: '${name}',[\s\S]*?\}`))?.[0]
       expect(entry, `the stand has no \`${name}\``).toBeDefined()
       expect(entry).toContain("kind: 'block'")
-      expect(entry).toContain(`docs: '/dowel/blocks/${name}/'`)
     })
 
     it('is photographed', () => {

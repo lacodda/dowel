@@ -393,15 +393,6 @@ describe('every component is four files', () => {
     expect(stand, `the stand has no \`${name}\` section`).toContain(`id: '${name}'`)
   })
 
-  it.each(components)('%s links back from the stand to its page', (name) => {
-    // Both directions, or the pair only works from one side: someone looking
-    // at a component on the stand should be one click from why it is that way.
-    const stand = readFileSync(resolve(root, 'stand/src/catalogue.tsx'), 'utf8')
-    expect(stand, `the stand does not link \`${name}\` to its documentation`).toContain(
-      `docs: '/dowel/components/${name}/'`,
-    )
-  })
-
   it.each(components)('%s is in the registry', (name) => {
     expect(items.map((item) => item.name)).toContain(name)
   })

@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
-import { render, screen, within } from '@testing-library/react'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -140,4 +142,40 @@ describe('the showcase', () => {
     const { unmount } = await expectNoA11yViolations(<App />)
     unmount()
   })
+
+  it(
+    'links every section to its own page of the documentation, and the page is there',
+    () => {
+      /* The link as drawn, not the line in the table that writes it: what a
+       * reader follows is the `docs` beside the heading, and it has to land on
+       * the page about this section rather than on any page that exists. A
+       * block's page lives with the blocks, everything else's with the
+       * components. */
+      const base = import.meta.env.BASE_URL
+      const pages = resolve(import.meta.dirname, '../../docs/src/content/docs')
+      render(<App />)
+      // The navigation's lists: the components, the blocks, the utilities.
+      const lists = within(screen.getByRole('navigation', { name: /components/i })).getAllByRole('list')
+      const entries = lists.flatMap((list, index) =>
+        within(list)
+          .getAllByRole('link')
+          .map((link) => ({ id: link.getAttribute('href')!.slice(base.length), block: index === 1 })),
+      )
+      cleanup()
+      expect(entries.length).toBeGreaterThan(100)
+
+      for (const { id, block } of entries) {
+        window.history.replaceState(null, '', `${base}${id}`)
+        render(<App />)
+        // The row the section's title sits in: a block draws a `main` of its own.
+        const title = document.querySelector<HTMLElement>('[data-stand-section] > :first-child')!
+        const href = within(title).getByRole('link', { name: /^docs/ }).getAttribute('href')
+        const group = block ? 'blocks' : 'components'
+        expect(href, id).toBe(`/dowel/${group}/${id}/`)
+        expect(existsSync(resolve(pages, group, `${id}.mdx`)), `${href} has no page`).toBe(true)
+        cleanup()
+      }
+    },
+    WHOLE_STAND,
+  )
 })
