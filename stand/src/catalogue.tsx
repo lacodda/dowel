@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { ButtonSection } from './sections/button'
 import { InputSection } from './sections/input'
 import { TextareaSection } from './sections/textarea'
@@ -119,6 +120,22 @@ import { SettingsScreenSection } from './sections/settings-screen'
 import { LoginScreenSection } from './sections/login-screen'
 import { EmptyDashboardScreenSection } from './sections/empty-dashboard-screen'
 
+/** One section of the stand, and one page of it. */
+export interface Section {
+  /** The path the section is at, and the name of its page in the documentation. */
+  id: string
+  title: string
+  /** Not a component: code with no markup, or a screen made of components. */
+  kind?: 'utility' | 'block'
+  render: () => ReactNode
+}
+
+/** Where a section's page is: a block's with the blocks, the rest with the
+ * components. Read off the id, so the link cannot name another page. */
+export function docsOf(section: Section): string {
+  return `/dowel/${section.kind === 'block' ? 'blocks' : 'components'}/${section.id}/`
+}
+
 /* The sections of the stand: one per component, in the order a screen is
  * built. Each new component adds an entry here.
  *
@@ -129,139 +146,40 @@ import { EmptyDashboardScreenSection } from './sections/empty-dashboard-screen'
  * into the same list under names in two different styles, which left a reader
  * to guess why one entry was lowercase; the answer was never "for no reason",
  * but the list gave no way to tell. */
-export const sections = [
-  { id: 'button', title: 'Button', docs: '/dowel/components/button/', render: () => <ButtonSection /> },
-  { id: 'input', title: 'Input', docs: '/dowel/components/input/', render: () => <InputSection /> },
-  { id: 'textarea', title: 'Textarea', docs: '/dowel/components/textarea/', render: () => <TextareaSection /> },
-  {
-    id: 'marked-text',
-    title: 'MarkedText',
-    docs: '/dowel/components/marked-text/',
-    render: () => <MarkedTextSection />,
-  },
-  { id: 'field', title: 'Field', docs: '/dowel/components/field/', render: () => <FieldSection /> },
-  {
-    id: 'inline-field',
-    title: 'InlineField',
-    docs: '/dowel/components/inline-field/',
-    render: () => <InlineFieldSection />,
-  },
-  {
-    id: 'field-draft',
-    title: 'useFieldDraft',
-    kind: 'utility',
-    docs: '/dowel/components/field-draft/',
-    render: () => <FieldDraftSection />,
-  },
-  {
-    id: 'schema-fields',
-    title: 'SchemaFields',
-    docs: '/dowel/components/schema-fields/',
-    render: () => <SchemaFieldsSection />,
-  },
-  {
-    id: 'schema-shape',
-    title: 'schema-shape',
-    kind: 'utility',
-    docs: '/dowel/components/schema-shape/',
-    render: () => <SchemaShapeSection />,
-  },
-  {
-    id: 'schema-check',
-    title: 'schema-check',
-    kind: 'utility',
-    docs: '/dowel/components/schema-check/',
-    render: () => <SchemaCheckSection />,
-  },
-  { id: 'checkbox', title: 'Checkbox', docs: '/dowel/components/checkbox/', render: () => <CheckboxSection /> },
-  {
-    id: 'radio-group',
-    title: 'RadioGroup',
-    docs: '/dowel/components/radio-group/',
-    render: () => <RadioGroupSection />,
-  },
-  { id: 'switch', title: 'Switch', docs: '/dowel/components/switch/', render: () => <SwitchSection /> },
-  {
-    id: 'number-field',
-    title: 'NumberField',
-    docs: '/dowel/components/number-field/',
-    render: () => <NumberFieldSection />,
-  },
-  { id: 'slider', title: 'Slider', docs: '/dowel/components/slider/', render: () => <SliderSection /> },
-  {
-    id: 'rating-scale',
-    title: 'RatingScale',
-    docs: '/dowel/components/rating-scale/',
-    render: () => <RatingScaleSection />,
-  },
-  {
-    id: 'duration-field',
-    title: 'DurationField',
-    docs: '/dowel/components/duration-field/',
-    render: () => <DurationFieldSection />,
-  },
-  {
-    id: 'password-field',
-    title: 'PasswordField',
-    docs: '/dowel/components/password-field/',
-    render: () => <PasswordFieldSection />,
-  },
-  {
-    id: 'calendar-math',
-    title: 'calendar-math',
-    kind: 'utility',
-    docs: '/dowel/components/calendar-math/',
-    render: () => <CalendarMathSection />,
-  },
-  {
-    id: 'calendar',
-    title: 'Calendar',
-    docs: '/dowel/components/calendar/',
-    render: () => <CalendarSection />,
-  },
-  {
-    id: 'date-picker',
-    title: 'DatePicker',
-    docs: '/dowel/components/date-picker/',
-    render: () => <DatePickerSection />,
-  },
-  {
-    id: 'date-range-picker',
-    title: 'DateRangePicker',
-    docs: '/dowel/components/date-range-picker/',
-    render: () => <DateRangePickerSection />,
-  },
-  {
-    id: 'time-field',
-    title: 'TimeField',
-    docs: '/dowel/components/time-field/',
-    render: () => <TimeFieldSection />,
-  },
-  {
-    id: 'big-calendar',
-    title: 'BigCalendar',
-    docs: '/dowel/components/big-calendar/',
-    render: () => <BigCalendarSection />,
-  },
-  {
-    id: 'big-calendar-item',
-    title: 'BigCalendarItem',
-    docs: '/dowel/components/big-calendar-item/',
-    render: () => <BigCalendarItemSection />,
-  },
-  { id: 'panel', title: 'Panel', docs: '/dowel/components/panel/', render: () => <PanelSection /> },
-  { id: 'badge', title: 'Badge', docs: '/dowel/components/badge/', render: () => <BadgeSection /> },
-  { id: 'chip', title: 'Chip', docs: '/dowel/components/chip/', render: () => <ChipSection /> },
-  {
-    id: 'segmented-control',
-    title: 'SegmentedControl',
-    docs: '/dowel/components/segmented-control/',
-    render: () => <SegmentedControlSection />,
-  },
-  { id: 'kbd', title: 'Kbd', docs: '/dowel/components/kbd/', render: () => <KbdSection /> },
-  { id: 'spinner', title: 'Spinner', docs: '/dowel/components/spinner/', render: () => <SpinnerSection /> },
-  { id: 'truncate', title: 'Truncate', docs: '/dowel/components/truncate/', render: () => <TruncateSection /> },
-  { id: 'copyable', title: 'Copyable', docs: '/dowel/components/copyable/', render: () => <CopyableSection /> },
+export const sections: Section[] = [
+  { id: 'button', title: 'Button', render: () => <ButtonSection /> },
+  { id: 'input', title: 'Input', render: () => <InputSection /> },
+  { id: 'textarea', title: 'Textarea', render: () => <TextareaSection /> },
+  { id: 'marked-text', title: 'MarkedText', render: () => <MarkedTextSection /> },
+  { id: 'field', title: 'Field', render: () => <FieldSection /> },
+  { id: 'inline-field', title: 'InlineField', render: () => <InlineFieldSection /> },
+  { id: 'field-draft', title: 'useFieldDraft', kind: 'utility', render: () => <FieldDraftSection /> },
+  { id: 'schema-fields', title: 'SchemaFields', render: () => <SchemaFieldsSection /> },
+  { id: 'schema-shape', title: 'schema-shape', kind: 'utility', render: () => <SchemaShapeSection /> },
+  { id: 'schema-check', title: 'schema-check', kind: 'utility', render: () => <SchemaCheckSection /> },
+  { id: 'checkbox', title: 'Checkbox', render: () => <CheckboxSection /> },
+  { id: 'radio-group', title: 'RadioGroup', render: () => <RadioGroupSection /> },
+  { id: 'switch', title: 'Switch', render: () => <SwitchSection /> },
+  { id: 'number-field', title: 'NumberField', render: () => <NumberFieldSection /> },
+  { id: 'slider', title: 'Slider', render: () => <SliderSection /> },
+  { id: 'rating-scale', title: 'RatingScale', render: () => <RatingScaleSection /> },
+  { id: 'duration-field', title: 'DurationField', render: () => <DurationFieldSection /> },
+  { id: 'password-field', title: 'PasswordField', render: () => <PasswordFieldSection /> },
+  { id: 'calendar-math', title: 'calendar-math', kind: 'utility', render: () => <CalendarMathSection /> },
+  { id: 'calendar', title: 'Calendar', render: () => <CalendarSection /> },
+  { id: 'date-picker', title: 'DatePicker', render: () => <DatePickerSection /> },
+  { id: 'date-range-picker', title: 'DateRangePicker', render: () => <DateRangePickerSection /> },
+  { id: 'time-field', title: 'TimeField', render: () => <TimeFieldSection /> },
+  { id: 'big-calendar', title: 'BigCalendar', render: () => <BigCalendarSection /> },
+  { id: 'big-calendar-item', title: 'BigCalendarItem', render: () => <BigCalendarItemSection /> },
+  { id: 'panel', title: 'Panel', render: () => <PanelSection /> },
+  { id: 'badge', title: 'Badge', render: () => <BadgeSection /> },
+  { id: 'chip', title: 'Chip', render: () => <ChipSection /> },
+  { id: 'segmented-control', title: 'SegmentedControl', render: () => <SegmentedControlSection /> },
+  { id: 'kbd', title: 'Kbd', render: () => <KbdSection /> },
+  { id: 'spinner', title: 'Spinner', render: () => <SpinnerSection /> },
+  { id: 'truncate', title: 'Truncate', render: () => <TruncateSection /> },
+  { id: 'copyable', title: 'Copyable', render: () => <CopyableSection /> },
   /*
    * The overlays.
    *
@@ -277,23 +195,13 @@ export const sections = [
    * Escape, the name a screen reader reads. Clicking a trigger here shows the
    * real thing, in the real place, with the real scrim.
    */
-  { id: 'dialog', title: 'Dialog', docs: '/dowel/components/dialog/', render: () => <DialogSection /> },
-  {
-    id: 'confirm-dialog',
-    title: 'ConfirmDialog',
-    docs: '/dowel/components/confirm-dialog/',
-    render: () => <ConfirmDialogSection />,
-  },
-  { id: 'drawer', title: 'Drawer', docs: '/dowel/components/drawer/', render: () => <DrawerSection /> },
-  { id: 'layer', title: 'Layer', docs: '/dowel/components/layer/', render: () => <LayerSection /> },
-  { id: 'popover', title: 'Popover', docs: '/dowel/components/popover/', render: () => <PopoverSection /> },
-  {
-    id: 'preview-card',
-    title: 'PreviewCard',
-    docs: '/dowel/components/preview-card/',
-    render: () => <PreviewCardSection />,
-  },
-  { id: 'tooltip', title: 'Tooltip', docs: '/dowel/components/tooltip/', render: () => <TooltipSection /> },
+  { id: 'dialog', title: 'Dialog', render: () => <DialogSection /> },
+  { id: 'confirm-dialog', title: 'ConfirmDialog', render: () => <ConfirmDialogSection /> },
+  { id: 'drawer', title: 'Drawer', render: () => <DrawerSection /> },
+  { id: 'layer', title: 'Layer', render: () => <LayerSection /> },
+  { id: 'popover', title: 'Popover', render: () => <PopoverSection /> },
+  { id: 'preview-card', title: 'PreviewCard', render: () => <PreviewCardSection /> },
+  { id: 'tooltip', title: 'Tooltip', render: () => <TooltipSection /> },
   /*
    * Menus and choosing.
    *
@@ -301,15 +209,10 @@ export const sections = [
    * what matters about a menu is the keyboard, and a picture cannot show that.
    * The tests hold the behaviour; these are here to be clicked.
    */
-  { id: 'menu', title: 'Menu', docs: '/dowel/components/menu/', render: () => <MenuSection /> },
-  {
-    id: 'context-menu',
-    title: 'ContextMenu',
-    docs: '/dowel/components/context-menu/',
-    render: () => <ContextMenuSection />,
-  },
-  { id: 'select', title: 'Select', docs: '/dowel/components/select/', render: () => <SelectSection /> },
-  { id: 'combobox', title: 'Combobox', docs: '/dowel/components/combobox/', render: () => <ComboboxSection /> },
+  { id: 'menu', title: 'Menu', render: () => <MenuSection /> },
+  { id: 'context-menu', title: 'ContextMenu', render: () => <ContextMenuSection /> },
+  { id: 'select', title: 'Select', render: () => <SelectSection /> },
+  { id: 'combobox', title: 'Combobox', render: () => <ComboboxSection /> },
   /*
    * Searching, and the shortcut that gets you there.
    *
@@ -318,38 +221,11 @@ export const sections = [
    * the commands and the sheet of shortcuts have sections of their own under
    * sections/.
    */
-  {
-    id: 'search-field',
-    title: 'SearchField',
-    docs: '/dowel/components/search-field/',
-    render: () => <SearchFieldSection />,
-  },
-  {
-    id: 'command-palette',
-    title: 'CommandPalette',
-    docs: '/dowel/components/command-palette/',
-    render: () => <CommandPaletteSection />,
-  },
-  {
-    id: 'shortcuts-dialog',
-    title: 'ShortcutsDialog',
-    docs: '/dowel/components/shortcuts-dialog/',
-    render: () => <ShortcutsDialogSection />,
-  },
-  {
-    id: 'commands',
-    title: 'Commands',
-    kind: 'utility',
-    docs: '/dowel/components/commands/',
-    render: () => <CommandsSection />,
-  },
-  {
-    id: 'shortcut',
-    title: 'Shortcut',
-    kind: 'utility',
-    docs: '/dowel/components/shortcut/',
-    render: () => <ShortcutSection />,
-  },
+  { id: 'search-field', title: 'SearchField', render: () => <SearchFieldSection /> },
+  { id: 'command-palette', title: 'CommandPalette', render: () => <CommandPaletteSection /> },
+  { id: 'shortcuts-dialog', title: 'ShortcutsDialog', render: () => <ShortcutsDialogSection /> },
+  { id: 'commands', title: 'Commands', kind: 'utility', render: () => <CommandsSection /> },
+  { id: 'shortcut', title: 'Shortcut', kind: 'utility', render: () => <ShortcutSection /> },
   /*
    * Saying that something happened.
    *
@@ -357,235 +233,52 @@ export const sections = [
    * to each other: a toast goes away, an alert is still true after a reload, and
    * a banner is true on every screen. Anything that needs an answer is a Dialog.
    */
-  { id: 'toast', title: 'Toast', docs: '/dowel/components/toast/', render: () => <ToastSection /> },
-  { id: 'alert', title: 'Alert', docs: '/dowel/components/alert/', render: () => <AlertSection /> },
-  { id: 'banner', title: 'Banner', docs: '/dowel/components/banner/', render: () => <BannerSection /> },
-  { id: 'tag-input', title: 'TagInput', docs: '/dowel/components/tag-input/', render: () => <TagInputSection /> },
-  { id: 'file-drop', title: 'FileDrop', docs: '/dowel/components/file-drop/', render: () => <FileDropSection /> },
-  { id: 'color-field', title: 'ColorField', docs: '/dowel/components/color-field/', render: () => <ColorFieldSection /> },
-  { id: 'action-bar', title: 'ActionBar', docs: '/dowel/components/action-bar/', render: () => <ActionBarSection /> },
-  { id: 'save-state', title: 'SaveState', docs: '/dowel/components/save-state/', render: () => <SaveStateSection /> },
-  {
-    id: 'table-sort',
-    title: 'table-sort',
-    kind: 'utility',
-    docs: '/dowel/components/table-sort/',
-    render: () => <TableSortSection />,
-  },
-  { id: 'table', title: 'Table', docs: '/dowel/components/table/', render: () => <TableSection /> },
+  { id: 'toast', title: 'Toast', render: () => <ToastSection /> },
+  { id: 'alert', title: 'Alert', render: () => <AlertSection /> },
+  { id: 'banner', title: 'Banner', render: () => <BannerSection /> },
+  { id: 'tag-input', title: 'TagInput', render: () => <TagInputSection /> },
+  { id: 'file-drop', title: 'FileDrop', render: () => <FileDropSection /> },
+  { id: 'color-field', title: 'ColorField', render: () => <ColorFieldSection /> },
+  { id: 'action-bar', title: 'ActionBar', render: () => <ActionBarSection /> },
+  { id: 'save-state', title: 'SaveState', render: () => <SaveStateSection /> },
+  { id: 'table-sort', title: 'table-sort', kind: 'utility', render: () => <TableSortSection /> },
+  { id: 'table', title: 'Table', render: () => <TableSection /> },
   /* The catalogue table's three abilities: a column sized by its edge, rows
    * that drag, and a funnel in a heading. */
-  {
-    id: 'column-resize-handle',
-    title: 'ColumnResizeHandle',
-    docs: '/dowel/components/column-resize-handle/',
-    render: () => <ColumnResizeHandleSection />,
-  },
-  {
-    id: 'reorderable-list',
-    title: 'ReorderableList',
-    docs: '/dowel/components/reorderable-list/',
-    render: () => <ReorderableListSection />,
-  },
-  {
-    id: 'filter-popover',
-    title: 'FilterPopover',
-    docs: '/dowel/components/filter-popover/',
-    render: () => <FilterPopoverSection />,
-  },
-  {
-    id: 'pagination',
-    title: 'Pagination',
-    docs: '/dowel/components/pagination/',
-    render: () => <PaginationSection />,
-  },
-  {
-    id: 'page-size',
-    title: 'PageSize',
-    docs: '/dowel/components/page-size/',
-    render: () => <PageSizeSection />,
-  },
-  {
-    id: 'number-format',
-    title: 'NumberFormat',
-    docs: '/dowel/components/number-format/',
-    render: () => <NumberFormatSection />,
-  },
-  {
-    id: 'relative-time',
-    title: 'RelativeTime',
-    docs: '/dowel/components/relative-time/',
-    render: () => <RelativeTimeSection />,
-  },
-  {
-    id: 'virtual-list',
-    title: 'VirtualList',
-    docs: '/dowel/components/virtual-list/',
-    render: () => <VirtualListSection />,
-  },
-  {
-    id: 'tree-rows',
-    title: 'tree-rows',
-    kind: 'utility',
-    docs: '/dowel/components/tree-rows/',
-    render: () => <TreeRowsSection />,
-  },
-  {
-    id: 'tree-view',
-    title: 'TreeView',
-    docs: '/dowel/components/tree-view/',
-    render: () => <TreeViewSection />,
-  },
-  {
-    id: 'key-value',
-    title: 'KeyValue',
-    docs: '/dowel/components/key-value/',
-    render: () => <KeyValueSection />,
-  },
-  {
-    id: 'list-row',
-    title: 'ListRow',
-    docs: '/dowel/components/list-row/',
-    render: () => <ListRowSection />,
-  },
-  {
-    id: 'stat-tile',
-    title: 'StatTile',
-    docs: '/dowel/components/stat-tile/',
-    render: () => <StatTileSection />,
-  },
-  {
-    id: 'sparkline',
-    title: 'Sparkline',
-    docs: '/dowel/components/sparkline/',
-    render: () => <SparklineSection />,
-  },
-  {
-    id: 'track-segments',
-    title: 'track-segments',
-    kind: 'utility',
-    docs: '/dowel/components/track-segments/',
-    render: () => <TrackSegmentsSection />,
-  },
-  {
-    id: 'track',
-    title: 'Track',
-    docs: '/dowel/components/track/',
-    render: () => <TrackSection />,
-  },
-  {
-    id: 'activity-weeks',
-    title: 'activity-weeks',
-    kind: 'utility',
-    docs: '/dowel/components/activity-weeks/',
-    render: () => <ActivityWeeksSection />,
-  },
-  {
-    id: 'activity-heatmap',
-    title: 'ActivityHeatmap',
-    docs: '/dowel/components/activity-heatmap/',
-    render: () => <ActivityHeatmapSection />,
-  },
-  {
-    id: 'activity-legend',
-    title: 'ActivityLegend',
-    docs: '/dowel/components/activity-legend/',
-    render: () => <ActivityLegendSection />,
-  },
-  {
-    id: 'bar-chart',
-    title: 'BarChart',
-    docs: '/dowel/components/bar-chart/',
-    render: () => <BarChartSection />,
-  },
-  {
-    id: 'line-scale',
-    title: 'line-scale',
-    kind: 'utility',
-    docs: '/dowel/components/line-scale/',
-    render: () => <LineScaleSection />,
-  },
-  {
-    id: 'line-chart',
-    title: 'LineChart',
-    docs: '/dowel/components/line-chart/',
-    render: () => <LineChartSection />,
-  },
-  {
-    id: 'prose',
-    title: 'prose',
-    kind: 'utility',
-    docs: '/dowel/components/prose/',
-    render: () => <ProseSection />,
-  },
-  {
-    id: 'code-block',
-    title: 'CodeBlock',
-    docs: '/dowel/components/code-block/',
-    render: () => <CodeBlockSection />,
-  },
-  {
-    id: 'copy-button',
-    title: 'CopyButton',
-    docs: '/dowel/components/copy-button/',
-    render: () => <CopyButtonSection />,
-  },
-  {
-    id: 'diff-lines',
-    title: 'diff-lines',
-    kind: 'utility',
-    docs: '/dowel/components/diff-lines/',
-    render: () => <DiffLinesSection />,
-  },
-  {
-    id: 'diff-view',
-    title: 'DiffView',
-    docs: '/dowel/components/diff-view/',
-    render: () => <DiffViewSection />,
-  },
-  {
-    id: 'json-rows',
-    title: 'json-rows',
-    kind: 'utility',
-    docs: '/dowel/components/json-rows/',
-    render: () => <JsonRowsSection />,
-  },
-  {
-    id: 'json-viewer',
-    title: 'JsonViewer',
-    docs: '/dowel/components/json-viewer/',
-    render: () => <JsonViewerSection />,
-  },
-  {
-    id: 'skeleton',
-    title: 'Skeleton',
-    docs: '/dowel/components/skeleton/',
-    render: () => <SkeletonSection />,
-  },
-  {
-    id: 'empty-state',
-    title: 'EmptyState',
-    docs: '/dowel/components/empty-state/',
-    render: () => <EmptyStateSection />,
-  },
-  {
-    id: 'progress',
-    title: 'Progress',
-    docs: '/dowel/components/progress/',
-    render: () => <ProgressSection />,
-  },
-  {
-    id: 'query-state',
-    title: 'QueryState',
-    docs: '/dowel/components/query-state/',
-    render: () => <QueryStateSection />,
-  },
-  {
-    id: 'error-boundary',
-    title: 'ErrorBoundary',
-    docs: '/dowel/components/error-boundary/',
-    render: () => <ErrorBoundarySection />,
-  },
+  { id: 'column-resize-handle', title: 'ColumnResizeHandle', render: () => <ColumnResizeHandleSection /> },
+  { id: 'reorderable-list', title: 'ReorderableList', render: () => <ReorderableListSection /> },
+  { id: 'filter-popover', title: 'FilterPopover', render: () => <FilterPopoverSection /> },
+  { id: 'pagination', title: 'Pagination', render: () => <PaginationSection /> },
+  { id: 'page-size', title: 'PageSize', render: () => <PageSizeSection /> },
+  { id: 'number-format', title: 'NumberFormat', render: () => <NumberFormatSection /> },
+  { id: 'relative-time', title: 'RelativeTime', render: () => <RelativeTimeSection /> },
+  { id: 'virtual-list', title: 'VirtualList', render: () => <VirtualListSection /> },
+  { id: 'tree-rows', title: 'tree-rows', kind: 'utility', render: () => <TreeRowsSection /> },
+  { id: 'tree-view', title: 'TreeView', render: () => <TreeViewSection /> },
+  { id: 'key-value', title: 'KeyValue', render: () => <KeyValueSection /> },
+  { id: 'list-row', title: 'ListRow', render: () => <ListRowSection /> },
+  { id: 'stat-tile', title: 'StatTile', render: () => <StatTileSection /> },
+  { id: 'sparkline', title: 'Sparkline', render: () => <SparklineSection /> },
+  { id: 'track-segments', title: 'track-segments', kind: 'utility', render: () => <TrackSegmentsSection /> },
+  { id: 'track', title: 'Track', render: () => <TrackSection /> },
+  { id: 'activity-weeks', title: 'activity-weeks', kind: 'utility', render: () => <ActivityWeeksSection /> },
+  { id: 'activity-heatmap', title: 'ActivityHeatmap', render: () => <ActivityHeatmapSection /> },
+  { id: 'activity-legend', title: 'ActivityLegend', render: () => <ActivityLegendSection /> },
+  { id: 'bar-chart', title: 'BarChart', render: () => <BarChartSection /> },
+  { id: 'line-scale', title: 'line-scale', kind: 'utility', render: () => <LineScaleSection /> },
+  { id: 'line-chart', title: 'LineChart', render: () => <LineChartSection /> },
+  { id: 'prose', title: 'prose', kind: 'utility', render: () => <ProseSection /> },
+  { id: 'code-block', title: 'CodeBlock', render: () => <CodeBlockSection /> },
+  { id: 'copy-button', title: 'CopyButton', render: () => <CopyButtonSection /> },
+  { id: 'diff-lines', title: 'diff-lines', kind: 'utility', render: () => <DiffLinesSection /> },
+  { id: 'diff-view', title: 'DiffView', render: () => <DiffViewSection /> },
+  { id: 'json-rows', title: 'json-rows', kind: 'utility', render: () => <JsonRowsSection /> },
+  { id: 'json-viewer', title: 'JsonViewer', render: () => <JsonViewerSection /> },
+  { id: 'skeleton', title: 'Skeleton', render: () => <SkeletonSection /> },
+  { id: 'empty-state', title: 'EmptyState', render: () => <EmptyStateSection /> },
+  { id: 'progress', title: 'Progress', render: () => <ProgressSection /> },
+  { id: 'query-state', title: 'QueryState', render: () => <QueryStateSection /> },
+  { id: 'error-boundary', title: 'ErrorBoundary', render: () => <ErrorBoundarySection /> },
   /* The shell: what a desktop product of the line draws around its screens. */
   /*
    * The frame.
@@ -596,149 +289,34 @@ export const sections = [
    * section under it. The box is the window; what is inside it is the real
    * component.
    */
-  {
-    id: 'app-shell',
-    title: 'AppShell',
-    docs: '/dowel/components/app-shell/',
-    render: () => <AppShellSection />,
-  },
-  {
-    id: 'nav-rail',
-    title: 'NavRail',
-    docs: '/dowel/components/nav-rail/',
-    render: () => <NavRailSection />,
-  },
-  {
-    id: 'page-header',
-    title: 'PageHeader',
-    docs: '/dowel/components/page-header/',
-    render: () => <PageHeaderSection />,
-  },
-  {
-    id: 'breadcrumbs',
-    title: 'Breadcrumbs',
-    docs: '/dowel/components/breadcrumbs/',
-    render: () => <BreadcrumbsSection />,
-  },
-  {
-    id: 'divider',
-    title: 'Divider',
-    docs: '/dowel/components/divider/',
-    render: () => <DividerSection />,
-  },
-  {
-    id: 'section-nav',
-    title: 'SectionNav',
-    docs: '/dowel/components/section-nav/',
-    render: () => <SectionNavSection />,
-  },
-  {
-    id: 'notification-bell',
-    title: 'NotificationBell',
-    docs: '/dowel/components/notification-bell/',
-    render: () => <NotificationBellSection />,
-  },
-  {
-    id: 'tabs',
-    title: 'Tabs',
-    docs: '/dowel/components/tabs/',
-    render: () => <TabsSection />,
-  },
+  { id: 'app-shell', title: 'AppShell', render: () => <AppShellSection /> },
+  { id: 'nav-rail', title: 'NavRail', render: () => <NavRailSection /> },
+  { id: 'page-header', title: 'PageHeader', render: () => <PageHeaderSection /> },
+  { id: 'breadcrumbs', title: 'Breadcrumbs', render: () => <BreadcrumbsSection /> },
+  { id: 'divider', title: 'Divider', render: () => <DividerSection /> },
+  { id: 'section-nav', title: 'SectionNav', render: () => <SectionNavSection /> },
+  { id: 'notification-bell', title: 'NotificationBell', render: () => <NotificationBellSection /> },
+  { id: 'tabs', title: 'Tabs', render: () => <TabsSection /> },
   /* Layout: how a screen is divided, and what scrolls. */
-  {
-    id: 'collapsible',
-    title: 'Collapsible',
-    docs: '/dowel/components/collapsible/',
-    render: () => <CollapsibleSection />,
-  },
-  {
-    id: 'accordion',
-    title: 'Accordion',
-    docs: '/dowel/components/accordion/',
-    render: () => <AccordionSection />,
-  },
-  {
-    id: 'scroll-area',
-    title: 'ScrollArea',
-    docs: '/dowel/components/scroll-area/',
-    render: () => <ScrollAreaSection />,
-  },
-  {
-    id: 'splitter',
-    title: 'Splitter',
-    docs: '/dowel/components/splitter/',
-    render: () => <SplitterSection />,
-  },
-  { id: 'frame', title: 'Frame', docs: '/dowel/components/frame/', render: () => <FrameSection /> },
-  {
-    id: 'image',
-    title: 'Image',
-    docs: '/dowel/components/image/',
-    render: () => <ImageSection />,
-  },
-  {
-    id: 'stepper',
-    title: 'Stepper',
-    docs: '/dowel/components/stepper/',
-    render: () => <StepperSection />,
-  },
-  {
-    id: 'wizard',
-    title: 'Wizard',
-    docs: '/dowel/components/wizard/',
-    render: () => <WizardSection />,
-  },
+  { id: 'collapsible', title: 'Collapsible', render: () => <CollapsibleSection /> },
+  { id: 'accordion', title: 'Accordion', render: () => <AccordionSection /> },
+  { id: 'scroll-area', title: 'ScrollArea', render: () => <ScrollAreaSection /> },
+  { id: 'splitter', title: 'Splitter', render: () => <SplitterSection /> },
+  { id: 'frame', title: 'Frame', render: () => <FrameSection /> },
+  { id: 'image', title: 'Image', render: () => <ImageSection /> },
+  { id: 'stepper', title: 'Stepper', render: () => <StepperSection /> },
+  { id: 'wizard', title: 'Wizard', render: () => <WizardSection /> },
   /* The line's own signs: the marks, the About plate, the way between products. */
-  {
-    id: 'product-mark',
-    title: 'ProductMark',
-    docs: '/dowel/components/product-mark/',
-    render: () => <ProductMarkSection />,
-  },
-  {
-    id: 'about-plate',
-    title: 'AboutPlate',
-    docs: '/dowel/components/about-plate/',
-    render: () => <AboutPlateSection />,
-  },
-  {
-    id: 'product-switcher',
-    title: 'ProductSwitcher',
-    docs: '/dowel/components/product-switcher/',
-    render: () => <ProductSwitcherSection />,
-  },
-  {
-    id: 'window-frame',
-    title: 'WindowFrame',
-    docs: '/dowel/components/window-frame/',
-    render: () => <WindowFrameSection />,
-  },
-  {
-    id: 'splash',
-    title: 'Splash',
-    docs: '/dowel/components/splash/',
-    render: () => <SplashSection />,
-  },
-  { id: 'avatar', title: 'Avatar', docs: '/dowel/components/avatar/', render: () => <AvatarSection /> },
-  {
-    id: 'status-dot',
-    title: 'StatusDot',
-    docs: '/dowel/components/status-dot/',
-    render: () => <StatusDotSection />,
-  },
-  { id: 'tier', title: 'Tier', docs: '/dowel/components/tier/', render: () => <TierSection /> },
-  {
-    id: 'timeline',
-    title: 'Timeline',
-    docs: '/dowel/components/timeline/',
-    render: () => <TimelineSection />,
-  },
-  {
-    id: 'skeleton-of',
-    title: 'SkeletonOf',
-    docs: '/dowel/components/skeleton-of/',
-    render: () => <SkeletonOfSection />,
-  },
+  { id: 'product-mark', title: 'ProductMark', render: () => <ProductMarkSection /> },
+  { id: 'about-plate', title: 'AboutPlate', render: () => <AboutPlateSection /> },
+  { id: 'product-switcher', title: 'ProductSwitcher', render: () => <ProductSwitcherSection /> },
+  { id: 'window-frame', title: 'WindowFrame', render: () => <WindowFrameSection /> },
+  { id: 'splash', title: 'Splash', render: () => <SplashSection /> },
+  { id: 'avatar', title: 'Avatar', render: () => <AvatarSection /> },
+  { id: 'status-dot', title: 'StatusDot', render: () => <StatusDotSection /> },
+  { id: 'tier', title: 'Tier', render: () => <TierSection /> },
+  { id: 'timeline', title: 'Timeline', render: () => <TimelineSection /> },
+  { id: 'skeleton-of', title: 'SkeletonOf', render: () => <SkeletonOfSection /> },
   /* Blocks: screens made of the components above, in a group of their own.
    * A block is a starting point a product changes rather than a copy it
    * keeps, and the list says which is which. */
@@ -746,28 +324,14 @@ export const sections = [
     id: 'list-detail-screen',
     title: 'ListDetailScreen',
     kind: 'block',
-    docs: '/dowel/blocks/list-detail-screen/',
     render: () => <ListDetailScreenSection />,
   },
-  {
-    id: 'settings-screen',
-    title: 'SettingsScreen',
-    kind: 'block',
-    docs: '/dowel/blocks/settings-screen/',
-    render: () => <SettingsScreenSection />,
-  },
-  {
-    id: 'login-screen',
-    title: 'LoginScreen',
-    kind: 'block',
-    docs: '/dowel/blocks/login-screen/',
-    render: () => <LoginScreenSection />,
-  },
+  { id: 'settings-screen', title: 'SettingsScreen', kind: 'block', render: () => <SettingsScreenSection /> },
+  { id: 'login-screen', title: 'LoginScreen', kind: 'block', render: () => <LoginScreenSection /> },
   {
     id: 'empty-dashboard-screen',
     title: 'EmptyDashboardScreen',
     kind: 'block',
-    docs: '/dowel/blocks/empty-dashboard-screen/',
     render: () => <EmptyDashboardScreenSection />,
   },
 ]

@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../registry/ui/select'
-import { sections } from './catalogue'
+import { docsOf, sections } from './catalogue'
 
 /*
  * The stand.
@@ -258,7 +258,7 @@ export function App() {
                 <h1 className="text-xl font-semibold">{current.title}</h1>
                 {/* The other half of the pair: this shows what the component
                     does, its page says why it does it that way. */}
-                <a href={current.docs} className="text-xs text-dim no-underline hover:text-accent">
+                <a href={docsOf(current)} className="text-xs text-dim no-underline hover:text-accent">
                   docs ↗
                 </a>
               </div>
