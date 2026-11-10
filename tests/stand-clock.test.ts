@@ -21,7 +21,7 @@ const moment = (path: string, pattern: RegExp) => readFileSync(resolve(root, pat
 
 describe('the stand keeps one clock', () => {
   it('photographs at the moment it draws', () => {
-    const drawn = moment('stand/src/App.tsx', /const standNow = new Date\('([^']+)'\)/)
+    const drawn = moment('stand/src/clock.ts', /const standNow = new Date\('([^']+)'\)/)
     const photographed = moment('tests/visual/stand.spec.ts', /page\.clock\.setFixedTime\(new Date\('([^']+)'\)\)/)
     expect(drawn, 'the stand no longer declares `standNow`').toBeDefined()
     expect(photographed, 'the snapshots no longer pin the clock').toBeDefined()

@@ -81,9 +81,10 @@ source.
    write the component's floor with `node tools/mutation-floor.mjs --raise`.
    If it opens over the page, give it a block in
    `tests/visual/keyboard.spec.ts`.
-5. **Give it a section on the stand** - `stand/src/App.tsx`, or a file in
-   `stand/src/sections/` - and add its id to `tests/visual/sections.ts`, the
-   list the pictures and the accessibility report both walk.
+5. **Give it a section on the stand** - a file in `stand/src/sections/` and
+   an entry in `stand/src/catalogue.tsx` - and add its id to
+   `tests/visual/sections.ts`, the list the pictures and the accessibility
+   report both walk.
 6. **Mind the budget.** A component has a size ceiling and a declared list of
    what it imports (`tests/budget.test.ts`). A new dependency is a cost every
    product pays; raise either one with a reason, or split the component.

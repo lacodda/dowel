@@ -389,15 +389,15 @@ describe('every component is four files', () => {
   it.each(components)('%s has a section on the stand', (name) => {
     // The link goes to an anchor, and an anchor that does not exist is a link
     // to the top of the page pretending to be a link to the component.
-    const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
-    expect(app, `the stand has no \`${name}\` section`).toContain(`id: '${name}'`)
+    const stand = readFileSync(resolve(root, 'stand/src/catalogue.tsx'), 'utf8')
+    expect(stand, `the stand has no \`${name}\` section`).toContain(`id: '${name}'`)
   })
 
   it.each(components)('%s links back from the stand to its page', (name) => {
     // Both directions, or the pair only works from one side: someone looking
     // at a component on the stand should be one click from why it is that way.
-    const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
-    expect(app, `the stand does not link \`${name}\` to its documentation`).toContain(
+    const stand = readFileSync(resolve(root, 'stand/src/catalogue.tsx'), 'utf8')
+    expect(stand, `the stand does not link \`${name}\` to its documentation`).toContain(
       `docs: '/dowel/components/${name}/'`,
     )
   })

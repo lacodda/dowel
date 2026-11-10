@@ -114,8 +114,8 @@ describe.each(named)('%s', (name, { source }) => {
     })
 
     it('stands on the stand, in the group of blocks, linked to its page', () => {
-      const app = readFileSync(resolve(root, 'stand/src/App.tsx'), 'utf8')
-      const entry = app.match(new RegExp(String.raw`\{\s*id: '${name}',[\s\S]*?\}`))?.[0]
+      const stand = readFileSync(resolve(root, 'stand/src/catalogue.tsx'), 'utf8')
+      const entry = stand.match(new RegExp(String.raw`\{\s*id: '${name}',[\s\S]*?\}`))?.[0]
       expect(entry, `the stand has no \`${name}\``).toBeDefined()
       expect(entry).toContain("kind: 'block'")
       expect(entry).toContain(`docs: '/dowel/blocks/${name}/'`)

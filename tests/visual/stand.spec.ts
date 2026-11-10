@@ -26,7 +26,7 @@ for (const theme of ['dark', 'light'] as const) {
         window.localStorage.setItem('dowel.stand.theme', value)
       }, theme)
       /* The page's clock is pinned to the stand's own moment (`standNow` in
-       * App.tsx). The stand fixed that moment for the relative phrases, but
+       * stand/src/clock.ts). The stand fixed that moment for the relative phrases, but
        * the Calendar, the month view and `calendar-math` ask the browser for
        * today - and on 1 October the September page of the Calendar marked
        * the 1st, which is drawn on it, and every baseline recorded in
