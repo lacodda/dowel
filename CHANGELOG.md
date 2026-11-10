@@ -2,6 +2,38 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.43.1] - 2026-11-10
+
+### Build
+- Regenerate the registry and llms for 0.43.1
+
+### Refactoring
+- Give every section a file of its own
+- Read a section's docs link off its id and kind
+
+### Testing
+- Check the docs link as the stand draws it
+
+### Measured
+
+A refactoring of the stand: nothing a product installs has changed, and
+every route of the stand renders the same markup as in 0.43.0, byte for
+byte (125 routes compared in jsdom).
+
+| | 0.43.0 | 0.43.1 |
+| --- | --- | --- |
+| `stand/src/App.tsx` | 6,065 lines | 379 lines |
+| Largest hand-written source file | `App.tsx`, 6,065 lines | `theme.css`, 1,342 lines |
+| Largest file of the stand | `App.tsx`, 6,065 lines | `sections/schema-fields.tsx`, 246 lines |
+| Files under `stand/src/sections/` | 33 | 115 |
+| The table of sections | 642 lines, the docs link written out 123 times | 189 lines, the link read off the id |
+| `tsc --project stand` (local, 3 runs) | 9.9-10.0 s | 7.5-7.9 s |
+| Stand build in CI: modules | 983 | 1,067 |
+| Stand build in CI: JS (gzip) | 1,104.67 kB (328.27 kB) | 1,100.23 kB (328.83 kB) |
+| Stand build in CI: CSS | 93.34 kB, `index-BbXz29pv.css` | the same file, the same hash |
+| CI, ubuntu: lint and typecheck / test | 51 s / 2 min 3 s | 38 s / 1 min 39 s |
+| The stand's docs links checked | as text, for registry components and blocks | as drawn, for all 123 sections, each page shown to exist |
+
 ## [0.43.0] - 2026-11-05
 
 ### Build
