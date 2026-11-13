@@ -415,6 +415,10 @@ describe('what a primitive drags in', () => {
     // `useRender`, so a row can be the product's link. No variants: a fact
     // and a choice are two components, not one with a flag.
     'list-row': ['@base-ui/react'],
+    // `useRender` again, so a tile can be the product's link. Its own file
+    // rather than a part of list-row: a row and a tile share nothing but the
+    // way they name the chosen one.
+    'tile-button': ['@base-ui/react'],
     // A pure step and a hook. Nothing to install.
     'field-draft': [],
     // A form from a schema: the reading and the check are pure, and the

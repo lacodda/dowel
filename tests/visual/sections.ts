@@ -79,6 +79,7 @@ export const SECTIONS = [
   'tree-view',
   'key-value',
   'list-row',
+  'tile-button',
   'stat-tile',
   'sparkline',
   'track-segments',

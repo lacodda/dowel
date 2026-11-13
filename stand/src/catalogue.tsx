@@ -69,6 +69,7 @@ import { VirtualListSection } from './sections/virtual-list'
 import { TreeRowsSection, TreeViewSection } from './sections/tree-view'
 import { KeyValueSection } from './sections/key-value'
 import { ListRowSection } from './sections/list-row'
+import { TileButtonSection } from './sections/tile-button'
 import { StatTileSection } from './sections/stat-tile'
 import { SparklineSection } from './sections/sparkline'
 import { TrackSection, TrackSegmentsSection } from './sections/track'
@@ -257,6 +258,7 @@ export const sections: Section[] = [
   { id: 'tree-view', title: 'TreeView', render: () => <TreeViewSection /> },
   { id: 'key-value', title: 'KeyValue', render: () => <KeyValueSection /> },
   { id: 'list-row', title: 'ListRow', render: () => <ListRowSection /> },
+  { id: 'tile-button', title: 'TileButton', render: () => <TileButtonSection /> },
   { id: 'stat-tile', title: 'StatTile', render: () => <StatTileSection /> },
   { id: 'sparkline', title: 'Sparkline', render: () => <SparklineSection /> },
   { id: 'track-segments', title: 'track-segments', kind: 'utility', render: () => <TrackSegmentsSection /> },
