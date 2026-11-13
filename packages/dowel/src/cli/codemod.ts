@@ -8,6 +8,8 @@ import {
   stockColorNames,
   stockNames,
   stockTokens,
+  stockUtilities,
+  stockUtilityNames,
 } from './stock.js'
 
 /*
@@ -75,7 +77,10 @@ function pattern(): RegExp {
       '|' +
       // A utility: `bg-muted`, `hover:text-muted-foreground`. The opener is
       // consumed so that `custom-bg-muted` does not match, and put back.
-      `(?<opener>${UTILITY_OPENER})(?<prefix>${COLOR_UTILITIES})-(?<utility>${stockColorNames.join('|')})${NAME_END}`,
+      `(?<opener>${UTILITY_OPENER})(?<prefix>${COLOR_UTILITIES})-(?<utility>${stockColorNames.join('|')})${NAME_END}` +
+      '|' +
+      // A step of Tailwind's own the theme wipes: `font-bold`, `hover:shadow-lg`.
+      `(?<stepOpener>${UTILITY_OPENER})(?<step>${stockUtilityNames.join('|')})${NAME_END}`,
     'gm',
   )
 }
@@ -102,6 +107,13 @@ export function rewriteSource(source: string): Rewrite {
       }
       changes.push({ line, from: `--${property}`, to: `--${replacement.token}` })
       return `--${replacement.token}`
+    }
+
+    const step = groups.step
+    if (step) {
+      const to = stockUtilities[step]!
+      changes.push({ line, from: step, to })
+      return `${groups.stepOpener ?? ''}${to}`
     }
 
     const utility = groups.utility!

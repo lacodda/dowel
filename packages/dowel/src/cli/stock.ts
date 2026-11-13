@@ -147,6 +147,41 @@ export const NAME_END = String.raw`(?![\w-])`
  * consumed and put back so `custom-bg-primary` is not `bg-primary`. */
 export const UTILITY_OPENER = String.raw`(?:^|[\s"'${'`'}:\[({])`
 
+/*
+ * Tailwind's own steps that the theme wipes.
+ *
+ * dowel's vocabulary has three weights and three shadows, and from 1.0 the
+ * theme clears Tailwind's stock steps in those namespaces, so `font-bold` or
+ * `shadow-lg` compiles to nothing at all - a second vocabulary drifting beside
+ * the first is how a set stops being one. A class that compiles to nothing is
+ * the quietest break there is, so `check` names every one and `codemod`
+ * rewrites it to the nearest word of the vocabulary: the strongest weight for
+ * anything bolder, the plain one for anything lighter, and a shadow by how far
+ * the thing it is under floats.
+ */
+export const stockUtilities: Readonly<Record<string, string>> = {
+  'font-thin': 'font-normal',
+  'font-extralight': 'font-normal',
+  'font-light': 'font-normal',
+  'font-bold': 'font-semibold',
+  'font-extrabold': 'font-semibold',
+  'font-black': 'font-semibold',
+  'shadow-2xs': 'shadow-lift',
+  'shadow-xs': 'shadow-lift',
+  'shadow-sm': 'shadow-lift',
+  'shadow-md': 'shadow-raise',
+  'shadow-lg': 'shadow-float',
+  'shadow-xl': 'shadow-float',
+  'shadow-2xl': 'shadow-float',
+}
+
+/** The stock utilities, longest first, for the same reason as `stockNames`:
+ * `shadow-2xl` must not be read as `shadow-2xs` with a tail, or `shadow-xl`
+ * inside it. */
+export const stockUtilityNames: readonly string[] = Object.keys(stockUtilities).sort(
+  (a, b) => b.length - a.length || a.localeCompare(b),
+)
+
 /** The stock names that are colours, and so have utilities.
  *
  * `--radius` is the one that is not: stock shadcn reaches it as `rounded-*`,

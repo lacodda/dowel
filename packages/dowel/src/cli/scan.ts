@@ -11,6 +11,8 @@ import {
   stockColorNames,
   stockNames,
   stockTokens,
+  stockUtilities,
+  stockUtilityNames,
   type Replacement,
 } from './stock.js'
 
@@ -158,6 +160,10 @@ const STOCK_UTILITY = new RegExp(
   `${UTILITY_OPENER}((?:${COLOR_UTILITIES})-(?:${stockColorNames.join('|')}))${NAME_END}`,
   'g',
 )
+
+/** Tailwind's stock weights and shadows, which the theme wipes, wherever a
+ * class word can stand - a variant before one included. */
+const STOCK_STEP = new RegExp(`${UTILITY_OPENER}(${stockUtilityNames.join('|')})${NAME_END}`, 'gm')
 
 /** Turn an offset into a 1-based line and column. */
 function locate(source: string, index: number): { line: number; column: number } {
@@ -330,6 +336,21 @@ export function scanSource(source: string, file: string, rows: readonly Deprecat
         replacement,
       )
     }
+  }
+
+  /* Tailwind's own steps the theme clears. In a stylesheet as well as in
+   * code: an `@apply font-bold` compiles to nothing just the same, and no
+   * other pass speaks for it. */
+  for (const match of source.matchAll(STOCK_STEP)) {
+    const utility = match[1]!
+    const to = stockUtilities[utility]!
+    add(
+      'stock',
+      match.index + match[0]!.indexOf(utility),
+      utility,
+      `\`${utility}\` is a step of Tailwind's own that the dowel theme does not define, so it compiles to nothing; the vocabulary's word is \`${to}\`.`,
+      { kind: 'token', token: to },
+    )
   }
 
   // A stylesheet that defines the dowel tokens is the one place raw colour

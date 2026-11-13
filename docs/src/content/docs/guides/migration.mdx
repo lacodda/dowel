@@ -83,6 +83,11 @@ reformatting, no reordering, no touching a line it has no replacement for. The
 diff you review should contain nothing but renames, and before you write it
 the plan lists every one, file by file, on the line it will be made.
 
+It also rewrites Tailwind's own weights and shadows, which the theme clears from
+1.0: a bold or a black weight becomes `font-semibold`, a light one `font-normal`,
+and a stock shadow `shadow-lift`, `shadow-raise` or `shadow-float` by its size -
+including in an `@apply`, where it compiles to nothing just the same.
+
 Two kinds of name are deliberately left alone, and it says which:
 
 ```console

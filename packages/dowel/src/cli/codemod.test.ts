@@ -166,3 +166,34 @@ describe('leaving the rest of the file alone', () => {
     expect(source).toBe('cn("bg-soft", isOn && "text-text")')
   })
 })
+
+describe("Tailwind's own steps the theme wipes", () => {
+  it('rewrites a stock weight and a stock shadow to the vocabulary, variants kept', () => {
+    const { source, changes } = rewriteSource('<div className="font-bold hover:shadow-lg shadow-sm font-light" />')
+    expect(source).toBe('<div className="font-semibold hover:shadow-float shadow-lift font-normal" />')
+    expect(changes.map((change) => `${change.from}>${change.to}`)).toEqual([
+      'font-bold>font-semibold',
+      'shadow-lg>shadow-float',
+      'shadow-sm>shadow-lift',
+      'font-light>font-normal',
+    ])
+  })
+
+  it('reads the longest step whole, and leaves a word it is only part of', () => {
+    expect(rewriteSource('<i className="shadow-2xl shadow-2xs shadow-md" />').source).toBe(
+      '<i className="shadow-float shadow-lift shadow-raise" />',
+    )
+    // Not a class: a name, a longer utility, the vocabulary's own words.
+    const kept = '<i data-x="my-font-bold" className="shadow-lg-ish font-semibold shadow-float shadow-none" />'
+    expect(rewriteSource(kept).source).toBe(kept)
+  })
+
+  it('rewrites an @apply in a stylesheet, which compiles to nothing just the same', () => {
+    expect(rewriteSource('.tip { @apply font-bold shadow-lg; }').source).toBe('.tip { @apply font-semibold shadow-float; }')
+  })
+
+  it('makes a stock token and a stock step in one pass, neither reading the other', () => {
+    const { source } = rewriteSource('<p className="bg-muted font-bold text-muted-foreground shadow-xl" />')
+    expect(source).toBe('<p className="bg-soft font-semibold text-dim shadow-float" />')
+  })
+})

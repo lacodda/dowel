@@ -187,3 +187,26 @@ describe('string literals', () => {
     expect(found.map((literal) => literal.text)).toEqual(['bg-muted'])
   })
 })
+
+describe("Tailwind's own steps the theme wipes", () => {
+  it('names a stock weight or shadow as a step that compiles to nothing, with the word to use', () => {
+    const findings = scanSource('<div className="p-2 hover:font-bold shadow-lg" />', 'a.tsx')
+    expect(findings.map((finding) => [finding.kind, finding.text, finding.column])).toEqual([
+      ['stock', 'font-bold', 27],
+      ['stock', 'shadow-lg', 37],
+    ])
+    expect(findings[0]!.message).toContain('compiles to nothing')
+    expect(findings[0]!.replacement).toEqual({ kind: 'token', token: 'font-semibold' })
+    expect(findings[1]!.replacement).toEqual({ kind: 'token', token: 'shadow-float' })
+  })
+
+  it('reads a stylesheet for them too', () => {
+    const findings = scanSource('.tip {\n  @apply shadow-md;\n}', 'a.css')
+    expect(findings).toHaveLength(1)
+    expect(findings[0]).toMatchObject({ line: 2, text: 'shadow-md', replacement: { token: 'shadow-raise' } })
+  })
+
+  it('finds nothing in the vocabulary itself', () => {
+    expect(scanSource('<div className="font-semibold shadow-float shadow-none" />', 'a.tsx')).toEqual([])
+  })
+})

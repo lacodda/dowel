@@ -52,6 +52,16 @@ describe('the theme compiles', () => {
     expect(css).not.toContain('oklch(63.7% 0.237 25.331)')
   })
 
+  it('refuses the stock weights and shadows, which the vocabulary has its own of', async () => {
+    // From 1.0 the three weights and three shadows are the only ones: a stock
+    // step compiles to nothing, and `dowel check` names it.
+    const stock = ['font-bold', 'font-light', 'font-black', 'shadow-sm', 'shadow-lg', 'shadow-2xl', 'inset-shadow-sm', 'drop-shadow-lg', 'text-shadow-md']
+    const css = await build(stock)
+    for (const name of stock) expect(css, `\`${name}\` still compiles`).not.toContain(`.${name}`)
+    // The stock-free statics stay: `shadow-none` takes a shadow off.
+    expect(await build(['shadow-none'])).toContain('.shadow-none')
+  })
+
   /*
    * The scales, each asked for as the utility a product writes. A token in the
    * wrong namespace still declares a custom property and still reads correctly

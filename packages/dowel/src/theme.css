@@ -768,7 +768,13 @@
 
   /* Weights. `semibold` is what both products use for anything emphasised;
    * `bold` appears in neither, and the one `font-[650]` in a page title is the
-   * kind of value a scale exists to absorb. */
+   * kind of value a scale exists to absorb.
+   *
+   * Tailwind's own steps are cleared first, as the colours are: from 1.0 these
+   * three are the only weights, and Tailwind's bold compiles to nothing rather
+   * than to a fourth weight beside them. `dowel check` names a stock step and
+   * `dowel codemod` rewrites it. */
+  --font-weight-*: initial;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -830,7 +836,15 @@
    * Elevation. Three steps, because the products had one and used it for a
    * toast, a dropdown and a modal alike - so a modal never sat further from
    * the page than the menu it covered.
+   *
+   * Tailwind's own shadows are cleared first, inset, drop and text shadows
+   * with them, so these three are the only elevation there is: a stock large
+   * shadow compiles to nothing, and `codemod` turns it into the float.
    */
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
   --shadow-lift: var(--shadow-lift);
   --shadow-raise: var(--shadow-raise);
   --shadow-float: var(--shadow-float);
