@@ -133,5 +133,6 @@ export const SECTIONS = [
   'list-detail-screen',
   'settings-screen',
   'login-screen',
+  'reader-screen',
   'empty-dashboard-screen',
 ] as const

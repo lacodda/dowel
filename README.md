@@ -176,7 +176,7 @@ where it measured 3.49:1. Derived, it is white there, at 6.01:1.
 ## Status
 
 The theme, the scales, an accent per product and a hundred and twenty
-primitives are in daily use across ten products of the line, with four blocks
+primitives are in daily use across ten products of the line, with five blocks
 and a demo built from them. Every component installs from a versioned registry
 and passes its gate before it ships: axe, a dependency budget, the scale, a
 picture in both themes, every ink at its contrast floor for every product, the

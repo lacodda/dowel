@@ -120,6 +120,7 @@ import { SkeletonOfSection } from './sections/skeleton-of'
 import { ListDetailScreenSection } from './sections/list-detail-screen'
 import { SettingsScreenSection } from './sections/settings-screen'
 import { LoginScreenSection } from './sections/login-screen'
+import { ReaderScreenSection } from './sections/reader-screen'
 import { EmptyDashboardScreenSection } from './sections/empty-dashboard-screen'
 
 /** One section of the stand, and one page of it. */
@@ -332,6 +333,7 @@ export const sections: Section[] = [
   },
   { id: 'settings-screen', title: 'SettingsScreen', kind: 'block', render: () => <SettingsScreenSection /> },
   { id: 'login-screen', title: 'LoginScreen', kind: 'block', render: () => <LoginScreenSection /> },
+  { id: 'reader-screen', title: 'ReaderScreen', kind: 'block', render: () => <ReaderScreenSection /> },
   {
     id: 'empty-dashboard-screen',
     title: 'EmptyDashboardScreen',
