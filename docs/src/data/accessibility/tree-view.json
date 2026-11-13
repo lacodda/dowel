@@ -104,6 +104,13 @@
         "4.1.2"
       ]
     },
+    "scrollable-region-focusable": {
+      "help": "Scrollable region must have keyboard access",
+      "criteria": [
+        "2.1.1",
+        "2.1.3"
+      ]
+    },
     "tabindex": {
       "help": "Elements should not have tabindex greater than zero",
       "criteria": []
@@ -135,12 +142,12 @@
       "duplicate-id-aria",
       "empty-heading",
       "link-name",
+      "scrollable-region-focusable",
       "tabindex",
       "target-size"
     ],
     "incomplete": [
-      "color-contrast",
-      "duplicate-id-aria"
+      "color-contrast"
     ],
     "violations": []
   },
@@ -164,12 +171,12 @@
       "duplicate-id-aria",
       "empty-heading",
       "link-name",
+      "scrollable-region-focusable",
       "tabindex",
       "target-size"
     ],
     "incomplete": [
-      "color-contrast",
-      "duplicate-id-aria"
+      "color-contrast"
     ],
     "violations": []
   }
