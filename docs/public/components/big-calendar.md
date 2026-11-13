@@ -65,7 +65,7 @@ forty releases is not forty tab stops.
 | Key | |
 | --- | --- |
 | `←` `→` `↑` `↓` | move a day or a week; off the grid, ask for the next month |
-| `PageUp` `PageDown` | move a month |
+| `PageUp` `PageDown` | move a month; in a week view, the range shown |
 | `Home` `End` | the ends of the week |
 | `Enter` `Space` | press the day (`onDaySelect`) |
 | `Tab` | into the day: its plus, its lines, its count |
@@ -76,6 +76,27 @@ the hint while something is carried over it — and described by its whole date,
 "Monday, 14 September 2026". The words on its face are what someone telling
 voice control what they see says (WCAG 2.5.3); the date says which 14th it is.
 The plus is not in the name, or every day would say it.
+
+**A week is the same grid cut shorter.** `week` instead of `month` draws whole
+weeks from the one that day is in - one by default, `weeks={2}` for a fortnight
+- and each day takes the whole height of the box, so a busy Monday shows
+everything a month would fold. The days are the month's: the same lines, the
+same fold into a count, the same keyboard. No day is on a quieter ground,
+because a week has no neighbouring month. The two cannot be mixed: a week takes
+`onWeekChange`, which is asked for a whole range on - a week, or a fortnight -
+when the keyboard walks off the edge, and `PageUp` and `PageDown` turn the range
+rather than a month. The grid is named by the range it draws, "14 – 20
+September 2026".
+
+```tsx
+<BigCalendar
+  week={week}
+  onWeekChange={setWeek}
+  renderDay={(date) => releasesOn(date).map((release) => <BigCalendarItem key={release.id}>{release.title}</BigCalendarItem>)}
+  moreLabel={(count) => t('more', { count })}
+  fewerLabel={t('fewer')}
+/>
+```
 
 **The week starts where the locale says.** `en-GB` on Monday, `en-US` on Sunday.
 A product that wants Monday whatever the region says so in the tag -
@@ -119,10 +140,13 @@ release does not also book the day under it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `onAddDay` (with `addDayLabel`) | `(date: string) => void` |  | Add something on this day: a plus in the corner of the day under the pointer, and the first stop of Tab from the day the cursor is on. |
-| `addDayLabel` (with `onAddDay`) | `string` |  | Names the plus. Required with it: an icon with no name announces nothing. |
-| `month` (required) | `string` |  | Any day of the month to show. |
+| `onAddDay` (with `addDayLabel`, `month`, `week`) | `(date: string) => void` |  | Add something on this day: a plus in the corner of the day under the pointer, and the first stop of Tab from the day the cursor is on. |
+| `addDayLabel` (with `month`, `onAddDay`, `week`) | `string` |  | Names the plus. Required with it: an icon with no name announces nothing. |
+| `month` (with `addDayLabel`, `onAddDay`) | `string` |  | Any day of the month to show. |
 | `onMonthChange` | `(month: string) => void` |  | Asked for when the keyboard walks off the grid; any day of the new month. Without it the cursor stops at the edge. |
+| `week` (with `addDayLabel`, `onAddDay`) | `string` |  | Any day of the first week to show. With it the grid draws whole weeks rather than a month, each day the whole height of the box. |
+| `weeks` | `number` | `1` | How many weeks from that one: one by default, two for a fortnight. |
+| `onWeekChange` | `(week: string) => void` |  | Asked for when the keyboard walks off the weeks, or PageUp and PageDown turn them: any day of the new first week, a whole range on from the one shown. Without it the cursor stops at the edge. |
 | `renderDay` (required) | `(date: string) => readonly ReactNode[]` |  | What a day holds, one node per line, each with a `key`. |
 | `moreLabel` (required) | `(count: number) => string` |  | The words of the count a full day folds into, given how many are folded: "3 more". |
 | `fewerLabel` (required) | `string` |  | The words that fold an open day again. |

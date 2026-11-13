@@ -57,6 +57,30 @@ the `<th>`: the cell is not focusable, gets no keyboard, and announces nothing.
 This is the part a hand-rolled table almost always gets wrong, and it is
 invisible to everyone who reorders with a mouse.
 
+**A heading that holds more than its sort writes its own cell.**
+`TableSortHeader` takes the whole cell, so its children are the button's words.
+A heading that also carries a funnel, a resize grip or a menu cannot put them
+there - a button inside a button is not a control anything can press - so it is
+a `TableHeader` with a `TableSortButton` in it, and `aria-sort` stays on the
+cell, where it describes the column. `ariaSort` from
+[table-sort](/dowel/components/table-sort/) gives the value, and nothing at all
+on a column that is not the sorted one.
+
+```tsx
+<TableHeader aria-sort={ariaSort(sort, 'stage')} className="group">
+  <span className="flex items-center gap-1">
+    <TableSortButton column="stage" sort={sort} onSortChange={reorder}>
+      {t('stage')}
+    </TableSortButton>
+    <FilterPopover title={t('stage')} label={t('filterByStage')} … />
+  </span>
+  <ColumnResizeHandle … />
+</TableHeader>
+```
+
+The button's words truncate and its arrow stays, so a column dragged narrower
+than its heading keeps the funnel in the cell.
+
 **`TableScroll` is not decoration.** `overflow` on a `<table>` does nothing, so
 the wrapper is the only place a scrollbar can live — and the only thing a
 sticky heading can stick inside. The scrollbar it gets is the theme's overlay
@@ -129,6 +153,18 @@ A plain heading, for a column that does not sort.
 | `numeric` | `boolean` | `false` | Right-align the heading, to sit over a `numeric` column of cells. |
 
 And every prop of `ThHTMLAttributes<HTMLTableCellElement>`, passed on.
+
+### `TableSortButton`
+
+The button that reorders a column, for a heading that holds more than it.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `column` (required) | `string` |  | This column's id - the key the accessor sorts by. |
+| `sort` (required) | `Sort<string>` |  | What is sorted now, across the whole table. |
+| `onSortChange` (required) | `(column: string) => void` |  | Called with this column's id when the button is pressed. The product decides what comes next - the table does not sort or flip the direction. |
+
+And every prop of `ButtonHTMLAttributes<HTMLButtonElement>` except `onClick`, `type`, passed on.
 
 ### `TableSortHeader`
 

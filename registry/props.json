@@ -729,7 +729,9 @@
             "name": "onAddDay",
             "type": "(date: string) => void",
             "requiredWith": [
-              "addDayLabel"
+              "addDayLabel",
+              "month",
+              "week"
             ],
             "description": "Add something on this day: a plus in the corner of the day under the pointer, and the first stop of Tab from the day the cursor is on."
           },
@@ -737,20 +739,45 @@
             "name": "addDayLabel",
             "type": "string",
             "requiredWith": [
-              "onAddDay"
+              "month",
+              "onAddDay",
+              "week"
             ],
             "description": "Names the plus. Required with it: an icon with no name announces nothing."
           },
           {
             "name": "month",
             "type": "string",
-            "required": true,
+            "requiredWith": [
+              "addDayLabel",
+              "onAddDay"
+            ],
             "description": "Any day of the month to show."
           },
           {
             "name": "onMonthChange",
             "type": "(month: string) => void",
             "description": "Asked for when the keyboard walks off the grid; any day of the new month. Without it the cursor stops at the edge."
+          },
+          {
+            "name": "week",
+            "type": "string",
+            "requiredWith": [
+              "addDayLabel",
+              "onAddDay"
+            ],
+            "description": "Any day of the first week to show. With it the grid draws whole weeks rather than a month, each day the whole height of the box."
+          },
+          {
+            "name": "weeks",
+            "type": "number",
+            "default": "1",
+            "description": "How many weeks from that one: one by default, two for a fortnight."
+          },
+          {
+            "name": "onWeekChange",
+            "type": "(week: string) => void",
+            "description": "Asked for when the keyboard walks off the weeks, or PageUp and PageDown turn them: any day of the new first week, a whole range on from the one shown. Without it the cursor stops at the edge."
           },
           {
             "name": "renderDay",
@@ -6877,6 +6904,40 @@
         ]
       },
       {
+        "name": "TableSortButton",
+        "description": "The button that reorders a column, for a heading that holds more than it.",
+        "props": [
+          {
+            "name": "column",
+            "type": "string",
+            "required": true,
+            "description": "This column's id - the key the accessor sorts by."
+          },
+          {
+            "name": "sort",
+            "type": "Sort<string>",
+            "required": true,
+            "description": "What is sorted now, across the whole table."
+          },
+          {
+            "name": "onSortChange",
+            "type": "(column: string) => void",
+            "required": true,
+            "description": "Called with this column's id when the button is pressed. The product decides what comes next - the table does not sort or flip the direction."
+          }
+        ],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "ButtonHTMLAttributes<HTMLButtonElement>",
+            "omits": [
+              "onClick",
+              "type"
+            ]
+          }
+        ]
+      },
+      {
         "name": "TableSortHeader",
         "description": "A heading that reorders the table when clicked.",
         "props": [
@@ -7290,6 +7351,38 @@
             "omits": [
               "onChange"
             ]
+          }
+        ]
+      }
+    ]
+  },
+  "tile-button": {
+    "dir": "ui",
+    "components": [
+      {
+        "name": "TileButton",
+        "props": [
+          {
+            "name": "selected",
+            "type": "boolean",
+            "default": "false",
+            "description": "The chosen tile: the accent on its edge, and `aria-current` unless the caller names the state itself with `aria-pressed` or `aria-selected`."
+          },
+          {
+            "name": "render",
+            "type": "RenderProp<Record<string, unknown>>",
+            "description": "The element to draw the tile as - a router's link, most often: `render={<Link to={…} />}`. Without it the tile is a `<button>`."
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "description": "Disables the tile. Applied only when it is the default `<button>`: a rendered element such as a link has no `disabled` of its own."
+          }
+        ],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "HTMLAttributes<HTMLElement>"
           }
         ]
       }

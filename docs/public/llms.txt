@@ -127,6 +127,7 @@ Components are copied into a project with `npx shadcn add <url>` rather than imp
 - [TagInput](https://lacodda.github.io/dowel/components/tag-input.md): Free text turned into a list: type a word, press Enter, it becomes a chip.
 - [Textarea](https://lacodda.github.io/dowel/components/textarea.md): A multi-line field that can grow with what is typed into it.
 - [Tier](https://lacodda.github.io/dowel/components/tier.md): The band a score falls in, the road of bands drawn to scale, and one axis of the judgement that produced it.
+- [TileButton](https://lacodda.github.io/dowel/components/tile-button.md): A tile pressed whole - a thumbnail whose picture is the control, a card picked from a row - that takes the size of what it holds and draws the chosen one on its edge.
 - [TimeField](https://lacodda.github.io/dowel/components/time-field.md): A time of day, typed the way people say it - loose going in, one spelling stored.
 - [Timeline](https://lacodda.github.io/dowel/components/timeline.md): What happened, in the order it happened - as a real list, with a rail that stops at the last entry and a state that is not only a colour.
 - [Toast](https://lacodda.github.io/dowel/components/toast.md): Something that just happened, said briefly and then gone.

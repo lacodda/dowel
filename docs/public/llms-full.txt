@@ -2087,7 +2087,7 @@ forty releases is not forty tab stops.
 | Key | |
 | --- | --- |
 | `←` `→` `↑` `↓` | move a day or a week; off the grid, ask for the next month |
-| `PageUp` `PageDown` | move a month |
+| `PageUp` `PageDown` | move a month; in a week view, the range shown |
 | `Home` `End` | the ends of the week |
 | `Enter` `Space` | press the day (`onDaySelect`) |
 | `Tab` | into the day: its plus, its lines, its count |
@@ -2098,6 +2098,27 @@ the hint while something is carried over it — and described by its whole date,
 "Monday, 14 September 2026". The words on its face are what someone telling
 voice control what they see says (WCAG 2.5.3); the date says which 14th it is.
 The plus is not in the name, or every day would say it.
+
+**A week is the same grid cut shorter.** `week` instead of `month` draws whole
+weeks from the one that day is in - one by default, `weeks={2}` for a fortnight
+- and each day takes the whole height of the box, so a busy Monday shows
+everything a month would fold. The days are the month's: the same lines, the
+same fold into a count, the same keyboard. No day is on a quieter ground,
+because a week has no neighbouring month. The two cannot be mixed: a week takes
+`onWeekChange`, which is asked for a whole range on - a week, or a fortnight -
+when the keyboard walks off the edge, and `PageUp` and `PageDown` turn the range
+rather than a month. The grid is named by the range it draws, "14 – 20
+September 2026".
+
+```tsx
+<BigCalendar
+  week={week}
+  onWeekChange={setWeek}
+  renderDay={(date) => releasesOn(date).map((release) => <BigCalendarItem key={release.id}>{release.title}</BigCalendarItem>)}
+  moreLabel={(count) => t('more', { count })}
+  fewerLabel={t('fewer')}
+/>
+```
 
 **The week starts where the locale says.** `en-GB` on Monday, `en-US` on Sunday.
 A product that wants Monday whatever the region says so in the tag -
@@ -2141,10 +2162,13 @@ release does not also book the day under it.
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
-| `onAddDay` (with `addDayLabel`) | `(date: string) => void` |  | Add something on this day: a plus in the corner of the day under the pointer, and the first stop of Tab from the day the cursor is on. |
-| `addDayLabel` (with `onAddDay`) | `string` |  | Names the plus. Required with it: an icon with no name announces nothing. |
-| `month` (required) | `string` |  | Any day of the month to show. |
+| `onAddDay` (with `addDayLabel`, `month`, `week`) | `(date: string) => void` |  | Add something on this day: a plus in the corner of the day under the pointer, and the first stop of Tab from the day the cursor is on. |
+| `addDayLabel` (with `month`, `onAddDay`, `week`) | `string` |  | Names the plus. Required with it: an icon with no name announces nothing. |
+| `month` (with `addDayLabel`, `onAddDay`) | `string` |  | Any day of the month to show. |
 | `onMonthChange` | `(month: string) => void` |  | Asked for when the keyboard walks off the grid; any day of the new month. Without it the cursor stops at the edge. |
+| `week` (with `addDayLabel`, `onAddDay`) | `string` |  | Any day of the first week to show. With it the grid draws whole weeks rather than a month, each day the whole height of the box. |
+| `weeks` | `number` | `1` | How many weeks from that one: one by default, two for a fortnight. |
+| `onWeekChange` | `(week: string) => void` |  | Asked for when the keyboard walks off the weeks, or PageUp and PageDown turn them: any day of the new first week, a whole range on from the one shown. Without it the cursor stops at the edge. |
 | `renderDay` (required) | `(date: string) => readonly ReactNode[]` |  | What a day holds, one node per line, each with a `key`. |
 | `moreLabel` (required) | `(count: number) => string` |  | The words of the count a full day folds into, given how many are folded: "3 more". |
 | `fewerLabel` (required) | `string` |  | The words that fold an open day again. |
@@ -5829,6 +5853,13 @@ were, and this is the frame it settled on.
 
 `Screen scroll="held"` hands the window's height down and scrolls nowhere;
 `Frame` keeps it; `Pane` is the one box that scrolls, between bars that stand.
+
+**A bar with nothing in it is not drawn.** A head is often a row of things each
+shown on a condition - a filter only while there is something to filter, an
+action only for an owner. When every one of them renders nothing, the bar
+folds away (`empty:hidden`) rather than standing as an empty box that still
+costs the column its ten-pixel gap. The same holds for the foot, and for a
+`Pane`'s two bars, hairline and all.
 
 **`Pane` scrolls down, never across.** Its body is a
 [ScrollArea](/dowel/components/scroll-area/) held to the vertical axis, so a
@@ -10716,6 +10747,30 @@ the `<th>`: the cell is not focusable, gets no keyboard, and announces nothing.
 This is the part a hand-rolled table almost always gets wrong, and it is
 invisible to everyone who reorders with a mouse.
 
+**A heading that holds more than its sort writes its own cell.**
+`TableSortHeader` takes the whole cell, so its children are the button's words.
+A heading that also carries a funnel, a resize grip or a menu cannot put them
+there - a button inside a button is not a control anything can press - so it is
+a `TableHeader` with a `TableSortButton` in it, and `aria-sort` stays on the
+cell, where it describes the column. `ariaSort` from
+[table-sort](/dowel/components/table-sort/) gives the value, and nothing at all
+on a column that is not the sorted one.
+
+```tsx
+<TableHeader aria-sort={ariaSort(sort, 'stage')} className="group">
+  <span className="flex items-center gap-1">
+    <TableSortButton column="stage" sort={sort} onSortChange={reorder}>
+      {t('stage')}
+    </TableSortButton>
+    <FilterPopover title={t('stage')} label={t('filterByStage')} … />
+  </span>
+  <ColumnResizeHandle … />
+</TableHeader>
+```
+
+The button's words truncate and its arrow stays, so a column dragged narrower
+than its heading keeps the funnel in the cell.
+
 **`TableScroll` is not decoration.** `overflow` on a `<table>` does nothing, so
 the wrapper is the only place a scrollbar can live — and the only thing a
 sticky heading can stick inside. The scrollbar it gets is the theme's overlay
@@ -10788,6 +10843,18 @@ A plain heading, for a column that does not sort.
 | `numeric` | `boolean` | `false` | Right-align the heading, to sit over a `numeric` column of cells. |
 
 And every prop of `ThHTMLAttributes<HTMLTableCellElement>`, passed on.
+
+### `TableSortButton`
+
+The button that reorders a column, for a heading that holds more than it.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `column` (required) | `string` |  | This column's id - the key the accessor sorts by. |
+| `sort` (required) | `Sort<string>` |  | What is sorted now, across the whole table. |
+| `onSortChange` (required) | `(column: string) => void` |  | Called with this column's id when the button is pressed. The product decides what comes next - the table does not sort or flip the direction. |
+
+And every prop of `ButtonHTMLAttributes<HTMLButtonElement>` except `onClick`, `type`, passed on.
 
 ### `TableSortHeader`
 
@@ -11238,6 +11305,96 @@ One axis of a score, as a row of segments.
 | `onPreview` | `(mark: number \| undefined) => void` |  | The mark under the pointer, and `undefined` when the pointer leaves - so a product can say what a mark means while it is being weighed, before anyone commits to it. The question while scoring is about the mark being considered, not the one already given. |
 
 And every prop of `HTMLAttributes<HTMLDivElement>` except `onChange`, passed on.
+
+---
+
+# TileButton
+
+Source: https://lacodda.github.io/dowel/components/tile-button
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#tile-button
+
+A strip of frames with one chosen, a folder's file tiles where the well is the control, and cards picked from a row.
+
+## Notes
+
+Some controls are pictures. A strip of video frames, the files in a folder, a
+row of styles to choose from: the thing on screen is what the reader presses,
+and there is no label beside it to turn into a button.
+
+**It is not a Button with its size taken away.** A [Button](/components/button/)
+is a control row: it stands on the field height, pads its sides, keeps its
+words on one line and centres them. That is right for a row of actions and
+flattens a picture into a strip. TileButton draws none of it - it takes the
+size of what it holds, lays its content out as a column (so a picture inside it
+is a block, flush at the foot), and starts its text at the start.
+
+**The chosen one is drawn on the edge.** A picture covers the inside of the
+tile, so a chosen state painted as a fill would be underneath it, and a ring
+drawn outside the tile is cut off by whatever scrolls a strip of them. The
+chosen tile takes the accent on its border and a second line just inside it,
+drawn over the picture - a change of weight as well as hue, so it reads without
+colour.
+
+```tsx
+<div className="flex gap-2">
+  {frames.map((frame) => (
+    <TileButton
+      key={frame.id}
+      aria-label={t('openFrame', { name: frame.name })}
+      selected={frame.id === chosen}
+      onClick={() => open(frame)}
+    >
+      <img src={frame.src} alt="" className="size-20 object-contain" />
+    </TileButton>
+  ))}
+</div>
+```
+
+**It names the chosen one, once.** `selected` sets `aria-current`, the way
+[RowButton](/components/list-row/) does: a tile that opens what it shows is
+where the reader is, not a value being submitted. A tile that toggles passes
+`aria-pressed`, and a tile in a listbox passes `aria-selected` with
+`role="option"`; either replaces `aria-current` rather than joining it, and the
+look still follows `selected`.
+
+**A picture has no words, so give the tile a name.** An `<img alt="">` inside
+it names nothing; `aria-label` on the tile, in the product's language, does.
+
+**In a card that clips, pull the focus ring inside.** The ring stands outside
+the tile, as every focus ring of the set does. A tile that is only the well of
+a larger card - a file tile with its name under it - sits inside an
+`overflow-hidden` frame that would cut the ring off; give that tile
+`focus-visible:-outline-offset-2`, and `rounded-none border-0` so the card's own
+edge is the only one.
+
+```tsx
+<li className="overflow-hidden rounded-md border border-line bg-raise">
+  <TileButton
+    aria-label={t('open', { name })}
+    onClick={open}
+    className="h-26 w-full items-center justify-center rounded-none border-0 bg-bg focus-visible:-outline-offset-2"
+  >
+    <img src={src} alt="" className="max-h-full max-w-full object-contain" />
+  </TileButton>
+  <p className="truncate px-2 py-1.5 text-xs">{name}</p>
+</li>
+```
+
+`render` draws it as something else - a router's link, most often - with the
+same clothes and no button attributes on it.
+
+## Props
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `selected` | `boolean` | `false` | The chosen tile: the accent on its edge, and `aria-current` unless the caller names the state itself with `aria-pressed` or `aria-selected`. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw the tile as - a router's link, most often: `render={<Link to={…} />}`. Without it the tile is a `<button>`. |
+| `disabled` | `boolean` |  | Disables the tile. Applied only when it is the default `<button>`: a rendered element such as a link has no `disabled` of its own. |
+
+And every prop of `HTMLAttributes<HTMLElement>`, passed on.
 
 ---
 
@@ -13679,9 +13836,10 @@ import {
   TableHeader,
   TableRow,
   TableScroll,
+  TableSortButton,
   TableSortHeader,
 } from '@/components/ui/table'
-import { sortRows, toggleSort, type Sort, type SortValue } from '@/components/ui/table-sort'
+import { ariaSort, sortRows, toggleSort, type Sort, type SortValue } from '@/components/ui/table-sort'
 
 export type Kind = 'song' | 'clip' | 'short' | 'cover'
 export type Stage = 'idea' | 'draft' | 'ready' | 'released'
@@ -13706,10 +13864,12 @@ const PAGE_SIZES = [5, 10, 25]
 const KIND_WORDS: Record<Kind, string> = { song: 'Song', clip: 'Clip', short: 'Short', cover: 'Cover' }
 const STAGE_WORDS: Record<Stage, string> = { idea: 'Idea', draft: 'Draft', ready: 'Ready', released: 'Released' }
 
-type Column = 'title' | 'owner' | 'updated' | 'score'
+type Column = 'title' | 'stage' | 'owner' | 'updated' | 'score'
 
 function valueOf(row: Row, column: Column): SortValue {
-  return row[column]
+  // A stage sorts by where it stands in the work, not by its name: "Draft"
+  // before "Idea" alphabetically is an order nobody works in.
+  return column === 'stage' ? STAGES.indexOf(row.stage) : row[column]
 }
 
 const day = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' })
@@ -13792,9 +13952,14 @@ export function TablePeopleSort({ works }: { works: readonly Row[] }) {
                   </FilterPopover>
                 </span>
               </TableHeader>
-              <TableHeader className="group">
+              {/* Sorted and filtered both: the sort is a button of its own beside
+                  the funnel, because inside TableSortHeader the funnel would be
+                  a button in a button. `aria-sort` stays on the cell. */}
+              <TableHeader className="group" aria-sort={ariaSort(sort, 'stage')}>
                 <span className="flex items-center gap-1">
-                  Stage
+                  <TableSortButton column="stage" {...sortProps}>
+                    Stage
+                  </TableSortButton>
                   <FilterPopover
                     title="Stage"
                     label="Filter by stage"
@@ -15638,12 +15803,13 @@ project. Search by a name, by a word from what an item is for, or by a prop:
 - **StatusDot** (`https://lacodda.github.io/dowel/r/status-dot.json`): The smallest thing a screen can say about something's condition: a server is up, a job failed, a person is away. Exports `StatusDot`, `StatusBadge`.
 - **Stepper** (`https://lacodda.github.io/dowel/r/stepper.json`): The steps of a task too long for one screen, and where you stand in them: set up a workspace, import a library, configure a connection.
 - **Switch** (`https://lacodda.github.io/dowel/r/switch.json`): The difference from Checkbox is not how it looks, and getting it wrong is the commonest mistake in the pair.
-- **Table** (`https://lacodda.github.io/dowel/r/table.json`): Parts rather than a `columns` prop, and that is the decision worth stating: a `<DataTable columns={…} rows={…} />` is quicker to write for the first table and then owns every cell in the product forever. Exports `Table`, `TableScroll`, `TableHead`, `TableBody`, `TableRow`, `TableCell`, `TableHeader`, `TableSortHeader`, `TableEmpty`.
+- **Table** (`https://lacodda.github.io/dowel/r/table.json`): Parts rather than a `columns` prop, and that is the decision worth stating: a `<DataTable columns={…} rows={…} />` is quicker to write for the first table and then owns every cell in the product forever. Exports `Table`, `TableScroll`, `TableHead`, `TableBody`, `TableRow`, `TableCell`, `TableHeader`, `TableSortButton`, `TableSortHeader`, `TableEmpty`.
 - **TableSort** (`https://lacodda.github.io/dowel/r/table-sort.json`): Split out of the Table for the reason `calendar-math` was split out of the Calendar: these are the sums, and the component is the thing that draws them.
 - **Tabs** (`https://lacodda.github.io/dowel/r/tabs.json`): Two shapes, because the line has two needs and they look nothing alike. Exports `Tabs`, `TabsList`, `TabsTab`, `TabsPanel`.
 - **TagInput** (`https://lacodda.github.io/dowel/r/tag-input.json`): Free text turned into a list: type a word, press Enter, it becomes a chip.
 - **Textarea** (`https://lacodda.github.io/dowel/r/textarea.json`): A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen.
 - **Tier** (`https://lacodda.github.io/dowel/r/tier.json`): The shape comes from kilna, where a work is scored on several axes and the total lands in a named band - "draft", "publishable", "a clip". Exports `TierBadge`, `TierRuler`, `AxisBar`.
+- **TileButton** (`https://lacodda.github.io/dowel/r/tile-button.json`): A tile pressed whole: a thumbnail whose picture is the control, a card picked from a row of cards.
 - **TimeField** (`https://lacodda.github.io/dowel/r/time-field.json`): No donor for this one: neither product of the line had a time field, so this is written from the same shape as DurationField, and for the same reason.
 - **Timeline** (`https://lacodda.github.io/dowel/r/timeline.json`): What happened, in the order it happened: a release history, an audit trail, the steps a job went through. Exports `Timeline`, `TimelineItem`.
 - **Toast** (`https://lacodda.github.io/dowel/r/toast.json`): For something that already happened and needs no decision. Exports `ToastProvider`, `ToastTitle`, `ToastDescription`, `ToastAction`, `ToastClose`, `Toast`, `ToastViewport`.
