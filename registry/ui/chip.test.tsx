@@ -16,6 +16,21 @@ describe('Chip', () => {
     expect(screen.getByText('12')).toBeDefined()
   })
 
+  it('reads its count apart from its label', () => {
+    // kilna: a reader heard "Needs a look1" - two spans with nothing between.
+    render(
+      <Chip pressed={false} onPressedChange={() => {}} count={1}>
+        Needs a look
+      </Chip>,
+    )
+    expect(screen.getByRole('button', { name: 'Needs a look 1' })).toBeDefined()
+  })
+
+  it('adds no space where there is no count', () => {
+    const { container } = render(<Chip>tags</Chip>)
+    expect(container.firstElementChild?.textContent).toBe('tags')
+  })
+
   it('has no remove button unless it can be removed', () => {
     render(<Chip>plain</Chip>)
     expect(screen.queryByRole('button')).toBeNull()
