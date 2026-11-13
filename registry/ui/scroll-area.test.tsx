@@ -95,6 +95,21 @@ describe('ScrollArea', () => {
     expect(bar.className).toContain('data-[scrolling]:opacity-100')
   })
 
+  it('stands its bar above what the content pins, and after it', async () => {
+    // A table pinning its last column (`sticky right-0 z-2`) covered the
+    // thumb in kilna's catalogue: not seen, not taken, and a press at the
+    // edge opened the row beneath. The bar takes the sticky layer, and being
+    // later in the tree it wins a tie with a sticky heading too.
+    overflowing(1000)
+    const { container } = render(<Area />)
+    await waitFor(() =>
+      expect(container.querySelector('[data-orientation="vertical"]')).not.toBeNull(),
+    )
+    const bar = container.querySelector<HTMLElement>('[data-orientation="vertical"]')!
+    expect(bar.className).toContain('[z-index:var(--z-sticky)]')
+    expect(viewport().compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
   it('fades only when asked, and only by the distance left to the edge', () => {
     const { rerender } = render(<Area />)
     expect(viewport().className).not.toContain('mask-image')
