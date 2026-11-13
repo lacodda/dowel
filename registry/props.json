@@ -8516,7 +8516,8 @@
           {
             "name": "words",
             "type": "ReaderScreenWords",
-            "required": true
+            "required": true,
+            "description": "Every word the screen says itself, in the product's language."
           },
           {
             "name": "className",

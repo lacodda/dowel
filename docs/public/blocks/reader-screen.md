@@ -83,5 +83,5 @@ The two rules are exported as plain functions, `paragraphAt` and
 | `marked` | `number \| null` |  | A paragraph drawn marked - the one just swept, the one being heard. |
 | `foot` | `ReactNode` |  | What stands in the foot bar beside the progress: an action in reach. |
 | `after` | `ReactNode` |  | What follows the text: the next chapter, "I have read it". |
-| `words` (required) | `ReaderScreenWords` |  |  |
+| `words` (required) | `ReaderScreenWords` |  | Every word the screen says itself, in the product's language. |
 | `className` | `string` |  |  |

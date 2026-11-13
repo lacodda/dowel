@@ -39,7 +39,7 @@ a known gap rather than a fault of the product, and the way out is upstream: a
 label prop or a locale in Base UI. The command palette's input stands inside
 its popup, so it draws the button only while focus is trapped.
 
-Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 124 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 124 items with nothing owed.
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 126 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 126 items with nothing owed.
 
 ## Not yet passed
 
@@ -136,6 +136,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | query-state | 12 |  |  |
 | radio-group | 18 | `aria-toggle-field-name` `duplicate-id-aria` |  |
 | rating-scale | 17 |  |  |
+| reader-screen | 22 |  |  |
 | relative-time | 4 |  |  |
 | reorderable-list | 6 |  |  |
 | save-state | 15 |  |  |
@@ -177,6 +178,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | tree-rows | 5 |  |  |
 | tree-view | 21 | `color-contrast` |  |
 | truncate | 5 |  |  |
+| virtual-grid | 21 | `color-contrast` |  |
 | virtual-list | 18 | `aria-required-children` `color-contrast` |  |
 | window-frame | 25 | `color-contrast` |  |
 | wizard | 19 |  |  |

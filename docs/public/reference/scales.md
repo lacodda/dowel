@@ -144,6 +144,14 @@ palette.
 The products this came from had one shadow and used it for all three, which is
 why a modal never felt further away than the menu it covered.
 
+**These are the only ones.** From 1.0 the theme clears Tailwind's own weights and
+shadows - inset, drop and text shadows with them - as it clears the stock
+palette, so a stock step such as a bold weight or a large shadow compiles to
+nothing rather than to a fourth step beside these three. `dowel check` names
+every stock step in a project and `dowel codemod` rewrites it to the nearest word:
+`font-semibold` for anything bolder, `font-normal` for anything lighter, and
+`shadow-lift`, `shadow-raise` or `shadow-float` by how far the thing floats.
+
 ## Stacking order
 
 What covers what. The values only mean anything relative to each other.
