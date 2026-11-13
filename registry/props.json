@@ -1912,12 +1912,15 @@
       },
       {
         "name": "ConfirmDialogClose",
-        "description": "What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap.",
-        "is": {
-          "kind": "base-ui",
-          "part": "AlertDialog.Close",
-          "module": "@base-ui/react/alert-dialog"
-        }
+        "description": "What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap. It is also where the focus lands when the dialog opens: the answer that does no harm, so a reflexive Enter keeps rather than deletes.",
+        "props": [],
+        "inherits": [
+          {
+            "kind": "base-ui",
+            "part": "AlertDialog.Close",
+            "module": "@base-ui/react/alert-dialog"
+          }
+        ]
       },
       {
         "name": "ConfirmDialogBackdrop",

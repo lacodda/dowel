@@ -103,9 +103,9 @@ Base UI's `AlertDialog.Trigger`, unchanged under dowel's name.
 
 ### `ConfirmDialogClose`
 
-What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap.
+What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap. It is also where the focus lands when the dialog opens: the answer that does no harm, so a reflexive Enter keeps rather than deletes.
 
-Base UI's `AlertDialog.Close`, unchanged under dowel's name.
+Every prop of Base UI's `AlertDialog.Close`, passed on.
 
 ### `ConfirmDialogBackdrop`
 

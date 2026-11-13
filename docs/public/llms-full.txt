@@ -32,7 +32,7 @@ products of the line, [every colour of each resolved](/dowel/reference/palettes/
 for a product that does not draw with a browser - as JSON and as a Rust
 module, from one generator - the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and eighteen primitives, each with a page of its own on
+a hundred and nineteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose; each
 page ends with what axe found on it, in both themes, and the history of its
@@ -942,7 +942,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and eighteen of them.
+A single component: Button, Dialog, Select. A hundred and nineteen of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -4117,9 +4117,9 @@ Base UI's `AlertDialog.Trigger`, unchanged under dowel's name.
 
 ### `ConfirmDialogClose`
 
-What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap.
+What closes it - and the only thing that does, which is why a confirm dialog with no `ConfirmDialogClose` inside it is a trap. It is also where the focus lands when the dialog opens: the answer that does no harm, so a reflexive Enter keeps rather than deletes.
 
-Base UI's `AlertDialog.Close`, unchanged under dowel's name.
+Every prop of Base UI's `AlertDialog.Close`, passed on.
 
 ### `ConfirmDialogBackdrop`
 
@@ -15544,6 +15544,16 @@ aloud, whether the order a reader tabs in is the order the screen means,
 whether an error says what to do about it. axe marks some of these for a
 person - they are listed with each item - and the rest are what reading a
 screen with a screen reader is for.
+
+**What the set cannot reach.** Every word a reader sees or hears is the
+product's, passed in as a prop - a gate holds that. One is not: Base UI's
+Combobox draws a visually hidden dismiss button inside the input with the
+English label "Dismiss", wherever the input stands outside its popup (Base UI
+1.9, `ComboboxInternalDismissButton`), and no prop reaches it. A screen reader
+in a product written in another language reads that one word in English. It is
+a known gap rather than a fault of the product, and the way out is upstream: a
+label prop or a locale in Base UI. The command palette's input stands inside
+its popup, so it draws the button only while focus is trapped.
 
 Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 123 items with nothing owed.
 

@@ -29,6 +29,16 @@ whether an error says what to do about it. axe marks some of these for a
 person - they are listed with each item - and the rest are what reading a
 screen with a screen reader is for.
 
+**What the set cannot reach.** Every word a reader sees or hears is the
+product's, passed in as a prop - a gate holds that. One is not: Base UI's
+Combobox draws a visually hidden dismiss button inside the input with the
+English label "Dismiss", wherever the input stands outside its popup (Base UI
+1.9, `ComboboxInternalDismissButton`), and no prop reaches it. A screen reader
+in a product written in another language reads that one word in English. It is
+a known gap rather than a fault of the product, and the way out is upstream: a
+label prop or a locale in Base UI. The command palette's input stands inside
+its popup, so it draws the button only while focus is trapped.
+
 Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 123 items with nothing owed.
 
 ## Not yet passed

@@ -26,7 +26,7 @@ products of the line, [every colour of each resolved](/dowel/reference/palettes/
 for a product that does not draw with a browser - as JSON and as a Rust
 module, from one generator - the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and eighteen primitives, each with a page of its own on
+a hundred and nineteen primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose; each
 page ends with what axe found on it, in both themes, and the history of its
