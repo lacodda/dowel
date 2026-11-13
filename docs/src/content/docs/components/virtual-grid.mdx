@@ -1,0 +1,86 @@
+---
+title: VirtualGrid
+description: Rows in columns, a hundred thousand of them, with one chosen - a window of rows, a keyboard that walks all of them, rows read by index, a heading that stands and a layer over the rows in view.
+---
+
+import Stand from '../../../components/Stand.astro'
+
+```console
+$ npx shadcn@latest add https://lacodda.github.io/dowel/r/virtual-grid.json
+```
+
+<Stand component="virtual-grid" caption="Fifty thousand commits in four columns, one chosen, with the graph drawn as a layer over the rows in view." />
+
+## Notes
+
+[VirtualList](/dowel/components/virtual-list/) is a list to read: a column of
+rows, only the ones in view drawn. This is a list a person works through - a
+commit graph, the entries of a disk, a log - and it adds what that needs.
+
+**A grid with a cursor.** One tab stop. The arrows, `PageUp`, `PageDown`, `Home`
+and `End` move the chosen row, and `Enter` opens it (`onActivate`, which a double
+click calls too). The grid names the chosen row with `aria-activedescendant`, and
+every move scrolls that row into view first - the least distance if it is near,
+a third of the way down if it is far - because the row a reader is told about has
+to be in the document. Each row says where it stands in the whole grid
+(`aria-rowindex`, after the heading), since a reader cannot count rows that are
+not drawn.
+
+| Key | |
+| --- | --- |
+| `↑` `↓` | the row above or below |
+| `PageUp` `PageDown` | a screenful less one row, so the row at the edge stays in sight |
+| `Home` `End` | the first row, the last |
+| `Enter` | open the chosen row |
+
+**Rows by index, not an array.** `count` says how many rows there are, and
+`renderRow(index)` draws one - or answers `null` for a row not read yet, which is
+drawn empty at its height (`aria-busy`) until it is. `onRangeChange(start, end)`
+says which rows are drawn whenever that changes, so a product that reads a page
+at a time knows which pages to read:
+
+```tsx
+<VirtualGrid
+  label={t('commits')}
+  count={total}
+  rowHeight={26}
+  columns="grid-cols-[2rem_1fr_9rem_5rem]"
+  header={
+    <>
+      <VirtualGridColumn><span className="sr-only">{t('graph')}</span></VirtualGridColumn>
+      <VirtualGridColumn>{t('message')}</VirtualGridColumn>
+      <VirtualGridColumn>{t('author')}</VirtualGridColumn>
+      <VirtualGridColumn>{t('hash')}</VirtualGridColumn>
+    </>
+  }
+  renderRow={(index) => {
+    const commit = pages.at(index)
+    return commit === undefined ? null : (
+      <>
+        <VirtualGridCell />
+        <VirtualGridCell>{commit.subject}</VirtualGridCell>
+        <VirtualGridCell>{commit.author}</VirtualGridCell>
+        <VirtualGridCell className="font-mono">{commit.short}</VirtualGridCell>
+      </>
+    )
+  }}
+  onRangeChange={(start, end) => pages.read(start, end)}
+  selected={chosen}
+  onSelectedChange={setChosen}
+  onActivate={open}
+  className="h-full"
+/>
+```
+
+**One template for the heading and the rows.** `columns` is a grid template
+class, and the standing heading and every row take it, so a column cannot be
+wider in one than in the other.
+
+**A layer over the rows in view.** `layer` is drawn over the window, in a box
+exactly the size of the rows drawn and in the same render as them, hidden from
+readers and from the pointer. A canvas the product redraws for the
+`{ start, end, rowHeight }` it is given stays on the rows it belongs to as the
+grid scrolls - the graph column of a commit list is drawn this way.
+
+**Give it a height.** It scrolls in its own box; without a height the box is as
+tall as every row and nothing is windowed.

@@ -70,6 +70,7 @@ import { TreeRowsSection, TreeViewSection } from './sections/tree-view'
 import { KeyValueSection } from './sections/key-value'
 import { ListRowSection } from './sections/list-row'
 import { TileButtonSection } from './sections/tile-button'
+import { VirtualGridSection } from './sections/virtual-grid'
 import { StatTileSection } from './sections/stat-tile'
 import { SparklineSection } from './sections/sparkline'
 import { TrackSection, TrackSegmentsSection } from './sections/track'
@@ -254,6 +255,7 @@ export const sections: Section[] = [
   { id: 'number-format', title: 'NumberFormat', render: () => <NumberFormatSection /> },
   { id: 'relative-time', title: 'RelativeTime', render: () => <RelativeTimeSection /> },
   { id: 'virtual-list', title: 'VirtualList', render: () => <VirtualListSection /> },
+  { id: 'virtual-grid', title: 'VirtualGrid', render: () => <VirtualGridSection /> },
   { id: 'tree-rows', title: 'tree-rows', kind: 'utility', render: () => <TreeRowsSection /> },
   { id: 'tree-view', title: 'TreeView', render: () => <TreeViewSection /> },
   { id: 'key-value', title: 'KeyValue', render: () => <KeyValueSection /> },

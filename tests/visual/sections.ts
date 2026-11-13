@@ -75,6 +75,7 @@ export const SECTIONS = [
   'number-format',
   'relative-time',
   'virtual-list',
+  'virtual-grid',
   'tree-rows',
   'tree-view',
   'key-value',

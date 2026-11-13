@@ -195,6 +195,15 @@ describe('what a primitive weighs', () => {
         '(v1.0) is the same rows cut to the view, and it belongs with the cursor: a ' +
         'move has to scroll its row into the document before the reader is told of it.',
     },
+    'virtual-grid': {
+      ceiling: 6912,
+      because:
+        'A window of rows, the cursor that is the selection, and the heading that stands ' +
+        'over them share one state: a move scrolls its row into the window before the ' +
+        'grid names it, and the window leaves room for the heading. What could stand ' +
+        'alone already does - the window and the scroll are `virtual-list`, shared with ' +
+        'TreeView - and the cells are two parts of a line each.',
+    },
     dialog: {
       ceiling: 5376,
       because:
@@ -614,6 +623,9 @@ describe('what a primitive drags in', () => {
     // windows and grids, and a design system's long lists are all a column of
     // rows of one height.
     'virtual-list': [],
+    // The window's arithmetic and the walk's scroll are VirtualList's; the
+    // grid adds the cursor and the heading, and no dependency.
+    'virtual-grid': ['virtual-list'],
     // Which rows a tree shows, with no React in them - the same split
     // `table-sort` is. A product windowing a large tree imports this alone.
     'tree-rows': [],
