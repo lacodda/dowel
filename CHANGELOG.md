@@ -2,6 +2,86 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.0] - 2026-11-13
+
+### Breaking Changes
+
+- **Clear Tailwind's own weights and shadows**
+font-thin, font-extralight, font-light, font-bold, font-extrabold, font-black and the stock shadow-*, inset-shadow-*, drop-shadow-* and text-shadow-* steps compile to nothing. Run `npx dowel codemod --write`: a bolder weight becomes font-semibold, a lighter one font-normal; shadow-2xs, shadow-xs and shadow-sm become shadow-lift, shadow-md shadow-raise, shadow-lg, shadow-xl and shadow-2xl shadow-float.
+
+### Bug Fixes
+- Leave aria-current off a row that names its own state
+- Stand the bar above what a table pins
+- Walk a tree with a stack of its own
+- Let a form submit a number off the step grid
+- Read the count apart from the label
+- Make room for the hint by its measured width
+- Open on the body's first control, and wrap the actions
+- Stand the baseline on the plot, at its value
+- Keep the words of a day's lines apart in its name
+- Bring a row chosen from outside into view
+- Describe the reader's words, and hold its edges
+
+### Build
+- Regenerate the registry, props and llms
+- Regenerate the registry, props and llms
+- Regenerate the registry, props and llms
+- Regenerate the registry, props and llms
+- Regenerate the registry, props and llms
+- Regenerate the registry, props and llms
+- Regenerate the registry, props and llms
+- Regenerate the registry, its v1.0 snapshot, the history and llms
+
+### CI
+- Deploy only once npm serves the manifest's version
+
+### Documentation
+- Name Base UI's Dismiss label as a known gap, and count 119 primitives
+- Say what 1.0 promises in the past tense of 0.x
+
+### Features
+- A sort button of its own, for a heading that holds more
+- Fold a bar whose parts all draw nothing
+- Draw whole weeks as well as a month
+- A tile pressed whole
+- Read the value in the product's words, on a 24px target
+- Window a tree of tens of thousands, with a meta slot
+- Rows in columns, a hundred thousand, with one chosen
+- A reader, a text read a paragraph at a time
+- Clear Tailwind's own weights and shadows
+
+### Testing
+- Kill the survivors of the first mutation run on the new code
+- Hold how a row is drawn, and the window as measured
+- Record the baselines and accessibility reports for the new shapes
+- Raise the floors to CI's run on the new code
+- Hold the contrast sums, the line's table and the executable where mutation sees them
+- Record VirtualGrid and ReaderScreen, and the reader's mutation floor
+- Give the keyboard's highlight five seconds under load
+
+### Measured
+
+The freeze. From 1.0 the token vocabulary, the registry's format and every
+name in `tests/vocabulary.json` are a promise: a minor no longer breaks a
+product. What went in first was measured across the line's products (the
+research "Замер перед 1.0"): every shape a product had built for itself
+because dowel's did not fit now has a part of the set.
+
+| What a product held of its own | What 1.0 has for it |
+| --- | --- |
+| kilna: a sortable heading beside a funnel and a grip | `TableSortButton` |
+| kilna: thumbnails and file tiles as raw buttons | `TileButton` |
+| kilna: its own `frame.tsx`, for an empty head | Frame's and Pane's empty bars fold |
+| kilna: its own week view | `BigCalendar` over whole weeks |
+| kilna: an audio player on Base UI's slider | `Slider` with `getValueText`, on a 24px target |
+| furca: a windowed copy of TreeView | `TreeView` with `rowHeight`, `meta` |
+| furca, midda: windowed grids with a selection | `VirtualGrid` |
+| hilvan: rhapsod's reader, copied | the `ReaderScreen` block |
+
+Mutation floors, raised to CI's run on the new code: table 51 to 89.7,
+search-field 57.8 to 75.3, slider 53.8 to 69.2, tree-view 65.3 to 80.1,
+bar-chart 74.5 to 92; no file of the package scores nothing.
+
 ## [0.43.1] - 2026-11-10
 
 ### Build

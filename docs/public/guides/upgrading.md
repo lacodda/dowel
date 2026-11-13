@@ -73,6 +73,12 @@ Every break is listed here, newest first, with what to do about it. Read from th
 are on up to the one you are moving to - the list is the changelog's own, read
 out of it, so it is never a release behind.
 
+### 1.0.0 - 2026-11-13
+
+**Clear Tailwind's own weights and shadows**
+
+font-thin, font-extralight, font-light, font-bold, font-extrabold, font-black and the stock shadow-*, inset-shadow-*, drop-shadow-* and text-shadow-* steps compile to nothing. Run `npx dowel codemod --write`: a bolder weight becomes font-semibold, a lighter one font-normal; shadow-2xs, shadow-xs and shadow-sm become shadow-lift, shadow-md shadow-raise, shadow-lg, shadow-xl and shadow-2xl shadow-float.
+
 ### 0.38.0 - 2026-10-19
 
 **Name a day by what it draws, and make a line a target by its size**
