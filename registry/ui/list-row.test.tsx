@@ -95,14 +95,29 @@ describe('RowButton', () => {
     expect(screen.getByRole('button').className).toContain('bg-accent-soft')
   })
 
-  it('lets a listbox say selected instead', () => {
+  it('lets a listbox say selected instead, without being told to drop current', () => {
+    // kilna had to pass `aria-current={undefined}` beside `aria-selected` on
+    // every row; the caller's word for the state is enough on its own.
     render(
-      <RowButton selected aria-current={undefined} aria-selected role="option">
+      <RowButton selected aria-selected role="option">
         Version 3
       </RowButton>,
     )
     const row = screen.getByRole('option')
     expect(row.getAttribute('aria-selected')).toBe('true')
+    expect(row.hasAttribute('aria-current')).toBe(false)
+    // Still tinted: the look follows `selected` whatever the word.
+    expect(row.className).toContain('bg-accent-soft')
+  })
+
+  it('leaves current off a toggle row that says pressed', () => {
+    render(
+      <RowButton selected aria-pressed>
+        Version 3
+      </RowButton>,
+    )
+    const row = screen.getByRole('button')
+    expect(row.getAttribute('aria-pressed')).toBe('true')
     expect(row.hasAttribute('aria-current')).toBe(false)
   })
 
