@@ -225,6 +225,26 @@ describe('what the package ships', () => {
   }, 60_000)
 })
 
+describe('the docs never promise a version npm cannot serve', () => {
+  // Every registry item pins `dowel-ui@^<the manifest's version>`. Deployed on
+  // the push that raised it, the site's own install command failed until the
+  // tag's publish caught up (ETARGET, v0.29.1).
+  it('deploys only once npm has the manifest version', () => {
+    const docs = read('.github/workflows/docs.yml')
+    expect(docs).toMatch(/npm view "dowel-ui@\$version"/)
+    expect(docs).toMatch(/needs: npm\s+if: \$\{\{ needs\.npm\.outputs\.ready == 'true' \}\}/)
+  })
+
+  it('is sent out by the publish, after npm has the version', () => {
+    const publish = read('.github/workflows/publish.yml')
+    const docsJob = publish.slice(publish.indexOf('\n  docs:'))
+    expect(docsJob).toMatch(/needs: npm/)
+    expect(docsJob).toMatch(/gh workflow run docs\.yml/)
+    expect(docsJob).toMatch(/actions: write/)
+    expect(read('.github/workflows/docs.yml')).toMatch(/workflow_dispatch:/)
+  })
+})
+
 describe('the docs do not claim an old version', () => {
   it('states the current one where it states one at all', () => {
     /* The site's front page carried "v0.4.0" through eight releases, naming

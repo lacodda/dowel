@@ -55,3 +55,17 @@ jobs:
           else
             npm publish
           fi
+
+  # The docs wait for npm (docs.yml): a push that raised the version deployed
+  # nothing, so the site goes out from here, once the version is published.
+  # A dispatch is the one event a workflow's own token may start another with.
+  docs:
+    needs: npm
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Deploy the docs for this version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run docs.yml --repo "$GITHUB_REPOSITORY" --ref main

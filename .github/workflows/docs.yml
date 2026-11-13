@@ -18,7 +18,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The registry pins every component to `dowel-ui@^<this version>`, so a site
+  # deployed before npm has that version promises an install that fails
+  # (ETARGET, seen live in v0.29.1, when this job beat the publish by a
+  # minute). A push that raised the version deploys nothing: the release's
+  # publish job sends the docs out once npm serves it, and waits here for the
+  # registry to answer.
+  npm:
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.version.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Is this version on npm?
+        id: version
+        env:
+          # Asked for by the publish job: npm may take a moment to answer.
+          ATTEMPTS: ${{ github.event_name == 'workflow_dispatch' && '20' || '1' }}
+        run: |
+          version=$(node -p "require('./packages/dowel/package.json').version")
+          for attempt in $(seq "$ATTEMPTS"); do
+            if npm view "dowel-ui@$version" version >/dev/null 2>&1; then
+              echo "ready=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            [ "$attempt" -lt "$ATTEMPTS" ] && sleep 15
+          done
+          echo "dowel-ui@$version is not on npm yet; the release's publish job deploys the docs."
+          echo "ready=false" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: npm
+    if: ${{ needs.npm.outputs.ready == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
