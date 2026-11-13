@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { useState } from 'react'
-import { render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -226,5 +226,120 @@ describe('VirtualGrid', () => {
 
   it('passes axe, with a heading, a chosen row and a row not read yet', async () => {
     await expectNoA11yViolations(<Commits count={20} selected={1} loaded={(index) => index !== 3} />)
+  })
+})
+
+describe('VirtualGrid, at its edges', () => {
+  afterEach(() => {
+    Object.defineProperty(Element.prototype, 'clientHeight', box)
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+  })
+
+  it('chooses nothing for a row that is not there', () => {
+    const { rerender } = render(<Commits count={3} selected={-1} />)
+    expect(named()).toBeNull()
+    rerender(<Commits count={3} selected={3} />)
+    expect(named()).toBeNull()
+    rerender(<Commits count={3} selected={2} />)
+    expect(named()).toBe('Commit 2')
+  })
+
+  it('tells nothing when there is nothing to walk', async () => {
+    const user = userEvent.setup()
+    const onSelectedChange = vi.fn()
+    render(<Commits count={0} onSelectedChange={onSelectedChange} />)
+    await user.tab()
+    await user.keyboard('{ArrowDown}{End}')
+    expect(onSelectedChange).not.toHaveBeenCalled()
+  })
+
+  it('keeps the page still for the keys it answers, and opens nothing on a key it does not', () => {
+    const onActivate = vi.fn()
+    render(<Commits selected={1} onActivate={onActivate} />)
+    const grid = screen.getByRole('grid')
+    expect(fireEvent.keyDown(grid, { key: 'ArrowDown' })).toBe(false)
+    expect(fireEvent.keyDown(grid, { key: 'Enter' })).toBe(false)
+    expect(onActivate).toHaveBeenCalledWith(1)
+    onActivate.mockClear()
+    expect(fireEvent.keyDown(grid, { key: 'a' })).toBe(true)
+    expect(onActivate).not.toHaveBeenCalled()
+  })
+
+  it('brings a row chosen from outside into view', () => {
+    viewOf(24 * 11)
+    const { rerender } = render(<Commits selected={5000} />)
+    expect(named()).toBe('Commit 5000')
+    rerender(<Commits selected={42} />)
+    expect(named()).toBe('Commit 42')
+  })
+
+  it('leaves the heading its room, measured, and scrolls a far row a third of the way down what is left', async () => {
+    viewOf(24 * 11)
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.getAttribute('aria-rowindex') === '1' ? 24 : 0
+    })
+    let resized: (() => void) | undefined
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(callback: () => void) {
+          resized = callback
+        }
+        observe() {}
+        disconnect() {}
+      },
+    )
+    const user = userEvent.setup()
+    render(<Commits overscan={0} />)
+    act(() => resized!())
+    // Ten rows under a heading of one, and the one the edge cuts.
+    expect(within(screen.getByRole('grid')).getAllByRole('row')).toHaveLength(1 + 11)
+    await user.tab()
+    await user.keyboard('{End}')
+    expect(screen.getByRole('grid').scrollTop).toBe(99_999 * 24 - Math.floor(240 / 3))
+  })
+
+  it('follows a scroll the reader makes, and lays the layer over the rows it moved to', () => {
+    viewOf(24 * 11)
+    const layer = vi.fn(() => <canvas />)
+    render(<Commits overscan={0} layer={layer} />)
+    const grid = screen.getByRole('grid')
+    grid.scrollTop = 24 * 500
+    fireEvent.scroll(grid)
+    const rows = within(grid).getAllByRole('row')
+    expect(within(rows[1]!).getAllByRole('gridcell')[0]!.textContent).toBe('Commit 500')
+    const view = (layer.mock.lastCall as unknown as [{ start: number; end: number }])[0]
+    expect(view.start).toBe(500)
+    const holder = document.querySelector('canvas')!.parentElement!
+    expect(holder.style.top).toBe(`${500 * 24}px`)
+    expect(holder.style.height).toBe(`${(view.end - view.start) * 24}px`)
+  })
+
+  it('keeps a row its element when rows are put in before it, given keys', () => {
+    function Keyed({ ids }: { ids: string[] }) {
+      return (
+        <VirtualGrid
+          label="Commits"
+          count={ids.length}
+          rowHeight={24}
+          columns="grid-cols-1"
+          rowKey={(index) => ids[index]!}
+          renderRow={(index) => <VirtualGridCell>{ids[index]}</VirtualGridCell>}
+        />
+      )
+    }
+    const { rerender } = render(<Keyed ids={['b', 'c', 'd']} />)
+    const before = screen.getByText('c').closest('[role="row"]')
+    rerender(<Keyed ids={['a', 'b', 'c', 'd']} />)
+    expect(screen.getByText('c').closest('[role="row"]')).toBe(before)
+  })
+
+  it('stands its heading on the rows template, above what scrolls', () => {
+    render(<Commits />)
+    const heading = within(screen.getByRole('grid')).getAllByRole('row')[0]!
+    expect(heading.className.split(/\s+/)).toEqual(
+      expect.arrayContaining(['sticky', 'top-0', 'grid', 'bg-raise', '[z-index:var(--z-sticky)]', 'grid-cols-[1fr_8rem]']),
+    )
   })
 })

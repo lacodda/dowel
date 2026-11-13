@@ -146,17 +146,32 @@ export function VirtualGrid({
     tell(start, end)
   }, [start, end])
 
+  /* Bring a row into view: the row `aria-activedescendant` names has to be
+   * in the document. */
+  const reveal = (index: number) => {
+    const element = box.current
+    if (element === null) return
+    const next = scrollToShow({ index, rowHeight, scrollTop: element.scrollTop, viewportHeight: Math.max(0, element.clientHeight - headerHeight) })
+    if (next === element.scrollTop) return
+    element.scrollTop = next
+    setScrollTop(next)
+  }
+
+  // A row chosen from outside - the commit a branch points at, the entry a
+  // search found - is brought into view as well, once each time it changes.
+  const revealChosen = useEffectEvent(() => {
+    if (current !== null) reveal(current)
+  })
+  useEffect(() => {
+    revealChosen()
+  }, [selectedProp])
+
   const choose = (index: number) => {
     const at = Math.min(Math.max(0, index), count - 1)
     if (at < 0) return
     if (selectedProp === undefined) setOwn(at)
     onSelectedChange?.(at)
-    const element = box.current
-    if (element === null) return
-    const next = scrollToShow({ index: at, rowHeight, scrollTop: element.scrollTop, viewportHeight: Math.max(0, element.clientHeight - headerHeight) })
-    if (next === element.scrollTop) return
-    element.scrollTop = next
-    setScrollTop(next)
+    reveal(at)
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -198,10 +213,8 @@ export function VirtualGrid({
         aria-selected={isChosen}
         // A row not read yet says so, and is drawn empty at its height.
         aria-busy={cells === null || undefined}
-        onClick={() => {
-          choose(index)
-          box.current?.focus({ preventScroll: true })
-        }}
+        // The click focuses the grid on its way, which is the tab stop.
+        onClick={() => choose(index)}
         onDoubleClick={onActivate && (() => onActivate(index))}
         className={cn(
           'grid cursor-pointer items-center text-sm transition-colors',
