@@ -185,13 +185,22 @@ describe('what a primitive weighs', () => {
         'already their own modules; what the two pickers still share is one popup shape.',
     },
     'tree-view': {
-      ceiling: 4352,
+      ceiling: 6912,
       because:
         'The keyboard and the rows it moves through, which cannot be separated: the ' +
         'handler works on the flattened list the same function renders, and a tree ' +
         'whose arrows live elsewhere is a tree that can disagree with what is drawn. ' +
         'The split the gate asked for was made in the other direction - `tree-rows` ' +
-        'holds the sums with no React in them, and took 650 bytes with it.',
+        'holds the sums with no React in them, and took 650 bytes with it. The window ' +
+        '(v1.0) is the same rows cut to the view, and it belongs with the cursor: a ' +
+        'move has to scroll its row into the document before the reader is told of it.',
+    },
+    dialog: {
+      ceiling: 5376,
+      because:
+        'The popup, its three parts and the rule for where the focus lands when it ' +
+        'opens - which the drawer and the confirm dialog take from here, as they take ' +
+        'the parts: three copies of that rule would be three answers by the next version.',
     },
     table: {
       ceiling: 5120,
@@ -608,8 +617,9 @@ describe('what a primitive drags in', () => {
     // Which rows a tree shows, with no React in them - the same split
     // `table-sort` is. A product windowing a large tree imports this alone.
     'tree-rows': [],
-    // The clothes and the keyboard; the sums are next door.
-    'tree-view': ['tree-rows'],
+    // The clothes and the keyboard; the sums are next door, and the window's
+    // arithmetic is VirtualList's.
+    'tree-view': ['tree-rows', 'virtual-list'],
     // A `<dl>` and two layouts, and the layouts need different markup - which
     // is the whole reason the pair is a component rather than two divs.
     'key-value': ['class-variance-authority'],

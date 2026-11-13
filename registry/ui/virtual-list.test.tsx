@@ -2,7 +2,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
-import { VirtualList, windowFor } from './virtual-list'
+import { VirtualList, scrollToShow, windowFor } from './virtual-list'
 
 /*
  * VirtualList.
@@ -104,6 +104,36 @@ describe('the edges, all of which show as a blank list rather than an error', ()
     const without = windowFor({ ...base, scrollTop: 20_000, overscan: 0 })
     expect(withOverscan.start).toBe(without.start - 5)
     expect(withOverscan.end).toBe(without.end + 5)
+  })
+})
+
+describe('where a walked list scrolls', () => {
+  const at = (index: number, scrollTop: number) => scrollToShow({ index, rowHeight: 20, scrollTop, viewportHeight: 200 })
+
+  it('stays put while the row is in view, edges included', () => {
+    expect(at(10, 100)).toBe(100)
+    expect(at(5, 100)).toBe(100)
+    expect(at(14, 100)).toBe(100)
+  })
+
+  it('moves the least distance for a row just past either edge', () => {
+    // A row below the bottom edge ends at the bottom; above the top, starts at the top.
+    expect(at(15, 100)).toBe(120)
+    expect(at(4, 100)).toBe(80)
+    // Still near: within a screen of the edge it crossed.
+    expect(at(24, 100)).toBe(300)
+    expect(at(0, 200)).toBe(0)
+  })
+
+  it('puts a far row a third of the way down, not on the edge it crossed', () => {
+    expect(at(1000, 0)).toBe(1000 * 20 - Math.floor(200 / 3))
+    expect(at(30, 1000)).toBe(30 * 20 - 66)
+  })
+
+  it('never scrolls above the top', () => {
+    expect(at(1, 5000)).toBe(0)
+    expect(at(-3, 100)).toBe(0)
+    expect(scrollToShow({ index: 0, rowHeight: 20, scrollTop: 40, viewportHeight: 0 })).toBe(0)
   })
 })
 

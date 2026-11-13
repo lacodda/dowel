@@ -65,7 +65,7 @@ describe('which rows the tree shows', () => {
     const files = Array.from({ length: 250_000 }, (_, index) => ({ id: `f${index}`, label: `f${index}` }))
     const rows = visibleRows([{ id: 'big', label: 'big', children: files }], new Set(['big']))
     expect(rows).toHaveLength(250_001)
-    expect(rows[1]).toEqual({ node: files[0], depth: 1, parent: 'big' })
+    expect(rows[1]).toEqual({ node: files[0], depth: 1, parent: 'big', position: 0, siblings: 250_000 })
     expect(rows.at(-1)!.node.id).toBe('f249999')
   })
 
@@ -87,9 +87,22 @@ describe('which rows the tree shows', () => {
   it('starts at the depth and under the parent it is given', () => {
     const rows = visibleRows([{ id: 'x', label: 'x', children: [{ id: 'y', label: 'y' }] }], new Set(['x']), 3, 'p')
     expect(rows).toEqual([
-      { node: expect.objectContaining({ id: 'x' }), depth: 3, parent: 'p' },
-      { node: expect.objectContaining({ id: 'y' }), depth: 4, parent: 'x' },
+      { node: expect.objectContaining({ id: 'x' }), depth: 3, parent: 'p', position: 0, siblings: 1 },
+      { node: expect.objectContaining({ id: 'y' }), depth: 4, parent: 'x', position: 0, siblings: 1 },
     ])
+  })
+
+  it('says where each row stands among the nodes of its folder', () => {
+    const open = visibleRows(nodes, new Set(['src', 'ui']))
+    const place = (id: string) => {
+      const row = open.find((r) => r.node.id === id)!
+      return [row.position, row.siblings]
+    }
+    expect(place('src')).toEqual([0, 3])
+    expect(place('app')).toEqual([0, 2])
+    expect(place('ui')).toEqual([1, 2])
+    expect(place('input')).toEqual([1, 2])
+    expect(place('empty')).toEqual([2, 3])
   })
 
   it('counts an empty folder as a folder', () => {

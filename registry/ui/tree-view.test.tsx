@@ -36,7 +36,14 @@ const nodes: TreeNode[] = [
 ]
 
 const row = (name: string) => screen.getByRole('treeitem', { name })
-const cursor = () => screen.getByRole('tree').getAttribute('aria-activedescendant')
+/** The node the cursor is on, as `tree-<node id>` - and only if the row it
+ * names is in the document, which is the whole point of the attribute. */
+const cursor = () => {
+  const id = screen.getByRole('tree').getAttribute('aria-activedescendant')
+  if (id === null) return null
+  expect(document.getElementById(id), 'the cursor names a row that is not drawn').not.toBeNull()
+  return `tree-${decodeURIComponent(id.slice(id.lastIndexOf('-') + 1))}`
+}
 
 describe('the keyboard, which is the half that gets left out', () => {
   it('is one tab stop, not one per node', async () => {
@@ -215,5 +222,89 @@ describe('the rest', () => {
     await expectNoA11yViolations(
       <TreeView nodes={nodes} open={new Set(['src', 'ui'])} selected="button" label="Files" />,
     )
+  })
+})
+
+describe('ids, the meta slot and where a row stands', () => {
+  it('names rows whose ids hold spaces, and two trees never share an id', async () => {
+    // furca: a file path as a node id put a space in `aria-activedescendant`,
+    // which reads as two ids, neither of them the row.
+    const spaced: TreeNode[] = [
+      { id: 'docs/read me.md', label: 'read me.md' },
+      { id: 'docs/a b.md', label: 'a b.md' },
+    ]
+    render(
+      <>
+        <TreeView nodes={spaced} label="Left" />
+        <TreeView nodes={spaced} label="Right" />
+      </>,
+    )
+    const [left, right] = screen.getAllByRole('tree')
+    const named = left!.getAttribute('aria-activedescendant')!
+    expect(named).not.toMatch(/\s/)
+    expect(document.getElementById(named)?.textContent).toContain('read me.md')
+    expect(right!.getAttribute('aria-activedescendant')).not.toBe(named)
+    const ids = screen.getAllByRole('treeitem').map((item) => item.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('stands the meta at the end of the row, at its own width, while the label truncates', () => {
+    render(<TreeView nodes={[{ id: 'a', label: 'App.tsx', meta: '+12 −3' }, { id: 'b', label: 'logo.png' }]} label="Changes" />)
+    const meta = screen.getByText('+12 −3')
+    expect(meta.className.split(/\s+/)).toEqual(expect.arrayContaining(['ml-auto', 'shrink-0']))
+    const label = screen.getByText('App.tsx')
+    expect(label.className.split(/\s+/)).toEqual(expect.arrayContaining(['min-w-0', 'flex-1', 'truncate']))
+    // A row without one draws nothing there.
+    expect(row('logo.png').children).toHaveLength(2)
+  })
+
+  it('says where each row stands among its folder, which a windowed tree cannot leave to counting', () => {
+    render(<TreeView nodes={nodes} open={new Set(['src', 'ui'])} label="Files" />)
+    expect(row('ui').getAttribute('aria-posinset')).toBe('2')
+    expect(row('ui').getAttribute('aria-setsize')).toBe('2')
+    expect(row('README.md').getAttribute('aria-posinset')).toBe('2')
+    expect(row('README.md').getAttribute('aria-setsize')).toBe('3')
+  })
+})
+
+describe('a tree of tens of thousands', () => {
+  const many: TreeNode[] = [
+    {
+      id: 'big',
+      label: 'big',
+      children: Array.from({ length: 20_000 }, (_, index) => ({ id: `big/f${index}`, label: `f${index}.ts` })),
+    },
+  ]
+
+  it('draws a window of rows, not all of them, each held to its height', () => {
+    render(<TreeView nodes={many} open={new Set(['big'])} label="Changes" rowHeight={24} className="h-96" />)
+    const drawn = screen.getAllByRole('treeitem')
+    expect(drawn.length).toBeGreaterThan(1)
+    expect(drawn.length).toBeLessThan(50)
+    expect(drawn[0]!.style.height).toBe('24px')
+    // The spacer the scrollbar measures is every row tall.
+    const spacer = screen.getByRole('tree').firstElementChild as HTMLElement
+    expect(spacer.style.height).toBe(`${20_001 * 24}px`)
+    expect(screen.getByRole('tree').className).toContain('overflow-y-auto')
+  })
+
+  it('scrolls the cursor into view, so the row a reader is told about exists', async () => {
+    const user = userEvent.setup()
+    render(<TreeView nodes={many} open={new Set(['big'])} label="Changes" rowHeight={24} className="h-96" />)
+    const tree = screen.getByRole('tree')
+    await user.tab()
+    await user.keyboard('{End}')
+    expect(cursor()).toBe('tree-big/f19999')
+    expect(tree.scrollTop).toBeGreaterThan(19_000 * 24)
+    await user.keyboard('{ArrowUp}{ArrowUp}')
+    expect(cursor()).toBe('tree-big/f19997')
+    // Left from a deep row leaves for the parent, a whole tree away.
+    await user.keyboard('{ArrowLeft}')
+    expect(cursor()).toBe('tree-big')
+    expect(tree.scrollTop).toBe(0)
+  })
+
+  it('passes axe, windowed', async () => {
+    await expectNoA11yViolations(<TreeView nodes={many} open={new Set(['big'])} label="Changes" rowHeight={24} className="h-96" />)
   })
 })

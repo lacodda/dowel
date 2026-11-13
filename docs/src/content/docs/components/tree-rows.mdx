@@ -25,8 +25,15 @@ and answer it differently at each depth.
 
 ```ts
 const rows = visibleRows(nodes, open)
-// [{ node, depth: 0, parent: undefined }, { node, depth: 1, parent: 'src' }, …]
+// [{ node, depth: 0, parent: undefined, position: 0, siblings: 3 }, { node, depth: 1, parent: 'src', position: 0, siblings: 2 }, …]
 ```
+
+**It walks with a stack of its own**, not a call per folder whose rows are
+spread into the parent's - which ran out of stack at two hundred thousand files
+in one folder.
+
+**`position` and `siblings` are a reader's "3 of 12"**, which a windowed tree
+has to say because the rows it does not draw cannot be counted.
 
 **`parent` is what Left uses.** Getting out of a deep folder in one press
 rather than walking back up through every sibling needs to know which branch a
@@ -49,4 +56,4 @@ shows nothing, and `isBranch` counts it as one.
 | `visibleRows` | `(nodes, open, depth?, parent?) => TreeRow[]` | The rows, in the order the eye travels |
 | `isBranch` | `(node) => boolean` | Something that opens, even if empty |
 | `TreeNode` | `{ id, label, children?, empty? }` | |
-| `TreeRow` | `{ node, depth, parent? }` | |
+| `TreeRow` | `{ node, depth, parent?, position, siblings }` | `position` among its folder's nodes from 0, of `siblings` |

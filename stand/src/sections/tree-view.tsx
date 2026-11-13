@@ -37,6 +37,7 @@ export function TreeViewSection() {
    * cursor, the selected row, the levels a reader is told about. A picture of
    * a tree should be a picture of a tree. */
   const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set(['src', 'ui', 'docs']))
+  const [commitOpen, setCommitOpen] = useState<ReadonlySet<string>>(() => new Set(['generated', 'src']))
 
   return (
     <>
@@ -60,9 +61,33 @@ export function TreeViewSection() {
           className="w-72 rounded-md border border-line p-1"
         />
       </Row>
+
+      <Row label="the changed files of a large commit - twelve thousand rows, a screenful drawn, the count and size at the end of each row; End and Home walk the whole of it">
+        <TreeView
+          nodes={commit}
+          open={commitOpen}
+          onOpenChange={setCommitOpen}
+          label="Changed files"
+          rowHeight={24}
+          className="h-60 w-88 rounded-md border border-line p-1"
+        />
+      </Row>
     </>
   )
 }
+
+/* Twelve thousand files in four folders, each with what changed in it - the
+ * shape furca's tree of a commit has. Made, not stored: the stand is a picture
+ * of the component, and a fixture of this size would be most of the page. */
+const commit: TreeNode[] = ['assets', 'generated', 'locales', 'src'].map((folder, at) => ({
+  id: folder,
+  label: folder,
+  children: Array.from({ length: 3000 }, (_, index) => ({
+    id: `${folder}/file ${index}.ts`,
+    label: `file ${index}.ts`,
+    meta: at === 0 ? `${(index % 9) + 1}.${index % 10} kB` : `+${(index * 7) % 40} −${(index * 3) % 12}`,
+  })),
+}))
 
 export function TreeRowsSection() {
   /* The same tree, flattened twice: the sums that decide what a TreeView draws
