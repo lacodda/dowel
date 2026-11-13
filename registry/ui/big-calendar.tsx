@@ -95,6 +95,15 @@ export function foldDay(count: number, lines: number): { shown: number; more: nu
   return { shown, more: count - shown }
 }
 
+/** The lines of a day with a space between each two. A day is named by its
+ * lines, and lines that are not buttons are blocks whose words a reader's
+ * name runs together - "ClipSingle" - while the face shows them apart, which
+ * axe reports as a name that does not match the words on screen. The day is a
+ * flex column, which draws a space-only run as nothing. */
+function spaced(lines: readonly ReactNode[]): ReactNode[] {
+  return lines.flatMap((line, index) => (index === 0 ? [line] : [' ', line]))
+}
+
 /** The day an element is in, or `null` - for the target of a drop, or for
  * `document.elementFromPoint` under a pointer that is carrying something. */
 export function dayOf(target: EventTarget | null): IsoDate | null {
@@ -422,7 +431,7 @@ export function BigCalendar({
                     {isOpen ? (
                       <ScrollArea label={format.day.format(asDate(date))} orientation="vertical" className="flex-1">
                         <div id={`${id}${date}l`} className="flex flex-col">
-                          {items}
+                          {spaced(items)}
                           <Fold onClick={() => { setOpen(null); moveTo(date) }}>{fewerLabel}</Fold>
                         </div>
                       </ScrollArea>
@@ -433,7 +442,7 @@ export function BigCalendar({
                         id={`${id}${date}l`}
                         className="flex min-h-0 flex-1 flex-col overflow-hidden"
                       >
-                        {items.slice(0, fold.shown)}
+                        {spaced(items.slice(0, fold.shown))}
                         {fold.more > 0 && (
                           <Fold onClick={() => { setOpen(date); moveTo(date) }}>{moreLabel(fold.more)}</Fold>
                         )}

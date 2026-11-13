@@ -481,6 +481,15 @@ describe('BigCalendar over whole weeks', () => {
     expect(screen.getByRole('grid', { name: /^28 December 2026\s*–\s*3 January 2027$/ })).toBeDefined()
   })
 
+  it('keeps the words of lines that are not buttons apart in the name of their day', () => {
+    // Display-only lines are blocks, and a name built from blocks ran their
+    // words together ("ClipSingle") while the face showed them apart - axe's
+    // label-content-name-mismatch, caught on the stand's week.
+    render(<Week week="2026-09-14" />)
+    const lines = document.getElementById(day('2026-09-14').getAttribute('aria-labelledby')!.split(' ')[1]!)!
+    expect(lines.textContent).toContain('Clip Single')
+  })
+
   it('folds a busy day by the same sum as the month', () => {
     render(<Week week="2026-09-14" />)
     expect(within(day('2026-09-14')).getByRole('button', { name: '3 more' })).toBeDefined()
