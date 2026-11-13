@@ -4,6 +4,7 @@ import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
+import { compileClasses } from '../../tests/compile'
 import { setKeymap, useCommandList } from './commands'
 import { SearchField } from './search-field'
 
@@ -180,6 +181,42 @@ describe('SearchField', () => {
     act(() => setKeymap({ search: 'Mod+/' }))
     expect([...container.querySelectorAll('kbd')].map((key) => key.textContent)).toEqual(['Ctrl', '/'])
     act(() => setKeymap({}))
+  })
+
+  it('makes room for the hint by its measured width, however long the key', async () => {
+    // A fixed room fitted `Ctrl K`; a rebound `Ctrl Shift F` ran under the
+    // typed text. jsdom lays nothing out, so the width is given.
+    const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth')!
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      get() {
+        return (this as HTMLElement).querySelector('kbd') ? 92 : 0
+      },
+    })
+    try {
+      const { container } = render(<Example shortcut={SEARCH} />)
+      const input = screen.getByRole('searchbox')
+      expect(input.style.getPropertyValue('--hint-width')).toBe('92px')
+      expect(input.className).toContain('pr-[calc(var(--hint-width)+var(--spacing)*4)]')
+      expect(input.className).not.toContain('pr-14')
+      // The box measured is the one holding the keys, and it is not read out.
+      expect(container.querySelector('kbd')!.closest('[aria-hidden]')).not.toBeNull()
+      // And the class compiles to the sum, spaced so `calc` accepts it.
+      const css = await compileClasses(['pr-[calc(var(--hint-width)+var(--spacing)*4)]'])
+      expect(css).toMatch(/padding-right: calc\(var\(--hint-width\) \+ var\(--spacing\) \* 4\)/)
+    } finally {
+      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', width)
+    }
+  })
+
+  it('keeps no room for a hint it does not show', async () => {
+    const user = userEvent.setup()
+    render(<Example clearLabel="Clear" shortcut={SEARCH} />)
+    await user.type(screen.getByRole('searchbox'), 'plum')
+    const input = screen.getByRole('searchbox')
+    expect(input.className).toContain('pr-8')
+    expect(input.className).not.toContain('--hint-width')
+    expect(input.style.getPropertyValue('--hint-width')).toBe('')
   })
 
   it('carries no colour outside the vocabulary', () => {
