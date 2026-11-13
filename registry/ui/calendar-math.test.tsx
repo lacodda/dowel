@@ -189,6 +189,29 @@ describe('the weeks a month touches', () => {
   })
 })
 
+describe('what counts as a date', () => {
+  it('takes the whole string, and nothing either side of it', () => {
+    expect(isIsoDate('2026-09-02')).toBe(true)
+    expect(isIsoDate('2026-09-02x')).toBe(false)
+    expect(isIsoDate('x2026-09-02')).toBe(false)
+  })
+
+  it('refuses a month or a day that is not one, at both ends', () => {
+    expect(isIsoDate('2026-00-10')).toBe(false)
+    expect(isIsoDate('2026-13-10')).toBe(false)
+    expect(isIsoDate('2026-09-00')).toBe(false)
+    expect(isIsoDate('2026-09-31')).toBe(false)
+    expect(isIsoDate('2026-12-31')).toBe(true)
+    expect(isIsoDate('2026-01-01')).toBe(true)
+  })
+
+  it('writes a year below a thousand with its four digits', () => {
+    expect(addDays('0999-12-31', 1)).toBe('1000-01-01')
+    expect(addDays('1000-01-01', -1)).toBe('0999-12-31')
+    expect(isIsoDate(addDays('0099-06-01', 1))).toBe(true)
+  })
+})
+
 describe('a range of whole weeks', () => {
   it('starts on the locale first day of the week the date falls in', () => {
     // Thursday 17 September 2026: the week is the 14th to the 20th from

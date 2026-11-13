@@ -133,7 +133,7 @@ export function ConfirmDialogPopup({
         // The keeping answer in the actions, then any close; else the
         // dialog's rule.
         initialFocus={() =>
-          openingFocus(portal.current, ['[data-dialog-actions] [data-confirm-close]', '[data-confirm-close]'])
+          openingFocus(portal.current, '[data-dialog-actions] [data-confirm-close]', '[data-confirm-close]')
         }
         {...props}
       >

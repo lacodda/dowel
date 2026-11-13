@@ -16,6 +16,7 @@ import {
   DialogPopup,
   DialogTitle,
   dialogPopupVariants,
+  openingFocus,
 } from './dialog'
 
 const SIZES = ['sm', 'md', 'lg', 'xl', 'full'] as const
@@ -47,6 +48,61 @@ function Editor() {
  * and coming back, Escape, the name the popup announces. Those are what is
  * tested here - the drawing is checked by the picture on the stand.
  */
+
+describe('where a dialog opens its focus', () => {
+  /** A portal holding a popup, built by hand: the rule is a function of the
+   * popup's contents and nothing else. */
+  function portalWith(inner: string, role = 'dialog') {
+    const portal = document.createElement('div')
+    portal.innerHTML = `<div role="${role}" tabindex="-1">${inner}</div>`
+    document.body.append(portal)
+    return portal
+  }
+
+  it('leaves the choice to Base UI when there is no popup yet', () => {
+    expect(openingFocus(null)).toBe(true)
+    expect(openingFocus(document.createElement('div'))).toBe(true)
+  })
+
+  it('takes the first control of the body that a Tab would reach', () => {
+    const portal = portalWith(`
+      <div><button>Close</button></div>
+      <div data-dialog-body>
+        <div tabindex="-1">not a stop</div>
+        <button disabled>off</button>
+        <div hidden><input aria-label="hidden" /></div>
+        <div inert><input aria-label="inert" /></div>
+        <input aria-label="Name" />
+      </div>
+      <div data-dialog-actions><button>Save</button></div>`)
+    expect((openingFocus(portal) as HTMLElement).getAttribute('aria-label')).toBe('Name')
+    portal.remove()
+  })
+
+  it('opens on the popup when the body has no control, or there is no body', () => {
+    const quiet = portalWith('<div><button>Close</button></div><div data-dialog-body><p>Three things.</p></div>')
+    expect(openingFocus(quiet)).toBe(quiet.firstElementChild)
+    quiet.remove()
+    const bodiless = portalWith('<div><button>Close</button></div><div data-dialog-actions><button>Done</button></div>')
+    expect(openingFocus(bodiless)).toBe(bodiless.firstElementChild)
+    bodiless.remove()
+  })
+
+  it('asks what it is told to prefer, in the order given rather than the document order', () => {
+    const portal = portalWith(
+      `<div><button data-confirm-close>×</button></div>
+       <div data-dialog-body><a href="#more">What it takes with it</a></div>
+       <div data-dialog-actions><button data-confirm-close>Keep it</button></div>`,
+      'alertdialog',
+    )
+    const actions = '[data-dialog-actions] [data-confirm-close]'
+    expect((openingFocus(portal, actions, '[data-confirm-close]') as HTMLElement).textContent).toBe('Keep it')
+    // A preference that finds nothing hands on to the next, then to the body.
+    expect((openingFocus(portal, '[data-missing]', '[data-confirm-close]') as HTMLElement).textContent).toBe('×')
+    expect((openingFocus(portal, '[data-missing]') as HTMLElement).textContent).toBe('What it takes with it')
+    portal.remove()
+  })
+})
 
 describe('Dialog', () => {
   it('is closed until something opens it', () => {

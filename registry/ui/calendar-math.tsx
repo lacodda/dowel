@@ -142,13 +142,10 @@ export function monthGrid(month: IsoDate, locale: string): IsoDate[][] {
  * a sixth row made entirely of the next month makes every month look six
  * weeks long, and takes a sixth of the height from the days that are in it. */
 export function monthWeeks(month: IsoDate, locale: string): IsoDate[][] {
-  const { year, month: monthNumber } = parts(month)
-  return monthGrid(month, locale).filter((week) =>
-    week.some((date) => {
-      const day = parts(date)
-      return day.year === year && day.month === monthNumber
-    }),
-  )
+  // The month's number alone decides it: six weeks reach at most into the
+  // months either side, never into the same month of another year.
+  const { month: monthNumber } = parts(month)
+  return monthGrid(month, locale).filter((week) => week.some((date) => parts(date).month === monthNumber))
 }
 
 /** Whole weeks from the one `date` falls in: `count` rows of seven, each

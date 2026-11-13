@@ -71,7 +71,7 @@ describe('TileButton', () => {
     rerender(<TileButton selected>Warm tape</TileButton>)
     expect(classes(tile)).toContain('border-accent')
     expect(classes(tile)).not.toContain('border-line')
-    expect(tile.hasAttribute('data-selected')).toBe(true)
+    expect(tile.getAttribute('data-selected')).toBe('')
     // The second line: over the picture and inside the border.
     for (const edge of ['after:absolute', 'after:inset-0', 'after:ring-1', 'after:ring-inset', 'after:ring-accent', 'after:pointer-events-none']) {
       expect(classes(tile)).toContain(edge)

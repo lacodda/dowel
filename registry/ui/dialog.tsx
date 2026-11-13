@@ -138,7 +138,7 @@ const TABBABLE = 'a[href], button, input, select, textarea, [tabindex], [content
 /** What `initialFocus` resolves to: an element, or `true` for Base UI's own
  * choice when there is no popup to look in. `prefer` is asked in its order -
  * a selector list would answer in the document's. */
-export function openingFocus(portal: HTMLElement | null, prefer: readonly string[] = []): HTMLElement | true {
+export function openingFocus(portal: HTMLElement | null, ...prefer: string[]): HTMLElement | true {
   const popup = portal?.querySelector<HTMLElement>('[role="dialog"], [role="alertdialog"]')
   if (popup == null) return true
   for (const selector of prefer) {
@@ -146,7 +146,8 @@ export function openingFocus(portal: HTMLElement | null, prefer: readonly string
     if (preferred !== null) return preferred
   }
   const body = popup.querySelector<HTMLElement>('[data-dialog-body]')
-  const first = [...(body?.querySelectorAll<HTMLElement>(TABBABLE) ?? [])].find(
+  if (body === null) return popup
+  const first = [...body.querySelectorAll<HTMLElement>(TABBABLE)].find(
     (element) => element.tabIndex >= 0 && !element.matches(':disabled') && element.closest('[hidden], [inert]') === null,
   )
   return first ?? popup

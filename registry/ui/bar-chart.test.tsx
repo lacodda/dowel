@@ -173,6 +173,21 @@ describe('the baseline', () => {
     expect(rule.className).not.toContain('dashed')
   })
 
+  it('draws at either end of the scale, and nothing on a scale of nothing', () => {
+    expect(render(<Baseline value={0} max={40} />).container.firstElementChild).not.toBeNull()
+    expect(render(<Baseline value={40} max={40} />).container.firstElementChild).not.toBeNull()
+    // A ceiling of zero is no scale, even for a value of zero on it.
+    expect(render(<Baseline value={0} max={0} />).container.firstElementChild).toBeNull()
+  })
+
+  it('names itself beside the rule only when given words', () => {
+    const named = render(<Baseline value={20} max={40}>median 20h</Baseline>).container.firstElementChild!
+    expect(named.children).toHaveLength(2)
+    expect(named.lastElementChild!.textContent).toBe('median 20h')
+    const bare = render(<Baseline value={20} max={40} />).container.firstElementChild!
+    expect(bare.children).toHaveLength(1)
+  })
+
   it('draws nothing when it falls outside the plot', () => {
     // Clamped to the top it would claim the median is the tallest week.
     expect(render(<Baseline value={80} max={40} />).container.firstElementChild).toBeNull()
