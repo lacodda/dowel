@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { TreeView } from './tree-view'
 import type { TreeNode } from './tree-rows'
@@ -306,5 +306,106 @@ describe('a tree of tens of thousands', () => {
 
   it('passes axe, windowed', async () => {
     await expectNoA11yViolations(<TreeView nodes={many} open={new Set(['big'])} label="Changes" rowHeight={24} className="h-96" />)
+  })
+})
+
+describe('how a row is drawn', () => {
+  it('tints the chosen row, and marks the cursor apart from it', async () => {
+    const user = userEvent.setup()
+    render(<TreeView nodes={nodes} open={new Set(['src'])} selected="app" label="Files" />)
+    const classes = (name: string) => row(name).className.split(/\s+/)
+    expect(classes('App.tsx')).toContain('bg-accent-soft')
+    expect(classes('App.tsx')).not.toContain('bg-softer')
+    expect(classes('ui')).toContain('hover:bg-soft')
+    expect(classes('ui')).not.toContain('bg-accent-soft')
+    await user.tab()
+    await user.keyboard('{ArrowDown}')
+    // The cursor on another row is marked, quieter than the choice.
+    expect(classes('ui')).toContain('bg-softer')
+    expect(classes('App.tsx')).not.toContain('bg-softer')
+    expect(classes('README.md')).not.toContain('bg-softer')
+  })
+
+  it('indents by depth, and turns the caret of an open folder', () => {
+    render(<TreeView nodes={nodes} open={new Set(['src', 'ui'])} label="Files" />)
+    expect(row('src').style.paddingLeft).toBe('8px')
+    expect(row('Button.tsx').style.paddingLeft).toBe(`${2 * 16 + 8}px`)
+    const caret = (name: string) => row(name).firstElementChild!
+    expect(caret('src').textContent).toBe('▾')
+    expect(caret('src').className).not.toContain('opacity-0')
+    // A leaf keeps the caret's room, drawn as nothing.
+    expect(caret('App.tsx').className).toContain('opacity-0')
+    expect(caret('README.md').className).toContain('opacity-0')
+  })
+
+  it('shows a closed folder with its caret pointing on', () => {
+    render(<TreeView nodes={nodes} label="Files" />)
+    expect(row('src').firstElementChild!.textContent).toBe('▸')
+  })
+
+  it('pads a drawn-in-full row, and holds a windowed one to its height instead', () => {
+    const { unmount } = render(<TreeView nodes={nodes} label="Files" />)
+    expect(row('src').className.split(/\s+/)).toContain('py-1')
+    expect(row('src').style.height).toBe('')
+    expect(screen.getByRole('tree').className).not.toContain('overflow-y-auto')
+    unmount()
+    render(<TreeView nodes={nodes} label="Files" rowHeight={28} />)
+    expect(row('src').className.split(/\s+/)).not.toContain('py-1')
+    expect(row('src').style.height).toBe('28px')
+  })
+})
+
+describe('the window, measured', () => {
+  const height = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight')!
+  afterEach(() => {
+    Object.defineProperty(Element.prototype, 'clientHeight', height)
+    vi.unstubAllGlobals()
+  })
+
+  const many: TreeNode[] = Array.from({ length: 5000 }, (_, index) => ({ id: `f${index}`, label: `f${index}` }))
+
+  it('draws as many rows as its box holds, and more when the box grows', () => {
+    let observed: (() => void) | undefined
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(callback: () => void) {
+          observed = callback
+        }
+        observe() {}
+        disconnect() {}
+      },
+    )
+    let box = 240
+    Object.defineProperty(Element.prototype, 'clientHeight', { configurable: true, get: () => box })
+    render(<TreeView nodes={many} label="Files" rowHeight={24} overscan={0} />)
+    // Ten rows of room, and the one the bottom edge cuts.
+    expect(screen.getAllByRole('treeitem')).toHaveLength(11)
+    box = 480
+    act(() => observed!())
+    expect(screen.getAllByRole('treeitem')).toHaveLength(21)
+  })
+
+  it('follows a scroll the reader makes', () => {
+    Object.defineProperty(Element.prototype, 'clientHeight', { configurable: true, get: () => 240 })
+    render(<TreeView nodes={many} label="Files" rowHeight={24} overscan={0} />)
+    const tree = screen.getByRole('tree')
+    tree.scrollTop = 24 * 100
+    fireEvent.scroll(tree)
+    expect(screen.getAllByRole('treeitem')[0]!.textContent).toContain('f100')
+  })
+
+  it('moves the least distance to show the next row, and none for a row in view', async () => {
+    Object.defineProperty(Element.prototype, 'clientHeight', { configurable: true, get: () => 240 })
+    const user = userEvent.setup()
+    render(<TreeView nodes={many} label="Files" rowHeight={24} />)
+    const tree = screen.getByRole('tree')
+    await user.tab()
+    await user.keyboard('{ArrowDown}{ArrowDown}')
+    expect(tree.scrollTop).toBe(0)
+    for (let step = 0; step < 9; step += 1) await user.keyboard('{ArrowDown}')
+    // Row 11 is just below a box of ten rows: one row's scroll.
+    expect(cursor()).toBe('tree-f11')
+    expect(tree.scrollTop).toBe(24 * 12 - 240)
   })
 })
