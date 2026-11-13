@@ -9989,13 +9989,30 @@ thumb and merely adequate for two:
 />
 ```
 
+**Say the value in the product's words.** A reader hears the formatted number
+unless `getValueText` says otherwise, and a number is not always what the
+thumb means: a position in a recording is "1:23 of 3:45", not "83".
+
+```tsx
+<Slider
+  aria-label={t('player.position')}
+  value={time}
+  max={duration}
+  step={0.1}
+  onValueChange={seek}
+  getValueText={(_, value) => t('player.at', { time: clock(value), length: clock(duration) })}
+/>
+```
+
 **`onValueCommitted` fires once, when the drag ends.** For the expensive thing
 a product does not want to run on every pixel of movement — a query, a save, a
 re-render of something large.
 
 **The hit area is bigger than the track.** The `Control` is what a pointer aims
-at and it is much taller than the 6px the reader sees; making the drawn track
-the hit area is the commonest way a slider ends up hard to grab.
+at, and it is the pointer floor tall (`--target-min`, 24px) while the track the
+reader sees is 4px; making the drawn track the hit area is the commonest way a
+slider ends up hard to grab. Disabled, the whole slider fades and the pointer
+says nothing will move.
 
 ## Props
 
@@ -10013,6 +10030,7 @@ the hit area is the commonest way a slider ends up hard to grab.
 | `orientation` | `horizontal \| vertical` |  | The direction the track runs. A vertical slider is a fixed `h-40` tall. |
 | `showValue` | `boolean` | `false` | Show the current value beside the track. Off by default: on a row of settings the numbers are noise, and where the figure matters a NumberField is the better control. |
 | `getThumbLabel` | `(index: number) => string` |  | What each thumb is called, by index. |
+| `getValueText` | `(formatted: string, value: number, index: number) => string` |  | What a thumb's value is read out as, in the product's words: a position in a recording is "1:23 of 3:45", not "83". Given the value as `format` writes it, the number, and the thumb's index. Without it a reader hears the formatted number. |
 | `disabled` | `boolean` |  | Stops the slider taking input. |
 | `name` | `string` |  | The field name, for a form that posts the value. |
 | `aria-label` | `string` |  | Names the slider as a group, and is the fallback label of every thumb. |
@@ -12127,8 +12145,15 @@ and answer it differently at each depth.
 
 ```ts
 const rows = visibleRows(nodes, open)
-// [{ node, depth: 0, parent: undefined }, { node, depth: 1, parent: 'src' }, …]
+// [{ node, depth: 0, parent: undefined, position: 0, siblings: 3 }, { node, depth: 1, parent: 'src', position: 0, siblings: 2 }, …]
 ```
+
+**It walks with a stack of its own**, not a call per folder whose rows are
+spread into the parent's - which ran out of stack at two hundred thousand files
+in one folder.
+
+**`position` and `siblings` are a reader's "3 of 12"**, which a windowed tree
+has to say because the rows it does not draw cannot be counted.
 
 **`parent` is what Left uses.** Getting out of a deep folder in one press
 rather than walking back up through every sibling needs to know which branch a
@@ -12151,7 +12176,7 @@ shows nothing, and `isBranch` counts it as one.
 | `visibleRows` | `(nodes, open, depth?, parent?) => TreeRow[]` | The rows, in the order the eye travels |
 | `isBranch` | `(node) => boolean` | Something that opens, even if empty |
 | `TreeNode` | `{ id, label, children?, empty? }` | |
-| `TreeRow` | `{ node, depth, parent? }` | |
+| `TreeRow` | `{ node, depth, parent?, position, siblings }` | `position` among its folder's nodes from 0, of `siblings` |
 
 ---
 
@@ -12210,6 +12235,27 @@ with `empty`, opens, and shows nothing.
 folder opens is a different component with a different problem: a spinner per
 node, a request per open, an error state inside a row.
 
+**What stands at the end of a row is `meta`** — a count, a size, a badge:
+"+12 −3", "2.4 MB". It keeps its own width at the right edge while the label
+truncates, so the column of figures stays a column whatever the names.
+
+**A tree of tens of thousands draws a window of them.** Give it `rowHeight` and
+a height, and it draws only the rows in view, scrolling in its own box — the
+changed files of a large commit, where every row in the document would be laid
+out again on every change. The keyboard is the same: the cursor walks the whole
+tree, and each move scrolls its row into view first, because the row a reader
+is told about has to exist. Each row says where it stands among its folder's
+nodes (`aria-posinset`, `aria-setsize`), because a reader can no longer count
+rows that are not there.
+
+```tsx
+<TreeView nodes={changes} label={t('changes')} rowHeight={24} className="h-full" />
+```
+
+**Ids are the tree's own.** A row's id is made from the tree's and the node's,
+so two trees on a page never share one and a node id with spaces in it - a file
+path - still names its row.
+
 **The sums live next door**, in
 [tree-rows](/dowel/components/tree-rows/), with no React in them — the same
 split [table-sort](/dowel/components/table-sort/) is. `visibleRows` is also the
@@ -12226,6 +12272,8 @@ tree inside a [VirtualList](/dowel/components/virtual-list/).
 | `selected` | `string` |  | Which row is chosen - the file being edited, not the one the cursor is on. The two move apart: a reader walks the tree with arrows without opening anything until Enter. |
 | `onSelect` | `(id: string) => void` |  | Called with the id of a leaf when it is chosen by click, Enter or Space. A folder toggles instead. |
 | `label` (required) | `string` |  | What a screen reader calls the tree. Required: a bare tree announces "tree" and nothing else, and the word belongs to the product. |
+| `rowHeight` | `number` |  | How tall a row is, in pixels. Given, the tree draws only the rows in view and scrolls in its own box, so give it a height; rows are held to this height. Left out, every row is drawn and the tree is as tall as they are. |
+| `overscan` | `number` | `8` | How many rows to draw beyond each edge of the view, when windowed. |
 | `className` | `string` |  |  |
 
 ---

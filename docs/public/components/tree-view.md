@@ -53,6 +53,27 @@ with `empty`, opens, and shows nothing.
 folder opens is a different component with a different problem: a spinner per
 node, a request per open, an error state inside a row.
 
+**What stands at the end of a row is `meta`** — a count, a size, a badge:
+"+12 −3", "2.4 MB". It keeps its own width at the right edge while the label
+truncates, so the column of figures stays a column whatever the names.
+
+**A tree of tens of thousands draws a window of them.** Give it `rowHeight` and
+a height, and it draws only the rows in view, scrolling in its own box — the
+changed files of a large commit, where every row in the document would be laid
+out again on every change. The keyboard is the same: the cursor walks the whole
+tree, and each move scrolls its row into view first, because the row a reader
+is told about has to exist. Each row says where it stands among its folder's
+nodes (`aria-posinset`, `aria-setsize`), because a reader can no longer count
+rows that are not there.
+
+```tsx
+<TreeView nodes={changes} label={t('changes')} rowHeight={24} className="h-full" />
+```
+
+**Ids are the tree's own.** A row's id is made from the tree's and the node's,
+so two trees on a page never share one and a node id with spaces in it - a file
+path - still names its row.
+
 **The sums live next door**, in
 [tree-rows](/dowel/components/tree-rows/), with no React in them — the same
 split [table-sort](/dowel/components/table-sort/) is. `visibleRows` is also the
@@ -69,4 +90,6 @@ tree inside a [VirtualList](/dowel/components/virtual-list/).
 | `selected` | `string` |  | Which row is chosen - the file being edited, not the one the cursor is on. The two move apart: a reader walks the tree with arrows without opening anything until Enter. |
 | `onSelect` | `(id: string) => void` |  | Called with the id of a leaf when it is chosen by click, Enter or Space. A folder toggles instead. |
 | `label` (required) | `string` |  | What a screen reader calls the tree. Required: a bare tree announces "tree" and nothing else, and the word belongs to the product. |
+| `rowHeight` | `number` |  | How tall a row is, in pixels. Given, the tree draws only the rows in view and scrolls in its own box, so give it a height; rows are held to this height. Left out, every row is drawn and the tree is as tall as they are. |
+| `overscan` | `number` | `8` | How many rows to draw beyond each edge of the view, when windowed. |
 | `className` | `string` |  |  |

@@ -6266,6 +6266,11 @@
             "description": "What each thumb is called, by index."
           },
           {
+            "name": "getValueText",
+            "type": "(formatted: string, value: number, index: number) => string",
+            "description": "What a thumb's value is read out as, in the product's words: a position in a recording is \"1:23 of 3:45\", not \"83\". Given the value as `format` writes it, the number, and the thumb's index. Without it a reader hears the formatted number."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "description": "Stops the slider taking input."
@@ -7850,6 +7855,17 @@
             "type": "string",
             "required": true,
             "description": "What a screen reader calls the tree. Required: a bare tree announces \"tree\" and nothing else, and the word belongs to the product."
+          },
+          {
+            "name": "rowHeight",
+            "type": "number",
+            "description": "How tall a row is, in pixels. Given, the tree draws only the rows in view and scrolls in its own box, so give it a height; rows are held to this height. Left out, every row is drawn and the tree is as tall as they are."
+          },
+          {
+            "name": "overscan",
+            "type": "number",
+            "default": "8",
+            "description": "How many rows to draw beyond each edge of the view, when windowed."
           },
           {
             "name": "className",

@@ -38,13 +38,30 @@ thumb and merely adequate for two:
 />
 ```
 
+**Say the value in the product's words.** A reader hears the formatted number
+unless `getValueText` says otherwise, and a number is not always what the
+thumb means: a position in a recording is "1:23 of 3:45", not "83".
+
+```tsx
+<Slider
+  aria-label={t('player.position')}
+  value={time}
+  max={duration}
+  step={0.1}
+  onValueChange={seek}
+  getValueText={(_, value) => t('player.at', { time: clock(value), length: clock(duration) })}
+/>
+```
+
 **`onValueCommitted` fires once, when the drag ends.** For the expensive thing
 a product does not want to run on every pixel of movement — a query, a save, a
 re-render of something large.
 
 **The hit area is bigger than the track.** The `Control` is what a pointer aims
-at and it is much taller than the 6px the reader sees; making the drawn track
-the hit area is the commonest way a slider ends up hard to grab.
+at, and it is the pointer floor tall (`--target-min`, 24px) while the track the
+reader sees is 4px; making the drawn track the hit area is the commonest way a
+slider ends up hard to grab. Disabled, the whole slider fades and the pointer
+says nothing will move.
 
 ## Props
 
@@ -62,6 +79,7 @@ the hit area is the commonest way a slider ends up hard to grab.
 | `orientation` | `horizontal \| vertical` |  | The direction the track runs. A vertical slider is a fixed `h-40` tall. |
 | `showValue` | `boolean` | `false` | Show the current value beside the track. Off by default: on a row of settings the numbers are noise, and where the figure matters a NumberField is the better control. |
 | `getThumbLabel` | `(index: number) => string` |  | What each thumb is called, by index. |
+| `getValueText` | `(formatted: string, value: number, index: number) => string` |  | What a thumb's value is read out as, in the product's words: a position in a recording is "1:23 of 3:45", not "83". Given the value as `format` writes it, the number, and the thumb's index. Without it a reader hears the formatted number. |
 | `disabled` | `boolean` |  | Stops the slider taking input. |
 | `name` | `string` |  | The field name, for a form that posts the value. |
 | `aria-label` | `string` |  | Names the slider as a group, and is the fallback label of every thumb. |
