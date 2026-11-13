@@ -188,6 +188,11 @@ describe("Tailwind's own steps the theme wipes", () => {
     expect(rewriteSource(kept).source).toBe(kept)
   })
 
+  it('rewrites a step at the very start of a line, where nothing opens it', () => {
+    expect(rewriteSource('font-bold shadow-lg').source).toBe('font-semibold shadow-float')
+    expect(rewriteSource('bg-muted').source).toBe('bg-soft')
+  })
+
   it('rewrites an @apply in a stylesheet, which compiles to nothing just the same', () => {
     expect(rewriteSource('.tip { @apply font-bold shadow-lg; }').source).toBe('.tip { @apply font-semibold shadow-float; }')
   })

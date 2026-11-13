@@ -113,12 +113,13 @@ export function rewriteSource(source: string): Rewrite {
     if (step) {
       const to = stockUtilities[step]!
       changes.push({ line, from: step, to })
-      return `${groups.stepOpener ?? ''}${to}`
+      // The opener always takes part, empty at the start of a line.
+      return `${groups.stepOpener!}${to}`
     }
 
     const utility = groups.utility!
     const prefix = groups.prefix!
-    const opener = groups.opener ?? ''
+    const opener = groups.opener!
     const replacement = stockTokens[utility]!
     if (replacement.kind !== 'token') {
       skipped.push({ line, name: `${prefix}-${utility}`, note: replacement.note })

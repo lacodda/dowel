@@ -97,11 +97,17 @@ describe('Select', () => {
     // Opened from the keyboard, the list highlights its first item a moment
     // after it appears; an arrow pressed before that lands on the first item
     // rather than moving past it. A person presses once they see the highlight.
-    await waitFor(() => expect(screen.getByRole('option', { name: 'Apple' }).hasAttribute('data-highlighted')).toBe(true))
+    //
+    // Five seconds rather than waitFor's one: under the mutation run's load
+    // (three runners on a CI machine) the first highlight came later than a
+    // second on 13.11 and the dry run failed on this wait alone. The wait is
+    // for the same state; only how long a busy machine may take is longer.
+    const highlight = { timeout: 5000 }
+    await waitFor(() => expect(screen.getByRole('option', { name: 'Apple' }).hasAttribute('data-highlighted')).toBe(true), highlight)
     await user.keyboard('{ArrowDown}')
     // The same moment again: under load the highlight moves after the next
     // key has gone, and Enter picks the item it was still on.
-    await waitFor(() => expect(screen.getByRole('option', { name: 'Pear' }).hasAttribute('data-highlighted')).toBe(true))
+    await waitFor(() => expect(screen.getByRole('option', { name: 'Pear' }).hasAttribute('data-highlighted')).toBe(true), highlight)
     await user.keyboard('{Enter}')
 
     await waitFor(() => expect(picked).toEqual(['pear']))
