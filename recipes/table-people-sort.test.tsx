@@ -70,6 +70,27 @@ describe('a table people sort and filter', () => {
     expect(screen.getByRole('columnheader', { name: /Title/ }).getAttribute('aria-sort')).toBe('ascending')
   })
 
+  it('sorts and filters one column, the funnel beside the sort and not inside it', async () => {
+    const user = userEvent.setup()
+    render(<TablePeopleSort works={rows} />)
+    const sort = screen.getByRole('button', { name: 'Stage' })
+    const funnel = screen.getByRole('button', { name: 'Filter by stage' })
+    expect(sort.contains(funnel)).toBe(false)
+
+    await user.click(sort)
+    const heading = screen.getByRole('columnheader', { name: /Stage/ })
+    expect(heading.getAttribute('aria-sort')).toBe('ascending')
+    // In the order the work goes through, not the alphabet's.
+    const order = ['Idea', 'Draft', 'Ready', 'Released']
+    const stages = bodyRows().map((row) => order.indexOf(within(row).getAllByRole('cell')[2]!.textContent!))
+    expect(stages).toEqual([...stages].sort((a, b) => a - b))
+
+    await filterBy(user, 'stage', 'Draft')
+    for (const row of bodyRows()) expect(within(row).getAllByRole('cell')[2]!.textContent).toBe('Draft')
+    // The sort survived the filter.
+    expect(screen.getByRole('columnheader', { name: /Stage/ }).getAttribute('aria-sort')).toBe('ascending')
+  })
+
   it('puts works nobody has judged last, whichever way the score points', async () => {
     const user = userEvent.setup()
     render(<TablePeopleSort works={rows} />)

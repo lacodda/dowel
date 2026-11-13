@@ -32,9 +32,10 @@ import {
   TableHeader,
   TableRow,
   TableScroll,
+  TableSortButton,
   TableSortHeader,
 } from '@/components/ui/table'
-import { sortRows, toggleSort, type Sort, type SortValue } from '@/components/ui/table-sort'
+import { ariaSort, sortRows, toggleSort, type Sort, type SortValue } from '@/components/ui/table-sort'
 
 export type Kind = 'song' | 'clip' | 'short' | 'cover'
 export type Stage = 'idea' | 'draft' | 'ready' | 'released'
@@ -59,10 +60,12 @@ const PAGE_SIZES = [5, 10, 25]
 const KIND_WORDS: Record<Kind, string> = { song: 'Song', clip: 'Clip', short: 'Short', cover: 'Cover' }
 const STAGE_WORDS: Record<Stage, string> = { idea: 'Idea', draft: 'Draft', ready: 'Ready', released: 'Released' }
 
-type Column = 'title' | 'owner' | 'updated' | 'score'
+type Column = 'title' | 'stage' | 'owner' | 'updated' | 'score'
 
 function valueOf(row: Row, column: Column): SortValue {
-  return row[column]
+  // A stage sorts by where it stands in the work, not by its name: "Draft"
+  // before "Idea" alphabetically is an order nobody works in.
+  return column === 'stage' ? STAGES.indexOf(row.stage) : row[column]
 }
 
 const day = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' })
@@ -145,9 +148,14 @@ export function TablePeopleSort({ works }: { works: readonly Row[] }) {
                   </FilterPopover>
                 </span>
               </TableHeader>
-              <TableHeader className="group">
+              {/* Sorted and filtered both: the sort is a button of its own beside
+                  the funnel, because inside TableSortHeader the funnel would be
+                  a button in a button. `aria-sort` stays on the cell. */}
+              <TableHeader className="group" aria-sort={ariaSort(sort, 'stage')}>
                 <span className="flex items-center gap-1">
-                  Stage
+                  <TableSortButton column="stage" {...sortProps}>
+                    Stage
+                  </TableSortButton>
                   <FilterPopover
                     title="Stage"
                     label="Filter by stage"

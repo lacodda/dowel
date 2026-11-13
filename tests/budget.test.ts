@@ -194,10 +194,11 @@ describe('what a primitive weighs', () => {
         'holds the sums with no React in them, and took 650 bytes with it.',
     },
     table: {
-      ceiling: 4608,
+      ceiling: 5120,
       because:
-        'Nine parts of one table - the scroll container, the table, the head, the body, ' +
-        'the row, the plain heading, the sorting heading, the cell and the empty state - ' +
+        'Ten parts of one table - the scroll container, the table, the head, the body, ' +
+        'the row, the plain heading, the sorting heading, the sort button on its own (for a ' +
+        'heading that holds a funnel or a resize grip beside it), the cell and the empty state - ' +
         'and none of them can be used without the others: a cell outside a row renders ' +
         'nothing. The split the gate was asking for was already made, in the other ' +
         'direction: the arithmetic is `table-sort`, with no React in it, which is what a ' +

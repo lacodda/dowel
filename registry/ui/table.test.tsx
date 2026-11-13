@@ -9,11 +9,13 @@ import {
   TableCell,
   TableEmpty,
   TableHead,
+  TableHeader,
   TableRow,
   TableScroll,
+  TableSortButton,
   TableSortHeader,
 } from './table'
-import { sortRows, toggleSort, type Sort, type SortValue } from './table-sort'
+import { ariaSort, sortRows, toggleSort, type Sort, type SortValue } from './table-sort'
 
 /*
  * Table.
@@ -129,6 +131,105 @@ describe('the heading that sorts', () => {
     // The accessible name is the word alone - the arrow is hidden from it.
     expect(within(heading).getByRole('button').textContent).toContain('▲')
     expect(screen.getByRole('button', { name: 'Name' })).toBeDefined()
+  })
+
+  it('takes the whole cell, and a numeric one ends at the right edge', () => {
+    render(<Example />)
+    const name = screen.getByRole('button', { name: 'Name' })
+    const score = screen.getByRole('button', { name: 'Score' })
+    expect(name.className).toContain('w-[calc(100%+0.5rem)]')
+    expect(name.className).not.toContain('justify-end')
+    expect(score.className).toContain('justify-end')
+    expect(score.closest('th')?.className).toContain('tabular-nums')
+  })
+})
+
+describe('a heading that holds more than its sort', () => {
+  /*
+   * kilna's catalogue heading holds a funnel and a resize grip beside the
+   * sort, and TableSortHeader takes its children inside its button - so the
+   * two would be buttons in a button, which nothing can press. The button on
+   * its own lets the heading be the product's.
+   */
+  function Composed({ sort, onSortChange }: { sort: Sort | undefined; onSortChange: (column: string) => void }) {
+    return (
+      <table>
+        <thead>
+          <tr>
+            <TableHeader aria-sort={ariaSort(sort, 'stage')}>
+              <span className="flex items-center gap-1">
+                <TableSortButton column="stage" sort={sort} onSortChange={onSortChange}>
+                  Stage
+                </TableSortButton>
+                <button type="button">Filter by stage</button>
+              </span>
+            </TableHeader>
+          </tr>
+        </thead>
+      </table>
+    )
+  }
+
+  it('puts the funnel beside the sort, not inside it', () => {
+    render(<Composed sort={{ column: 'stage', direction: 'asc' }} onSortChange={() => {}} />)
+    const sorting = screen.getByRole('button', { name: 'Stage' })
+    const funnel = screen.getByRole('button', { name: 'Filter by stage' })
+    expect(sorting.contains(funnel)).toBe(false)
+    expect(funnel.closest('button')).toBe(funnel)
+  })
+
+  it('hands its column to the product when pressed', async () => {
+    const onSortChange = vi.fn()
+    render(<Composed sort={undefined} onSortChange={onSortChange} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Stage' }))
+    expect(onSortChange).toHaveBeenCalledWith('stage')
+  })
+
+  it('draws the direction of its own column only', () => {
+    const { rerender } = render(<Composed sort={{ column: 'stage', direction: 'desc' }} onSortChange={() => {}} />)
+    const button = screen.getByRole('button', { name: 'Stage' })
+    expect(button.textContent).toContain('▼')
+    expect(button.getAttribute('data-sorted')).toBe('desc')
+    expect(button.classList.contains('text-text')).toBe(true)
+
+    rerender(<Composed sort={{ column: 'stage', direction: 'asc' }} onSortChange={() => {}} />)
+    expect(button.textContent).toContain('▲')
+    expect(button.getAttribute('data-sorted')).toBe('asc')
+
+    // Another column sorted: this one is quiet and its arrow waits for the
+    // pointer - the hover hint, not a direction.
+    rerender(<Composed sort={{ column: 'owner', direction: 'desc' }} onSortChange={() => {}} />)
+    expect(button.hasAttribute('data-sorted')).toBe(false)
+    expect(button.textContent).toContain('▲')
+    expect(button.classList.contains('text-text')).toBe(false)
+    expect(button.querySelector('[aria-hidden]')?.className).toContain('opacity-0')
+  })
+
+  it('leaves aria-sort to the cell, and the cell says it through ariaSort', () => {
+    render(<Composed sort={{ column: 'stage', direction: 'desc' }} onSortChange={() => {}} />)
+    const heading = screen.getByRole('columnheader')
+    expect(heading.getAttribute('aria-sort')).toBe('descending')
+    expect(screen.getByRole('button', { name: 'Stage' }).hasAttribute('aria-sort')).toBe(false)
+  })
+
+  it('truncates its words rather than pushing the funnel out of the cell', () => {
+    render(<Composed sort={undefined} onSortChange={() => {}} />)
+    const button = screen.getByRole('button', { name: 'Stage' })
+    expect(button.className).toContain('min-w-0')
+    expect(button.firstElementChild?.className).toContain('truncate')
+    // Only the heading that owns the whole cell stretches across it.
+    expect(button.className).not.toContain('w-[calc(100%+0.5rem)]')
+  })
+
+  it('answers the hover of its own group, not of a heading that hovers its funnel', () => {
+    render(<Composed sort={undefined} onSortChange={() => {}} />)
+    const arrow = screen.getByRole('button', { name: 'Stage' }).querySelector('[aria-hidden]')
+    expect(arrow?.className).toContain('group-hover/sort:opacity-40')
+    expect(arrow?.className).not.toMatch(/(^|\s)group-hover:/)
+  })
+
+  it('passes axe', async () => {
+    await expectNoA11yViolations(<Composed sort={{ column: 'stage', direction: 'asc' }} onSortChange={() => {}} />)
   })
 })
 
