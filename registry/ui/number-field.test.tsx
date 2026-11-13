@@ -112,6 +112,32 @@ describe('NumberField', () => {
     }
   })
 
+  it('submits a number off the grid of min and step, which the stepper only walks', () => {
+    // kilna v0.107: a weekly budget with min 0.01 and step 1 would not submit
+    // 15 or 0.50 - the browser checked the hidden input Base UI submits
+    // through against min + k * step, refused, and said nothing. A jsdom
+    // submit event skips that check, so the validity is asked directly.
+    const { container, rerender } = render(
+      <form aria-label="Budget">
+        <NumberField name="budget" aria-label="Budget" min={0.01} step={1} value={15} />
+      </form>,
+    )
+    const hidden = () => container.querySelector<HTMLInputElement>('input[type="number"][aria-hidden]')!
+    expect(hidden().getAttribute('step')).toBe('any')
+    expect(hidden().validity.stepMismatch).toBe(false)
+    expect(container.querySelector('form')!.checkValidity()).toBe(true)
+
+    // React writes `step` back when the prop changes; the hidden input still
+    // takes any number afterwards.
+    rerender(
+      <form aria-label="Budget">
+        <NumberField name="budget" aria-label="Budget" min={0.01} step={5} value={0.5} />
+      </form>,
+    )
+    expect(hidden().getAttribute('step')).toBe('any')
+    expect(container.querySelector('form')!.checkValidity()).toBe(true)
+  })
+
   it('formats the number the way the reader writes it', () => {
     // `Intl` rather than a hand-rolled separator: a field showing 1234.5 to
     // someone who writes 1 234,5 is one they translate in their head.
