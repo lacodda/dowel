@@ -142,6 +142,20 @@ test.describe('Dialog', () => {
   })
 })
 
+test.describe('Baseline', () => {
+  test('stands on the plot at its value, among the bars and not above them', async ({ page }) => {
+    // kasl-server measured a median twenty-two pixels high at 390px (the frame's
+    // labels counted as plot) and a rule half a label above its number. The
+    // stand's median row: 38.5 against a ceiling of 45.
+    await page.goto('./bar-chart')
+    const track = probe(page, 'median-chart').locator(':scope > div > div').first()
+    const plot = await box(track)
+    const rule = await box(probe(page, 'median').locator('.h-px'))
+    const expected = plot.y + plot.height - (38.5 / 45) * plot.height
+    expect(Math.abs(rule.y + rule.height / 2 - expected), 'the rule is off its value').toBeLessThanOrEqual(1)
+  })
+})
+
 test.describe('Drawer', () => {
   test('lands on the edge it is asked for', async ({ page }) => {
     // A right-hand drawer opened on the left for releases: the edge was

@@ -150,13 +150,28 @@ export interface BaselineProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode
 }
 
+/* What stands under the plot inside the frame, from the plot's foot down: a
+ * column's gap (`gap-1.5`), one line of its label (`text-2xs`) and the axis
+ * hairline (the chart's `border-b`). BarChart draws those three, so a change
+ * to any of them is a change here. */
+const UNDER_PLOT = 'calc(var(--spacing) * 1.5 + var(--text-2xs--line-height) + 1px)'
+
 export function Baseline({ value, max, children, className, ...props }: BaselineProps) {
   if (!(max > 0) || value < 0 || value > max) return null
 
   return (
     <div
-      className={cn('pointer-events-none absolute inset-x-0 flex items-center gap-2', className)}
-      style={{ bottom: `${(value / max) * 100}%` }}
+      className={cn(
+        // `translate-y-1/2`: the row is as tall as its label and the rule runs
+        // through its middle, so the middle - not the foot - goes on the value.
+        // On its foot, the rule drew half a label above the number it named.
+        'pointer-events-none absolute inset-x-0 flex translate-y-1/2 items-center gap-2',
+        className,
+      )}
+      // Measured from the plot's foot, not the frame's: the frame also holds
+      // the row of labels under the plot, and a share of plot and labels
+      // together put a median twenty-two pixels too high (kasl-server, 390px).
+      style={{ bottom: `calc(${UNDER_PLOT} + ${value / max} * (100% - ${UNDER_PLOT}))` }}
       {...props}
     >
       {/* The rule stops short of the label rather than running under it: a

@@ -72,8 +72,8 @@ export function BarChartSection() {
       <Row label="with the median named - a chart without its baseline invites the reader to invent one">
         <Panel className="w-112 p-5">
           <ChartFrame>
-            <BarChart bars={weekBars()} max={weekCeiling} label="Twelve weeks of work, median 38.5h" />
-            <Baseline value={weekMedian} max={weekCeiling}>
+            <BarChart data-probe="median-chart" bars={weekBars()} max={weekCeiling} label="Twelve weeks of work, median 38.5h" />
+            <Baseline data-probe="median" value={weekMedian} max={weekCeiling}>
               median 38.5h
             </Baseline>
           </ChartFrame>

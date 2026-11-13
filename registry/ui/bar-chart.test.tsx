@@ -138,9 +138,31 @@ describe('what is said in words', () => {
 })
 
 describe('the baseline', () => {
-  it('sits proportionally on the same scale as the bars', () => {
+  it('sits proportionally on the plot, above the row of labels under it', () => {
+    // A share of the whole frame put kasl-server's median twenty-two pixels
+    // high: the frame holds the labels too. jsdom lays nothing out, so where
+    // the line lands among the bars is measured on the stand
+    // (tests/visual/measured.spec.ts); here, that the sum is the plot's.
     const { container } = render(<Baseline value={20} max={40}>median 20h</Baseline>)
-    expect((container.firstElementChild as HTMLElement).style.bottom).toBe('50%')
+    const bottom = (container.firstElementChild as HTMLElement).style.bottom
+    const under = 'calc(var(--spacing) * 1.5 + var(--text-2xs--line-height) + 1px)'
+    expect(bottom.replace(/\s+/g, '')).toBe(`calc(${under} + 0.5 * (100% - ${under}))`.replace(/\s+/g, ''))
+  })
+
+  it('puts the middle of its row on the value, where the rule runs', () => {
+    // On the row's foot the hairline stood half a label above its number.
+    const { container } = render(<Baseline value={20} max={40}>median 20h</Baseline>)
+    const row = container.firstElementChild as HTMLElement
+    expect(row.className.split(/\s+/)).toEqual(expect.arrayContaining(['translate-y-1/2', 'items-center']))
+  })
+
+  it('counts what BarChart draws under its plot, so the two cannot drift apart unseen', () => {
+    const { container } = render(<BarChart bars={[{ key: 'a', value: 1, label: 'Mon', title: 'Monday, 1h' }]} label="Week" />)
+    const chart = container.firstElementChild as HTMLElement
+    const column = chart.firstElementChild as HTMLElement
+    expect(chart.className.split(/\s+/)).toContain('border-b')
+    expect(column.className.split(/\s+/)).toContain('gap-1.5')
+    expect(column.lastElementChild!.className.split(/\s+/)).toContain('text-2xs')
   })
 
   it('is a solid hairline, because a dash means something else', () => {
