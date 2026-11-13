@@ -58,6 +58,40 @@ describe('which rows the tree shows', () => {
     expect(button?.parent).toBe('ui')
   })
 
+  it('walks a folder of a quarter of a million files without running out of stack', () => {
+    // furca: 200 000 files in one open folder threw "Maximum call stack size
+    // exceeded", because each folder's rows were spread into its parent's as
+    // arguments. 250 000 is past where that broke.
+    const files = Array.from({ length: 250_000 }, (_, index) => ({ id: `f${index}`, label: `f${index}` }))
+    const rows = visibleRows([{ id: 'big', label: 'big', children: files }], new Set(['big']))
+    expect(rows).toHaveLength(250_001)
+    expect(rows[1]).toEqual({ node: files[0], depth: 1, parent: 'big' })
+    expect(rows.at(-1)!.node.id).toBe('f249999')
+  })
+
+  it('walks a branch thousands of folders deep, in order', () => {
+    // No call per level either: a chain this deep would exhaust a recursive walk.
+    let chain: TreeNode = { id: 'leaf', label: 'leaf' }
+    const open = new Set<string>()
+    for (let level = 20_000; level > 0; level -= 1) {
+      chain = { id: `d${level}`, label: `d${level}`, children: [chain] }
+      open.add(`d${level}`)
+    }
+    const rows = visibleRows([chain, { id: 'after', label: 'after' }], open)
+    expect(rows).toHaveLength(20_002)
+    expect(rows.at(-2)).toMatchObject({ node: { id: 'leaf' }, depth: 20_000, parent: 'd20000' })
+    // The sibling of the top folder comes after everything inside it.
+    expect(rows.at(-1)).toMatchObject({ node: { id: 'after' }, depth: 0, parent: undefined })
+  })
+
+  it('starts at the depth and under the parent it is given', () => {
+    const rows = visibleRows([{ id: 'x', label: 'x', children: [{ id: 'y', label: 'y' }] }], new Set(['x']), 3, 'p')
+    expect(rows).toEqual([
+      { node: expect.objectContaining({ id: 'x' }), depth: 3, parent: 'p' },
+      { node: expect.objectContaining({ id: 'y' }), depth: 4, parent: 'x' },
+    ])
+  })
+
   it('counts an empty folder as a folder', () => {
     // An empty array of children is not the same as no children: a folder with
     // nothing in it still opens, and saying so needs a real value.
