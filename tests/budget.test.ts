@@ -292,7 +292,7 @@ describe('what a primitive weighs', () => {
     /* Written in v0.34 from kilna's MonthGrid and DayCell, which were two files
      * in kilna and had to be: the cell took eighteen props from the grid. */
     'big-calendar': {
-      ceiling: 11264,
+      ceiling: 12800,
       because:
         'A month view is the grid, the keyboard that walks it, and the fold that keeps a ' +
         'day inside its share of the height - and the three share one state: the fold ' +
@@ -300,7 +300,9 @@ describe('what a primitive weighs', () => {
         'open, and the tab order of every line follows the cursor. What could stand alone ' +
         'already does: the weeks and the key map are in `calendar-math`, shared with the ' +
         'Calendar, and the line is BigCalendarItem. A day cell split off would be a ' +
-        'component nobody can render outside the grid that feeds it.',
+        'component nobody can render outside the grid that feeds it. A week view (v1.0) is ' +
+        'the same grid cut shorter, with its own word for turning; a second component for it ' +
+        'would copy the fold, the cursor and the tab order, which is what kilna had to do.',
     },
     /* A form drawn from a schema, in three files by what each answers: which
      * fields there are, what is wrong with a value, and how each is drawn.

@@ -2,7 +2,7 @@ import { useState, type PointerEvent } from 'react'
 import { BigCalendar, dayOf } from '../../../registry/ui/big-calendar'
 import { BigCalendarItem } from '../../../registry/ui/big-calendar-item'
 import { Button } from '../../../registry/ui/button'
-import { addMonths, parts } from '../../../registry/ui/calendar-math'
+import { addDays, addMonths, parts } from '../../../registry/ui/calendar-math'
 import { Row } from '../row'
 
 interface Release {
@@ -55,6 +55,7 @@ function Chevron({ back }: { back?: boolean }) {
 
 export function BigCalendarSection() {
   const [month, setMonth] = useState('2026-09-01')
+  const [week, setWeek] = useState('2026-09-14')
   const [releases, setReleases] = useState(september)
   // The release picked up, and the day under the pointer while it is carried.
   const [carried, setCarried] = useState<string | null>(null)
@@ -128,6 +129,40 @@ export function BigCalendarSection() {
                   title={release.title}
                   className={carried === release.id ? 'opacity-30' : undefined}
                   onClick={() => setCarried(carried === release.id ? null : release.id)}
+                >
+                  {release.title}
+                </BigCalendarItem>
+              ))
+            }
+          />
+        </div>
+      </Row>
+
+      <Row label="the same grid over one week - each day takes the whole height, so a busy Monday shows everything; PageUp and PageDown turn a week">
+        <div className="flex h-64 w-full flex-col gap-2">
+          <div className="flex items-center gap-1">
+            <Button variant="icon" size="icon-sm" aria-label="Previous week" onClick={() => setWeek(addDays(week, -7))}>
+              <Chevron back />
+            </Button>
+            <Button variant="icon" size="icon-sm" aria-label="Next week" onClick={() => setWeek(addDays(week, 7))}>
+              <Chevron />
+            </Button>
+          </div>
+          <BigCalendar
+            className="flex-1"
+            week={week}
+            onWeekChange={setWeek}
+            locale="en-GB"
+            moreLabel={(count) => `${count} more`}
+            fewerLabel="Show fewer"
+            renderDay={(date) =>
+              on(date).map((release) => (
+                <BigCalendarItem
+                  key={release.id}
+                  color={`var(--series-${release.series})`}
+                  tentative={release.tentative}
+                  done={release.done}
+                  title={release.title}
                 >
                   {release.title}
                 </BigCalendarItem>

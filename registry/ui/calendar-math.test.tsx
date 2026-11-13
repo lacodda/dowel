@@ -12,6 +12,7 @@ import {
   parts,
   weekday,
   weekdayNames,
+  weekRange,
 } from './calendar-math'
 
 /*
@@ -185,6 +186,46 @@ describe('the weeks a month touches', () => {
       }
       month = addMonths(month, 1)
     }
+  })
+})
+
+describe('a range of whole weeks', () => {
+  it('starts on the locale first day of the week the date falls in', () => {
+    // Thursday 17 September 2026: the week is the 14th to the 20th from
+    // Monday, and the 13th to the 19th from Sunday.
+    expect(weekRange('2026-09-17', 1, 'en-GB')).toEqual([
+      ['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19', '2026-09-20'],
+    ])
+    expect(weekRange('2026-09-17', 1, 'en-US')[0]![0]).toBe('2026-09-13')
+    expect(weekRange('2026-09-17', 1, 'en-US')[0]![6]).toBe('2026-09-19')
+  })
+
+  it('runs on across a month and a year without a seam', () => {
+    const weeks = weekRange('2026-12-30', 2, 'en-GB')
+    expect(weeks).toHaveLength(2)
+    expect(weeks[0]![0]).toBe('2026-12-28')
+    expect(weeks[1]![6]).toBe('2027-01-10')
+  })
+
+  it('agrees with the month about which day a column is, on every day of several years', () => {
+    for (const locale of ['en-GB', 'en-US']) {
+      for (const date of everyDay('2024-01-01', 3 * 366)) {
+        const [week] = weekRange(date, 1, locale)
+        expect(week).toHaveLength(7)
+        expect(week).toContain(date)
+        expect(weekday(week![0]!)).toBe(firstDayOfWeek(locale))
+        // The row of the month grid holding the date is the same row.
+        const row = monthGrid(date, locale).find((days) => days.includes(date))
+        expect(week).toEqual(row)
+      }
+    }
+  })
+
+  it('draws one week for a count below one, and whole weeks for a fraction', () => {
+    expect(weekRange('2026-09-17', 0, 'en-GB')).toHaveLength(1)
+    expect(weekRange('2026-09-17', -3, 'en-GB')).toHaveLength(1)
+    expect(weekRange('2026-09-17', 2.7, 'en-GB')).toHaveLength(2)
+    expect(weekRange('2026-09-17', 3, 'en-GB').flat()).toHaveLength(21)
   })
 })
 

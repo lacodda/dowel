@@ -419,6 +419,154 @@ describe('BigCalendar', () => {
   })
 })
 
+describe('BigCalendar over whole weeks', () => {
+  /* The same grid cut shorter: kilna drew its week view as a row of days of
+   * its own, on the month's lines, until this was here. Today is pinned to
+   * Wednesday 9 September 2026 above. */
+  function Week(props: { week?: string; weeks?: number; onWeekChange?: (week: string) => void; locale?: string }) {
+    return (
+      <BigCalendar
+        week={props.week ?? '2026-09-10'}
+        weeks={props.weeks}
+        onWeekChange={props.onWeekChange}
+        locale={props.locale ?? 'en-GB'}
+        moreLabel={(count) => `${count} more`}
+        fewerLabel="Show fewer"
+        renderDay={(date) => (busy[date] ?? []).map((title) => <BigCalendarItem key={title}>{title}</BigCalendarItem>)}
+      />
+    )
+  }
+
+  it('draws the week the day falls in, one row of seven from the locale first day', () => {
+    render(<Week />)
+    const rows = screen.getAllByRole('row')
+    // The weekday names, and one week.
+    expect(rows).toHaveLength(2)
+    const days = within(rows[1]!).getAllByRole('gridcell').map((cell) => cell.getAttribute('data-day'))
+    expect(days).toEqual(['2026-09-07', '2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11', '2026-09-12', '2026-09-13'])
+  })
+
+  it('starts on Sunday where the locale does', () => {
+    render(<Week locale="en-US" />)
+    expect(screen.getAllByRole('gridcell')[0]!.getAttribute('data-day')).toBe('2026-09-06')
+  })
+
+  it('draws a fortnight when asked, each week a row', () => {
+    render(<Week weeks={2} />)
+    expect(screen.getAllByRole('row')).toHaveLength(3)
+    expect(screen.getAllByRole('gridcell')).toHaveLength(14)
+    expect(day('2026-09-20')).not.toBeNull()
+  })
+
+  it('puts no day of a week on the quieter ground of a neighbouring month', () => {
+    // 31 August to 6 September: a week across two months is one week.
+    render(<Week week="2026-09-02" />)
+    expect(day('2026-08-31').hasAttribute('data-outside')).toBe(false)
+    expect(day('2026-08-31').className).not.toContain('bg-softer')
+    expect(within(day('2026-08-31')).getByText('Premiere')).toBeDefined()
+  })
+
+  // The spaces around the dash are the engine's (ICU puts thin spaces there),
+  // so the names are matched with \s rather than spelt out.
+  it('names the grid by the range it draws', () => {
+    render(<Week weeks={2} />)
+    expect(screen.getByRole('grid', { name: /^7\s*–\s*20 September 2026$/ })).toBeDefined()
+  })
+
+  it('names a range across two months and two years in full', () => {
+    const { unmount } = render(<Week week="2026-09-02" />)
+    expect(screen.getByRole('grid', { name: /^31 August\s*–\s*6 September 2026$/ })).toBeDefined()
+    unmount()
+    render(<Week week="2026-12-30" />)
+    expect(screen.getByRole('grid', { name: /^28 December 2026\s*–\s*3 January 2027$/ })).toBeDefined()
+  })
+
+  it('folds a busy day by the same sum as the month', () => {
+    render(<Week week="2026-09-14" />)
+    expect(within(day('2026-09-14')).getByRole('button', { name: '3 more' })).toBeDefined()
+  })
+
+  it('starts the keyboard on today when today is in it, and on the named day otherwise', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<Week />)
+    await user.tab()
+    expect(document.activeElement).toBe(day('2026-09-09'))
+    unmount()
+    render(<Week week="2026-09-17" />)
+    await user.tab()
+    expect(document.activeElement).toBe(day('2026-09-17'))
+  })
+
+  it('walks off its edge into the next range, and PageUp turns back a whole range', async () => {
+    const user = userEvent.setup()
+    const onWeekChange = vi.fn()
+    function Host({ weeks }: { weeks: number }) {
+      const [week, setWeek] = useState('2026-09-10')
+      return (
+        <Week
+          week={week}
+          weeks={weeks}
+          onWeekChange={(next) => {
+            onWeekChange(next)
+            setWeek(next)
+          }}
+        />
+      )
+    }
+    const { unmount } = render(<Host weeks={1} />)
+    await user.tab()
+    // Wednesday the 9th, down a row: the 16th is the next week.
+    await user.keyboard('{ArrowDown}')
+    expect(onWeekChange).toHaveBeenLastCalledWith('2026-09-14')
+    expect(document.activeElement).toBe(day('2026-09-16'))
+    expect(screen.getByRole('grid', { name: /^14\s*–\s*20 September 2026$/ })).toBeDefined()
+
+    // Left off the Monday is the Sunday before: a week back.
+    await user.keyboard('{Home}{ArrowLeft}')
+    expect(onWeekChange).toHaveBeenLastCalledWith('2026-09-07')
+    expect(document.activeElement).toBe(day('2026-09-13'))
+
+    // PageDown turns a week, not a month of weeks the grid never drew.
+    await user.keyboard('{PageDown}')
+    expect(onWeekChange).toHaveBeenLastCalledWith('2026-09-14')
+    expect(document.activeElement).toBe(day('2026-09-20'))
+    unmount()
+    onWeekChange.mockClear()
+
+    // A fortnight turns by a fortnight, and lands where the key pointed.
+    render(<Host weeks={2} />)
+    await user.tab()
+    await user.keyboard('{PageUp}')
+    expect(onWeekChange).toHaveBeenLastCalledWith('2026-08-24')
+    expect(document.activeElement).toBe(day('2026-08-26'))
+    await user.keyboard('{ArrowDown}{ArrowDown}')
+    expect(onWeekChange).toHaveBeenLastCalledWith('2026-09-07')
+    expect(document.activeElement).toBe(day('2026-09-09'))
+  })
+
+  it('moves inside the range without asking to turn', async () => {
+    const user = userEvent.setup()
+    const onWeekChange = vi.fn()
+    render(<Week weeks={2} onWeekChange={onWeekChange} />)
+    await user.tab()
+    await user.keyboard('{ArrowDown}{ArrowRight}')
+    expect(document.activeElement).toBe(day('2026-09-17'))
+    expect(onWeekChange).not.toHaveBeenCalled()
+  })
+
+  it('stops at the edge when the weeks are not the product’s to turn', async () => {
+    const user = userEvent.setup()
+    render(<Week />)
+    await user.tab()
+    await user.keyboard('{ArrowDown}{PageUp}{End}{ArrowRight}')
+    expect(document.activeElement).toBe(day('2026-09-13'))
+  })
+
+  it('passes axe', async () => {
+    await expectNoA11yViolations(<Week weeks={2} />)
+  })
+})
+
 describe('the sums a day is folded by', () => {
   it('fits lines at a pitch of twenty-four, edge to edge', () => {
     // The pitch is the floor of a pointer target: a line shorter than it is a
