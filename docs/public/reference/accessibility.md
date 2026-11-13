@@ -39,7 +39,7 @@ a known gap rather than a fault of the product, and the way out is upstream: a
 label prop or a locale in Base UI. The command palette's input stands inside
 its popup, so it draws the button only while focus is trapped.
 
-Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 123 items with nothing owed.
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 124 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 124 items with nothing owed.
 
 ## Not yet passed
 
@@ -167,6 +167,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | tag-input | 15 |  |  |
 | textarea | 7 |  |  |
 | tier | 19 |  |  |
+| tile-button | 14 |  |  |
 | time-field | 13 |  |  |
 | timeline | 18 |  |  |
 | toast | 6 |  |  |
@@ -174,7 +175,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | track-segments | 4 |  |  |
 | track | 15 |  |  |
 | tree-rows | 5 |  |  |
-| tree-view | 20 | `color-contrast` `duplicate-id-aria` |  |
+| tree-view | 21 | `color-contrast` |  |
 | truncate | 5 |  |  |
 | virtual-list | 18 | `aria-required-children` `color-contrast` |  |
 | window-frame | 25 | `color-contrast` |  |

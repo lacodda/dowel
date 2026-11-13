@@ -7909,6 +7909,119 @@
       }
     ]
   },
+  "virtual-grid": {
+    "dir": "ui",
+    "components": [
+      {
+        "name": "VirtualGrid",
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "required": true,
+            "description": "What a screen reader calls the grid: \"Commits\", \"Entries\"."
+          },
+          {
+            "name": "count",
+            "type": "number",
+            "required": true,
+            "description": "How many rows there are, read or not."
+          },
+          {
+            "name": "rowHeight",
+            "type": "number",
+            "required": true,
+            "description": "How tall one row is, in pixels. Fixed, and rows are held to it."
+          },
+          {
+            "name": "columns",
+            "type": "string",
+            "required": true,
+            "description": "The grid template the heading and every row share - a class such as `grid-cols-[1fr_8rem_6rem]`."
+          },
+          {
+            "name": "header",
+            "type": "ReactNode",
+            "description": "The heading: `VirtualGridColumn`s, one per column."
+          },
+          {
+            "name": "renderRow",
+            "type": "(index: number) => ReactNode",
+            "required": true,
+            "description": "The cells of a row - `VirtualGridCell`s - or `null` for a row not read yet, which is drawn empty until it is."
+          },
+          {
+            "name": "rowKey",
+            "type": "(index: number) => string | number",
+            "description": "A stable key per row. Without it rows are keyed by index, which is right only when a row's place never changes."
+          },
+          {
+            "name": "selected",
+            "type": "number | null",
+            "description": "The chosen row, or `null` for none. Left out, the grid keeps its own."
+          },
+          {
+            "name": "onSelectedChange",
+            "type": "(index: number) => void",
+            "description": "Told the row a click or the keyboard chose."
+          },
+          {
+            "name": "onActivate",
+            "type": "(index: number) => void",
+            "description": "Enter on the chosen row, or a double click on a row: open what it stands for."
+          },
+          {
+            "name": "onRangeChange",
+            "type": "(start: number, end: number) => void",
+            "description": "Told which rows are drawn whenever that changes: `start` to `end`, the end not included."
+          },
+          {
+            "name": "layer",
+            "type": "(view: VirtualGridView) => ReactNode",
+            "description": "Drawn over the rows in view, in a box exactly their size and hidden from readers: a canvas the product redraws for the window it is given."
+          },
+          {
+            "name": "overscan",
+            "type": "number",
+            "default": "6",
+            "description": "How many rows to draw beyond each edge of the view."
+          }
+        ],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "HTMLAttributes<HTMLDivElement>",
+            "omits": [
+              "children",
+              "onKeyDown"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "VirtualGridCell",
+        "description": "A cell of a row. Its words truncate, so a row keeps its height.",
+        "props": [],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "HTMLAttributes<HTMLDivElement>"
+          }
+        ]
+      },
+      {
+        "name": "VirtualGridColumn",
+        "description": "A heading of a column, in the grid's standing row.",
+        "props": [],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "HTMLAttributes<HTMLDivElement>"
+          }
+        ]
+      }
+    ]
+  },
   "virtual-list": {
     "dir": "ui",
     "components": [

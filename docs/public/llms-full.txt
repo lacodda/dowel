@@ -32,7 +32,7 @@ products of the line, [every colour of each resolved](/dowel/reference/palettes/
 for a product that does not draw with a browser - as JSON and as a Rust
 module, from one generator - the line's
 [marks](/dowel/components/product-mark/) at the level their size calls for, and
-a hundred and nineteen primitives, each with a page of its own on
+a hundred and twenty primitives, each with a page of its own on
 [the stand](/dowel/stand/), which remembers the theme, the accent and the
 density you left it in, and measures the contrast of whichever you chose; each
 page ends with what axe found on it, in both themes, and the history of its
@@ -942,7 +942,7 @@ drawn in all nineteen.
 
 ## Primitive
 
-A single component: Button, Dialog, Select. A hundred and nineteen of them.
+A single component: Button, Dialog, Select. A hundred and twenty of them.
 
 A primitive is not a widget with options bolted on — its parts are exposed
 (`DialogPopup`, `DialogTitle`, `DialogActions`) rather than hidden behind props,
@@ -12318,6 +12318,126 @@ And every prop of `HTMLAttributes<HTMLSpanElement>`, passed on.
 
 ---
 
+# VirtualGrid
+
+Source: https://lacodda.github.io/dowel/components/virtual-grid
+
+FENCE0 
+
+See it live on the stand: https://lacodda.github.io/dowel/stand/#virtual-grid
+
+Fifty thousand commits in four columns, one chosen, with the graph drawn as a layer over the rows in view.
+
+## Notes
+
+[VirtualList](/dowel/components/virtual-list/) is a list to read: a column of
+rows, only the ones in view drawn. This is a list a person works through - a
+commit graph, the entries of a disk, a log - and it adds what that needs.
+
+**A grid with a cursor.** One tab stop. The arrows, `PageUp`, `PageDown`, `Home`
+and `End` move the chosen row, and `Enter` opens it (`onActivate`, which a double
+click calls too). The grid names the chosen row with `aria-activedescendant`, and
+every move scrolls that row into view first - the least distance if it is near,
+a third of the way down if it is far - because the row a reader is told about has
+to be in the document. Each row says where it stands in the whole grid
+(`aria-rowindex`, after the heading), since a reader cannot count rows that are
+not drawn.
+
+| Key | |
+| --- | --- |
+| `↑` `↓` | the row above or below |
+| `PageUp` `PageDown` | a screenful less one row, so the row at the edge stays in sight |
+| `Home` `End` | the first row, the last |
+| `Enter` | open the chosen row |
+
+**Rows by index, not an array.** `count` says how many rows there are, and
+`renderRow(index)` draws one - or answers `null` for a row not read yet, which is
+drawn empty at its height (`aria-busy`) until it is. `onRangeChange(start, end)`
+says which rows are drawn whenever that changes, so a product that reads a page
+at a time knows which pages to read:
+
+```tsx
+<VirtualGrid
+  label={t('commits')}
+  count={total}
+  rowHeight={26}
+  columns="grid-cols-[2rem_1fr_9rem_5rem]"
+  header={
+    <>
+      <VirtualGridColumn><span className="sr-only">{t('graph')}</span></VirtualGridColumn>
+      <VirtualGridColumn>{t('message')}</VirtualGridColumn>
+      <VirtualGridColumn>{t('author')}</VirtualGridColumn>
+      <VirtualGridColumn>{t('hash')}</VirtualGridColumn>
+    </>
+  }
+  renderRow={(index) => {
+    const commit = pages.at(index)
+    return commit === undefined ? null : (
+      <>
+        <VirtualGridCell />
+        <VirtualGridCell>{commit.subject}</VirtualGridCell>
+        <VirtualGridCell>{commit.author}</VirtualGridCell>
+        <VirtualGridCell className="font-mono">{commit.short}</VirtualGridCell>
+      </>
+    )
+  }}
+  onRangeChange={(start, end) => pages.read(start, end)}
+  selected={chosen}
+  onSelectedChange={setChosen}
+  onActivate={open}
+  className="h-full"
+/>
+```
+
+**One template for the heading and the rows.** `columns` is a grid template
+class, and the standing heading and every row take it, so a column cannot be
+wider in one than in the other.
+
+**A layer over the rows in view.** `layer` is drawn over the window, in a box
+exactly the size of the rows drawn and in the same render as them, hidden from
+readers and from the pointer. A canvas the product redraws for the
+`{ start, end, rowHeight }` it is given stays on the rows it belongs to as the
+grid scrolls - the graph column of a commit list is drawn this way.
+
+**Give it a height.** It scrolls in its own box; without a height the box is as
+tall as every row and nothing is windowed.
+
+## Props
+
+### `VirtualGrid`
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` (required) | `string` |  | What a screen reader calls the grid: "Commits", "Entries". |
+| `count` (required) | `number` |  | How many rows there are, read or not. |
+| `rowHeight` (required) | `number` |  | How tall one row is, in pixels. Fixed, and rows are held to it. |
+| `columns` (required) | `string` |  | The grid template the heading and every row share - a class such as `grid-cols-[1fr_8rem_6rem]`. |
+| `header` | `ReactNode` |  | The heading: `VirtualGridColumn`s, one per column. |
+| `renderRow` (required) | `(index: number) => ReactNode` |  | The cells of a row - `VirtualGridCell`s - or `null` for a row not read yet, which is drawn empty until it is. |
+| `rowKey` | `(index: number) => string \| number` |  | A stable key per row. Without it rows are keyed by index, which is right only when a row's place never changes. |
+| `selected` | `number \| null` |  | The chosen row, or `null` for none. Left out, the grid keeps its own. |
+| `onSelectedChange` | `(index: number) => void` |  | Told the row a click or the keyboard chose. |
+| `onActivate` | `(index: number) => void` |  | Enter on the chosen row, or a double click on a row: open what it stands for. |
+| `onRangeChange` | `(start: number, end: number) => void` |  | Told which rows are drawn whenever that changes: `start` to `end`, the end not included. |
+| `layer` | `(view: VirtualGridView) => ReactNode` |  | Drawn over the rows in view, in a box exactly their size and hidden from readers: a canvas the product redraws for the window it is given. |
+| `overscan` | `number` | `6` | How many rows to draw beyond each edge of the view. |
+
+And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onKeyDown`, passed on.
+
+### `VirtualGridCell`
+
+A cell of a row. Its words truncate, so a row keeps its height.
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+### `VirtualGridColumn`
+
+A heading of a column, in the grid's standing row.
+
+Every prop of `HTMLAttributes<HTMLDivElement>`, passed on.
+
+---
+
 # VirtualList
 
 Source: https://lacodda.github.io/dowel/components/virtual-list
@@ -15603,7 +15723,7 @@ a known gap rather than a fault of the product, and the way out is upstream: a
 label prop or a locale in Base UI. The command palette's input stands inside
 its popup, so it draws the button only while focus is trapped.
 
-Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 123 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 123 items with nothing owed.
+Run by axe 4.14.0 against `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa, best-practice`: 124 items of the stand, in two themes each; 47 rules applied, 13 WCAG criteria checked, 124 items with nothing owed.
 
 ## Not yet passed
 
@@ -15731,6 +15851,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | tag-input | 15 |  |  |
 | textarea | 7 |  |  |
 | tier | 19 |  |  |
+| tile-button | 14 |  |  |
 | time-field | 13 |  |  |
 | timeline | 18 |  |  |
 | toast | 6 |  |  |
@@ -15738,7 +15859,7 @@ Nothing: every item passes every rule that applied to it, in both themes.
 | track-segments | 4 |  |  |
 | track | 15 |  |  |
 | tree-rows | 5 |  |  |
-| tree-view | 20 | `color-contrast` `duplicate-id-aria` |  |
+| tree-view | 21 | `color-contrast` |  |
 | truncate | 5 |  |  |
 | virtual-list | 18 | `aria-required-children` `color-contrast` |  |
 | window-frame | 25 | `color-contrast` |  |
@@ -15877,6 +15998,7 @@ project. Search by a name, by a word from what an item is for, or by a prop:
 - **TreeRows** (`https://lacodda.github.io/dowel/r/tree-rows.json`): Split out of the TreeView for the reason `table-sort` and `calendar-math` were split out of their components: these are the sums, and the component is the thing that draws them.
 - **TreeView** (`https://lacodda.github.io/dowel/r/tree-view.json`): The shape products reach for and then get wrong in the same place every time.
 - **Truncate** (`https://lacodda.github.io/dowel/r/truncate.json`): Text that does not fit, cut with an ellipsis - and, importantly, still readable in full: the element carries its own text as a `title`, so hovering shows what was cut.
+- **VirtualGrid** (`https://lacodda.github.io/dowel/r/virtual-grid.json`): Rows in columns, a hundred thousand of them, with one chosen: a commit graph, the entries of a disk, a log. Exports `VirtualGrid`, `VirtualGridCell`, `VirtualGridColumn`.
 - **VirtualList** (`https://lacodda.github.io/dowel/r/virtual-list.json`): The browser is fine with long lists until it is not: a hundred thousand `<div>`s is a layout the machine recomputes on every change, and the page stops responding while it does.
 - **WindowFrame** (`https://lacodda.github.io/dowel/r/window-frame.json`): With `decorations: false` the system draws nothing, so everything it used to do is the page's: dragging the window by its title bar, double-click to maximise, the three buttons, and the edges you grab to resize. Exports `WindowButtons`, `ResizeEdges`, `TitleBar`.
 - **Wizard** (`https://lacodda.github.io/dowel/r/wizard.json`): A Stepper with the current step's content under it and the Back / Next / Finish row that walks through the steps - checking each one before it lets the user past.

@@ -337,6 +337,7 @@
     "tree-rows",
     "tree-view",
     "truncate",
+    "virtual-grid",
     "virtual-list",
     "window-frame",
     "wizard"
