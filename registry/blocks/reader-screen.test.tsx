@@ -102,6 +102,7 @@ describe('ReaderScreen', () => {
     const { rerender } = render(<Reader start={2} />)
     expect(scrolled).toHaveBeenCalledOnce()
     expect(scrolled.mock.contexts[0]).toBe(paragraph(2))
+    expect(scrolled).toHaveBeenCalledWith({ block: 'start' })
     rerender(<Reader start={3} />)
     expect(scrolled).toHaveBeenCalledOnce()
   })
@@ -147,7 +148,9 @@ describe('ReaderScreen', () => {
     )
     const pane = screen.getByTestId('pane')
     vi.spyOn(pane, 'getBoundingClientRect').mockReturnValue({ top: 100, height: 400 } as DOMRect)
-    ;[50, 200, 290, 600].forEach((top, index) => {
+    // The window's middle would be further down, past the third paragraph too.
+    vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(1000)
+    ;[50, 200, 290, 450].forEach((top, index) => {
       vi.spyOn(paragraph(index), 'getBoundingClientRect').mockReturnValue({ top } as DOMRect)
     })
     // The window's scroll is not the pane's.
@@ -160,6 +163,53 @@ describe('ReaderScreen', () => {
     })
     // The pane's middle is 300 on the screen: the third paragraph's top is past it.
     expect(onParagraphChange).toHaveBeenLastCalledWith(2)
+  })
+
+  it('asks for one frame however many scrolls arrive before it, and lets go of everything when it goes', () => {
+    vi.restoreAllMocks()
+    const frames: FrameRequestCallback[] = []
+    const request = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      frames.push(callback)
+      return frames.length
+    })
+    const cancel = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
+    const onParagraphChange = vi.fn()
+    const { unmount } = render(<Reader onParagraphChange={onParagraphChange} />)
+    fireEvent.scroll(window)
+    fireEvent.scroll(window)
+    fireEvent.scroll(window)
+    expect(request).toHaveBeenCalledTimes(1)
+    // A frame still waiting when the screen goes is cancelled, and the
+    // window's scroll is no longer listened to.
+    unmount()
+    expect(cancel).toHaveBeenCalledWith(1)
+    fireEvent.scroll(window)
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+
+  it('draws a byline and a lead only when given them', () => {
+    const { unmount } = render(<Reader byline={undefined} />)
+    expect(screen.getByRole('article').querySelector('header')!.children).toHaveLength(1)
+    unmount()
+    render(<Reader lead={<span>Read it aloud.</span>} />)
+    const header = screen.getByRole('article').querySelector('header')!
+    expect(header.children).toHaveLength(3)
+    expect(header.lastElementChild!.textContent).toBe('Read it aloud.')
+  })
+
+  it('shows a text of no paragraphs as nothing read, on a bar that still has a scale', () => {
+    render(<Reader count={0} />)
+    const bar = screen.getByRole('progressbar', { name: 'Paragraph 1 of 0' })
+    expect(bar.getAttribute('aria-valuenow')).toBe('0')
+    expect(bar.getAttribute('aria-valuemax')).toBe('1')
+  })
+
+  it('counts the paragraph reached from one, out of all of them', () => {
+    Element.prototype.scrollIntoView = vi.fn()
+    render(<Reader start={2} />)
+    const bar = screen.getByRole('progressbar')
+    expect(bar.getAttribute('aria-valuenow')).toBe('3')
+    expect(bar.getAttribute('aria-valuemax')).toBe('4')
   })
 
   it('starts the bar at the paragraph it was opened on', () => {

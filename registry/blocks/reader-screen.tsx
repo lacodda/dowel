@@ -102,6 +102,7 @@ export interface ReaderScreenProps {
   foot?: ReactNode
   /** What follows the text: the next chapter, "I have read it". */
   after?: ReactNode
+  /** Every word the screen says itself, in the product's language. */
   words: ReaderScreenWords
   className?: string
 }
@@ -135,14 +136,16 @@ export function ReaderScreen({
   useEffect(() => {
     if (restored.current) return
     restored.current = true
-    if (start === undefined || start === null || start <= 0) return
-    paragraphs.current[start]?.scrollIntoView({ block: 'start' })
+    // Nothing to do for the top: a paragraph not past it is where the page is.
+    const place = start ?? 0
+    if (place > 0) paragraphs.current[place]?.scrollIntoView({ block: 'start' })
   }, [start])
 
   // Follow the reader down the page, a frame at a time however fast the
   // scroll events come.
   const follow = useEffectEvent((scroller: HTMLElement | null) => {
-    const tops = paragraphs.current.slice(0, count).map((element) => element?.getBoundingClientRect().top ?? null)
+    // A paragraph that has left the page leaves its ref empty.
+    const tops = paragraphs.current.map((element) => element?.getBoundingClientRect().top ?? null)
     const box = scroller?.getBoundingClientRect()
     const middle = box === undefined ? window.innerHeight / 2 : box.top + box.height / 2
     const next = paragraphAt(tops, middle)
