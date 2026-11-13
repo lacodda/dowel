@@ -27,6 +27,7 @@
   "registry/blocks/empty-dashboard-screen.tsx": 78.1,
   "registry/blocks/list-detail-screen.tsx": 81.3,
   "registry/blocks/login-screen.tsx": 80.7,
+  "registry/blocks/reader-screen.tsx": 78.7,
   "registry/blocks/settings-screen.tsx": 89.4,
   "registry/ui/about-plate.tsx": 42.8,
   "registry/ui/accordion.tsx": 100,
@@ -144,7 +145,7 @@
   "registry/ui/tree-rows.tsx": 100,
   "registry/ui/tree-view.tsx": 80.1,
   "registry/ui/truncate.tsx": 66.6,
-  "registry/ui/virtual-grid.tsx": 76.2,
+  "registry/ui/virtual-grid.tsx": 84.6,
   "registry/ui/virtual-list.tsx": 80.6,
   "registry/ui/window-frame.tsx": 72,
   "registry/ui/wizard.tsx": 70.9
