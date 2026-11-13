@@ -4,6 +4,10 @@ import { describe, expect, it } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { AppShell, Screen, screenVariants } from './app-shell'
 
+/** A track as written. jsdom 31 serialises the zero in `minmax(0, 1fr)` as
+ * `0px`, as browsers do; the value is the same either way. */
+const zeroless = (value: string) => value.replace(/minmax\(0px,/g, 'minmax(0,')
+
 describe('AppShell', () => {
   it('draws the bar, the rail and the screen', () => {
     render(
@@ -53,8 +57,8 @@ describe('AppShell', () => {
       </AppShell>,
     )
     const withBoth = (both.firstElementChild as HTMLElement).style
-    expect(withBoth.gridTemplateColumns).toBe('var(--spacing-rail) minmax(0, 1fr)')
-    expect(withBoth.gridTemplateRows).toBe('var(--spacing-titlebar) minmax(0, 1fr)')
+    expect(zeroless(withBoth.gridTemplateColumns)).toBe('var(--spacing-rail) minmax(0, 1fr)')
+    expect(zeroless(withBoth.gridTemplateRows)).toBe('var(--spacing-titlebar) minmax(0, 1fr)')
 
     // Without a rail there is one column, not two with an empty one still
     // eating its track.
@@ -64,8 +68,8 @@ describe('AppShell', () => {
       </AppShell>,
     )
     const withNeither = (alone.firstElementChild as HTMLElement).style
-    expect(withNeither.gridTemplateColumns).toBe('minmax(0, 1fr)')
-    expect(withNeither.gridTemplateRows).toBe('minmax(0, 1fr)')
+    expect(zeroless(withNeither.gridTemplateColumns)).toBe('minmax(0, 1fr)')
+    expect(zeroless(withNeither.gridTemplateRows)).toBe('minmax(0, 1fr)')
   })
 
   it('takes the chrome sizes from the theme rather than inventing them', () => {
@@ -88,8 +92,8 @@ describe('AppShell', () => {
       </AppShell>,
     )
     const style = (container.firstElementChild as HTMLElement).style
-    expect(style.gridTemplateColumns).toBe('180px minmax(0, 1fr)')
-    expect(style.gridTemplateRows).toBe('3rem minmax(0, 1fr)')
+    expect(zeroless(style.gridTemplateColumns)).toBe('180px minmax(0, 1fr)')
+    expect(zeroless(style.gridTemplateRows)).toBe('3rem minmax(0, 1fr)')
   })
 
   it('runs the bar across the rail as well', () => {

@@ -19,7 +19,9 @@ describe('AspectRatio', () => {
     render(<AspectRatio ratio={4 / 3} data-testid="box" />)
     // jsdom normalises a bare number into a `width / height` string; either
     // spelling proves the same thing, that it landed in `style` and not a class.
-    expect(screen.getByTestId('box').style.aspectRatio).toContain(String(4 / 3))
+    // As a number, not a string: jsdom 31 writes the ratio back rounded
+    // ("1.33333 / 1"), as browsers do.
+    expect(Number.parseFloat(screen.getByTestId('box').style.aspectRatio)).toBeCloseTo(4 / 3, 4)
   })
 
   it('lets a child fill it', () => {

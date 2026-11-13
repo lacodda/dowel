@@ -4,6 +4,10 @@ import { describe, expect, it } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { Skeleton, SkeletonGrid, SkeletonList, SkeletonText } from './skeleton'
 
+/** A track as written. jsdom 31 serialises the zero in `minmax(0, 1fr)` as
+ * `0px`, as browsers do; the value is the same either way. */
+const zeroless = (value: string) => value.replace(/minmax\(0px,/g, 'minmax(0,')
+
 /*
  * Skeleton.
  *
@@ -102,7 +106,7 @@ describe('the shapes', () => {
     // `grid-cols-${n}` for a value it never sees.
     const { container } = render(<SkeletonGrid cells={9} columns={3} />)
     const grid = container.firstElementChild as HTMLElement
-    expect(grid.style.gridTemplateColumns).toBe('repeat(3, minmax(0, 1fr))')
+    expect(zeroless(grid.style.gridTemplateColumns)).toBe('repeat(3, minmax(0, 1fr))')
     expect(container.querySelectorAll('.animate-pulse')).toHaveLength(9)
   })
 
@@ -131,7 +135,7 @@ describe('the counts nobody passes on purpose', () => {
     // nothing.
     const { container } = render(<SkeletonGrid cells={4} columns={0} />)
     const grid = container.firstElementChild as HTMLElement
-    expect(grid.style.gridTemplateColumns).toBe('repeat(1, minmax(0, 1fr))')
+    expect(zeroless(grid.style.gridTemplateColumns)).toBe('repeat(1, minmax(0, 1fr))')
   })
 })
 
