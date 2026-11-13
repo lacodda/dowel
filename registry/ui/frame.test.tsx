@@ -53,6 +53,27 @@ describe('Frame', () => {
     expect(container.querySelector('[data-frame]')!.children).toHaveLength(1)
   })
 
+  it('folds a bar whose parts all draw nothing, so it costs no gap', async () => {
+    // A head of things each shown on a condition: when none is, the bar is an
+    // empty box that still took the column's gap above the body. jsdom lays
+    // nothing out, so the promise is the class - and what Tailwind compiles
+    // it to, since a variant spelt wrong compiles to nothing.
+    const Nothing = () => null
+    const { container } = render(
+      <Frame head={<Nothing />} foot={<Nothing />}>
+        <span>body</span>
+      </Frame>,
+    )
+    const [head, , foot] = Array.from(container.querySelector('[data-frame]')!.children)
+    expect(head!.childNodes).toHaveLength(0)
+    expect(classOf(head!)).toContain('empty:hidden')
+    expect(classOf(foot!)).toContain('empty:hidden')
+
+    const css = await compileClasses(['empty:hidden'])
+    expect(css).toMatch(/:empty/)
+    expect(css).toMatch(/display: none/)
+  })
+
   it('lets the caller win a conflict', () => {
     const { container } = render(
       <Frame className="gap-4">
@@ -95,6 +116,22 @@ describe('Pane', () => {
       </Pane>,
     )
     expect((screen.getByRole('group', { name: 'Works' }) as HTMLElement).style.overflowX).toBe('hidden')
+  })
+
+  it('folds a bar whose parts all draw nothing, as the Frame does', () => {
+    const Nothing = () => null
+    const { container } = render(
+      <Pane label="Works" head={<Nothing />} foot={<Nothing />}>
+        <span>body</span>
+      </Pane>,
+    )
+    const pane = container.querySelector('[data-pane]')!
+    const head = pane.firstElementChild!
+    const foot = pane.lastElementChild!
+    expect(classOf(head)).toContain('empty:hidden')
+    expect(classOf(head)).toContain('border-b')
+    expect(classOf(foot)).toContain('empty:hidden')
+    expect(classOf(foot)).toContain('border-t')
   })
 
   it('pads the body as asked', () => {

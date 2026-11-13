@@ -33,6 +33,13 @@ were, and this is the frame it settled on.
 `Screen scroll="held"` hands the window's height down and scrolls nowhere;
 `Frame` keeps it; `Pane` is the one box that scrolls, between bars that stand.
 
+**A bar with nothing in it is not drawn.** A head is often a row of things each
+shown on a condition - a filter only while there is something to filter, an
+action only for an owner. When every one of them renders nothing, the bar
+folds away (`empty:hidden`) rather than standing as an empty box that still
+costs the column its ten-pixel gap. The same holds for the foot, and for a
+`Pane`'s two bars, hairline and all.
+
 **`Pane` scrolls down, never across.** Its body is a
 [ScrollArea](/dowel/components/scroll-area/) held to the vertical axis, so a
 row truncates to its column instead of widening it - a queue's rows once ran a
