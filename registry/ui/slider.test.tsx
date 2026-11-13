@@ -102,6 +102,38 @@ describe('Slider', () => {
     expect(onValueChange.mock.calls.at(-1)?.[0]).toBe(100)
   })
 
+  it('reads its value out in the product words', () => {
+    // A position in a recording is "1:23 of 3:45", not "83" - kilna's player
+    // went to Base UI directly for this.
+    const clock = (seconds: number) => `${Math.floor(seconds / 60)}:${String(Math.round(seconds % 60)).padStart(2, '0')}`
+    render(
+      <Slider
+        aria-label="Position"
+        value={83}
+        max={225}
+        getValueText={(_, value) => `${clock(value)} of ${clock(225)}`}
+      />,
+    )
+    expect(screen.getByRole('slider', { name: 'Position' }).getAttribute('aria-valuetext')).toBe('1:23 of 3:45')
+  })
+
+  it('takes the pointer floor across its track, and draws four pixels', () => {
+    const { container } = render(<Slider aria-label="Volume" defaultValue={30} />)
+    const control = container.querySelector('[data-orientation] > div') as HTMLElement
+    expect(control.className).toContain('h-(--target-min)')
+    const track = control.firstElementChild as HTMLElement
+    expect(track.className.split(/\s+/)).toContain('h-1')
+    const { container: upright } = render(<Slider aria-label="Level" orientation="vertical" defaultValue={30} />)
+    expect((upright.querySelector('[data-orientation] > div') as HTMLElement).className).toContain('w-(--target-min)')
+  })
+
+  it('looks disabled when it is', () => {
+    const { container } = render(<Slider aria-label="Volume" defaultValue={30} disabled />)
+    const root = container.firstElementChild as HTMLElement
+    expect(root.hasAttribute('data-disabled')).toBe(true)
+    expect(root.className).toContain('data-[disabled]:opacity-50')
+  })
+
   it('shows the value only when asked', () => {
     const { container: without } = render(<Slider defaultValue={30} aria-label="Volume" />)
     expect(without.textContent).toBe('')
