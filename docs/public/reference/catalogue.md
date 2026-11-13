@@ -139,6 +139,7 @@ project. Search by a name, by a word from what an item is for, or by a prop:
 - **EmptyDashboardScreen** (`https://lacodda.github.io/dowel/r/empty-dashboard-screen.json`): A dashboard on its first day: the few things to do before it has anything to show, with the next one ready to press, and the figures it will show once it does - drawn empty, so the screen says what it is for.
 - **ListDetailScreen** (`https://lacodda.github.io/dowel/r/list-detail-screen.json`): A screen of things and the one that is open: a searchable list beside what is open in it, with the empty states, the keyboard and the narrow width a list needs and every product used to draw for itself.
 - **LoginScreen** (`https://lacodda.github.io/dowel/r/login-screen.json`): The page a product opens on for someone who is not signed in yet: a name, a password, a button, and the two ways it can go wrong said differently - the server refused, or the server could not be reached.
+- **ReaderScreen** (`https://lacodda.github.io/dowel/r/reader-screen.json`): A text read from top to bottom, a paragraph at a time: a story, a chapter, a lesson's reading.
 - **SettingsScreen** (`https://lacodda.github.io/dowel/r/settings-screen.json`): Settings in sections: a column of destinations, each named with a line of what is in it, beside the open section - and on a phone, the column first and then the section, with the way back. Exports `SettingsScreen`, `SettingsGroup`.
 
 ### Sets

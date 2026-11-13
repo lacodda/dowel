@@ -8449,6 +8449,84 @@
       }
     ]
   },
+  "reader-screen": {
+    "dir": "blocks",
+    "components": [
+      {
+        "name": "ReaderScreen",
+        "props": [
+          {
+            "name": "title",
+            "type": "ReactNode",
+            "required": true,
+            "description": "The text's title."
+          },
+          {
+            "name": "byline",
+            "type": "ReactNode",
+            "description": "Under the title: an author, a chapter, how long it reads."
+          },
+          {
+            "name": "lead",
+            "type": "ReactNode",
+            "description": "Above the text: a line on how to read it, the chapters' link."
+          },
+          {
+            "name": "count",
+            "type": "number",
+            "required": true,
+            "description": "How many paragraphs the text has."
+          },
+          {
+            "name": "renderParagraph",
+            "type": "(index: number) => ReactNode",
+            "required": true,
+            "description": "A paragraph, words and all."
+          },
+          {
+            "name": "start",
+            "type": "number | null",
+            "description": "Where the reader stopped, scrolled to once when the screen opens. `0` or nothing: the top."
+          },
+          {
+            "name": "onParagraphChange",
+            "type": "(index: number) => void",
+            "description": "Told the paragraph being read whenever it changes."
+          },
+          {
+            "name": "onSwipe",
+            "type": "(index: number) => void",
+            "description": "Told a paragraph a finger swept to the right. Without it, nothing listens for a sweep."
+          },
+          {
+            "name": "marked",
+            "type": "number | null",
+            "description": "A paragraph drawn marked - the one just swept, the one being heard."
+          },
+          {
+            "name": "foot",
+            "type": "ReactNode",
+            "description": "What stands in the foot bar beside the progress: an action in reach."
+          },
+          {
+            "name": "after",
+            "type": "ReactNode",
+            "description": "What follows the text: the next chapter, \"I have read it\"."
+          },
+          {
+            "name": "words",
+            "type": "ReaderScreenWords",
+            "required": true
+          },
+          {
+            "name": "className",
+            "type": "string"
+          }
+        ],
+        "inherits": []
+      }
+    ]
+  },
   "settings-screen": {
     "dir": "blocks",
     "components": [
