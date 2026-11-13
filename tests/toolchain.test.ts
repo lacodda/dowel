@@ -52,12 +52,9 @@ describe('the browser the pictures are taken in', () => {
  * what would let it go.
  */
 const heldBack: Record<string, string> = {
-  // vite 8.3.5's module runner keeps some modules' code as a Buffer, and
-  // `extractInlineSourceMap` calls `charCodeAt` on it: the first stack trace
-  // vitest 5.0.5 maps - in the global setup, before any test - throws, and the
-  // run ends with "No test files found". Let go when a vite past 8.3.5 runs
-  // `pnpm test` without the override.
-  vite: '8.3.4',
+  // None. vite was held at 8.3.4 from 30.10 to 13.11: 8.3.5's module runner
+  // kept some modules' code as a Buffer and broke vitest 5.0.5 before any
+  // test ran. vite 8.3.8 with vitest 5.1 runs without it.
 }
 
 describe('versions held back', () => {
