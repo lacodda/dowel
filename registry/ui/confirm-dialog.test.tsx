@@ -135,6 +135,24 @@ describe('ConfirmDialog', () => {
     await waitFor(() => expect(seen).toContain(false))
   })
 
+  it('opens on the answer that does no harm, so a reflexive Enter keeps', async () => {
+    render(
+      <ConfirmDialog open>
+        <ConfirmDialogPopup>
+          <ConfirmDialogHeader action={<ConfirmDialogClose aria-label="Close">×</ConfirmDialogClose>}>
+            <ConfirmDialogTitle>Delete the project?</ConfirmDialogTitle>
+          </ConfirmDialogHeader>
+          <ConfirmDialogActions>
+            <Button render={<ConfirmDialogClose />}>Keep it</Button>
+            <Button variant="danger">Delete</Button>
+          </ConfirmDialogActions>
+        </ConfirmDialogPopup>
+      </ConfirmDialog>,
+    )
+    // The keeping answer in the actions, not the cross in the header.
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Keep it' })))
+  })
+
   it('moves focus into itself when it opens', async () => {
     render(
       <ConfirmDialog open>

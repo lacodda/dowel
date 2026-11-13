@@ -105,6 +105,25 @@ describe('Drawer', () => {
     await waitFor(() => expect(seen).toContain(false))
   })
 
+  it('opens on the first control of its body, as the dialog does', async () => {
+    render(
+      <Drawer open>
+        <DrawerPopup>
+          <DrawerHeader action={<DrawerClose aria-label="Close">×</DrawerClose>}>
+            <DrawerTitle>Filters</DrawerTitle>
+          </DrawerHeader>
+          <DrawerBody>
+            <input aria-label="Search" />
+          </DrawerBody>
+          <DrawerActions>
+            <Button>Apply</Button>
+          </DrawerActions>
+        </DrawerPopup>
+      </Drawer>,
+    )
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Search' })))
+  })
+
   it('moves focus into itself when it opens', async () => {
     render(
       <Drawer open>

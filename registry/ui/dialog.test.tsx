@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen, waitFor } from '@testing-library/react'
+import { useRef } from 'react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { cn } from 'dowel-ui'
@@ -140,6 +141,73 @@ describe('Dialog', () => {
 
     const dialog = screen.getByRole('dialog')
     await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true))
+  })
+
+  it('opens on the first control of its body, not on the cross in its header', async () => {
+    // kilna's audit: Base UI's first tabbable was the close button, so Enter
+    // straight after opening dismissed the dialog.
+    render(
+      <Dialog open>
+        <DialogPopup>
+          <DialogHeader action={<DialogClose aria-label="Close">×</DialogClose>}>
+            <DialogTitle>Rename</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <p>What the work is called everywhere.</p>
+            <button type="button" disabled>
+              Not this
+            </button>
+            <input aria-label="Name" />
+          </DialogBody>
+          <DialogActions>
+            <Button>Cancel</Button>
+          </DialogActions>
+        </DialogPopup>
+      </Dialog>,
+    )
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('textbox', { name: 'Name' })))
+  })
+
+  it('opens on itself when its body has nothing to press, so its title is read first', async () => {
+    render(
+      <Dialog open>
+        <DialogPopup>
+          <DialogHeader action={<DialogClose aria-label="Close">×</DialogClose>}>
+            <DialogTitle>What changed</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <p>Three things.</p>
+          </DialogBody>
+          <DialogActions>
+            <Button>Done</Button>
+          </DialogActions>
+        </DialogPopup>
+      </Dialog>,
+    )
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('dialog')))
+  })
+
+  it('lets the product say where the focus goes', async () => {
+    function Chosen() {
+      const done = useRef<HTMLButtonElement>(null)
+      return (
+        <Dialog open>
+          <DialogPopup initialFocus={done}>
+            <DialogTitle>What changed</DialogTitle>
+            <DialogBody>
+              <input aria-label="Note" />
+            </DialogBody>
+            <DialogActions>
+              <button type="button" ref={done}>
+                Done
+              </button>
+            </DialogActions>
+          </DialogPopup>
+        </Dialog>
+      )
+    }
+    render(<Chosen />)
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Done' })))
   })
 
   it('puts the page behind it out of reach', async () => {
@@ -347,6 +415,18 @@ describe('Dialog', () => {
     expect(screen.getByTestId('header').children).toHaveLength(1)
     expect(screen.getByTestId('actions-bare').children).toHaveLength(1)
     expect(container).toBeDefined()
+  })
+
+  it('wraps its actions rather than running them off a narrow screen', () => {
+    // austeris on a phone: four buttons in a drawer's foot at 390px ran past
+    // its left edge.
+    render(<Editor />)
+    const actions = screen.getByTestId('actions')
+    expect(actions.className.split(/\s+/)).toContain('flex-wrap')
+    expect(actions.className.split(/\s+/)).toContain('justify-end')
+    expect((actions.firstElementChild as HTMLElement).className.split(/\s+/)).toEqual(
+      expect.arrayContaining(['mr-auto', 'flex-wrap']),
+    )
   })
 
   it('pads the parts rather than the popup', () => {
