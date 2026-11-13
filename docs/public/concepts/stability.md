@@ -6,10 +6,10 @@ From 1.0 a product can take a minor release of dowel without reading it. A name
 it has written down keeps working until the next major, and the version number
 says which kind of release this is.
 
-dowel is not at 1.0 yet, and a minor can still break a product: every break is
-[listed with its way through](/dowel/guides/upgrading/#what-breaks-and-the-way-through).
-The names are already recorded and held, so the list stops growing on the day
-the promise starts.
+That day was 1.0. Before it a minor could break a product, and every break from
+0.x is [listed with its way through](/dowel/guides/upgrading/#what-breaks-and-the-way-through);
+from it, a break waits for a major, and the names it would take away keep
+working until then.
 
 ## What is a promise
 

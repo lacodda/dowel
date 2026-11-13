@@ -1,4 +1,4 @@
-# dowel 0.43.1
+# dowel 1.0.0
 
 The complete documentation of the lacodda line design system, generated from the same sources the site is built from.
 
@@ -27,7 +27,7 @@ the steps it has, what a component will and will not do for you.
 
 ## Status
 
-**v0.43.1.** The theme and its scales, an accent for each of the nineteen
+**v1.0.0.** The theme and its scales, an accent for each of the nineteen
 products of the line, [every colour of each resolved](/dowel/reference/palettes/)
 for a product that does not draw with a browser - as JSON and as a Rust
 module, from one generator - the line's
@@ -819,10 +819,10 @@ From 1.0 a product can take a minor release of dowel without reading it. A name
 it has written down keeps working until the next major, and the version number
 says which kind of release this is.
 
-dowel is not at 1.0 yet, and a minor can still break a product: every break is
-[listed with its way through](/dowel/guides/upgrading/#what-breaks-and-the-way-through).
-The names are already recorded and held, so the list stops growing on the day
-the promise starts.
+That day was 1.0. Before it a minor could break a product, and every break from
+0.x is [listed with its way through](/dowel/guides/upgrading/#what-breaks-and-the-way-through);
+from it, a break waits for a major, and the names it would take away keep
+working until then.
 
 ## What is a promise
 
@@ -15572,8 +15572,8 @@ you, and a name that moves keeps working until the next one.
 
 ## What breaks, and the way through
 
-dowel is before 1.0, and a minor release can break a product. Every break is
-listed here, newest first, with what to do about it. Read from the version you
+Before 1.0 a minor release could break a product; from 1.0 only a major does.
+Every break is listed here, newest first, with what to do about it. Read from the version you
 are on up to the one you are moving to - the list is the changelog's own, read
 out of it, so it is never a release behind.
 

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-austeris",
+  "type": "registry:file",
+  "title": "austeris accent",
+  "description": "orchid #C25BD9 - the colour of the austeris mark (au). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/austeris.css",
+      "target": "~/dowel/accents/austeris.css",
+      "type": "registry:file",
+      "content": "/*\n * austeris - orchid #C25BD9, the colour of its mark (au).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #C25BD9;\n}\n"
+    }
+  ]
+}

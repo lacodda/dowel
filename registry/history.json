@@ -363,6 +363,19 @@
   ],
   "bar-chart": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "bar-chart",
+          "breaking": false,
+          "summary": "stand the baseline on the plot, at its value",
+          "date": "2026-11-13",
+          "commit": "cdcdd3ae46"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -416,6 +429,27 @@
     }
   ],
   "big-calendar": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "keep the words of a day's lines apart in its name",
+          "date": "2026-11-13",
+          "commit": "bf83e61957"
+        },
+        {
+          "type": "feat",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "draw whole weeks as well as a month",
+          "date": "2026-11-13",
+          "commit": "a00feeaaa4"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -659,6 +693,27 @@
   ],
   "calendar-math": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "test",
+          "scope": null,
+          "breaking": false,
+          "summary": "kill the survivors of the first mutation run on the new code",
+          "date": "2026-11-13",
+          "commit": "5d86cba196"
+        },
+        {
+          "type": "feat",
+          "scope": "big-calendar",
+          "breaking": false,
+          "summary": "draw whole weeks as well as a month",
+          "date": "2026-11-13",
+          "commit": "a00feeaaa4"
+        }
+      ]
+    },
+    {
       "version": "0.34.1",
       "changes": [
         {
@@ -748,6 +803,19 @@
     }
   ],
   "chip": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "chip",
+          "breaking": false,
+          "summary": "read the count apart from the label",
+          "date": "2026-11-13",
+          "commit": "780a369336"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -1210,6 +1278,27 @@
   ],
   "confirm-dialog": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "test",
+          "scope": null,
+          "breaking": false,
+          "summary": "kill the survivors of the first mutation run on the new code",
+          "date": "2026-11-13",
+          "commit": "5d86cba196"
+        },
+        {
+          "type": "fix",
+          "scope": "dialog",
+          "breaking": false,
+          "summary": "open on the body's first control, and wrap the actions",
+          "date": "2026-11-13",
+          "commit": "a4358a92a0"
+        }
+      ]
+    },
+    {
       "version": "0.32.0",
       "changes": [
         {
@@ -1584,6 +1673,27 @@
   ],
   "dialog": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "test",
+          "scope": null,
+          "breaking": false,
+          "summary": "kill the survivors of the first mutation run on the new code",
+          "date": "2026-11-13",
+          "commit": "5d86cba196"
+        },
+        {
+          "type": "fix",
+          "scope": "dialog",
+          "breaking": false,
+          "summary": "open on the body's first control, and wrap the actions",
+          "date": "2026-11-13",
+          "commit": "a4358a92a0"
+        }
+      ]
+    },
+    {
       "version": "0.35.0",
       "changes": [
         {
@@ -1763,6 +1873,19 @@
     }
   ],
   "drawer": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "dialog",
+          "breaking": false,
+          "summary": "open on the body's first control, and wrap the actions",
+          "date": "2026-11-13",
+          "commit": "a4358a92a0"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -2062,6 +2185,19 @@
     }
   ],
   "frame": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "frame",
+          "breaking": false,
+          "summary": "fold a bar whose parts all draw nothing",
+          "date": "2026-11-13",
+          "commit": "76899dbe98"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -2493,6 +2629,19 @@
   ],
   "list-row": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "list-row",
+          "breaking": false,
+          "summary": "leave aria-current off a row that names its own state",
+          "date": "2026-11-13",
+          "commit": "8a6b87e0fc"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -2819,6 +2968,19 @@
     }
   ],
   "number-field": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "number-field",
+          "breaking": false,
+          "summary": "let a form submit a number off the step grid",
+          "date": "2026-11-13",
+          "commit": "32babc1587"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -3425,6 +3587,29 @@
       ]
     }
   ],
+  "reader-screen": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "describe the reader's words, and hold its edges",
+          "date": "2026-11-13",
+          "commit": "5e35e946af"
+        },
+        {
+          "type": "feat",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "a reader, a text read a paragraph at a time",
+          "date": "2026-11-13",
+          "commit": "ae8db73842"
+        }
+      ]
+    }
+  ],
   "relative-time": [
     {
       "version": "0.31.0",
@@ -3582,6 +3767,19 @@
   ],
   "scroll-area": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "scroll-area",
+          "breaking": false,
+          "summary": "stand the bar above what a table pins",
+          "date": "2026-11-13",
+          "commit": "d542a9ecf9"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -3635,6 +3833,19 @@
     }
   ],
   "search-field": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "search-field",
+          "breaking": false,
+          "summary": "make room for the hint by its measured width",
+          "date": "2026-11-13",
+          "commit": "45235e1ea2"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -4104,6 +4315,19 @@
   ],
   "slider": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "slider",
+          "breaking": false,
+          "summary": "read the value in the product's words, on a 24px target",
+          "date": "2026-11-13",
+          "commit": "4841076d9c"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -4382,6 +4606,19 @@
   ],
   "table": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "table",
+          "breaking": false,
+          "summary": "a sort button of its own, for a heading that holds more",
+          "date": "2026-11-13",
+          "commit": "cd0b9e5a5c"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -4573,6 +4810,19 @@
     }
   ],
   "theme": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "theme",
+          "breaking": true,
+          "summary": "clear Tailwind's own weights and shadows",
+          "date": "2026-11-13",
+          "commit": "61fa72a7c7"
+        }
+      ]
+    },
     {
       "version": "0.43.0",
       "changes": [
@@ -4928,6 +5178,21 @@
       ]
     }
   ],
+  "tile-button": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tile-button",
+          "breaking": false,
+          "summary": "a tile pressed whole",
+          "date": "2026-11-13",
+          "commit": "8abedc29b5"
+        }
+      ]
+    }
+  ],
   "time-field": [
     {
       "version": "0.41.0",
@@ -5270,6 +5535,27 @@
   ],
   "tree-rows": [
     {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tree-view",
+          "breaking": false,
+          "summary": "window a tree of tens of thousands, with a meta slot",
+          "date": "2026-11-13",
+          "commit": "d52d413504"
+        },
+        {
+          "type": "fix",
+          "scope": "tree-rows",
+          "breaking": false,
+          "summary": "walk a tree with a stack of its own",
+          "date": "2026-11-13",
+          "commit": "ea90c92c83"
+        }
+      ]
+    },
+    {
       "version": "0.22.0",
       "changes": [
         {
@@ -5284,6 +5570,19 @@
     }
   ],
   "tree-view": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tree-view",
+          "breaking": false,
+          "summary": "window a tree of tens of thousands, with a meta slot",
+          "date": "2026-11-13",
+          "commit": "d52d413504"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -5326,7 +5625,43 @@
       ]
     }
   ],
+  "virtual-grid": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "virtual-grid",
+          "breaking": false,
+          "summary": "bring a row chosen from outside into view",
+          "date": "2026-11-13",
+          "commit": "70ceaeffb6"
+        },
+        {
+          "type": "feat",
+          "scope": "virtual-grid",
+          "breaking": false,
+          "summary": "rows in columns, a hundred thousand, with one chosen",
+          "date": "2026-11-13",
+          "commit": "dc73d4f2cf"
+        }
+      ]
+    }
+  ],
   "virtual-list": [
+    {
+      "version": "1.0.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tree-view",
+          "breaking": false,
+          "summary": "window a tree of tens of thousands, with a meta slot",
+          "date": "2026-11-13",
+          "commit": "d52d413504"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [

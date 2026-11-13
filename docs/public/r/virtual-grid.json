@@ -5,7 +5,7 @@
   "title": "VirtualGrid",
   "description": "Rows in columns, a hundred thousand of them, with one chosen: a commit graph, the entries of a disk, a log. Only the rows in view are drawn, as in VirtualList; what this adds is everything a list a person works through needs and VirtualList, a list to read, does not have.",
   "dependencies": [
-    "dowel-ui@^0.43.1"
+    "dowel-ui@^1.0.0"
   ],
   "registryDependencies": [
     "https://lacodda.github.io/dowel/r/virtual-list.json"

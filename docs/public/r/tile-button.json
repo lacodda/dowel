@@ -6,7 +6,7 @@
   "description": "A tile pressed whole: a thumbnail whose picture is the control, a card picked from a row of cards. It takes the size of what it holds and draws nothing inside it, so a picture keeps its well and a card keeps its own layout.",
   "dependencies": [
     "@base-ui/react",
-    "dowel-ui@^0.43.1"
+    "dowel-ui@^1.0.0"
   ],
   "registryDependencies": [],
   "files": [
