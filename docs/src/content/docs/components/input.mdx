@@ -25,9 +25,13 @@ keeps the two from disagreeing:
 <Input aria-invalid={!valid} aria-describedby="email-error" />
 ```
 
-**The focus ring is drawn outside the border**, not instead of it. A field that
-only changes colour on focus is invisible to a reader who does not separate
-those two colours.
+**The focus ring is two pixels where the border was one**, so focus is a change
+of weight as well as of colour: a field that only changes colour is invisible to
+a reader who does not separate those two colours. It is drawn inside the box,
+over the border, because a field so often stands at the edge of something that
+clips - a dialog's body, a ScrollArea, a panel with `overflow: hidden` - and a
+ring drawn outside lost the side that touched it. Every field of the set draws
+it the same way, the ones with a box around their input too.
 
 **Under a finger the text is 16px.** iOS Safari zooms the page into any field
 whose text is smaller when it takes the focus, and does not zoom back out - a
