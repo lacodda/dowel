@@ -42,6 +42,55 @@ describe('Checkbox', () => {
     expect(onCheckedChange.mock.calls[0]?.[0]).toBe(true)
   })
 
+  it('hears a press with Shift held, once, on the words or on the box', async () => {
+    // kilna checks a range of rows with Shift; `onCheckedChange` says nothing
+    // about the keys, so it read them from a capture handler of its own.
+    const user = userEvent.setup()
+    const onClick = vi.fn()
+    const onCheckedChange = vi.fn()
+    render(
+      <Checkbox onClick={onClick} onCheckedChange={onCheckedChange}>
+        Remember me
+      </Checkbox>,
+    )
+
+    await user.keyboard('{Shift>}')
+    await user.click(screen.getByText('Remember me'))
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(onClick.mock.calls[0]?.[0].shiftKey).toBe(true)
+    expect(onCheckedChange).toHaveBeenCalledTimes(1)
+
+    await user.click(screen.getByRole('checkbox'))
+    expect(onClick).toHaveBeenCalledTimes(2)
+    expect(onClick.mock.calls[1]?.[0].shiftKey).toBe(true)
+    // One press, one change: the box was not toggled twice by the label.
+    expect(onCheckedChange).toHaveBeenCalledTimes(2)
+    expect(onCheckedChange.mock.calls[1]?.[0]).toBe(false)
+    await user.keyboard('{/Shift}')
+  })
+
+  it('hears a press on the bare box', async () => {
+    const user = userEvent.setup()
+    const onClick = vi.fn()
+    render(<Checkbox aria-label="Select row" onClick={onClick} />)
+
+    await user.click(screen.getByRole('checkbox', { name: 'Select row' }))
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
+  it('stands the box on the first line of its words', () => {
+    // Centred against two lines, the box sat between them, beside nothing.
+    render(<Checkbox>Keep a copy of every version - it takes room on disk</Checkbox>)
+    const label = screen.getByText(/Keep a copy/).closest('label') as HTMLElement
+    expect(label.className).toContain('items-start')
+    expect(label.className).not.toContain('items-center')
+    // The box sits in a box one line tall, centred in it: on a single line
+    // that is where it always was.
+    const line = screen.getByRole('checkbox').parentElement as HTMLElement
+    expect(line.parentElement).toBe(label)
+    expect(line.className.split(' ')).toEqual(expect.arrayContaining(['flex', 'h-lh', 'items-center']))
+  })
+
   it('reports its state to a reader, not only in colour', () => {
     render(<Checkbox defaultChecked>Remember me</Checkbox>)
     expect(screen.getByRole('checkbox').getAttribute('aria-checked')).toBe('true')
