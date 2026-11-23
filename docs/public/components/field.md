@@ -60,6 +60,26 @@ Input, a Textarea, a PasswordField, a TagInput, a DatePicker - and a
 NumberField or a Select, which are Base UI's and find the field they sit in by
 themselves. Each is held by a test that asks for it by its name.
 
+**A control of your own is wired only if it is one element.** Field hands its
+child the id, `aria-labelledby`, `aria-describedby` and `aria-invalid`, and a
+control is named by them only if it puts them on the one element a reader
+lands on. A product's control that renders a single input or button and
+spreads the props it is given onto it is wired like the set's own. One that is
+made of several controls - a date beside a time, a colour beside its hex code,
+a row of pictures - has no one element to carry the id, so the label points at
+nothing and the controls are unnamed; nothing on screen shows it, which is why
+kilna found it by an audit. Put that control in a [FieldGroup](#fieldgroup--one-name-for-several-controls)
+instead, and give each control inside it its own name:
+
+```tsx
+<FieldGroup label="Starts">
+  <div className="flex gap-2">
+    <DatePicker aria-label="Day" value={day} onValueChange={setDay} … />
+    <TimeField aria-label="Time" value={time} onValueChange={setTime} … />
+  </div>
+</FieldGroup>
+```
+
 **The label is always rendered.** A field named only by its placeholder loses
 that name the moment someone types, and a placeholder was never a label to
 anything reading the page aloud. `labelHidden` takes it off the screen with

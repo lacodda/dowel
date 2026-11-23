@@ -909,6 +909,11 @@
             "description": "Render something else with the button's clothes on - a link, most often."
           },
           {
+            "name": "ref",
+            "type": "Ref<HTMLButtonElement>",
+            "description": "React 19 passes `ref` as a plain prop; it is declared so a caller can reach the element - to point a dialog's `initialFocus` at it, or to measure it. With `render` it reaches whatever was rendered."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "default": "false",
@@ -1063,6 +1068,11 @@
             "name": "aria-label",
             "type": "string",
             "description": "The accessible name, for a checkbox with no `children`."
+          },
+          {
+            "name": "onClick",
+            "type": "(event: MouseEvent<HTMLElement, MouseEvent>) => void",
+            "description": "The press itself, before the box changes - for what `onCheckedChange` cannot say, such as whether Shift was held: a list that checks a range from the last box pressed to this one. Called once per press, whether it landed on the box or on the words."
           },
           {
             "name": "className",
@@ -1228,6 +1238,12 @@
             "description": "Several on at once - filters - rather than one at a time - a kind."
           },
           {
+            "name": "required",
+            "type": "boolean",
+            "default": "false",
+            "description": "At least one stays on: a press on the last chip that is on does nothing. For a choice that always has an answer - a kind, a view - where letting go of the last chip leaves a screen with no answer to draw. Give it a `value` or `defaultValue` to start from; it keeps a chip on, it does not pick one."
+          },
+          {
             "name": "disabled",
             "type": "boolean",
             "description": "Disables every chip in the group."
@@ -1308,8 +1324,8 @@
           },
           {
             "name": "onCopy",
-            "type": "(ok: boolean) => void",
-            "description": "Told what happened, for a product that wants its own toast."
+            "type": "(ok: boolean, failure?: CopyFailure | undefined) => void",
+            "description": "Told what happened, for a product that wants its own toast - and, when the copy did not happen, why."
           },
           {
             "name": "wrap",
@@ -2194,8 +2210,8 @@
           },
           {
             "name": "onCopy",
-            "type": "(ok: boolean) => void",
-            "description": "Told what happened, for a product that wants its own toast. `false` means the clipboard refused."
+            "type": "(ok: boolean, failure?: CopyFailure | undefined) => void",
+            "description": "Told what happened, for a product that wants its own toast. `false` means the copy did not happen, and `failure` says why."
           }
         ],
         "inherits": [
@@ -2241,8 +2257,8 @@
           },
           {
             "name": "onCopy",
-            "type": "(ok: boolean) => void",
-            "description": "Told what happened, for a product that wants its own toast."
+            "type": "(ok: boolean, failure?: CopyFailure | undefined) => void",
+            "description": "Told what happened, for a product that wants its own toast. `false` means the copy did not happen, and `failure` says why."
           }
         ],
         "inherits": [
@@ -2653,8 +2669,8 @@
           },
           {
             "name": "onCopy",
-            "type": "(ok: boolean) => void",
-            "description": "Told what happened, for a product that wants its own toast."
+            "type": "(ok: boolean, failure?: CopyFailure | undefined) => void",
+            "description": "Told what happened, for a product that wants its own toast - and, when the copy did not happen, why."
           }
         ],
         "inherits": [
@@ -5222,6 +5238,11 @@
             "description": "Draw the default error screen without its frame, for a list inside a panel or a widget that already has one. The empty screen is the caller's, and says for itself whether it is plain."
           },
           {
+            "name": "className",
+            "type": "string",
+            "description": "On the wrapper, in every state. The wrapper is a box of its own, so a screen laid out as a column of `min-h-0 flex-1` parts loses its height chain there unless the wrapper is one of them: `className=\"flex min-h-0 flex-1 flex-col\"` carries it through to whatever is shown."
+          },
+          {
             "name": "children",
             "type": "ReactNode",
             "required": true
@@ -7391,6 +7412,57 @@
           {
             "kind": "react",
             "type": "HTMLAttributes<HTMLElement>"
+          }
+        ]
+      },
+      {
+        "name": "Tile",
+        "description": "What a tile and its actions stand on together: a box the actions take their corners of, and the group whose hover and focus show them. A column, so a TileButton inside stretches to it - when a tile has actions, size the Tile rather than the button.",
+        "props": [
+          {
+            "name": "render",
+            "type": "RenderProp<Record<string, unknown>>",
+            "description": "The element to draw the tile's ground as - `render={<li />}` in a list of tiles. Without it the ground is a `<div>`."
+          }
+        ],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "HTMLAttributes<HTMLElement>"
+          }
+        ]
+      },
+      {
+        "name": "TileAction",
+        "description": "An icon button over a tile's picture, in a corner of its `Tile`.",
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "required": true,
+            "description": "What it does - \"Remove the reference\", \"Frame actions\". Its accessible name and the word under the pointer, because it carries an icon and no words. Required, and without a default, so the product can translate it."
+          },
+          {
+            "name": "corner",
+            "type": "top-end | top-start | bottom-end | bottom-start",
+            "default": "'top-end'",
+            "description": "Which corner of the Tile it takes."
+          },
+          {
+            "name": "render",
+            "type": "RenderProp<Record<string, unknown>>",
+            "description": "The element to draw it as - a menu's trigger, most often: `render={<MenuTrigger />}`. It stays shown while the menu is open."
+          },
+          {
+            "name": "ref",
+            "type": "Ref<HTMLButtonElement>",
+            "description": "React 19 passes `ref` as a plain prop; declared so a caller can reach the element. With `render` it reaches whatever was rendered."
+          }
+        ],
+        "inherits": [
+          {
+            "kind": "react",
+            "type": "ButtonHTMLAttributes<HTMLButtonElement>"
           }
         ]
       }

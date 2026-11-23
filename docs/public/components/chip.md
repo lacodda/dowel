@@ -61,9 +61,23 @@ a single group holds at most one.
 </ChipGroup>
 ```
 
-For one of a few that must always hold a choice — a theme, a view — reach for
-[SegmentedControl](/dowel/components/segmented-control/) instead: a toggle row
-lets the last pressed chip go.
+**`required` keeps one on.** A press on the last chip that is on does nothing,
+and `onValueChange` is not called - the change is refused before it is made, so
+a group that keeps its own state keeps the chip too. kilna guarded "always one"
+in five callbacks, each putting the value back after the group had let it go.
+With `multiple`, it is the last of several that stays. Give the group a value to
+start from: `required` keeps a chip on, it does not pick one.
+
+```tsx
+<ChipGroup aria-label={t('kind')} value={kind} onValueChange={setKind} required>
+  <Chip value="song">Song</Chip>
+  <Chip value="clip">Clip</Chip>
+</ChipGroup>
+```
+
+For one of a few that is less a filter than a setting — a theme, a view — reach
+for [SegmentedControl](/dowel/components/segmented-control/): a radio group,
+whose choice is always one.
 
 **Tones are the Badge's.** `accent`, `good`, `warn`, `bad` and `info` are the
 same fill-and-ink pairs Badge uses, so a chip and a badge in one row agree about
@@ -106,6 +120,7 @@ A row of chips that switch together.
 | `defaultValue` | `readonly string[]` |  | The values that start on, when the group keeps its own state. |
 | `onValueChange` | `(value: string[]) => void` |  | Called with the values that are on after a chip is pressed. Always an array, in both modes. |
 | `multiple` | `boolean` | `false` | Several on at once - filters - rather than one at a time - a kind. |
+| `required` | `boolean` | `false` | At least one stays on: a press on the last chip that is on does nothing. For a choice that always has an answer - a kind, a view - where letting go of the last chip leaves a screen with no answer to draw. Give it a `value` or `defaultValue` to start from; it keeps a chip on, it does not pick one. |
 | `disabled` | `boolean` |  | Disables every chip in the group. |
 | `children` (required) | `ReactNode` |  |  |
 

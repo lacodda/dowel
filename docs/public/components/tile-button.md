@@ -6,7 +6,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#tile-button
 
-A strip of frames with one chosen, a folder's file tiles where the well is the control, and cards picked from a row.
+A strip of frames with one chosen, a folder's file tiles where the well is the control, cards picked from a row, and references with a cross over each picture.
 
 ## Notes
 
@@ -54,7 +54,7 @@ look still follows `selected`.
 it names nothing; `aria-label` on the tile, in the product's language, does.
 
 **In a card that clips, pull the focus ring inside.** The ring stands outside
-the tile, as every focus ring of the set does. A tile that is only the well of
+the tile, as a button's does. A tile that is only the well of
 a larger card - a file tile with its name under it - sits inside an
 `overflow-hidden` frame that would cut the ring off; give that tile
 `focus-visible:-outline-offset-2`, and `rounded-none border-0` so the card's own
@@ -76,7 +76,54 @@ edge is the only one.
 `render` draws it as something else - a router's link, most often - with the
 same clothes and no button attributes on it.
 
+## An action over the picture
+
+A cross that takes a reference away, a menu of what to do with a frame: an
+action drawn over the picture. It cannot go inside the tile - a button inside a
+button is a control nothing can press on its own, and a press on it presses the
+tile too. So the tile and its actions stand together on a `Tile`, and
+`TileAction` takes a corner of it.
+
+```tsx
+<ul className="flex gap-2">
+  {references.map((picture) => (
+    <Tile key={picture.id} render={<li />}>
+      <TileButton aria-label={t('openReference', { name: picture.name })} onClick={() => open(picture)}>
+        <img src={picture.src} alt="" className="size-20 object-cover" />
+      </TileButton>
+      <TileAction label={t('removeReference')} onClick={() => remove(picture)}>
+        <X />
+      </TileAction>
+    </Tile>
+  ))}
+</ul>
+```
+
+**It is shown when it can be used.** Hidden at rest, so a strip of tiles is a
+strip of pictures; shown while the tile is under the pointer, while anything in
+it holds the focus - a reader tabbing to the tile learns there is more on it -
+and while a menu it opened is open. Where there is no pointer to hover, a finger
+would never find it, so on a touch screen it is always shown.
+
+**It stands on a ground of its own.** A bare glyph over a picture is lost in
+whatever the picture is; the action is drawn on the raised surface with a
+border and a small shadow, in a corner inset from the tile's edge so it never
+sits on the border or under a rounded corner. `corner` picks which: `top-end`
+unless told otherwise, in logical sides, so the end is on the left of a
+right-to-left page.
+
+**`label` is its name and the word under the pointer**, because it carries an
+icon and no words. It is required and has no default, so it can be translated.
+`render` makes it a menu's trigger - `render={<MenuTrigger />}` - and keeps the
+trigger's own button type.
+
+**Size the `Tile`, not the button.** The `Tile` is a column, so a TileButton
+inside it stretches to it: a tile with actions gets its width from the `Tile`,
+where the actions take their corners.
+
 ## Props
+
+### `TileButton`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
@@ -85,3 +132,26 @@ same clothes and no button attributes on it.
 | `disabled` | `boolean` |  | Disables the tile. Applied only when it is the default `<button>`: a rendered element such as a link has no `disabled` of its own. |
 
 And every prop of `HTMLAttributes<HTMLElement>`, passed on.
+
+### `Tile`
+
+What a tile and its actions stand on together: a box the actions take their corners of, and the group whose hover and focus show them. A column, so a TileButton inside stretches to it - when a tile has actions, size the Tile rather than the button.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw the tile's ground as - `render={<li />}` in a list of tiles. Without it the ground is a `<div>`. |
+
+And every prop of `HTMLAttributes<HTMLElement>`, passed on.
+
+### `TileAction`
+
+An icon button over a tile's picture, in a corner of its `Tile`.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` (required) | `string` |  | What it does - "Remove the reference", "Frame actions". Its accessible name and the word under the pointer, because it carries an icon and no words. Required, and without a default, so the product can translate it. |
+| `corner` | `top-end \| top-start \| bottom-end \| bottom-start` | `'top-end'` | Which corner of the Tile it takes. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw it as - a menu's trigger, most often: `render={<MenuTrigger />}`. It stays shown while the menu is open. |
+| `ref` | `Ref<HTMLButtonElement>` |  | React 19 passes `ref` as a plain prop; declared so a caller can reach the element. With `render` it reaches whatever was rendered. |
+
+And every prop of `ButtonHTMLAttributes<HTMLButtonElement>`, passed on.

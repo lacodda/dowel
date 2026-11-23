@@ -54,6 +54,16 @@ by hand:
 **`empty` is computed by the caller**, because only the caller knows whether
 empty means `[]`, `null`, or a count of zero.
 
+**`className` goes on the box it draws**, in every state. That box is a part of
+the layout like any other, so a screen built as a column of `min-h-0 flex-1`
+parts loses its height chain there unless the box is one of them:
+
+```tsx
+<QueryState pending={works.isPending} error={works.error} className="flex min-h-0 flex-1 flex-col">
+  <WorkList works={works.data} />
+</QueryState>
+```
+
 **It offers the retry it is handed.** A failed load with no way to try again
 is a dead end, and kilna had nineteen of them — every one wrote "could not
 load" and none called the `refetch` it already had. Pass `onRetry` with the
@@ -95,4 +105,5 @@ that owns them differently. A crash while rendering is
 | `errorState` | `(message: string, retry?: (() => void) \| undefined) => ReactNode` |  | What is shown when it failed. Given the message, so a product can put it where it likes - or ignore it - and the retry, when there is one. |
 | `errorLabels` | `{ title: string; body?: string \| undefined; }` |  | The words on the default error screen. Required only in the sense that the default screen needs them; pass `errorState` instead and they are never read. |
 | `plain` | `boolean` | `false` | Draw the default error screen without its frame, for a list inside a panel or a widget that already has one. The empty screen is the caller's, and says for itself whether it is plain. |
+| `className` | `string` |  | On the wrapper, in every state. The wrapper is a box of its own, so a screen laid out as a column of `min-h-0 flex-1` parts loses its height chain there unless the wrapper is one of them: `className="flex min-h-0 flex-1 flex-col"` carries it through to whatever is shown. |
 | `children` (required) | `ReactNode` |  |  |

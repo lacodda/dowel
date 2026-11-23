@@ -52,6 +52,6 @@ does not read it.
 | `children` (required) | `string` |  | The visible text. |
 | `label` (required) | `string` |  | What the button is called, for a screen reader. Required, and deliberately without a default: a string the component invents is a string the product cannot translate, and it would ship in English to every reader who does not read English. |
 | `copiedLabel` (required) | `string` |  | What is announced after a successful copy. Required for the same reason. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast. `false` means the copy did not happen, and `failure` says why. |
 
 And every prop of `HTMLAttributes<HTMLButtonElement>` except `onCopy`, passed on.

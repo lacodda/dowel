@@ -86,6 +86,6 @@ compare the two strings yourself.
 | `numbered` | `boolean` | `true` | Numbers down each side. On by default: a comparison is usually read in order to go and change something, and the number is how the reader finds the place. |
 | `copyLabel` | `(side: string) => string` |  | Brings a copy button to each side's header, and names it. |
 | `copiedLabel` | `string` | `''` | Announced after a successful copy. Required alongside `copyLabel`. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast - and, when the copy did not happen, why. |
 
 And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onCopy`, passed on.

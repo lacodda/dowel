@@ -29,7 +29,10 @@ ScrollArea from the scroll position.
 over the area or while it scrolls, and fades out after. The track is wider
 than the thumb, and the thumb thickens under the pointer: four pixels read as
 a hint and are hopeless as a grip. A bar is mounted only for an axis that
-actually overflows, so a list that fits draws nothing.
+actually overflows, so a list that fits draws nothing. In a
+[Drawer](/dowel/components/drawer/) the bar is out of the swipe
+(`data-base-ui-swipe-ignore`): a press on the thumb drags the thumb, not the
+drawer.
 
 **The keyboard still scrolls, and that is why `label` is required.** A box
 that scrolls has to be reachable, or a reader without a pointer never sees

@@ -2469,6 +2469,23 @@ what a `<div onClick>` throws away.
 
 **`type` defaults to `button`.** A bare `<button>` inside a form submits it,
 which surprises everyone once. Pass `type="submit"` when that is what you want.
+With `render`, a type you did not pass is not passed at all, so what is rendered
+keeps its own: `<Button render={<DialogClose />}>Cancel</Button>` stays the
+`type="button"` the close sets for itself, and Enter in a dialog's form presses
+its action rather than Cancel.
+
+**It takes a `ref`.** React 19 passes `ref` as a prop, and Button declares it,
+so a caller can point a dialog's `initialFocus` at a button or measure one. With
+`render` the ref reaches whatever was rendered.
+
+```tsx
+const keep = useRef<HTMLButtonElement>(null)
+
+<ConfirmDialogPopup initialFocus={keep}>
+  …
+  <Button ref={keep}>{t('keep')}</Button>
+</ConfirmDialogPopup>
+```
 
 **The caller wins a conflict.** `className` is merged by utility group, so
 `<Button className="rounded-full">` gets round corners rather than two radii
@@ -2486,6 +2503,7 @@ list is correct in both themes and in every product's accent — there are no
 | `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `'md'` |  |
 | `disabledReason` | `string` |  | Why the button cannot be pressed, in the product's words - read only while `disabled`. |
 | `render` | `RenderProp<Record<string, unknown>>` |  | Render something else with the button's clothes on - a link, most often. |
+| `ref` | `Ref<HTMLButtonElement>` |  | React 19 passes `ref` as a plain prop; it is declared so a caller can reach the element - to point a dialog's `initialFocus` at it, or to measure it. With `render` it reaches whatever was rendered. |
 | `disabled` | `boolean` | `false` |  |
 
 And every prop of `ButtonHTMLAttributes<HTMLButtonElement>`, passed on.
@@ -2670,6 +2688,26 @@ then say so:
 <Checkbox aria-label="Select row" />
 ```
 
+**The box stands on the first line of its words.** A label that wraps - a
+setting with its explanation - drew the box centred between its lines, beside
+neither. The box sits in a box one line tall, at the label's own line height, so
+it is on the first line however many there are, and where it always was on one.
+
+**`onClick` hears the press itself**, before the box changes, for what
+`onCheckedChange` cannot say - whether Shift was held, for a list that checks a
+range from the last box pressed to this one. It is called once per press,
+whether the press landed on the box or on the words.
+
+```tsx
+<Checkbox
+  checked={chosen.has(row.id)}
+  onClick={(event) => { shift.current = event.shiftKey }}
+  onCheckedChange={(on) => choose(row.id, on, shift.current)}
+>
+  {row.name}
+</Checkbox>
+```
+
 **The box is drawn rather than native.** `appearance: none` on a real
 `<input type="checkbox">` is the alternative, and it takes the indeterminate
 state with it: the dash is not something the input can be told to draw.
@@ -2713,6 +2751,7 @@ the action, it is a switch.
 | `name` | `string` |  | The field name submitted with a form. |
 | `value` | `string` |  | What this box contributes to the group's `value` array when checked, and what a form submits for it. |
 | `aria-label` | `string` |  | The accessible name, for a checkbox with no `children`. |
+| `onClick` | `(event: MouseEvent<HTMLElement, MouseEvent>) => void` |  | The press itself, before the box changes - for what `onCheckedChange` cannot say, such as whether Shift was held: a list that checks a range from the last box pressed to this one. Called once per press, whether it landed on the box or on the words. |
 | `className` | `string` |  |  |
 
 ### `CheckboxGroup`
@@ -2792,9 +2831,23 @@ a single group holds at most one.
 </ChipGroup>
 ```
 
-For one of a few that must always hold a choice — a theme, a view — reach for
-[SegmentedControl](/dowel/components/segmented-control/) instead: a toggle row
-lets the last pressed chip go.
+**`required` keeps one on.** A press on the last chip that is on does nothing,
+and `onValueChange` is not called - the change is refused before it is made, so
+a group that keeps its own state keeps the chip too. kilna guarded "always one"
+in five callbacks, each putting the value back after the group had let it go.
+With `multiple`, it is the last of several that stays. Give the group a value to
+start from: `required` keeps a chip on, it does not pick one.
+
+```tsx
+<ChipGroup aria-label={t('kind')} value={kind} onValueChange={setKind} required>
+  <Chip value="song">Song</Chip>
+  <Chip value="clip">Clip</Chip>
+</ChipGroup>
+```
+
+For one of a few that is less a filter than a setting — a theme, a view — reach
+for [SegmentedControl](/dowel/components/segmented-control/): a radio group,
+whose choice is always one.
 
 **Tones are the Badge's.** `accent`, `good`, `warn`, `bad` and `info` are the
 same fill-and-ink pairs Badge uses, so a chip and a badge in one row agree about
@@ -2837,6 +2890,7 @@ A row of chips that switch together.
 | `defaultValue` | `readonly string[]` |  | The values that start on, when the group keeps its own state. |
 | `onValueChange` | `(value: string[]) => void` |  | Called with the values that are on after a chip is pressed. Always an array, in both modes. |
 | `multiple` | `boolean` | `false` | Several on at once - filters - rather than one at a time - a kind. |
+| `required` | `boolean` | `false` | At least one stays on: a press on the last chip that is on does nothing. For a choice that always has an answer - a kind, a view - where letting go of the last chip leaves a screen with no answer to draw. Give it a `value` or `defaultValue` to start from; it keeps a chip on, it does not pick one. |
 | `disabled` | `boolean` |  | Disables every chip in the group. |
 | `children` (required) | `ReactNode` |  |  |
 
@@ -2954,7 +3008,7 @@ interface CodeToken {
 | `highlight` | `readonly number[]` |  | Lines to mark, in the same numbering the reader sees. |
 | `copyLabel` | `string` |  | Brings the copy button, and names it for a screen reader. Required to have one, and deliberately without a default: a string this component invents is a string the product cannot translate. |
 | `copiedLabel` | `string` |  | Announced after a successful copy. Required alongside `copyLabel`. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast - and, when the copy did not happen, why. |
 | `wrap` | `boolean` | `false` | Let long lines wrap instead of scrolling. |
 
 And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onCopy`, passed on.
@@ -4321,7 +4375,22 @@ with the three things a hand-written one misses.
 **It confirms only after the clipboard does.** `navigator.clipboard.writeText`
 can be refused: it needs a secure context and, in some browsers, a permission.
 A tick drawn on click is a lie in exactly the case the reader most needs the
-truth, and `onCopy(false)` is how your product finds out.
+truth, and `onCopy(false, failure)` is how your product finds out - with why:
+`failure.reason` is `unavailable` when there is no clipboard at all (a page on
+plain HTTP, which no retry will fix) and `refused` when there is one and it said
+no (a permission, a page that lost the focus), with what the browser threw in
+`failure.error`.
+
+```tsx
+<CopyButton
+  value={payload}
+  label={t('copy')}
+  copiedLabel={t('copied')}
+  onCopy={(ok, failure) => {
+    if (!ok) toast(failure?.reason === 'unavailable' ? t('copy.needsHttps') : t('copy.refused'))
+  }}
+/>
+```
 
 **It announces the copy as well as drawing it.** A tick that appears silently
 tells a sighted reader it worked and tells nobody else. The live region beside
@@ -4347,6 +4416,25 @@ has focus too, and that pairing is the whole trick.
 **The container carries `group`.** The button reveals on `group-hover`, so it
 appears when the pointer is anywhere over the block rather than only once it
 has found a button it cannot see.
+
+**Or `group/copy`, and then only that container reveals it.** A block inside
+something that is itself a `group` - an answer that shows its own actions on
+hover, with code blocks in it - showed every copy button in it at once. A
+button inside a `group/copy` answers to that container alone, and any `group`
+around it no longer does; outside one, a plain `group` works as before.
+[CodeBlock](/dowel/components/code-block/) and
+[DiffView](/dowel/components/diff-view/) name theirs.
+
+```tsx
+<div className="group/copy relative rounded-md border border-line">
+  <pre>{code}</pre>
+  <CopyButton value={code} label={t('copy')} copiedLabel={t('copied')} className="absolute right-2 top-2" />
+</div>
+```
+
+**Disabled, it says so.** `disabled` - nothing to copy yet - fades the icon to
+half and takes the hover away; the button's own opacity is what reveals it, so
+the fade is on the icon.
 
 **Both labels are required and neither has a default.** A string this component
 invents is a string your product cannot translate, and it would ship in English
@@ -4374,7 +4462,7 @@ when the content is already there and the button is furniture.
 | `value` (required) | `string` |  | What lands on the clipboard. |
 | `label` (required) | `string` |  | What the button is called, for a screen reader. Required, and deliberately without a default: a string this component invents is a string the product cannot translate, and it would ship in English to every reader who does not read English. |
 | `copiedLabel` (required) | `string` |  | What is announced after a successful copy. Required for the same reason. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. `false` means the clipboard refused. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast. `false` means the copy did not happen, and `failure` says why. |
 
 And every prop of `ButtonHTMLAttributes<HTMLButtonElement>` except `onCopy`, passed on.
 
@@ -4434,7 +4522,7 @@ does not read it.
 | `children` (required) | `string` |  | The visible text. |
 | `label` (required) | `string` |  | What the button is called, for a screen reader. Required, and deliberately without a default: a string the component invents is a string the product cannot translate, and it would ship in English to every reader who does not read English. |
 | `copiedLabel` (required) | `string` |  | What is announced after a successful copy. Required for the same reason. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast. `false` means the copy did not happen, and `failure` says why. |
 
 And every prop of `HTMLAttributes<HTMLButtonElement>` except `onCopy`, passed on.
 
@@ -4673,7 +4761,10 @@ alone gives way.
 The popup has no padding of its own — each part carries it — so the body's
 scroll runs edge to edge. A dialog without a header or without actions still
 has its edges: a body that is first or last in the popup takes the padding the
-missing part would have given.
+missing part would have given. Between a header and the actions the body still
+keeps a little room at its top and bottom, because it scrolls and so it clips:
+the focus ring of its first or last field would otherwise be cut where it meets
+the edge.
 
 ## Popups inside it
 
@@ -4948,7 +5039,7 @@ compare the two strings yourself.
 | `numbered` | `boolean` | `true` | Numbers down each side. On by default: a comparison is usually read in order to go and change something, and the number is how the reader finds the place. |
 | `copyLabel` | `(side: string) => string` |  | Brings a copy button to each side's header, and names it. |
 | `copiedLabel` | `string` | `''` | Announced after a successful copy. Required alongside `copyLabel`. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast - and, when the copy did not happen, why. |
 
 And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onCopy`, passed on.
 
@@ -5133,6 +5224,13 @@ to compose with that rather than replace it.
 forgotten, because a drawer covers only one edge and the rest of the page looks
 usable. It is not — Base UI marks it inert, so Tab cannot walk off into a page
 the user cannot see they are editing.
+
+**A scrolling body still scrolls by its thumb.** A drawer swiped shut takes a
+press anywhere inside it as the start of a swipe and captures the pointer, so a
+scrollbar's thumb in it could not be dragged with a mouse. The bars of a
+[ScrollArea](/dowel/components/scroll-area/) carry `data-base-ui-swipe-ignore`,
+so a drawer with one in it scrolls by its thumb. Anything of your own that drags
+inside a drawer - a slider, a strip that pans - needs the same attribute.
 
 **`DrawerActions` sits at the bottom.** `mt-auto` and `shrink-0`, so the
 buttons stay at the foot of a tall panel whether there is little in it or more
@@ -5521,6 +5619,26 @@ Every other control of the set goes under the caption, wired the same way: an
 Input, a Textarea, a PasswordField, a TagInput, a DatePicker - and a
 NumberField or a Select, which are Base UI's and find the field they sit in by
 themselves. Each is held by a test that asks for it by its name.
+
+**A control of your own is wired only if it is one element.** Field hands its
+child the id, `aria-labelledby`, `aria-describedby` and `aria-invalid`, and a
+control is named by them only if it puts them on the one element a reader
+lands on. A product's control that renders a single input or button and
+spreads the props it is given onto it is wired like the set's own. One that is
+made of several controls - a date beside a time, a colour beside its hex code,
+a row of pictures - has no one element to carry the id, so the label points at
+nothing and the controls are unnamed; nothing on screen shows it, which is why
+kilna found it by an audit. Put that control in a [FieldGroup](#fieldgroup--one-name-for-several-controls)
+instead, and give each control inside it its own name:
+
+```tsx
+<FieldGroup label="Starts">
+  <div className="flex gap-2">
+    <DatePicker aria-label="Day" value={day} onValueChange={setDay} … />
+    <TimeField aria-label="Time" value={time} onValueChange={setTime} … />
+  </div>
+</FieldGroup>
+```
 
 **The label is always rendered.** A field named only by its placeholder loses
 that name the moment someone types, and a placeholder was never a label to
@@ -6144,9 +6262,13 @@ keeps the two from disagreeing:
 <Input aria-invalid={!valid} aria-describedby="email-error" />
 ```
 
-**The focus ring is drawn outside the border**, not instead of it. A field that
-only changes colour on focus is invisible to a reader who does not separate
-those two colours.
+**The focus ring is two pixels where the border was one**, so focus is a change
+of weight as well as of colour: a field that only changes colour is invisible to
+a reader who does not separate those two colours. It is drawn inside the box,
+over the border, because a field so often stands at the edge of something that
+clips - a dialog's body, a ScrollArea, a panel with `overflow: hidden` - and a
+ring drawn outside lost the side that touched it. Every field of the set draws
+it the same way, the ones with a box around their input too.
 
 **Under a finger the text is 16px.** iOS Safari zooms the page into any field
 whose text is smaller when it takes the focus, and does not zoom back out - a
@@ -8356,6 +8478,16 @@ by hand:
 **`empty` is computed by the caller**, because only the caller knows whether
 empty means `[]`, `null`, or a count of zero.
 
+**`className` goes on the box it draws**, in every state. That box is a part of
+the layout like any other, so a screen built as a column of `min-h-0 flex-1`
+parts loses its height chain there unless the box is one of them:
+
+```tsx
+<QueryState pending={works.isPending} error={works.error} className="flex min-h-0 flex-1 flex-col">
+  <WorkList works={works.data} />
+</QueryState>
+```
+
 **It offers the retry it is handed.** A failed load with no way to try again
 is a dead end, and kilna had nineteen of them — every one wrote "could not
 load" and none called the `refetch` it already had. Pass `onRetry` with the
@@ -8397,6 +8529,7 @@ that owns them differently. A crash while rendering is
 | `errorState` | `(message: string, retry?: (() => void) \| undefined) => ReactNode` |  | What is shown when it failed. Given the message, so a product can put it where it likes - or ignore it - and the retry, when there is one. |
 | `errorLabels` | `{ title: string; body?: string \| undefined; }` |  | The words on the default error screen. Required only in the sense that the default screen needs them; pass `errorState` instead and they are never read. |
 | `plain` | `boolean` | `false` | Draw the default error screen without its frame, for a list inside a panel or a widget that already has one. The empty screen is the caller's, and says for itself whether it is plain. |
+| `className` | `string` |  | On the wrapper, in every state. The wrapper is a box of its own, so a screen laid out as a column of `min-h-0 flex-1` parts loses its height chain there unless the wrapper is one of them: `className="flex min-h-0 flex-1 flex-col"` carries it through to whatever is shown. |
 | `children` (required) | `ReactNode` |  |  |
 
 ---
@@ -9041,7 +9174,10 @@ ScrollArea from the scroll position.
 over the area or while it scrolls, and fades out after. The track is wider
 than the thumb, and the thumb thickens under the pointer: four pixels read as
 a hint and are hopeless as a grip. A bar is mounted only for an axis that
-actually overflows, so a list that fits draws nothing.
+actually overflows, so a list that fits draws nothing. In a
+[Drawer](/dowel/components/drawer/) the bar is out of the swipe
+(`data-base-ui-swipe-ignore`): a press on the thumb drags the thumb, not the
+drawer.
 
 **The keyboard still scrolls, and that is why `label` is required.** A box
 that scrolls has to be reachable, or a reader without a pointer never sees
@@ -10787,7 +10923,10 @@ on a column that is not the sorted one.
 ```
 
 The button's words truncate and its arrow stays, so a column dragged narrower
-than its heading keeps the funnel in the cell.
+than its heading keeps the funnel in the cell. It wears the case of the heading
+it stands in: a browser gives every button `text-transform: none`, and in an
+uppercase caption - [VirtualGrid](/dowel/components/virtual-grid/)'s columns -
+the sorted columns alone came out in title case.
 
 **`TableScroll` is not decoration.** `overflow` on a `<table>` does nothing, so
 the wrapper is the only place a scrollbar can live — and the only thing a
@@ -11334,7 +11473,7 @@ FENCE0
 
 See it live on the stand: https://lacodda.github.io/dowel/stand/#tile-button
 
-A strip of frames with one chosen, a folder's file tiles where the well is the control, and cards picked from a row.
+A strip of frames with one chosen, a folder's file tiles where the well is the control, cards picked from a row, and references with a cross over each picture.
 
 ## Notes
 
@@ -11382,7 +11521,7 @@ look still follows `selected`.
 it names nothing; `aria-label` on the tile, in the product's language, does.
 
 **In a card that clips, pull the focus ring inside.** The ring stands outside
-the tile, as every focus ring of the set does. A tile that is only the well of
+the tile, as a button's does. A tile that is only the well of
 a larger card - a file tile with its name under it - sits inside an
 `overflow-hidden` frame that would cut the ring off; give that tile
 `focus-visible:-outline-offset-2`, and `rounded-none border-0` so the card's own
@@ -11404,7 +11543,54 @@ edge is the only one.
 `render` draws it as something else - a router's link, most often - with the
 same clothes and no button attributes on it.
 
+## An action over the picture
+
+A cross that takes a reference away, a menu of what to do with a frame: an
+action drawn over the picture. It cannot go inside the tile - a button inside a
+button is a control nothing can press on its own, and a press on it presses the
+tile too. So the tile and its actions stand together on a `Tile`, and
+`TileAction` takes a corner of it.
+
+```tsx
+<ul className="flex gap-2">
+  {references.map((picture) => (
+    <Tile key={picture.id} render={<li />}>
+      <TileButton aria-label={t('openReference', { name: picture.name })} onClick={() => open(picture)}>
+        <img src={picture.src} alt="" className="size-20 object-cover" />
+      </TileButton>
+      <TileAction label={t('removeReference')} onClick={() => remove(picture)}>
+        <X />
+      </TileAction>
+    </Tile>
+  ))}
+</ul>
+```
+
+**It is shown when it can be used.** Hidden at rest, so a strip of tiles is a
+strip of pictures; shown while the tile is under the pointer, while anything in
+it holds the focus - a reader tabbing to the tile learns there is more on it -
+and while a menu it opened is open. Where there is no pointer to hover, a finger
+would never find it, so on a touch screen it is always shown.
+
+**It stands on a ground of its own.** A bare glyph over a picture is lost in
+whatever the picture is; the action is drawn on the raised surface with a
+border and a small shadow, in a corner inset from the tile's edge so it never
+sits on the border or under a rounded corner. `corner` picks which: `top-end`
+unless told otherwise, in logical sides, so the end is on the left of a
+right-to-left page.
+
+**`label` is its name and the word under the pointer**, because it carries an
+icon and no words. It is required and has no default, so it can be translated.
+`render` makes it a menu's trigger - `render={<MenuTrigger />}` - and keeps the
+trigger's own button type.
+
+**Size the `Tile`, not the button.** The `Tile` is a column, so a TileButton
+inside it stretches to it: a tile with actions gets its width from the `Tile`,
+where the actions take their corners.
+
 ## Props
+
+### `TileButton`
 
 | Prop | Type | Default | |
 | --- | --- | --- | --- |
@@ -11413,6 +11599,29 @@ same clothes and no button attributes on it.
 | `disabled` | `boolean` |  | Disables the tile. Applied only when it is the default `<button>`: a rendered element such as a link has no `disabled` of its own. |
 
 And every prop of `HTMLAttributes<HTMLElement>`, passed on.
+
+### `Tile`
+
+What a tile and its actions stand on together: a box the actions take their corners of, and the group whose hover and focus show them. A column, so a TileButton inside stretches to it - when a tile has actions, size the Tile rather than the button.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw the tile's ground as - `render={<li />}` in a list of tiles. Without it the ground is a `<div>`. |
+
+And every prop of `HTMLAttributes<HTMLElement>`, passed on.
+
+### `TileAction`
+
+An icon button over a tile's picture, in a corner of its `Tile`.
+
+| Prop | Type | Default | |
+| --- | --- | --- | --- |
+| `label` (required) | `string` |  | What it does - "Remove the reference", "Frame actions". Its accessible name and the word under the pointer, because it carries an icon and no words. Required, and without a default, so the product can translate it. |
+| `corner` | `top-end \| top-start \| bottom-end \| bottom-start` | `'top-end'` | Which corner of the Tile it takes. |
+| `render` | `RenderProp<Record<string, unknown>>` |  | The element to draw it as - a menu's trigger, most often: `render={<MenuTrigger />}`. It stays shown while the menu is open. |
+| `ref` | `Ref<HTMLButtonElement>` |  | React 19 passes `ref` as a plain prop; declared so a caller can reach the element. With `render` it reaches whatever was rendered. |
+
+And every prop of `ButtonHTMLAttributes<HTMLButtonElement>`, passed on.
 
 ---
 
@@ -13078,7 +13287,11 @@ swept, the one being heard.
 
 **A bar that stands at the foot.** How far through the text the reader is, named
 by `words.progress`, and `foot` beside it for what the product keeps in reach.
-`after` follows the text: the next chapter, "I have read it".
+`after` follows the text: the next chapter, "I have read it". The bar pads itself
+out of a phone's safe area - the larger of its own step and
+`env(safe-area-inset-bottom)` - so in an app on an iPhone the foot stands above
+the home indicator rather than under it. The inset is there only when the page
+asks for the whole screen with `viewport-fit=cover` in its viewport tag.
 
 The two rules are exported as plain functions, `paragraphAt` and
 `swipeVerdict`, for a product that needs them elsewhere.
@@ -16091,7 +16304,7 @@ project. Search by a name, by a word from what an item is for, or by a prop:
 - **TagInput** (`https://lacodda.github.io/dowel/r/tag-input.json`): Free text turned into a list: type a word, press Enter, it becomes a chip.
 - **Textarea** (`https://lacodda.github.io/dowel/r/textarea.json`): A multi-line field that can grow with what is typed into it, which is the only interesting part: a fixed box makes someone scroll inside a scroll, and a box that grows without limit pushes the button they are trying to reach off the screen.
 - **Tier** (`https://lacodda.github.io/dowel/r/tier.json`): The shape comes from kilna, where a work is scored on several axes and the total lands in a named band - "draft", "publishable", "a clip". Exports `TierBadge`, `TierRuler`, `AxisBar`.
-- **TileButton** (`https://lacodda.github.io/dowel/r/tile-button.json`): A tile pressed whole: a thumbnail whose picture is the control, a card picked from a row of cards.
+- **TileButton** (`https://lacodda.github.io/dowel/r/tile-button.json`): A tile pressed whole: a thumbnail whose picture is the control, a card picked from a row of cards. Exports `TileButton`, `Tile`, `TileAction`.
 - **TimeField** (`https://lacodda.github.io/dowel/r/time-field.json`): No donor for this one: neither product of the line had a time field, so this is written from the same shape as DurationField, and for the same reason.
 - **Timeline** (`https://lacodda.github.io/dowel/r/timeline.json`): What happened, in the order it happened: a release history, an audit trail, the steps a job went through. Exports `Timeline`, `TimelineItem`.
 - **Toast** (`https://lacodda.github.io/dowel/r/toast.json`): For something that already happened and needs no decision. Exports `ToastProvider`, `ToastTitle`, `ToastDescription`, `ToastAction`, `ToastClose`, `Toast`, `ToastViewport`.

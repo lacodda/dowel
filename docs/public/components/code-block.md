@@ -108,7 +108,7 @@ interface CodeToken {
 | `highlight` | `readonly number[]` |  | Lines to mark, in the same numbering the reader sees. |
 | `copyLabel` | `string` |  | Brings the copy button, and names it for a screen reader. Required to have one, and deliberately without a default: a string this component invents is a string the product cannot translate. |
 | `copiedLabel` | `string` |  | Announced after a successful copy. Required alongside `copyLabel`. |
-| `onCopy` | `(ok: boolean) => void` |  | Told what happened, for a product that wants its own toast. |
+| `onCopy` | `(ok: boolean, failure?: CopyFailure \| undefined) => void` |  | Told what happened, for a product that wants its own toast - and, when the copy did not happen, why. |
 | `wrap` | `boolean` | `false` | Let long lines wrap instead of scrolling. |
 
 And every prop of `HTMLAttributes<HTMLDivElement>` except `children`, `onCopy`, passed on.

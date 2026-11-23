@@ -130,6 +130,23 @@ what a `<div onClick>` throws away.
 
 **`type` defaults to `button`.** A bare `<button>` inside a form submits it,
 which surprises everyone once. Pass `type="submit"` when that is what you want.
+With `render`, a type you did not pass is not passed at all, so what is rendered
+keeps its own: `<Button render={<DialogClose />}>Cancel</Button>` stays the
+`type="button"` the close sets for itself, and Enter in a dialog's form presses
+its action rather than Cancel.
+
+**It takes a `ref`.** React 19 passes `ref` as a prop, and Button declares it,
+so a caller can point a dialog's `initialFocus` at a button or measure one. With
+`render` the ref reaches whatever was rendered.
+
+```tsx
+const keep = useRef<HTMLButtonElement>(null)
+
+<ConfirmDialogPopup initialFocus={keep}>
+  …
+  <Button ref={keep}>{t('keep')}</Button>
+</ConfirmDialogPopup>
+```
 
 **The caller wins a conflict.** `className` is merged by utility group, so
 `<Button className="rounded-full">` gets round corners rather than two radii
@@ -147,6 +164,7 @@ list is correct in both themes and in every product's accent — there are no
 | `size` | `xs \| sm \| md \| icon-xs \| icon-sm \| icon-md` | `'md'` |  |
 | `disabledReason` | `string` |  | Why the button cannot be pressed, in the product's words - read only while `disabled`. |
 | `render` | `RenderProp<Record<string, unknown>>` |  | Render something else with the button's clothes on - a link, most often. |
+| `ref` | `Ref<HTMLButtonElement>` |  | React 19 passes `ref` as a plain prop; it is declared so a caller can reach the element - to point a dialog's `initialFocus` at it, or to measure it. With `render` it reaches whatever was rendered. |
 | `disabled` | `boolean` | `false` |  |
 
 And every prop of `ButtonHTMLAttributes<HTMLButtonElement>`, passed on.

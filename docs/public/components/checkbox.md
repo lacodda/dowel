@@ -27,6 +27,26 @@ then say so:
 <Checkbox aria-label="Select row" />
 ```
 
+**The box stands on the first line of its words.** A label that wraps - a
+setting with its explanation - drew the box centred between its lines, beside
+neither. The box sits in a box one line tall, at the label's own line height, so
+it is on the first line however many there are, and where it always was on one.
+
+**`onClick` hears the press itself**, before the box changes, for what
+`onCheckedChange` cannot say - whether Shift was held, for a list that checks a
+range from the last box pressed to this one. It is called once per press,
+whether the press landed on the box or on the words.
+
+```tsx
+<Checkbox
+  checked={chosen.has(row.id)}
+  onClick={(event) => { shift.current = event.shiftKey }}
+  onCheckedChange={(on) => choose(row.id, on, shift.current)}
+>
+  {row.name}
+</Checkbox>
+```
+
 **The box is drawn rather than native.** `appearance: none` on a real
 `<input type="checkbox">` is the alternative, and it takes the indeterminate
 state with it: the dash is not something the input can be told to draw.
@@ -70,6 +90,7 @@ the action, it is a switch.
 | `name` | `string` |  | The field name submitted with a form. |
 | `value` | `string` |  | What this box contributes to the group's `value` array when checked, and what a form submits for it. |
 | `aria-label` | `string` |  | The accessible name, for a checkbox with no `children`. |
+| `onClick` | `(event: MouseEvent<HTMLElement, MouseEvent>) => void` |  | The press itself, before the box changes - for what `onCheckedChange` cannot say, such as whether Shift was held: a list that checks a range from the last box pressed to this one. Called once per press, whether it landed on the box or on the words. |
 | `className` | `string` |  |  |
 
 ### `CheckboxGroup`

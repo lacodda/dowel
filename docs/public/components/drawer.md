@@ -92,6 +92,13 @@ forgotten, because a drawer covers only one edge and the rest of the page looks
 usable. It is not — Base UI marks it inert, so Tab cannot walk off into a page
 the user cannot see they are editing.
 
+**A scrolling body still scrolls by its thumb.** A drawer swiped shut takes a
+press anywhere inside it as the start of a swipe and captures the pointer, so a
+scrollbar's thumb in it could not be dragged with a mouse. The bars of a
+[ScrollArea](/dowel/components/scroll-area/) carry `data-base-ui-swipe-ignore`,
+so a drawer with one in it scrolls by its thumb. Anything of your own that drags
+inside a drawer - a slider, a strip that pans - needs the same attribute.
+
 **`DrawerActions` sits at the bottom.** `mt-auto` and `shrink-0`, so the
 buttons stay at the foot of a tall panel whether there is little in it or more
 than fits.

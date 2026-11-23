@@ -63,7 +63,11 @@ swept, the one being heard.
 
 **A bar that stands at the foot.** How far through the text the reader is, named
 by `words.progress`, and `foot` beside it for what the product keeps in reach.
-`after` follows the text: the next chapter, "I have read it".
+`after` follows the text: the next chapter, "I have read it". The bar pads itself
+out of a phone's safe area - the larger of its own step and
+`env(safe-area-inset-bottom)` - so in an app on an iPhone the foot stands above
+the home indicator rather than under it. The inset is there only when the page
+asks for the whole screen with `viewport-fit=cover` in its viewport tag.
 
 The two rules are exported as plain functions, `paragraphAt` and
 `swipeVerdict`, for a product that needs them elsewhere.
