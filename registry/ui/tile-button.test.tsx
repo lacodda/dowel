@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { compileClasses } from '../../tests/compile'
-import { TileButton } from './tile-button'
+import { Menu, MenuItem, MenuPopup, MenuTrigger } from './menu'
+import { Tile, TileAction, TileButton } from './tile-button'
 
 /*
  * TileButton.
@@ -176,6 +177,133 @@ describe('TileButton', () => {
           <span>Warm tape</span>
           <span>Hiss, wow and a soft top end</span>
         </TileButton>
+      </div>,
+    )
+  })
+})
+
+describe('TileAction', () => {
+  /** A reference picture with a cross to take it away - kilna's style
+   * references, the shape the action was written for. */
+  function Reference(props: { onOpen?: () => void; onRemove?: () => void; corner?: 'top-end' | 'bottom-start' }) {
+    return (
+      <Tile data-testid="tile">
+        <TileButton aria-label="Open reference" onClick={props.onOpen}>
+          <img src="data:," alt="" />
+        </TileButton>
+        <TileAction label="Remove the reference" corner={props.corner} onClick={props.onRemove}>
+          <svg aria-hidden />
+        </TileAction>
+      </Tile>
+    )
+  }
+
+  it('stands beside the tile, never inside its button', () => {
+    // A button inside a button is a control nothing can press on its own.
+    render(<Reference />)
+    const tile = screen.getByRole('button', { name: 'Open reference' })
+    const action = screen.getByRole('button', { name: 'Remove the reference' })
+    expect(tile.contains(action)).toBe(false)
+    expect(action.parentElement).toBe(screen.getByTestId('tile'))
+  })
+
+  it('presses itself and not the tile under it', async () => {
+    const onOpen = vi.fn()
+    const onRemove = vi.fn()
+    render(<Reference onOpen={onOpen} onRemove={onRemove} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Remove the reference' }))
+    expect(onRemove).toHaveBeenCalledTimes(1)
+    expect(onOpen).not.toHaveBeenCalled()
+  })
+
+  it('says what it does, to a reader and under the pointer', () => {
+    render(<Reference />)
+    const action = screen.getByRole('button', { name: 'Remove the reference' })
+    expect(action.getAttribute('title')).toBe('Remove the reference')
+    expect(action.getAttribute('type')).toBe('button')
+  })
+
+  it('takes the corner it is given, on the ground the tile gives it', () => {
+    render(<Reference corner="bottom-start" />)
+    const action = classes(screen.getByRole('button', { name: 'Remove the reference' }))
+    expect(action).toEqual(expect.arrayContaining(['absolute', 'bottom-1.5', 'start-1.5']))
+    expect(action).not.toContain('top-1.5')
+    const ground = classes(screen.getByTestId('tile'))
+    expect(ground).toEqual(expect.arrayContaining(['group/tile', 'relative']))
+  })
+
+  it('stands in the top end corner unless told otherwise', () => {
+    render(<Reference />)
+    expect(classes(screen.getByRole('button', { name: 'Remove the reference' }))).toEqual(
+      expect.arrayContaining(['top-1.5', 'end-1.5']),
+    )
+  })
+
+  it('shows on the tile’s hover and focus, under a menu it opened, and always without a pointer', async () => {
+    render(<Reference />)
+    const css = await compileClasses(classes(screen.getByRole('button', { name: 'Remove the reference' })))
+    expect(css).toMatch(/\.opacity-0\s*\{\s*opacity: 0%/)
+    for (const selector of [
+      String.raw`:where(.group\/tile):hover`,
+      String.raw`:where(.group\/tile):focus-within`,
+      '[data-popup-open]',
+    ]) {
+      expect(css).toContain(selector)
+    }
+    expect(css).toMatch(/@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:opacity-100/)
+  })
+
+  it('is a menu’s trigger when asked, and keeps the type the trigger gives it', async () => {
+    render(
+      <Tile>
+        <TileButton aria-label="Open frame">
+          <img src="data:," alt="" />
+        </TileButton>
+        <Menu>
+          <TileAction label="Frame actions" render={<MenuTrigger />}>
+            <svg aria-hidden />
+          </TileAction>
+          <MenuPopup>
+            <MenuItem>Use as cover</MenuItem>
+          </MenuPopup>
+        </Menu>
+      </Tile>,
+    )
+    const trigger = screen.getByRole('button', { name: 'Frame actions' })
+    expect(trigger.getAttribute('aria-haspopup')).toBe('menu')
+    expect(trigger.getAttribute('type')).toBe('button')
+    await userEvent.click(trigger)
+    expect(await screen.findByRole('menuitem', { name: 'Use as cover' })).toBeDefined()
+    expect(trigger.hasAttribute('data-popup-open')).toBe(true)
+  })
+
+  it('draws its ground as a list item when asked', () => {
+    render(
+      <ul>
+        <Tile render={<li />} data-testid="tile">
+          <TileButton aria-label="Open reference">
+            <img src="data:," alt="" />
+          </TileButton>
+        </Tile>
+      </ul>,
+    )
+    expect(screen.getByTestId('tile').tagName).toBe('LI')
+  })
+
+  it('passes axe, with a cross and with a menu', async () => {
+    await expectNoA11yViolations(
+      <div>
+        <Reference />
+        <Tile>
+          <TileButton aria-label="Open frame">
+            <img src="data:," alt="" />
+          </TileButton>
+          <Menu>
+            <TileAction label="Frame actions" render={<MenuTrigger />}>
+              <svg aria-hidden />
+            </TileAction>
+          </Menu>
+        </Tile>
       </div>,
     )
   })

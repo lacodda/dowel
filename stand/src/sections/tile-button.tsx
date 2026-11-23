@@ -1,13 +1,23 @@
 import { useState } from 'react'
 import { Row } from '../row'
-import { TileButton } from '../../../registry/ui/tile-button'
+import { Tile, TileAction, TileButton } from '../../../registry/ui/tile-button'
 
 /*
  * The stand for TileButton: a strip of frames with one chosen, a folder's file
- * tiles where the picture is the control and the name sits under it, and cards
- * picked from a row. The pictures are drawn in place from the theme's tokens,
- * so the stand loads nothing and follows the accent and the theme.
+ * tiles where the picture is the control and the name sits under it, cards
+ * picked from a row, and references with a cross over each picture. The
+ * pictures are drawn in place from the theme's tokens, so the stand loads
+ * nothing and follows the accent and the theme.
  */
+
+/** The cross a reference is taken away with. */
+function Cross() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
+    </svg>
+  )
+}
 
 /** A picture standing in for a frame: a sky, a hill and a sun, in tokens. */
 function Frame({ tone }: { tone: 'accent' | 'good' | 'info' | 'warn' }) {
@@ -38,6 +48,7 @@ const STYLES = [
 export function TileButtonSection() {
   const [chosen, setChosen] = useState(2)
   const [style, setStyle] = useState<string>('tape')
+  const [references, setReferences] = useState<readonly (typeof FRAMES)[number][]>(FRAMES.slice(0, 3))
 
   return (
     <>
@@ -69,6 +80,27 @@ export function TileButtonSection() {
               </TileButton>
               <p className="truncate px-2 py-1.5 text-xs">{name.toLowerCase()}.png</p>
             </li>
+          ))}
+        </ul>
+      </Row>
+
+      <Row label="references with a cross over each picture - shown on the tile's hover or focus, always on a touch screen; the last as it shows under the pointer">
+        <ul className="flex gap-2">
+          {references.map((frame, index) => (
+            <Tile key={frame.id} render={<li />} className="shrink-0">
+              <TileButton aria-label={`Open reference ${frame.id}`}>
+                <Frame tone={frame.tone} />
+              </TileButton>
+              <TileAction
+                label={`Remove reference ${frame.id}`}
+                onClick={() => setReferences((now) => now.filter((one) => one.id !== frame.id))}
+                // The picture is taken at rest, where every action is hidden;
+                // the last one is drawn as the pointer would show it.
+                className={index === references.length - 1 ? 'opacity-100' : undefined}
+              >
+                <Cross />
+              </TileAction>
+            </Tile>
           ))}
         </ul>
       </Row>
