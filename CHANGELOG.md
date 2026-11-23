@@ -2,6 +2,53 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.1.0] - 2026-11-23
+
+### Bug Fixes
+- Keep the type a rendered close gives itself, and take a ref
+- Draw a field's focus ring inside its box
+- Leave room for a ring at the body's top and bottom
+- Keep the thumb out of a drawer's swipe
+- Stand the reader's foot above a phone's safe area
+- Let the sort button take the case of its heading
+
+### Build
+- Regenerate the registry, the props and llms
+- Regenerate the registry, its v1.1 snapshot, the history and llms
+
+### Documentation
+- A control of your own is wired only if it is one element
+
+### Features
+- Say why a copy failed, look disabled, answer to a named group
+- Put the caller's classes on the box it draws
+- Stand the box on the first line, and hear the press
+- A required group keeps one on, and the cross shows its word
+- An action over the picture, beside the tile
+
+### Testing
+- Record the baselines and the accessibility report
+
+### Measured
+
+The orders the products sent after the freeze, each built where the product
+had patched its own copy. Nothing breaks: every change is a new prop, a new
+part, or a fix a copied file takes as it is.
+
+| Item | What changed | Asked by |
+| --- | --- | --- |
+| `Button` | With `render`, a type you did not pass is not passed; `<Button render={<DialogClose />}>` stays `type="button"`, so Enter in a dialog's form presses its action, not Cancel. Takes `ref`. | austeris, recipes |
+| `CopyButton`, `Copyable` | `onCopy(false, { reason: 'unavailable' \| 'refused', error })`; a disabled look; inside `group/copy` a button answers to that container alone | kilna |
+| `QueryState` | `className` on the box it draws, in every state | kilna |
+| `Checkbox` | The box on the first line of a wrapped label; `onClick` once per press, for Shift-click ranges | kilna |
+| `ChipGroup`, `Chip` | `required` keeps one chip on; the remove cross shows its word as a title | kilna |
+| `Tile`, `TileAction` | An icon button over a tile's picture, beside the TileButton rather than inside it | kilna |
+| Every field | The focus ring drawn inside the box, so an edge that clips no longer cuts it | kilna |
+| `DialogBody` | Room at its top and bottom for the ring of its first and last field | kilna |
+| `ScrollArea` | Its bars ignore a drawer's swipe, so the thumb drags in a Drawer | kilna |
+| `ReaderScreen` | The foot stands above a phone's home indicator | hilvan |
+| `TableSortButton` | Takes the case of its heading, so a VirtualGrid caption stays in capitals | midda |
+
 ## [1.0.0] - 2026-11-13
 
 ### Breaking Changes
