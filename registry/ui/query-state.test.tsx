@@ -243,3 +243,36 @@ describe('a way out of a failure', () => {
     )
   })
 })
+
+describe('the box it draws', () => {
+  /* kilna's screens are columns of `min-h-0 flex-1` parts, and the wrapper
+   * this draws is a part of its own: without the caller's classes on it the
+   * height chain broke there, in whichever state was showing. */
+  const states = {
+    pending: { pending: true },
+    failed: { error: 'Could not load' },
+    empty: { empty: true, emptyState: <p>nothing</p> },
+    loaded: {},
+  } as const
+
+  it.each(Object.entries(states))('takes the caller’s classes while %s', (_, state) => {
+    const { container } = render(
+      <QueryState {...state} className="flex min-h-0 flex-1 flex-col">
+        <Content />
+      </QueryState>,
+    )
+    const wrapper = container.firstElementChild as HTMLElement
+    expect(wrapper.className).toBe('flex min-h-0 flex-1 flex-col')
+    // The classes are on the box that holds the content, not on a box beside it.
+    expect(container.children).toHaveLength(1)
+  })
+
+  it('draws a bare box when given none', () => {
+    const { container } = render(
+      <QueryState>
+        <Content />
+      </QueryState>,
+    )
+    expect((container.firstElementChild as HTMLElement).getAttribute('class')).toBeNull()
+  })
+})

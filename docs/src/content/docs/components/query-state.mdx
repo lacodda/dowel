@@ -57,6 +57,16 @@ by hand:
 **`empty` is computed by the caller**, because only the caller knows whether
 empty means `[]`, `null`, or a count of zero.
 
+**`className` goes on the box it draws**, in every state. That box is a part of
+the layout like any other, so a screen built as a column of `min-h-0 flex-1`
+parts loses its height chain there unless the box is one of them:
+
+```tsx
+<QueryState pending={works.isPending} error={works.error} className="flex min-h-0 flex-1 flex-col">
+  <WorkList works={works.data} />
+</QueryState>
+```
+
 **It offers the retry it is handed.** A failed load with no way to try again
 is a dead end, and kilna had nineteen of them — every one wrote "could not
 load" and none called the `refetch` it already had. Pass `onRetry` with the
