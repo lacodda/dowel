@@ -110,6 +110,20 @@ describe('ScrollArea', () => {
     expect(viewport().compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
+  it('keeps its thumb out of a drawer’s swipe', async () => {
+    // A drawer swiped shut captures the pointer pressed anywhere inside it,
+    // so a thumb in a Drawer did not drag: kilna measured scrollTop 0 -> 3089
+    // with the mark, and nothing without it. Every axis, so the value is
+    // empty: a bar is dragged along its own axis, which is the swipe's too.
+    overflowing(1000)
+    const { container } = render(<Area />)
+    await waitFor(() =>
+      expect(container.querySelector('[data-orientation="vertical"]')).not.toBeNull(),
+    )
+    const thumb = container.querySelector<HTMLElement>('[data-orientation="vertical"] > *')!
+    expect(thumb.closest('[data-base-ui-swipe-ignore]')?.getAttribute('data-base-ui-swipe-ignore')).toBe('')
+  })
+
   it('fades only when asked, and only by the distance left to the edge', () => {
     const { rerender } = render(<Area />)
     expect(viewport().className).not.toContain('mask-image')
