@@ -2,6 +2,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
+import { compileClasses, utilityRules } from '../../tests/compile'
 import { ReaderScreen, SLOPE, SWIPE, paragraphAt, swipeVerdict, type ReaderScreenProps } from './reader-screen'
 
 /*
@@ -266,6 +267,21 @@ describe('ReaderScreen', () => {
     expect(bar.className.split(/\s+/)).toEqual(expect.arrayContaining(['sticky', 'bottom-0', 'bg-bg']))
     expect(bar.textContent).toContain('I know the rest')
     expect(screen.getByRole('button', { name: 'I have read it' }).closest('.sticky')).toBeNull()
+  })
+
+  it('stands its bar above a phone’s home indicator', async () => {
+    // hilvan's PWA on an iPhone: the bar's own py-3 put "I know the rest"
+    // under the indicator. The larger of the step and the inset, not the sum.
+    render(<Reader foot={<button type="button">I know the rest</button>} />)
+    const bar = screen.getByRole('progressbar').closest('.sticky') as HTMLElement
+    const classes = bar.className.split(/\s+/)
+    expect(classes).not.toContain('py-3')
+    const css = await compileClasses(classes)
+    const bottom = utilityRules(css).filter((rule) => rule.body.startsWith('padding-bottom'))
+    expect(bottom.map((rule) => rule.body)).toEqual([
+      'padding-bottom: max(calc(var(--spacing) * 3), env(safe-area-inset-bottom));',
+    ])
+    expect(utilityRules(css).some((rule) => rule.body === 'padding-top: calc(var(--spacing) * 3);')).toBe(true)
   })
 
   it('carries no colour outside the vocabulary', () => {

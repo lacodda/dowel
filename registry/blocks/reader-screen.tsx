@@ -27,7 +27,8 @@ import { Progress } from '@/components/ui/progress'
  *   reader scrolling must never set off anything, however far the scroll
  *   drifts sideways.
  * - **A bar that stands at the foot.** How far through the text the reader is,
- *   and whatever the product keeps in reach there.
+ *   and whatever the product keeps in reach there - above a phone's home
+ *   indicator, not under it.
  *
  * What is the product's: every word. A paragraph is drawn by `renderParagraph`
  * - plain text, rich runs, a button per word - and the block never looks
@@ -231,7 +232,13 @@ export function ReaderScreen({
 
       {after !== undefined && <div className="flex flex-col gap-3 border-t border-line pt-6">{after}</div>}
 
-      <div className="sticky bottom-0 flex items-center gap-3 border-t border-line bg-bg py-3 [z-index:var(--z-sticky)]">
+      {/* The foot pads itself out of a phone's safe area: in hilvan's PWA on
+        * an iPhone, "I know the rest" stood under the home indicator. The
+        * larger of its own step and the inset, so a screen with no inset
+        * keeps the bar as it was and one with an inset does not add the two
+        * up. The inset is zero unless the page asks for the whole screen
+        * (`viewport-fit=cover`), which is when a bar at the foot needs it. */}
+      <div className="sticky bottom-0 flex items-center gap-3 border-t border-line bg-bg pt-3 pb-[max(--spacing(3),env(safe-area-inset-bottom))] [z-index:var(--z-sticky)]">
         <Progress
           value={count === 0 ? 0 : shown + 1}
           max={Math.max(count, 1)}
