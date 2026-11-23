@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react'
+import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
@@ -114,6 +115,16 @@ describe('Chip, for a reader and a keyboard', () => {
     )
     expect(screen.getByRole('button', { name: 'Remove tag' })).toBeDefined()
   })
+
+  it('shows the word for the cross under the pointer', () => {
+    // An x on its own asks a sighted reader to guess what it takes away.
+    render(
+      <Chip onRemove={() => {}} removeLabel="Remove tag">
+        draft
+      </Chip>,
+    )
+    expect(screen.getByRole('button', { name: 'Remove tag' }).getAttribute('title')).toBe('Remove tag')
+  })
 })
 
 describe('Chip, as a switch', () => {
@@ -211,7 +222,7 @@ describe('Chip variants', () => {
   })
 })
 
-function Kinds(props: { multiple?: boolean; onValueChange?: (value: string[]) => void }) {
+function Kinds(props: { multiple?: boolean; required?: boolean; onValueChange?: (value: string[]) => void }) {
   return (
     <ChipGroup aria-label="Kind" defaultValue={['clip']} {...props}>
       <Chip value="song">Song</Chip>
@@ -261,6 +272,65 @@ describe('ChipGroup', () => {
     expect(document.activeElement?.textContent).toBe('Clip')
     await userEvent.tab()
     expect(document.activeElement?.textContent).toBe('after')
+  })
+
+  it('lets the last chip go unless it is required', async () => {
+    render(<Kinds />)
+    await userEvent.click(screen.getByRole('button', { name: 'Clip' }))
+    expect(pressedNames()).toEqual([])
+  })
+
+  it('keeps one on when required, and says nothing changed', async () => {
+    // kilna guarded "always one" in five callbacks, each putting the value
+    // back after the group had let it go.
+    const onValueChange = vi.fn()
+    render(<Kinds required onValueChange={onValueChange} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Clip' }))
+    expect(pressedNames()).toEqual(['Clip'])
+    expect(onValueChange).not.toHaveBeenCalled()
+
+    // Another chip still takes the choice over.
+    await userEvent.click(screen.getByRole('button', { name: 'Short' }))
+    expect(pressedNames()).toEqual(['Short'])
+    expect(onValueChange).toHaveBeenLastCalledWith(['short'])
+  })
+
+  it('keeps one on from the keyboard too', async () => {
+    render(<Kinds required />)
+    await userEvent.tab()
+    await userEvent.keyboard('{ArrowRight}')
+    expect(document.activeElement?.textContent).toBe('Clip')
+    await userEvent.keyboard(' ')
+    expect(pressedNames()).toEqual(['Clip'])
+  })
+
+  it('keeps the last of several on when required and multiple', async () => {
+    const onValueChange = vi.fn()
+    render(<Kinds multiple required onValueChange={onValueChange} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Song' }))
+    expect(pressedNames()).toEqual(['Song', 'Clip'])
+    await userEvent.click(screen.getByRole('button', { name: 'Clip' }))
+    expect(pressedNames()).toEqual(['Song'])
+    await userEvent.click(screen.getByRole('button', { name: 'Song' }))
+    expect(pressedNames()).toEqual(['Song'])
+    expect(onValueChange).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps one on in a group the product holds', async () => {
+    function Held() {
+      const [value, setValue] = useState(['clip'])
+      return (
+        <ChipGroup aria-label="Kind" required value={value} onValueChange={setValue}>
+          <Chip value="song">Song</Chip>
+          <Chip value="clip">Clip</Chip>
+        </ChipGroup>
+      )
+    }
+    render(<Held />)
+    await userEvent.click(screen.getByRole('button', { name: 'Clip' }))
+    expect(pressedNames()).toEqual(['Clip'])
   })
 })
 
