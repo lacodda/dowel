@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
-import { CopyButton } from './copy-button'
+import { CopyButton, type CopyButtonProps } from './copy-button'
 
 /*
  * Code, shown inside a product.
@@ -36,10 +36,12 @@ import { CopyButton } from './copy-button'
  */
 
 export const codeBlockVariants = cva(
-  // `group` so the copy button reveals on hover of the whole block rather than
-  // only once the pointer has found a button it cannot see; `relative` because
-  // a block with no caption has nowhere to put that button but over the code.
-  'group relative overflow-hidden rounded-md border border-line bg-soft font-mono',
+  // `group/copy` so the copy button reveals on hover of the whole block rather
+  // than only once the pointer has found a button it cannot see - and on this
+  // block's hover alone, not on that of an answer or a card it stands in that
+  // is a `group` of its own. `relative` because a block with no caption has
+  // nowhere to put that button but over the code.
+  'group/copy relative overflow-hidden rounded-md border border-line bg-soft font-mono',
   {
     variants: {
       size: {
@@ -118,8 +120,9 @@ export interface CodeBlockProps
   copyLabel?: string
   /** Announced after a successful copy. Required alongside `copyLabel`. */
   copiedLabel?: string
-  /** Told what happened, for a product that wants its own toast. */
-  onCopy?: (ok: boolean) => void
+  /** Told what happened, for a product that wants its own toast - and, when
+   * the copy did not happen, why. */
+  onCopy?: CopyButtonProps['onCopy']
   /**
    * Let long lines wrap instead of scrolling.
    *

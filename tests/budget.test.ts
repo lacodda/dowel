@@ -234,7 +234,7 @@ describe('what a primitive weighs', () => {
         'be a component whose entire content is where to put something else.',
     },
     'diff-view': {
-      ceiling: 5120,
+      ceiling: 5248,
       because:
         'Two columns that have to stay in step, which is one problem drawn in two ' +
         'places: the pairing lives in `diff-lines` (no React, and a product that only ' +
@@ -242,7 +242,9 @@ describe('what a primitive weighs', () => {
         'scroller holding both tracks, the per-side cell, and the marker glyph that ' +
         'lets the comparison read without colour. Splitting it would give a column ' +
         'component that must not be used on its own - two of them scroll apart, which ' +
-        'is the defect this component was written to fix.',
+        'is the defect this component was written to fix. Raised in v1.1 by the copy ' +
+        "failure it hands on - CopyButton's own type, so the two cannot disagree - and " +
+        'the named group its strip of labels is, so an outer `group` does not show its buttons.',
     },
     'json-viewer': {
       ceiling: 4864,
@@ -484,7 +486,10 @@ describe('what a primitive drags in', () => {
     // Wears Menu's clothes rather than its own: the popup below the root is
     // literally Menu's, so two `cva` calls would only drift apart.
     'context-menu': ['@base-ui/react', 'layer', 'menu'],
-    copyable: [],
+    // The write to the clipboard is CopyButton's `copyText`, so the two name a
+    // failure the same way: one rule for "unavailable" and "refused", not two
+    // copies that drift.
+    copyable: ['copy-button'],
     // The whole component is the wiring Base UI does: the label's `for`, the
     // `aria-describedby` for hint and error, and the invalid state. Without
     // it this would be a `<div>` with a `<label>` beside it, which is the bug

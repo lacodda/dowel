@@ -77,7 +77,7 @@ describe('Copyable', () => {
     render(<Copyable onCopy={onCopy} label="Copy" copiedLabel="Copied">abc</Copyable>)
 
     await userEvent.click(screen.getByRole('button'))
-    await waitFor(() => expect(onCopy).toHaveBeenCalledWith(false))
+    await waitFor(() => expect(onCopy).toHaveBeenCalledWith(false, expect.objectContaining({ reason: 'refused' })))
     expect(screen.getByRole('status').textContent).toBe('')
   })
 

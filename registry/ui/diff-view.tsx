@@ -1,7 +1,7 @@
 import { useMemo, type HTMLAttributes, type ReactNode } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'dowel-ui'
-import { CopyButton } from './copy-button'
+import { CopyButton, type CopyButtonProps } from './copy-button'
 import { countChanges, diffLines, rows, type DiffRow } from './diff-lines'
 
 /*
@@ -92,8 +92,9 @@ export interface DiffViewProps
   copyLabel?: (side: string) => string
   /** Announced after a successful copy. Required alongside `copyLabel`. */
   copiedLabel?: string
-  /** Told what happened, for a product that wants its own toast. */
-  onCopy?: (ok: boolean) => void
+  /** Told what happened, for a product that wants its own toast - and, when
+   * the copy did not happen, why. */
+  onCopy?: CopyButtonProps['onCopy']
 }
 
 export function DiffView({
@@ -133,8 +134,11 @@ export function DiffView({
          * the whole of the left-hand text, which labels nothing. Both are
          * always drawn - a comparison that names one of its two sides is one
          * the reader has to guess at.
+         *
+         * `group/copy`, so the copy buttons answer to this strip's hover and
+         * not to that of a card the comparison stands in.
          */}
-        <div className="group flex items-center gap-2 border-b border-line bg-softer px-3 py-1 text-2xs font-medium text-dim @3xl:grid @3xl:grid-cols-2 @3xl:gap-0 @3xl:px-0 @3xl:py-0">
+        <div className="group/copy flex items-center gap-2 border-b border-line bg-softer px-3 py-1 text-2xs font-medium text-dim @3xl:grid @3xl:grid-cols-2 @3xl:gap-0 @3xl:px-0 @3xl:py-0">
           <span className="flex min-w-0 items-center gap-2 @3xl:grow @3xl:px-3 @3xl:py-1">
             <span className="truncate @3xl:grow">{beforeLabel}</span>
             {copyLabel !== undefined && (

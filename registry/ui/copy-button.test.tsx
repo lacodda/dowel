@@ -3,7 +3,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
-import { CopyButton } from './copy-button'
+import { compileClasses, utilityRules } from '../../tests/compile'
+import { CopyButton, copyText } from './copy-button'
 
 /*
  * What has to be true of a copy button.
@@ -37,9 +38,75 @@ describe('CopyButton', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Copy' }))
 
-    expect(onCopy).toHaveBeenCalledWith(false)
+    expect(onCopy).toHaveBeenCalledWith(false, expect.objectContaining({ reason: 'refused' }))
     // Still says "Copy": nothing was copied.
     expect(screen.getByRole('button', { name: 'Copy' })).toBeDefined()
+  })
+
+  it('says why the copy failed, and hands on what the browser threw', async () => {
+    // kilna's toast had one sentence for two failures: a refusal may pass on
+    // the next press, a missing clipboard never will.
+    const thrown = new Error('Write permission denied.')
+    clipboard(() => Promise.reject(thrown))
+    const onCopy = vi.fn()
+    render(<CopyButton value="x" label="Copy" copiedLabel="Copied" onCopy={onCopy} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Copy' }))
+    expect(onCopy).toHaveBeenCalledTimes(1)
+    expect(onCopy).toHaveBeenCalledWith(false, { reason: 'refused', error: thrown })
+  })
+
+  it('names a page with no clipboard at all as unavailable, not refused', async () => {
+    // Outside a secure context `navigator.clipboard` is not there; calling
+    // into it threw a TypeError that said nothing about why.
+    Object.assign(navigator, { clipboard: undefined })
+    const onCopy = vi.fn()
+    render(<CopyButton value="x" label="Copy" copiedLabel="Copied" onCopy={onCopy} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Copy' }))
+    expect(onCopy).toHaveBeenCalledWith(false, { reason: 'unavailable' })
+    expect(screen.getByRole('button', { name: 'Copy' })).toBeDefined()
+  })
+
+  it('copies with nothing to say when the write goes through', async () => {
+    clipboard(() => Promise.resolve())
+    await expect(copyText('x')).resolves.toBeNull()
+  })
+
+  it('looks disabled, and copies nothing, while disabled', async () => {
+    const writeText = clipboard(() => Promise.resolve())
+    const onCopy = vi.fn()
+    render(<CopyButton value="x" label="Copy" copiedLabel="Copied" onCopy={onCopy} disabled />)
+    const button = screen.getByRole('button', { name: 'Copy' })
+
+    await userEvent.click(button)
+    expect(writeText).not.toHaveBeenCalled()
+    expect(onCopy).not.toHaveBeenCalled()
+    // The icon fades rather than the button: the button's own opacity is the
+    // reveal, and a disabled look written there would fight it.
+    expect(button.className).toContain('disabled:*:opacity-50')
+    expect(button.className).toContain('disabled:cursor-not-allowed')
+    expect(button.className).not.toMatch(/(^|\s)hover:bg-soft/)
+  })
+
+  it('answers to a named group alone, and to any group only outside one', async () => {
+    clipboard(() => Promise.resolve())
+    render(<CopyButton value="x" label="Copy" copiedLabel="Copied" />)
+    const classes = screen.getByRole('button').className.split(/\s+/)
+    // The hovers sit inside `@media (hover: hover)`, so the rule to read is
+    // the block's body: one line per selector that reveals the button.
+    const reveal = utilityRules(await compileClasses(classes))
+      .flatMap((rule) => (rule.selector.startsWith('@media') ? rule.body.split('}') : [`${rule.selector}{${rule.body}`]))
+      .filter((rule) => rule.includes('opacity: 100%'))
+
+    // The named group reveals the button...
+    expect(reveal.some((rule) => rule.includes(String.raw`:where(.group\/copy):hover`))).toBe(true)
+    // ...and a plain group does too, except over a button inside a named one:
+    // the selector has to come out whole, or the rule is dropped and nothing
+    // reveals the button at all.
+    const plain = reveal.find((rule) => rule.includes(':where(.group):hover'))
+    expect(plain).toBeDefined()
+    expect(plain).toContain(':not(:where(:is([class~="group/copy"])) *)')
   })
 
   it('renames itself once the copy has happened', async () => {
@@ -93,7 +160,8 @@ describe('CopyButton', () => {
     // the panel - rather than only once it has found the button it cannot see.
     clipboard(() => Promise.resolve())
     render(<CopyButton value="x" label="Copy" copiedLabel="Copied" />)
-    expect(screen.getByRole('button').className).toContain('group-hover:opacity-100')
+    expect(screen.getByRole('button').className).toContain('group-hover/copy:opacity-100')
+    expect(screen.getByRole('button').className).toContain('group-hover:not-in-[[class~="group/copy"]]:opacity-100')
   })
 
   it('is a button, so it submits nothing by accident', () => {

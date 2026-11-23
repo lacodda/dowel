@@ -176,7 +176,7 @@ describe('CodeBlock', () => {
     render(<CodeBlock code="x" copyLabel="Copy" copiedLabel="Copied" onCopy={onCopy} />)
     await userEvent.click(screen.getByRole('button', { name: 'Copy' }))
 
-    expect(onCopy).toHaveBeenCalledWith(false)
+    expect(onCopy).toHaveBeenCalledWith(false, expect.objectContaining({ reason: 'refused' }))
     expect(screen.getByRole('button', { name: 'Copy' })).toBeDefined()
   })
 
