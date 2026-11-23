@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-scheda",
+  "type": "registry:file",
+  "title": "scheda accent",
+  "description": "terracotta (paired with sea) #D9704A - the colour of the scheda mark (sc). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/scheda.css",
+      "target": "~/dowel/accents/scheda.css",
+      "type": "registry:file",
+      "content": "/*\n * scheda - terracotta (paired with sea) #D9704A, the colour of its mark (sc).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #D9704A;\n}\n"
+    }
+  ]
+}

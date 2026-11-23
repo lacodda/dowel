@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-atlas",
+  "type": "registry:file",
+  "title": "atlas accent",
+  "description": "nebula #8A7DF5 - the colour of the atlas mark (at). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/atlas.css",
+      "target": "~/dowel/accents/atlas.css",
+      "type": "registry:file",
+      "content": "/*\n * atlas - nebula #8A7DF5, the colour of its mark (at).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #8A7DF5;\n}\n"
+    }
+  ]
+}

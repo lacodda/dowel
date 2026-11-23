@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-kasl-server",
+  "type": "registry:file",
+  "title": "kasl-server accent",
+  "description": "gold #D9A82E - the colour of the kasl-server mark (ks). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/kasl-server.css",
+      "target": "~/dowel/accents/kasl-server.css",
+      "type": "registry:file",
+      "content": "/*\n * kasl-server - gold #D9A82E, the colour of its mark (ks).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #D9A82E;\n}\n"
+    }
+  ]
+}

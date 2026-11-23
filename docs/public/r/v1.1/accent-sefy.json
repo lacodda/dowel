@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-sefy",
+  "type": "registry:file",
+  "title": "sefy accent",
+  "description": "teal #35A8A0 - the colour of the sefy mark (se). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/sefy.css",
+      "target": "~/dowel/accents/sefy.css",
+      "type": "registry:file",
+      "content": "/*\n * sefy - teal #35A8A0, the colour of its mark (se).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #35A8A0;\n}\n"
+    }
+  ]
+}

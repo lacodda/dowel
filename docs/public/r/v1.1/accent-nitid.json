@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-nitid",
+  "type": "registry:file",
+  "title": "nitid accent",
+  "description": "cyan #3FA9D9 - the colour of the nitid mark (nd). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/nitid.css",
+      "target": "~/dowel/accents/nitid.css",
+      "type": "registry:file",
+      "content": "/*\n * nitid - cyan #3FA9D9, the colour of its mark (nd).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #3FA9D9;\n}\n"
+    }
+  ]
+}

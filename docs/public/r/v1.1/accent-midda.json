@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accent-midda",
+  "type": "registry:file",
+  "title": "midda accent",
+  "description": "violet #A46BE8 - the colour of the midda mark (mi). Import after the theme.",
+  "files": [
+    {
+      "path": "dowel/accents/midda.css",
+      "target": "~/dowel/accents/midda.css",
+      "type": "registry:file",
+      "content": "/*\n * midda - violet #A46BE8, the colour of its mark (mi).\n *\n * Import after the theme. Everything else - the hover shade, the soft fill,\n * the focus ring, the colour of text on an accent fill, and the trace of the\n * hue the greys carry - is derived from this one value.\n */\n:root {\n  --accent-base: #A46BE8;\n}\n"
+    }
+  ]
+}

@@ -551,6 +551,19 @@
   ],
   "button": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "button",
+          "breaking": false,
+          "summary": "keep the type a rendered close gives itself, and take a ref",
+          "date": "2026-11-23",
+          "commit": "4ecfed1f88"
+        }
+      ]
+    },
+    {
       "version": "0.33.0",
       "changes": [
         {
@@ -776,6 +789,19 @@
   ],
   "checkbox": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "checkbox",
+          "breaking": false,
+          "summary": "stand the box on the first line, and hear the press",
+          "date": "2026-11-23",
+          "commit": "4da9b06d6c"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -803,6 +829,19 @@
     }
   ],
   "chip": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "chip",
+          "breaking": false,
+          "summary": "a required group keeps one on, and the cross shows its word",
+          "date": "2026-11-23",
+          "commit": "b858923898"
+        }
+      ]
+    },
     {
       "version": "1.0.0",
       "changes": [
@@ -897,6 +936,19 @@
   ],
   "code-block": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "copy-button",
+          "breaking": false,
+          "summary": "say why a copy failed, look disabled, answer to a named group",
+          "date": "2026-11-23",
+          "commit": "d2d7fa219e"
+        }
+      ]
+    },
+    {
       "version": "0.25.0",
       "changes": [
         {
@@ -977,6 +1029,19 @@
     }
   ],
   "combobox": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "input",
+          "breaking": false,
+          "summary": "draw a field's focus ring inside its box",
+          "date": "2026-11-23",
+          "commit": "901655dcb0"
+        }
+      ]
+    },
     {
       "version": "0.40.0",
       "changes": [
@@ -1389,6 +1454,19 @@
   ],
   "copy-button": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "copy-button",
+          "breaking": false,
+          "summary": "say why a copy failed, look disabled, answer to a named group",
+          "date": "2026-11-23",
+          "commit": "d2d7fa219e"
+        }
+      ]
+    },
+    {
       "version": "0.28.0",
       "changes": [
         {
@@ -1416,6 +1494,19 @@
     }
   ],
   "copyable": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "copy-button",
+          "breaking": false,
+          "summary": "say why a copy failed, look disabled, answer to a named group",
+          "date": "2026-11-23",
+          "commit": "d2d7fa219e"
+        }
+      ]
+    },
     {
       "version": "0.38.0",
       "changes": [
@@ -1673,6 +1764,19 @@
   ],
   "dialog": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "dialog",
+          "breaking": false,
+          "summary": "leave room for a ring at the body's top and bottom",
+          "date": "2026-11-23",
+          "commit": "3133f78055"
+        }
+      ]
+    },
+    {
       "version": "1.0.0",
       "changes": [
         {
@@ -1783,6 +1887,19 @@
     }
   ],
   "diff-view": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "copy-button",
+          "breaking": false,
+          "summary": "say why a copy failed, look disabled, answer to a named group",
+          "date": "2026-11-23",
+          "commit": "d2d7fa219e"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -2316,6 +2433,19 @@
     }
   ],
   "input": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "input",
+          "breaking": false,
+          "summary": "draw a field's focus ring inside its box",
+          "date": "2026-11-23",
+          "commit": "901655dcb0"
+        }
+      ]
+    },
     {
       "version": "0.36.0",
       "changes": [
@@ -2969,6 +3099,19 @@
   ],
   "number-field": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "input",
+          "breaking": false,
+          "summary": "draw a field's focus ring inside its box",
+          "date": "2026-11-23",
+          "commit": "901655dcb0"
+        }
+      ]
+    },
+    {
       "version": "1.0.0",
       "changes": [
         {
@@ -3249,6 +3392,19 @@
   ],
   "password-field": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "input",
+          "breaking": false,
+          "summary": "draw a field's focus ring inside its box",
+          "date": "2026-11-23",
+          "commit": "901655dcb0"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -3479,6 +3635,19 @@
   ],
   "query-state": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "query-state",
+          "breaking": false,
+          "summary": "put the caller's classes on the box it draws",
+          "date": "2026-11-23",
+          "commit": "21eb92062a"
+        }
+      ]
+    },
+    {
       "version": "0.41.0",
       "changes": [
         {
@@ -3588,6 +3757,19 @@
     }
   ],
   "reader-screen": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "blocks",
+          "breaking": false,
+          "summary": "stand the reader's foot above a phone's safe area",
+          "date": "2026-11-23",
+          "commit": "11fd4547d0"
+        }
+      ]
+    },
     {
       "version": "1.0.0",
       "changes": [
@@ -3766,6 +3948,19 @@
     }
   ],
   "scroll-area": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "scroll-area",
+          "breaking": false,
+          "summary": "keep the thumb out of a drawer's swipe",
+          "date": "2026-11-23",
+          "commit": "5d94408749"
+        }
+      ]
+    },
     {
       "version": "1.0.0",
       "changes": [
@@ -4606,6 +4801,19 @@
   ],
   "table": [
     {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "table",
+          "breaking": false,
+          "summary": "let the sort button take the case of its heading",
+          "date": "2026-11-23",
+          "commit": "3e04b66858"
+        }
+      ]
+    },
+    {
       "version": "1.0.0",
       "changes": [
         {
@@ -4741,6 +4949,19 @@
     }
   ],
   "tag-input": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "fix",
+          "scope": "input",
+          "breaking": false,
+          "summary": "draw a field's focus ring inside its box",
+          "date": "2026-11-23",
+          "commit": "901655dcb0"
+        }
+      ]
+    },
     {
       "version": "0.41.0",
       "changes": [
@@ -5179,6 +5400,19 @@
     }
   ],
   "tile-button": [
+    {
+      "version": "1.1.0",
+      "changes": [
+        {
+          "type": "feat",
+          "scope": "tile-button",
+          "breaking": false,
+          "summary": "an action over the picture, beside the tile",
+          "date": "2026-11-23",
+          "commit": "75022cc24a"
+        }
+      ]
+    },
     {
       "version": "1.0.0",
       "changes": [
