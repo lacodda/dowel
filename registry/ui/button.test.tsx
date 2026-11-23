@@ -1,10 +1,14 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import { createRef, useRef, type ReactElement } from 'react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
 import { compileClasses, utilityRules } from '../../tests/compile'
 import { Button, buttonVariants } from './button'
+import { ConfirmDialog, ConfirmDialogActions, ConfirmDialogClose, ConfirmDialogPopup, ConfirmDialogTitle } from './confirm-dialog'
+import { Dialog, DialogActions, DialogBody, DialogClose, DialogPopup, DialogTitle } from './dialog'
+import { Drawer, DrawerActions, DrawerBody, DrawerClose, DrawerPopup, DrawerTitle } from './drawer'
 
 const SIZES = ['xs', 'sm', 'md', 'icon-xs', 'icon-sm', 'icon-md'] as const
 
@@ -88,6 +92,34 @@ describe('as something else', () => {
     // it is a small lie about what is on the other end.
     render(<Button render={<a href="/somewhere" />}>Go</Button>)
     expect(screen.getByRole('link').getAttribute('type')).toBeNull()
+  })
+
+  it('keeps the type a rendered button gives itself', () => {
+    // A type nobody passed used to go through as `undefined` and wipe the
+    // `type="button"` DialogClose sets for itself.
+    render(
+      <Dialog open>
+        <DialogPopup>
+          <DialogTitle>Edit</DialogTitle>
+          <Button render={<DialogClose />}>Cancel</Button>
+        </DialogPopup>
+      </Dialog>,
+    )
+    expect(screen.getByRole('button', { name: 'Cancel' }).getAttribute('type')).toBe('button')
+  })
+
+  it('passes the type it is given to what it renders', () => {
+    render(
+      <Dialog open>
+        <DialogPopup>
+          <DialogTitle>Edit</DialogTitle>
+          <Button render={<DialogClose />} type="submit">
+            Done
+          </Button>
+        </DialogPopup>
+      </Dialog>,
+    )
+    expect(screen.getByRole('button', { name: 'Done' }).getAttribute('type')).toBe('submit')
   })
 
   it('takes a function when the caller needs the props first', () => {
@@ -431,5 +463,121 @@ describe('a disabled button that says why', () => {
         Restore
       </Button>,
     )
+  })
+})
+
+describe('a ref', () => {
+  it('reaches the button', () => {
+    const ref = createRef<HTMLButtonElement>()
+    render(<Button ref={ref}>Save</Button>)
+    expect(ref.current).toBe(screen.getByRole('button', { name: 'Save' }))
+  })
+
+  it('reaches what it renders', () => {
+    const ref = createRef<HTMLButtonElement>()
+    render(<Button ref={ref} render={<a href="/somewhere" />}>Go</Button>)
+    expect(ref.current).toBe(screen.getByRole('link', { name: 'Go' }))
+  })
+
+  it('points a confirm dialog at the button it names', async () => {
+    // The recipe that could not do this used ConfirmDialogClose's render
+    // instead, because Button's props had no `ref` to give.
+    function Confirm() {
+      const keep = useRef<HTMLButtonElement>(null)
+      return (
+        <ConfirmDialog open>
+          <ConfirmDialogPopup initialFocus={keep}>
+            <ConfirmDialogTitle>Delete the draft?</ConfirmDialogTitle>
+            <ConfirmDialogActions>
+              <ConfirmDialogClose render={<Button />}>Cancel</ConfirmDialogClose>
+              <Button ref={keep}>Keep it</Button>
+              <Button variant="danger">Delete</Button>
+            </ConfirmDialogActions>
+          </ConfirmDialogPopup>
+        </ConfirmDialog>
+      )
+    }
+    render(<Confirm />)
+    await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Keep it' })))
+  })
+})
+
+describe('Cancel in a form inside an overlay', () => {
+  /* austeris drew Cancel as `<Button render={<DialogClose />}>`, first in the
+   * actions, and that button had no type: the first submit button of the
+   * form. Enter in any field pressed it, and the dialog closed with nothing
+   * saved - in four dialogs and drawers before anyone saw why. */
+  function Form({ onSubmit, close }: { onSubmit: () => void; close: ReactElement }) {
+    return (
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          onSubmit()
+        }}
+      >
+        <input aria-label="Amount" />
+        <Button render={close}>Cancel</Button>
+        <Button type="submit" variant="primary">
+          Save
+        </Button>
+      </form>
+    )
+  }
+
+  const overlays = {
+    dialog: (onSubmit: () => void, onOpenChange: (open: boolean) => void) => (
+      <Dialog open onOpenChange={onOpenChange}>
+        <DialogPopup>
+          <DialogTitle>New entry</DialogTitle>
+          <DialogBody>
+            <Form onSubmit={onSubmit} close={<DialogClose />} />
+          </DialogBody>
+          <DialogActions />
+        </DialogPopup>
+      </Dialog>
+    ),
+    drawer: (onSubmit: () => void, onOpenChange: (open: boolean) => void) => (
+      <Drawer open onOpenChange={onOpenChange}>
+        <DrawerPopup>
+          <DrawerTitle>New entry</DrawerTitle>
+          <DrawerBody>
+            <Form onSubmit={onSubmit} close={<DrawerClose />} />
+          </DrawerBody>
+          <DrawerActions />
+        </DrawerPopup>
+      </Drawer>
+    ),
+  }
+
+  it.each(Object.keys(overlays) as (keyof typeof overlays)[])(
+    'submits on Enter in a %s, and does not close it',
+    async (kind) => {
+      const onSubmit = vi.fn()
+      const onOpenChange = vi.fn()
+      render(overlays[kind](onSubmit, onOpenChange))
+      const form = screen.getByRole('textbox', { name: 'Amount' }).closest('form') as HTMLFormElement
+
+      // One button in the form submits it, and it is the action.
+      const submitters = [...form.querySelectorAll('button')].filter((button) => button.type === 'submit')
+      expect(submitters.map((button) => button.textContent)).toEqual(['Save'])
+
+      await userEvent.type(screen.getByRole('textbox', { name: 'Amount' }), '12{Enter}')
+      expect(onSubmit).toHaveBeenCalledTimes(1)
+      expect(onOpenChange).not.toHaveBeenCalled()
+    },
+  )
+
+  it('keeps a confirm dialog’s close a plain button too', () => {
+    render(
+      <ConfirmDialog open>
+        <ConfirmDialogPopup>
+          <ConfirmDialogTitle>Delete the draft?</ConfirmDialogTitle>
+          <ConfirmDialogActions>
+            <Button render={<ConfirmDialogClose />}>Cancel</Button>
+          </ConfirmDialogActions>
+        </ConfirmDialogPopup>
+      </ConfirmDialog>,
+    )
+    expect(screen.getByRole('button', { name: 'Cancel' }).getAttribute('type')).toBe('button')
   })
 })
