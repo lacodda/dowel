@@ -82,7 +82,10 @@ on a column that is not the sorted one.
 ```
 
 The button's words truncate and its arrow stays, so a column dragged narrower
-than its heading keeps the funnel in the cell.
+than its heading keeps the funnel in the cell. It wears the case of the heading
+it stands in: a browser gives every button `text-transform: none`, and in an
+uppercase caption - [VirtualGrid](/dowel/components/virtual-grid/)'s columns -
+the sorted columns alone came out in title case.
 
 **`TableScroll` is not decoration.** `overflow` on a `<table>` does nothing, so
 the wrapper is the only place a scrollbar can live — and the only thing a

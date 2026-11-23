@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { expectNoA11yViolations } from '../../tests/a11y'
+import { compileClasses, utilityRules } from '../../tests/compile'
 import {
   Table,
   TableBody,
@@ -176,6 +177,16 @@ describe('a heading that holds more than its sort', () => {
     const funnel = screen.getByRole('button', { name: 'Filter by stage' })
     expect(sorting.contains(funnel)).toBe(false)
     expect(funnel.closest('button')).toBe(funnel)
+  })
+
+  it('takes the case of the heading it stands in', async () => {
+    // A browser gives a button `text-transform: none` whatever surrounds it,
+    // so in an uppercase caption the sorted columns alone came out in title
+    // case (midda's EntryTable, on VirtualGrid).
+    render(<Composed sort={undefined} onSortChange={() => {}} />)
+    const classes = screen.getByRole('button', { name: 'Stage' }).className.split(/\s+/)
+    const css = await compileClasses(classes)
+    expect(utilityRules(css).some((rule) => rule.body === 'text-transform: inherit;')).toBe(true)
   })
 
   it('hands its column to the product when pressed', async () => {
