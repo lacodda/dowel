@@ -75,7 +75,10 @@ alone gives way.
 The popup has no padding of its own — each part carries it — so the body's
 scroll runs edge to edge. A dialog without a header or without actions still
 has its edges: a body that is first or last in the popup takes the padding the
-missing part would have given.
+missing part would have given. Between a header and the actions the body still
+keeps a little room at its top and bottom, because it scrolls and so it clips:
+the focus ring of its first or last field would otherwise be cut where it meets
+the edge.
 
 ## Popups inside it
 

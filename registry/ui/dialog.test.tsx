@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { cn } from 'dowel-ui'
 import { expectNoA11yViolations } from '../../tests/a11y'
+import { compileClasses } from '../../tests/compile'
 import { Button } from './button'
 import {
   Dialog,
@@ -492,6 +493,22 @@ describe('Dialog', () => {
     expect(screen.getByRole('dialog').className.split(/\s+/)).not.toContain('p-5')
     const body = screen.getByTestId('body').className.split(/\s+/)
     expect(body).toEqual(expect.arrayContaining(['px-5', 'first:pt-5', 'last:pb-5']))
+  })
+
+  it('leaves room above and below the body for a ring', async () => {
+    // The body scrolls, so it clips: between a header and the actions it had
+    // no padding at the top or the bottom, and the ring of its first or last
+    // field was cut where it met the edge (kilna, order 8065).
+    render(<Editor />)
+    const body = screen.getByTestId('body').className.split(/\s+/)
+    expect(body).toContain('py-1.5')
+    // ...and the edge a missing header or foot would have given still wins,
+    // because a variant is written after the plain class it overrides.
+    const css = await compileClasses(body)
+    const plain = css.indexOf(String.raw`.py-1\.5`)
+    expect(plain).toBeGreaterThan(-1)
+    expect(css.indexOf(String.raw`.first\:pt-5`)).toBeGreaterThan(plain)
+    expect(css.indexOf(String.raw`.last\:pb-5`)).toBeGreaterThan(plain)
   })
 
   it('draws the size it is asked for, over a scrim unless told not to', () => {
