@@ -1,5 +1,5 @@
 {
-  "axe": "4.14.0",
+  "axe": "4.14.1",
   "rules": {
     "aria-allowed-attr": {
       "help": "Elements must only use supported ARIA attributes",
@@ -77,6 +77,12 @@
         "1.4.12"
       ]
     },
+    "button-name": {
+      "help": "Buttons must have discernible text",
+      "criteria": [
+        "4.1.2"
+      ]
+    },
     "color-contrast": {
       "help": "Elements must meet minimum color contrast ratio thresholds",
       "criteria": [
@@ -101,6 +107,12 @@
       "help": "Links must have discernible text",
       "criteria": [
         "2.4.4",
+        "4.1.2"
+      ]
+    },
+    "nested-interactive": {
+      "help": "Interactive controls must not be nested",
+      "criteria": [
         "4.1.2"
       ]
     },
@@ -137,11 +149,13 @@
       "aria-valid-attr",
       "aria-valid-attr-value",
       "avoid-inline-spacing",
+      "button-name",
       "color-contrast",
       "duplicate-id-aria",
       "empty-heading",
       "empty-table-header",
       "link-name",
+      "nested-interactive",
       "scrollable-region-focusable",
       "tabindex",
       "target-size"
@@ -166,11 +180,13 @@
       "aria-valid-attr",
       "aria-valid-attr-value",
       "avoid-inline-spacing",
+      "button-name",
       "color-contrast",
       "duplicate-id-aria",
       "empty-heading",
       "empty-table-header",
       "link-name",
+      "nested-interactive",
       "scrollable-region-focusable",
       "tabindex",
       "target-size"

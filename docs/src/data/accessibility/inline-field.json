@@ -1,5 +1,5 @@
 {
-  "axe": "4.14.0",
+  "axe": "4.14.1",
   "rules": {
     "autocomplete-valid": {
       "help": "autocomplete attribute must be used correctly",

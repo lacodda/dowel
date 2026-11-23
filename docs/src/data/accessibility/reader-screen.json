@@ -1,5 +1,5 @@
 {
-  "axe": "4.14.0",
+  "axe": "4.14.1",
   "rules": {
     "aria-allowed-attr": {
       "help": "Elements must only use supported ARIA attributes",
@@ -153,7 +153,9 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [],
+    "incomplete": [
+      "color-contrast"
+    ],
     "violations": []
   },
   "light": {
@@ -181,7 +183,9 @@
       "tabindex",
       "target-size"
     ],
-    "incomplete": [],
+    "incomplete": [
+      "color-contrast"
+    ],
     "violations": []
   }
 }

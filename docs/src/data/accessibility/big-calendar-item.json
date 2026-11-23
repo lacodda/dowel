@@ -1,5 +1,5 @@
 {
-  "axe": "4.14.0",
+  "axe": "4.14.1",
   "rules": {
     "aria-hidden-focus": {
       "help": "ARIA hidden element must not be focusable or contain focusable elements",

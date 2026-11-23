@@ -1,5 +1,5 @@
 {
-  "axe": "4.14.0",
+  "axe": "4.14.1",
   "rules": {
     "button-name": {
       "help": "Buttons must have discernible text",
